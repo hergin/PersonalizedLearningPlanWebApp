@@ -1,33 +1,32 @@
-import React, { useRef } from "react";
-import { FaBars, FaTimes } from "react-icons/fa";
+import React from "react";
+import { AiFillHome } from "react-icons/ai";
+import "./Navbar.css";
 
 function NavBar() {
-  const navRef = useRef();
-
-  const toggleNav = () => {
-    navRef.current.classList.toggle("responsive-nav");
-  };
-
   return (
     <header>
-      <nav>
-        <a href="/#">Home</a>
-        <h3>Personalized Learning Website</h3>
-        <a href="/#">Login</a>
+      <nav className="nav-top">
+        <a class="home-btn" href="/#">
+          <AiFillHome />
+        </a>
+        <h1>Personalized Learning Website</h1>
+        <button>Login/Sign Up</button>
       </nav>
 
-      <nav ref={navRef}>
-        <a href="/#">Learning Plan</a>
-        <a href="/#">Coach</a>
-        <a href="/#">Dashboard</a>
-        <a href="/#">Profile</a>
-        <button onClick={toggleNav}>
-          <FaTimes />
-        </button>
+      <nav className="nav-bottom">
+        <a href="/#">
+          <button className="nav-btn">Learning Plan</button>
+        </a>
+        <a href="/#">
+          <button className="nav-btn">Coach</button>
+        </a>
+        <a href="/#">
+          <button className="nav-btn">Dashboard</button>
+        </a>
+        <a href="/#">
+          <button className="nav-btn">Profile</button>
+        </a>
       </nav>
-      <button>
-        <FaBars />
-      </button>
     </header>
   );
 }
