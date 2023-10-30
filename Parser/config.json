@@ -1,0 +1,6 @@
+{
+    "USERNAME": "postgres",
+    "PASSWORD": "2prxzgdn",
+    "DATABASE": "LearningPlan",
+    "PORT": "5432"
+}
