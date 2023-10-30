@@ -14,7 +14,7 @@ function NavBar() {
       </nav>
 
       <nav className="nav-bottom">
-        <a href="/#">
+        <a href="/LearningPlan">
           <button className="nav-btn">Learning Plan</button>
         </a>
         <a href="/#">
