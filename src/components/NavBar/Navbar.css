@@ -18,6 +18,7 @@
 header {
     display: flex;
     width: 100%;
+    position: -webkit-sticky;
     position: sticky;
     top: 0;
     flex-direction: column;
