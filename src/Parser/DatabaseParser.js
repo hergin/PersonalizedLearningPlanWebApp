@@ -25,5 +25,15 @@ export class DatabaseParser {
         await this.client.query(`INSERT INTO ACCOUNT(username, account_password, email) VALUES (${username}, ${password}, ${email})`);
     }
 
-    
+    async getProfile(id){
+        return await this.client.query(`SELECT * FROM PROFILE WHERE account_id = ${id}`);
+    }
+
+    async createProfile(firstName, lastName, account_id) {
+        await this.client.query(`INSERT INTO PROFILE(firstName, lastName, account_id) VALUES(${firstName}, ${lastName}, ${account_id})`);
+    }
+
+    async insertProfile(firstName, lastName, profilePicture,  jobTitle, bio, account_id) {
+        await this.client.query(`INSERT INTO PROFILE(firstName, lastName, profilePicture, jobTitle, bio) VALUES(${firstName}, ${lastName}, ${profilePicture}, ${jobTitle}, ${bio}) WHERE account_id = ${account_id}`);
+    }
 }
