@@ -1,5 +1,5 @@
 import { Client } from 'pg';
-const config = require("./config.json");
+require('dotenv').config();
 
 export class DatabaseParser {
     constructor() {
@@ -10,10 +10,10 @@ export class DatabaseParser {
     async connectToClient(client) {
         client.connect({
             host: "localhost",
-            user: config.USERNAME,
-            password: config.PASSWORD,
-            config: config.DATABASE,
-            port: config.PORT,
+            user: process.env.POSTGRES_USER,
+            password: process.env.POSTGRES_PASSWORD,
+            database: process.env.POSTGRES_DATABASE,
+            port: process.env.POSTGRES_PORT,
         });
     }
     
