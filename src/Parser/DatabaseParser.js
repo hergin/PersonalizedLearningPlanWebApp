@@ -4,7 +4,7 @@ require('dotenv').config();
 export class DatabaseParser {
     constructor() {
         this.client  = new Client();
-        this.connectToClient(this.client);
+        this.connectToClient(this.client);  
     }
 
     async connectToClient(client) {
