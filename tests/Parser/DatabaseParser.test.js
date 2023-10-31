@@ -25,8 +25,15 @@ describe('Parser Test', () => {
     
     it('store login', async () => {
         client.query.mockResolvedValueOnce( {rows: [], rowCount: 0} );
-        await parser.storeLogin('Xx_geogre_xX', 'Geogre123@Gmail.com', '09122001');
+        await parser.storeLogin('Xx_george_xX', 'George123@Gmail.com', '09122001');
         expect(client.query).toBeCalledTimes(1);
-        expect(client.query).toBeCalledWith('INSERT INTO ACCOUNT(username, account_password, email) VALUES (Xx_geogre_xX, 09122001, Geogre123@Gmail.com)');
+        expect(client.query).toBeCalledWith('INSERT INTO ACCOUNT(username, account_password, email) VALUES (Xx_george_xX, 09122001, George123@Gmail.com)');
+    });
+
+    it('retrieve login', async () => {
+        client.query.mockResolvedValueOnce( {rows: [], rowCount: 0} );
+        await parser.retrieveLogin('Xx_george_xX', '09122001');
+        expect(client.query).toBeCalledTimes(1);
+        expect(client.query).toBeCalledWith('SELECT * FROM ACCOUNT WHERE username = Xx_george_xX, account_password = 09122001');
     });
 });
