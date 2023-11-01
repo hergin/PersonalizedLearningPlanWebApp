@@ -5,8 +5,13 @@ const parser = new DatabaseParser();
 export function validateLogin(username, password) {
     let login;
     parser.retrieveLogin(username, password).then((query) => {login = query});
-    if(login.rows.length !== 1) {
+    console.log(login);
+    if(login === undefined) {
         throw new Error("invalid login");
     }
-    return login.rows[0].id;
+    return login.rows[0];
+}
+
+export function createAccount(username, password) {
+    parser.storeLogin(username, password);
 }
