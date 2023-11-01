@@ -56,5 +56,6 @@
     "moduleNameMapper": {
       "\\.(css|scss)$": "identity-obj-proxy"
     }
-  }
+  },
+  "type": "module"
 }

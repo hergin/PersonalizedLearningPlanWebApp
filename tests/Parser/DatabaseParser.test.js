@@ -9,7 +9,6 @@ jest.mock('pg', () => {
     return { Client: jest.fn(() => testClient) }
 });
 
-
 describe('Parser Test', () => {
     let client;
     let parser;
