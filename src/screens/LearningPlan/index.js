@@ -1,1 +1,1 @@
-export {default} from "./LearningPlan.js";
+export {default} from "./LearningPlan.jsx";
