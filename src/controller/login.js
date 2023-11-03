@@ -12,6 +12,6 @@ export function validateLogin(username, password) {
     return login.rows[0];
 }
 
-export function createAccount(username, password) {
-    parser.storeLogin(username, password);
+export function createAccount(username, email, password) {
+    parser.storeLogin(username, email, password);
 }

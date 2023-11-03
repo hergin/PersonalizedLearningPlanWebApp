@@ -10,6 +10,7 @@
     "identity-obj-proxy": "^3.0.0",
     "jest": "^29.5.0",
     "pg": "^8.11.3",
+    "pg-test": "^1.0.7",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-icons": "^4.11.0",
@@ -22,7 +23,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "testBackEnd": "jest --testPathPattern=tests"
+    "testBackend": "jest --testPathPattern=tests --detectOpenHandles"
   },
   "eslintConfig": {
     "extends": [
