@@ -42,6 +42,44 @@ export class DatabaseParser {
         const result = await client.query(query);
         client.release();
         console.log("Login found!");
-        return result;
+        return result.rows;
+    }
+
+    async getProfile(id){
+        console.log("Getting profile...");
+        const client = await this.pool.connect();
+        const query = {
+            text: "SELECT * FROM PROFILE WHERE account_id = $1",
+            values: [id]
+        }
+        await client.query(query);
+        const result = await client.query(`SELECT * FROM PROFILE WHERE account_id = ${id}`);
+        client.release();
+        console.log("Found profile!");
+        return result.rows;
+    }
+
+    async createProfile(firstName, lastName, account_id) {
+        console.log("Creating profile...");
+        const client = await this.pool.connect();
+        const query = {
+            text: "INSERT INTO PROFILE(firstName, lastName, account_id) VALUES($1, $2, $3)",
+            values: [firstName, lastName, account_id]
+        }
+        await client.query(query);
+        client.release();
+        console.log("Profile created!");
+    }
+
+    async insertProfileData(firstName, lastName, profilePicture, jobTitle, bio, account_id) {
+        console.log("Inserting new data into profile...");
+        const client = await this.pool.connect();
+        const query = {
+            text: "INSERT INTO PROFILE(firstName, lastName, profilePicture, jobTitle, bio) VALUES($1, $2, $3, $4, $5) WHERE account_id = $6",
+            values: [firstName, lastName, profilePicture, jobTitle, bio, account_id]
+        }
+        await client.query(query);
+        client.release();
+        console.log("Profile data saved!");
     }
 }

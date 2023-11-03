@@ -1,17 +1,11 @@
-import { DatabaseParser } from "../Parser/DatabaseParser";
+import { DatabaseParser } from "../parser/DatabaseParser";
 
 const parser = new DatabaseParser();
 
-export function validateLogin(username, password) {
-    let login;
-    parser.retrieveLogin(username, password).then((query) => {login = query});
-    console.log(login);
-    if(login === undefined) {
-        throw new Error("invalid login");
+export async function getAccountID(username, password) {
+    const login = await parser.retrieveLogin(username, password);
+    if(login.length === 0) {
+        throw new Error("Invalid Login.");
     }
-    return login.rows[0];
-}
-
-export function createAccount(username, email, password) {
-    parser.storeLogin(username, email, password);
+    return login[0].account_id;
 }

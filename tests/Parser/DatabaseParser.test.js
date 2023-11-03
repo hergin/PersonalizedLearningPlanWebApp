@@ -1,4 +1,4 @@
-import { DatabaseParser } from "../../src/Parser/DatabaseParser";
+import { DatabaseParser } from "../../src/parser/DatabaseParser";
 
 describe('Parser Test', () => {
     const parser = new DatabaseParser();
@@ -49,7 +49,7 @@ describe('Parser Test', () => {
             [testData.username, testData.email, testData.password]    
         );
         let query = await parser.retrieveLogin(testData.username, testData.password);
-        expect(query.rows).toEqual([
+        expect(query).toEqual([
             {account_id: expect.any(Number), username: testData.username, email: testData.email, account_password: testData.password}
         ]);
         await client.query(
