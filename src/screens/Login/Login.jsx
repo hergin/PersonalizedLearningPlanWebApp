@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import "./login.css";
 
 const LoginScreen = () => {
   const [username, setUsername] = useState("");
@@ -10,20 +11,23 @@ const LoginScreen = () => {
   };
 
   return (
-    <div>
+    <div className="parent-div">
       <h1>Login</h1>
-      <input
-        type="text"
-        placeholder="Username"
-        value={username}
-        onChange={(e) => setUsername(e.target.value)}
-      />
-      <input
-        type="password"
-        placeholder="Password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-      />
+      <div className="login">
+        <input
+          type="text"
+          placeholder="Username"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+        />
+        <input
+          type="password"
+          placeholder="Password"
+          value={password}
+          className="test"
+          onChange={(e) => setPassword(e.target.value)}
+        />
+      </div>
       <button onClick={handleLogin}>Login</button>
     </div>
   );

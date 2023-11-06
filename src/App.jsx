@@ -6,16 +6,16 @@ import {
   Route,
 } from "react-router-dom";
 import LearningPlan from "./screens/LearningPlan";
-import Login from "./screens/Login";
+import Login from "./screens/login";
 import DefaultScreen from "./screens/Default";
 
 function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Login />} />
-        <Route element={<DefaultScreen />}>
-          <Route path="/Learning-Plan" element={<LearningPlan />} />
+        <Route path="/" element={<DefaultScreen />}>
+          <Route path="/LearningPlan" element={<LearningPlan />} />
+          <Route path="/login" element={<Login />} />
         </Route>
       </Routes>
     </Router>

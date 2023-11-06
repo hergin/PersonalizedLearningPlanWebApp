@@ -1,5 +1,5 @@
 import { DatabaseParser } from "../../src/parser/DatabaseParser";
-import { getAccountID } from "../../src/controller/login";
+import { LoginAPI } from "../../src/controller/loginProcessor";
 
 jest.mock("../../src/parser/DatabaseParser", () => {
     const testParser = {
@@ -9,9 +9,11 @@ jest.mock("../../src/parser/DatabaseParser", () => {
 });
 
 describe('Login Functions', () => {
+    let loginAPI;
     let parser;
 
     beforeEach(() => {
+        loginAPI = new LoginAPI();
         parser = new DatabaseParser();
     });
 
@@ -29,12 +31,12 @@ describe('Login Functions', () => {
         parser.retrieveLogin.mockResolvedValueOnce(
             Promise.resolve([{account_id: testData.account_id, username: testData.username, password: testData.password, email: testData.email}])
         );
-        const result = await getAccountID(testData.username, testData.password);
+        const result = await loginAPI.getAccountID(testData.username, testData.password);
         expect(result).toEqual(testData.account_id);
     });
 
     it('get account id (error case)', async () => {
         parser.retrieveLogin.mockResolvedValueOnce([]);
-        await expect(getAccountID("GregThSimp69", "*****")).rejects.toThrow("Invalid Login.");
+        await expect(loginAPI.getAccountID("GregThSimp69", "*****")).rejects.toThrow("Invalid Login.");
     });
 });

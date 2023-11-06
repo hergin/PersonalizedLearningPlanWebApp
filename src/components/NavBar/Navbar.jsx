@@ -6,11 +6,13 @@ function NavBar() {
   return (
     <header>
       <nav className="nav-top">
-        <a class="home-btn" href="/#">
+        <a className="home-btn" href="/#">
           <AiFillHome />
         </a>
         <h1>Personalized Learning Website</h1>
-        <button>Login/Sign Up</button>
+        <a href="/login">
+          <button>Login/Sign Up</button>
+        </a>  
       </nav>
 
       <nav className="nav-bottom">

@@ -1,0 +1,17 @@
+.login {
+    display: flex;
+    flex-direction: column;
+    border: solid red 2px;
+}
+.parent-div{
+    display:flex;
+    flex: 1;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border: solid blue 2px;
+    height: 100vh;
+}
+/* .test {
+    width: 1000000;
+} */
