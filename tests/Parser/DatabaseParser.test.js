@@ -1,39 +1,60 @@
-import { DatabaseParser } from "../../src/Parser/DatabaseParser";
-import { Client } from 'pg';
-
-jest.mock('pg', () => {
-    const testClient = {
-        connect: jest.fn(),
-        query: jest.fn(),
-    };
-    return { Client: jest.fn(() => testClient) }
-});
-
+import { DatabaseParser } from "../../src/parser/DatabaseParser";
 
 describe('Parser Test', () => {
-    let client;
-    let parser;
+    const parser = new DatabaseParser();
+    var client;
 
-    beforeEach(() => {
-        client = new Client();
-        parser = new DatabaseParser();
+    beforeEach(async () => {
+        console.log("Connecting...");
+        client = await parser.pool.connect();
+        console.log("Connected!");
     });
 
-    afterEach(() => {
-        jest.clearAllMocks();
+    afterEach(async () => {
+        client.release();
+    });
+
+    afterAll(async () => {
+        await parser.pool.end();
     });
     
     it('store login', async () => {
-        client.query.mockResolvedValueOnce( {rows: [], rowCount: 0} );
-        await parser.storeLogin('Xx_george_xX', 'George123@Gmail.com', '09122001');
-        expect(client.query).toBeCalledTimes(1);
-        expect(client.query).toBeCalledWith('INSERT INTO ACCOUNT(username, account_password, email) VALUES (Xx_george_xX, 09122001, George123@Gmail.com)');
+        const testData = {
+            username: 'Xx_George_xX',
+            email: 'George123@Gmail.com',
+            password: '09122001'
+        };
+        await parser.storeLogin(testData.username, testData.email, testData.password);
+        let query = await client.query(
+            "SELECT * FROM ACCOUNT WHERE username = $1 AND email = $2 AND account_password = $3", 
+            [testData.username, testData.email, testData.password]
+        );
+        expect(query.rows).toEqual([
+            {account_id: expect.any(Number), username: testData.username, email: testData.email, account_password: testData.password}
+        ]);
+        await client.query(
+            "DELETE FROM ACCOUNT WHERE username = $1 AND email = $2 AND account_password = $3",
+            [testData.username, testData.email, testData.password]
+        );
     });
 
-    it('retrieve login', async () => {
-        client.query.mockResolvedValueOnce( {rows: [], rowCount: 0} );
-        await parser.retrieveLogin('Xx_george_xX', '09122001');
-        expect(client.query).toBeCalledTimes(1);
-        expect(client.query).toBeCalledWith('SELECT * FROM ACCOUNT WHERE username = Xx_george_xX, account_password = 09122001');
+    it('retrieve login', async() => {
+        const testData = {
+            username: 'GregTheSimp69',
+            email: 'Greg420@Gmail.com',
+            password: 'ch@r!otte_cord@y'
+        }
+        await client.query(
+            "INSERT INTO ACCOUNT(username, email, account_password) VALUES($1, $2, $3)",
+            [testData.username, testData.email, testData.password]    
+        );
+        let query = await parser.retrieveLogin(testData.username, testData.password);
+        expect(query).toEqual([
+            {account_id: expect.any(Number), username: testData.username, email: testData.email, account_password: testData.password}
+        ]);
+        await client.query(
+            "DELETE FROM ACCOUNT WHERE username = $1 AND email = $2 AND account_password = $3",
+            [testData.username, testData.email, testData.password]
+        );
     });
 });
