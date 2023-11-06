@@ -1,13 +1,19 @@
 import React, { useState } from "react";
+import { LoginAPI } from "../../controller/loginProcessor";
 import "./login.css";
 
 const LoginScreen = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [loginAPI] = useState(new LoginAPI());
 
-  const handleLogin = () => {
-      // Call the API to login the user.
-      console.log("Login")
+  const handleLogin = (username, password) => {
+    try {
+      let id = loginAPI.getAccountID(username, password);
+      console.log(id);
+    } catch(error) {
+      alert(error);
+    }
   };
 
   return (
@@ -28,7 +34,7 @@ const LoginScreen = () => {
           onChange={(e) => setPassword(e.target.value)}
         />
       </div>
-      <button onClick={handleLogin}>Login</button>
+      <button onClick={() => {handleLogin(username, password)}}>Login</button>
     </div>
   );
 };

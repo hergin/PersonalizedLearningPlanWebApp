@@ -2,7 +2,7 @@ import { DatabaseParser } from "../parser/DatabaseParser";
 
 export class LoginAPI {
     constructor() {
-        this.parser = new DatabaseParser();
+      this.parser = new DatabaseParser();  
     }
 
     async getAccountID(username, password) {
