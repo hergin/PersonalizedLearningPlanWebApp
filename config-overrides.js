@@ -10,7 +10,11 @@ module.exports = function override(config) {
         "os": require.resolve("os-browserify"),
         "http": require.resolve("stream-http"),
         "https": require.resolve("https-browserify"),
-        "url": require.resolve("url")
+        "url": require.resolve("url"),
+        "fs": false,
+        "dns": false,
+        "pg-native": false,
+        "net": false
     });
     config.resolve.fallback = fallback;
     config.plugins = (config.plugins || []).concat([

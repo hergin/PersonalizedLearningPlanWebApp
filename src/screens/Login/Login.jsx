@@ -5,10 +5,15 @@ import "./login.css";
 const LoginScreen = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-
+  const [loginAPI] = useState(new LoginAPI());
 
   const handleLogin = (username, password) => {
-    
+    try {
+      let id = loginAPI.getAccountID(username, password);
+      console.log(id);
+    } catch(error) {
+      alert(error);
+    }
   };
 
   return (

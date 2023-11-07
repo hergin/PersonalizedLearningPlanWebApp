@@ -13,6 +13,7 @@
     "css-loader": "^6.8.1",
     "dotenv": "^16.3.1",
     "file-loader": "^6.2.0",
+    "fs": "^0.0.1-security",
     "https-browserify": "^1.0.0",
     "identity-obj-proxy": "^3.0.0",
     "jest": "^29.5.0",
@@ -20,12 +21,13 @@
     "os-browserify": "^0.3.0",
     "path-browserify": "^1.0.1",
     "pg": "^8.11.3",
+    "process": "^0.11.10",
     "react": "^18.2.0",
     "react-app-rewired": "^2.2.1",
     "react-dom": "^18.2.0",
     "react-icons": "^4.11.0",
     "react-router-dom": "^6.17.0",
-    "react-scripts": "5.0.1",
+    "react-scripts": "^5.0.1",
     "stream-browserify": "^3.0.0",
     "stream-http": "^3.2.0",
     "style-loader": "^3.3.3",
@@ -35,7 +37,7 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "react-app start",
+    "start": "react-app-rewired start",
     "build": "react-app-rewired build",
     "test": "react-app-rewired test",
     "eject": "react-app-rewired eject",
@@ -80,6 +82,5 @@
     "moduleNameMapper": {
       "\\.(css|scss)$": "identity-obj-proxy"
     }
-  },
-  "type": "module"
+  }
 }

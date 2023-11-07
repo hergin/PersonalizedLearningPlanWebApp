@@ -14,7 +14,10 @@ module.exports = {
                 type: "javascript/auto",
                 exclude: /node_modules/,
                 use: {
-                    loader: "babel-loader",
+                    loader: [
+                        "babel-loader",
+                        "jsx-loader",
+                    ]    
                 },
                 resolve: {
                     extensions: ['.js', '.jsx'],
