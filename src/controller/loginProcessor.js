@@ -1,4 +1,4 @@
-import { DatabaseParser } from "../parser/DatabaseParser";
+import { DatabaseParser } from "../Parser/DatabaseParser";
 
 export class LoginAPI {
     constructor() {
