@@ -1,4 +1,4 @@
-import { DatabaseParser } from "../Parser/DatabaseParser";
+import { DatabaseParser } from "../parser/databaseParser";
 
 export class LoginAPI {
     constructor() {
@@ -6,10 +6,12 @@ export class LoginAPI {
     }
 
     async getAccountID(username, password) {
+        console.log("Getting account id...");
         const login = await this.parser.retrieveLogin(username, password);
         if(login.length === 0) {
             throw new Error("Invalid Login.");
         }
+        console.log("Account id found!");
         return login[0].account_id;
     }
     

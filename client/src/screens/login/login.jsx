@@ -2,14 +2,15 @@ import React, { useState } from "react";
 import { LoginAPI } from "../../controller/loginProcessor";
 import "./login.css";
 
+const loginAPI = new LoginAPI();
+
 const LoginScreen = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [loginAPI] = useState(new LoginAPI());
-
-  const handleLogin = (username, password) => {
+  
+  async function handleLogin(username, password) {
     try {
-      let id = loginAPI.getAccountID(username, password);
+      let id = await loginAPI.getAccountID(username, password);
       console.log(id);
     } catch(error) {
       alert(error);

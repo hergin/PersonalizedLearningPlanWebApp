@@ -3,15 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@testing-library/jest-dom": "^5.17.0",
-    "@testing-library/react": "^13.4.0",
-    "@testing-library/user-event": "^13.5.0",
     "assert": "^2.1.0",
     "babel-loader": "^9.1.3",
     "buffer": "^6.0.3",
     "crypto-browserify": "^3.12.0",
     "css-loader": "^6.8.1",
-    "dotenv": "^16.3.1",
     "file-loader": "^6.2.0",
     "fs": "^0.0.1-security",
     "https-browserify": "^1.0.0",
@@ -20,7 +16,6 @@
     "jsx-loader": "^0.13.2",
     "os-browserify": "^0.3.0",
     "path-browserify": "^1.0.1",
-    "pg": "^8.11.3",
     "process": "^0.11.10",
     "react": "^18.2.0",
     "react-app-rewired": "^2.2.1",
@@ -41,9 +36,7 @@
     "build": "react-app-rewired build",
     "test": "react-app-rewired test",
     "eject": "react-app-rewired eject",
-    "testBackend": "jest --testPathPattern=tests --detectOpenHandles",
-    "dev": "webpack serve",
-    "buildWebpack": "webpack"
+    "dev": "webpack serve"
   },
   "eslintConfig": {
     "extends": [
@@ -63,10 +56,6 @@
       "last 1 safari version"
     ]
   },
-  "directories": {
-    "src": "src",
-    "test": "test"
-  },
   "devDependencies": {
     "@babel/core": "^7.22.9",
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
@@ -77,10 +66,5 @@
     "webpack": "^5.89.0",
     "webpack-cli": "^5.1.4",
     "webpack-dev-server": "^4.15.1"
-  },
-  "jest": {
-    "moduleNameMapper": {
-      "\\.(css|scss)$": "identity-obj-proxy"
-    }
   }
 }
