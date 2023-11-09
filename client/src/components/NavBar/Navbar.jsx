@@ -1,33 +1,34 @@
 import React from "react";
 import { AiFillHome } from "react-icons/ai";
+import { Link } from "react-router-dom"
 import "./Navbar.css";
 
 function NavBar() {
   return (
     <header>
       <nav className="nav-top">
-        <a className="home-btn" href="/#">
+        <Link className="home-btn" to="/#">
           <AiFillHome />
-        </a>
+        </Link>
         <h1>Personalized Learning Website</h1>
-        <a href="/login">
+        <Link to="/login">
           <button>Login/Sign Up</button>
-        </a>  
+        </Link>  
       </nav>
 
       <nav className="nav-bottom">
-        <a href="/LearningPlan">
+        <Link to="/LearningPlan">
           <button className="nav-btn">Learning Plan</button>
-        </a>
-        <a href="/#">
+        </Link>
+        <Link to="/#">
           <button className="nav-btn">Coach</button>
-        </a>
-        <a href="/#">
+        </Link>
+        <Link to="/#">
           <button className="nav-btn">Dashboard</button>
-        </a>
-        <a href="/#">
+        </Link>
+        <Link to="/#">
           <button className="nav-btn">Profile</button>
-        </a>
+        </Link>
       </nav>
     </header>
   );
