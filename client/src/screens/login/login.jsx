@@ -1,8 +1,5 @@
 import React, { useState } from "react";
-import { LoginAPI } from "../../controller/loginProcessor";
 import "./login.css";
-
-const loginAPI = new LoginAPI();
 
 const LoginScreen = () => {
   const [username, setUsername] = useState("");
@@ -10,8 +7,7 @@ const LoginScreen = () => {
   
   async function handleLogin(username, password) {
     try {
-      let id = await loginAPI.getAccountID(username, password);
-      console.log(id);
+      //TODO: Post request to the server.
     } catch(error) {
       alert(error);
     }
