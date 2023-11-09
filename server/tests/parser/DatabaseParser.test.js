@@ -1,7 +1,7 @@
-import { DatabaseParser } from "../../client/src/parser/DatabaseParser";
+const databaseParser = require("../parser/databaseParser");
 
 describe('Parser Test', () => {
-    const parser = new DatabaseParser();
+    const parser = new databaseParser.DatabaseParser();
     var client;
 
     beforeEach(async () => {

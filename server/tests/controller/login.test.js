@@ -1,5 +1,5 @@
-import { DatabaseParser } from "../../client/src/parser/DatabaseParser";
-import { LoginAPI } from "../../client/src/controller/loginProcessor";
+const databaseParser = require("../parser/DatabaseParser");
+const loginProcessor = require("../controller/loginProcessor");
 
 jest.mock("../parser/DatabaseParser", () => {
     const testParser = {
@@ -13,8 +13,8 @@ describe('Login Functions', () => {
     let parser;
 
     beforeEach(() => {
-        loginAPI = new LoginAPI();
-        parser = new DatabaseParser();
+        loginAPI = new loginProcessor.LoginAPI();
+        parser = new databaseParser.DatabaseParser();
     });
 
     afterEach(() => {

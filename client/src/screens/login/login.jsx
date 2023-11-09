@@ -5,11 +5,15 @@ import "./login.css";
 const LoginScreen = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  
+  const [profile, setProfile] = useState(null);
+   
   async function handleLogin(username, password) {
     try {
       //TODO: Post request to the server.
-      await axios.post('http://localhost:4000/api/login', {username, password});
+      const response = await axios.post('http://localhost:4000/api/login', {username, password});
+      console.log(response.data);
+      setProfile(response.data);
+      console.log(profile);
     } catch(error) {
       alert(error);
     }
@@ -32,6 +36,7 @@ const LoginScreen = () => {
           className="test"
           onChange={(e) => setPassword(e.target.value)}
         />
+        {JSON.stringify(profile)}
       </div>
       <button onClick={() => {handleLogin(username, password)}}>Login</button>
     </div>
