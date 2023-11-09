@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import axios from "axios";
 import "./login.css";
 
 const LoginScreen = () => {
@@ -8,6 +9,7 @@ const LoginScreen = () => {
   async function handleLogin(username, password) {
     try {
       //TODO: Post request to the server.
+      await axios.post('http://localhost:4000/api/login', {username, password});
     } catch(error) {
       alert(error);
     }

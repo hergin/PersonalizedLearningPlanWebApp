@@ -6,7 +6,7 @@ import {
   Route,
 } from "react-router-dom";
 import LearningPlan from "./screens/LearningPlan";
-import LoginScreen from "./screens/login/login";
+import LoginScreen from "./screens/login/Login";
 import DefaultScreen from "./screens/Default";
 
 function App() {
