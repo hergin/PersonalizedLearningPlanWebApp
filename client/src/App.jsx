@@ -6,7 +6,7 @@ import {
   Routes
 } from "react-router-dom";
 import LearningPlan from "./screens/LearningPlan";
-import LoginScreen from "./screens/login/Login";
+import LoginScreen from "./screens/login/login";
 import DefaultScreen from "./screens/Default";
 
 
@@ -17,6 +17,7 @@ function App() {
         <Route exact path="/" element={<DefaultScreen />}>
           <Route path="/LearningPlan" element={<LearningPlan />} />
           <Route path="/login" element={<LoginScreen />} />
+          
         </Route>
       </Routes>
     </Router>
