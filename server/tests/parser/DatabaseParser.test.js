@@ -1,6 +1,16 @@
 const DatabaseParser = require("../../parser/databaseParser");
 
 describe('Parser Test', () => {
+    const testData = {
+        email: "testdummy@yahoo.com",
+        username: "test_dummy",
+        password: "01010101010",
+        firstName: "Test",
+        lastName: "Dummy",
+        jobTitle: "Testing Dummy",
+        bio: "...",
+        profilePicture: ""
+    };
     const parser = new DatabaseParser();
     var client;
 
@@ -11,6 +21,10 @@ describe('Parser Test', () => {
     });
 
     afterEach(async () => {
+        await client.query(
+            "DELETE FROM ACCOUNT WHERE username = $1 AND email = $2 AND account_password = $3",
+            [testData.username, testData.email, testData.password]
+        );
         client.release();
     });
 
@@ -19,11 +33,6 @@ describe('Parser Test', () => {
     });
     
     it('store login', async () => {
-        const testData = {
-            username: 'Xx_George_xX',
-            email: 'George123@Gmail.com',
-            password: '0123456789'
-        };
         await parser.storeLogin(testData.username, testData.email, testData.password);
         let query = await client.query(
             "SELECT * FROM ACCOUNT WHERE username = $1 AND email = $2 AND account_password = $3", 
@@ -32,18 +41,9 @@ describe('Parser Test', () => {
         expect(query.rows).toEqual([
             {email: testData.email, username: testData.username, account_password: testData.password}
         ]);
-        await client.query(
-            "DELETE FROM ACCOUNT WHERE username = $1 AND email = $2 AND account_password = $3",
-            [testData.username, testData.email, testData.password]
-        );
     });
 
     it('retrieve login', async () => {
-        const testData = {
-            username: 'GregTheSimp69',
-            email: 'Greg420@Gmail.com',
-            password: 'ch@r!otte_cord@y'
-        };
         await client.query(
             "INSERT INTO ACCOUNT(username, email, account_password) VALUES($1, $2, $3)",
             [testData.username, testData.email, testData.password]    
@@ -52,21 +52,12 @@ describe('Parser Test', () => {
         expect(query).toEqual([
             {email: testData.email, username: testData.username, account_password: testData.password}
         ]);
-        await client.query(
-            "DELETE FROM ACCOUNT WHERE username = $1 AND email = $2 AND account_password = $3",
-            [testData.username, testData.email, testData.password]
-        );
     });
 
     it('create profile', async () => {
-        const testData = {
-            email: "example@Gmail.com",
-            firstName: "Bob",
-            lastName: "Jones"
-        };
         await client.query(
             "INSERT INTO ACCOUNT(email, username, account_password) VALUES($1, $2, $3)",
-            [testData.email, "example", "12345"]
+            [testData.email, testData.username, testData.password]
         );
         await parser.createProfile(testData.firstName, testData.lastName, testData.email);
         var query = await client.query(
@@ -84,9 +75,55 @@ describe('Parser Test', () => {
                 email: testData.email
             }
         ]);
+    });
+
+    it('get profile', async () => {
         await client.query(
-            "DELETE FROM ACCOUNT WHERE email = $1",
+            "INSERT INTO ACCOUNT(email, username, account_password) VALUES($1, $2, $3)",
+            [testData.email, testData.username, testData.password]
+        );
+        await client.query(
+            "INSERT INTO PROFILE(firstName, lastName, email) VALUES($1, $2, $3)",
+            [testData.firstName, testData.lastName, testData.email]
+        );
+        var actual = await parser.getProfile(testData.email);
+        expect(actual).toEqual([
+            {
+                profile_id: expect.any(Number), 
+                firstname: testData.firstName, 
+                lastname: testData.lastName,
+                profilepicture: null,
+                jobtitle: null,
+                bio: null,
+                email: testData.email
+            }
+        ]);
+    });
+
+    it('insert profile', async () => {
+        await client.query(
+            "INSERT INTO ACCOUNT(email, username, account_password) VALUES($1, $2, $3)",
+            [testData.email, testData.username, testData.password]
+        );
+        await client.query(
+            "INSERT INTO PROFILE(firstName, lastName, email) VALUES($1, $2, $3)",
+            [testData.firstName, testData.lastName, testData.email]
+        );
+        await parser.insertProfileData(testData.firstName, testData.lastName, testData.profilePicture, testData.jobTitle, testData.bio, testData.email);
+        var actual = await client.query(
+            "SELECT * FROM PROFILE WHERE email = $1",
             [testData.email]
         );
-    });
+        expect(actual.rows).toEqual([
+            {
+                profile_id: expect.any(Number),
+                firstname: testData.firstName,
+                lastname: testData.lastName,
+                profilepicture: testData.profilePicture,
+                jobtitle: testData.jobTitle,
+                bio: testData.bio,
+                email: testData.email
+            }
+        ]);
+    })
 });

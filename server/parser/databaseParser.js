@@ -45,15 +45,14 @@ class DatabaseParser {
         return result.rows;
     }
 
-    async getProfile(id){
+    async getProfile(email) {
         console.log("Getting profile...");
         const client = await this.pool.connect();
         const query = {
-            text: "SELECT * FROM PROFILE WHERE account_id = $1",
-            values: [id]
+            text: "SELECT * FROM PROFILE WHERE email = $1",
+            values: [email]
         };
-        await client.query(query);
-        const result = await client.query(`SELECT * FROM PROFILE WHERE account_id = ${id}`);
+        const result = await client.query(query);
         client.release();
         console.log("Found profile!");
         return result.rows;
@@ -71,12 +70,12 @@ class DatabaseParser {
         console.log("Profile created!");
     }
 
-    async insertProfileData(firstName, lastName, profilePicture, jobTitle, bio, account_id) {
+    async insertProfileData(firstName, lastName, profilePicture, jobTitle, bio, email) {
         console.log("Inserting new data into profile...");
         const client = await this.pool.connect();
         const query = {
-            text: "INSERT INTO PROFILE(firstName, lastName, profilePicture, jobTitle, bio) VALUES($1, $2, $3, $4, $5) WHERE account_id = $6",
-            values: [firstName, lastName, profilePicture, jobTitle, bio, account_id]
+            text: "UPDATE PROFILE SET firstName = $1, lastName = $2, profilePicture = $3, jobTitle = $4, bio = $5 WHERE email = $6",
+            values: [firstName, lastName, profilePicture, jobTitle, bio, email]
         };
         await client.query(query);
         client.release();
