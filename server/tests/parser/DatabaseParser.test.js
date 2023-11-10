@@ -1,7 +1,7 @@
-const databaseParser = require("../parser/databaseParser");
+const DatabaseParser = require("../../parser/databaseParser");
 
 describe('Parser Test', () => {
-    const parser = new databaseParser.DatabaseParser();
+    const parser = new DatabaseParser();
     var client;
 
     beforeEach(async () => {
@@ -30,7 +30,7 @@ describe('Parser Test', () => {
             [testData.username, testData.email, testData.password]
         );
         expect(query.rows).toEqual([
-            {account_id: expect.any(Number), username: testData.username, email: testData.email, account_password: testData.password}
+            {email: testData.email, username: testData.username, account_password: testData.password}
         ]);
         await client.query(
             "DELETE FROM ACCOUNT WHERE username = $1 AND email = $2 AND account_password = $3",
@@ -50,11 +50,43 @@ describe('Parser Test', () => {
         );
         let query = await parser.retrieveLogin(testData.username, testData.password);
         expect(query).toEqual([
-            {account_id: expect.any(Number), username: testData.username, email: testData.email, account_password: testData.password}
+            {email: testData.email, username: testData.username, account_password: testData.password}
         ]);
         await client.query(
             "DELETE FROM ACCOUNT WHERE username = $1 AND email = $2 AND account_password = $3",
             [testData.username, testData.email, testData.password]
+        );
+    });
+
+    it('create profile', async () => {
+        const testData = {
+            email: "example@Gmail.com",
+            firstName: "Bob",
+            lastName: "Jones"
+        };
+        await client.query(
+            "INSERT INTO ACCOUNT(email, username, account_password) VALUES($1, $2, $3)",
+            [testData.email, "example", "12345"]
+        );
+        await parser.createProfile(testData.firstName, testData.lastName, testData.email);
+        var query = await client.query(
+            "SELECT * FROM PROFILE WHERE firstName = $1 AND lastName = $2 AND email = $3",
+            [testData.firstName, testData.lastName, testData.email]
+        );
+        expect(query.rows).toEqual([
+            {
+                profile_id: expect.any(Number), 
+                firstname: testData.firstName, 
+                lastname: testData.lastName,
+                profilepicture: null,
+                jobtitle: null,
+                bio: null,
+                email: testData.email
+            }
+        ]);
+        await client.query(
+            "DELETE FROM ACCOUNT WHERE email = $1",
+            [testData.email]
         );
     });
 });

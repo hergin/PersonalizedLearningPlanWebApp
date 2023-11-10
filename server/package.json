@@ -11,7 +11,7 @@
     },
     "scripts": {
         "dev": "nodemon app.js",
-        "test": "jest --testPathPattern=tests --detectOpenHandles --verbose --coverage"
+        "test": "jest --testPathPattern=tests --detectOpenHandles --coverage"
     },
     "eslintConfig": {
         "extends": [
@@ -30,5 +30,22 @@
             "last 1 firefox version",
             "last 1 safari version"
         ]
+    },
+    "devDependencies": {
+        "@babel/preset-env": "^7.23.3",
+        "babel-jest": "^29.7.0"
+    },
+    "jest": {
+        "transform": {
+            "^.+\\.(js|jsx)$": "babel-jest"
+        },
+        "verbose": true,
+        "testEnvironment": "node",
+        "testPathIgnorePatterns": [
+            "/node_modules/"
+        ]
+    },
+    "babel": {
+        "presets": ["@babel/preset-env"]
     }
 }

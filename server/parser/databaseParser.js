@@ -34,7 +34,6 @@ class DatabaseParser {
     
     async retrieveLogin(username, password) {
         console.log("Retrieving login...");
-        // TODO: "TypeError: CloudflareSocket is not a constructor"
         const client = await this.pool.connect();
         const query = {
             text: "SELECT * FROM ACCOUNT WHERE username = $1 AND account_password = $2",
@@ -60,12 +59,12 @@ class DatabaseParser {
         return result.rows;
     }
 
-    async createProfile(firstName, lastName, account_id) {
+    async createProfile(firstName, lastName, email) {
         console.log("Creating profile...");
         const client = await this.pool.connect();
         const query = {
-            text: "INSERT INTO PROFILE(firstName, lastName, account_id) VALUES($1, $2, $3)",
-            values: [firstName, lastName, account_id]
+            text: "INSERT INTO PROFILE(firstName, lastName, email) VALUES($1, $2, $3)",
+            values: [firstName, lastName, email]
         };
         await client.query(query);
         client.release();

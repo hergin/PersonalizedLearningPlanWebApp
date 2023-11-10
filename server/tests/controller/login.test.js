@@ -1,11 +1,11 @@
-const databaseParser = require("../parser/DatabaseParser");
-const loginProcessor = require("../controller/loginProcessor");
+import LoginAPI from "../../controller/loginProcessor";
+import DatabaseParser from "../../parser/databaseParser";
 
-jest.mock("../parser/DatabaseParser", () => {
+jest.mock("../../parser/DatabaseParser", () => {
     const testParser = {
-        retrieveLogin: jest.fn()
+        mockRetrieveLogin: jest.fn()
     };
-    return { DatabaseParser: jest.fn(() => testParser) };
+    return { DatabaseParser : jest.fn(() => testParser) };
 });
 
 describe('Login Functions', () => {
@@ -13,30 +13,30 @@ describe('Login Functions', () => {
     let parser;
 
     beforeEach(() => {
-        loginAPI = new loginProcessor.LoginAPI();
-        parser = new databaseParser.DatabaseParser();
+        parser = new DatabaseParser();
+        loginAPI = new LoginAPI();
     });
 
     afterEach(() => {
         jest.clearAllMocks();
     });
 
-    it('get account id (pass case)', async () => {
+    it('get account (pass case)', async () => {
         const testData = {
-            account_id: "1",
+            
             username: "Xx_george_xX",
             password: "09122001",
             email: "George123@Gmail.com"
         };
         parser.retrieveLogin.mockResolvedValueOnce(
-            Promise.resolve([{account_id: testData.account_id, username: testData.username, password: testData.password, email: testData.email}])
+            Promise.resolve([{username: testData.username, password: testData.password, email: testData.email}])
         );
-        const result = await loginAPI.getAccountID(testData.username, testData.password);
-        expect(result).toEqual(testData.account_id);
+        const result = await loginAPI.getAccount(testData.username, testData.password);
+        expect(result).toEqual(testData.email);
     });
 
-    it('get account id (error case)', async () => {
+    it('get account (error case)', async () => {
         parser.retrieveLogin.mockResolvedValueOnce([]);
-        await expect(loginAPI.getAccountID("GregThSimp69", "*****")).rejects.toThrow("Invalid Login.");
-    });
+        expect(loginAPI.getAccount("GregThSimp69", "*****")).toEqual("Invalid Login!");
+    });    
 });
