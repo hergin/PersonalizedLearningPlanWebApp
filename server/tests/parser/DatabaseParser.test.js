@@ -1,7 +1,7 @@
-import { DatabaseParser } from "../../src/parser/DatabaseParser";
+const databaseParser = require("../parser/databaseParser");
 
 describe('Parser Test', () => {
-    const parser = new DatabaseParser();
+    const parser = new databaseParser.DatabaseParser();
     var client;
 
     beforeEach(async () => {
@@ -22,7 +22,7 @@ describe('Parser Test', () => {
         const testData = {
             username: 'Xx_George_xX',
             email: 'George123@Gmail.com',
-            password: '09122001'
+            password: '0123456789'
         };
         await parser.storeLogin(testData.username, testData.email, testData.password);
         let query = await client.query(
@@ -38,12 +38,12 @@ describe('Parser Test', () => {
         );
     });
 
-    it('retrieve login', async() => {
+    it('retrieve login', async () => {
         const testData = {
             username: 'GregTheSimp69',
             email: 'Greg420@Gmail.com',
             password: 'ch@r!otte_cord@y'
-        }
+        };
         await client.query(
             "INSERT INTO ACCOUNT(username, email, account_password) VALUES($1, $2, $3)",
             [testData.username, testData.email, testData.password]    

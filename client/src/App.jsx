@@ -2,20 +2,21 @@ import React from "react";
 import "./App.css";
 import {
   BrowserRouter as Router,
-  Routes,
   Route,
+  Routes
 } from "react-router-dom";
 import LearningPlan from "./screens/LearningPlan";
-import Login from "./screens/Login";
+import LoginScreen from "./screens/login/Login";
 import DefaultScreen from "./screens/Default";
+
 
 function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<DefaultScreen />}>
+        <Route exact path="/" element={<DefaultScreen />}>
           <Route path="/LearningPlan" element={<LearningPlan />} />
-          <Route path="/login" element={<Login />} />
+          <Route path="/login" element={<LoginScreen />} />
         </Route>
       </Routes>
     </Router>

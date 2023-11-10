@@ -1,16 +1,19 @@
 import React, { useState } from "react";
-import { LoginAPI } from "../../controller/loginProcessor";
+import axios from "axios";
 import "./login.css";
 
 const LoginScreen = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [loginAPI] = useState(new LoginAPI());
-
-  const handleLogin = (username, password) => {
+  const [profile, setProfile] = useState(null);
+   
+  async function handleLogin(username, password) {
     try {
-      let id = loginAPI.getAccountID(username, password);
-      console.log(id);
+      //TODO: Post request to the server.
+      const response = await axios.post('http://localhost:4000/api/login', {username, password});
+      console.log(response.data);
+      setProfile(response.data);
+      console.log(profile);
     } catch(error) {
       alert(error);
     }
@@ -33,6 +36,7 @@ const LoginScreen = () => {
           className="test"
           onChange={(e) => setPassword(e.target.value)}
         />
+        {JSON.stringify(profile)}
       </div>
       <button onClick={() => {handleLogin(username, password)}}>Login</button>
     </div>

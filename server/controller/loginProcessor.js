@@ -1,15 +1,18 @@
-import { DatabaseParser } from "../Parser/DatabaseParser";
+const DatabaseParser = require("../parser/databaseParser");
 
-export class LoginAPI {
+class LoginAPI {
     constructor() {
       this.parser = new DatabaseParser();  
     }
 
     async getAccountID(username, password) {
+        console.log("Getting account id...");
         const login = await this.parser.retrieveLogin(username, password);
         if(login.length === 0) {
-            throw new Error("Invalid Login.");
+            //TODO: Send an invalid login status code
+            return "invalid login";
         }
+        console.log("Account id found!");
         return login[0].account_id;
     }
     
@@ -21,3 +24,5 @@ export class LoginAPI {
         this.parser.createProfile(firstName, lastName, id);
     }
 }
+
+module.exports = LoginAPI;
