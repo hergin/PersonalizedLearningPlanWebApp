@@ -1,5 +1,6 @@
 import React from "react";
 import ModuleCreator from "../ModuleCreator";
+import "./GoalModule.css";
 
 const GoalModule = () => {
   const [goal, setGoal] = React.useState([
@@ -7,45 +8,53 @@ const GoalModule = () => {
       name: "Goal 1",
       description: "This is a goal",
       completion: 0,
+      id: 1,
     },
     {
       name: "Goal 2",
       description: "This is a goal",
       completion: 100,
+      id: 2,
     },
     {
       name: "Goal 3",
       description: "This is a goal",
       completion: 66,
+      id: 3,
     },
   ]);
 
   return (
-    <div
+    <div className="module-container"
       style={{
-        display: "flex",
-        gap: "5%",
-        flexWrap: "wrap",
-        width: "100%",
-        height: "100%",
-        justifyContent: "flex-start",
+
       }}
     >
-      {goal.map((goal) => 
-        <Module goalName={goal.name} goalDescription={goal.description} completion={goal.completion} />
-      )}
-      <ModuleCreator/>
+      {goal.map((goal) => (
+        <Module
+          key={goal.id}
+          goalName={goal.name}
+          goalDescription={goal.description}
+          completion={goal.completion}
+        />
+      ))}
+      <ModuleCreator />
     </div>
   );
 };
 
 const Module = ({ goalName, goalDescription, completion }) => {
   return (
-    <div style={{
-      border: "1px solid black", width: "300px", height: "500px", display: "flex", flexDirection: "column" }}>
-      <h1>{goalName}</h1>
-      <text>{goalDescription}</text>
-      <progress value={completion} max="100"></progress>
+    <div className="module-div">
+      <div className="module-header">
+        <h1>{goalName}</h1>
+      </div>
+      <hr />
+      <div className="module-body">
+        <p>Progress: {completion === 100 ? "Completed" : "In progress"}</p>
+        <p>Description:</p>
+        <p>{goalDescription}</p>
+      </div>
     </div>
   );
 };

@@ -28,6 +28,7 @@ header {
     background-color: var(--mainColor);
     color: var(--textColor);
     text-align: center;
+    z-index: 1;
 }
 
 button {
