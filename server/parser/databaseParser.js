@@ -45,7 +45,7 @@ class DatabaseParser {
         return result.rows;
     }
 
-    async getProfile(email) {
+    async parseProfile(email) {
         console.log("Getting profile...");
         const client = await this.pool.connect();
         const query = {
@@ -58,7 +58,7 @@ class DatabaseParser {
         return result.rows;
     }
 
-    async createProfile(firstName, lastName, email) {
+    async storeProfile(firstName, lastName, email) {
         console.log("Creating profile...");
         const client = await this.pool.connect();
         const query = {
@@ -70,7 +70,7 @@ class DatabaseParser {
         console.log("Profile Created!");
     }
 
-    async insertProfileData(firstName, lastName, profilePicture, jobTitle, bio, email) {
+    async updateProfileData(firstName, lastName, profilePicture, jobTitle, bio, email) {
         console.log("Inserting new data into profile...");
         const client = await this.pool.connect();
         const query = {

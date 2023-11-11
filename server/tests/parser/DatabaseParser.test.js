@@ -59,7 +59,7 @@ describe('Parser Test', () => {
             "INSERT INTO ACCOUNT(email, username, account_password) VALUES($1, $2, $3)",
             [testData.email, testData.username, testData.password]
         );
-        await parser.createProfile(testData.firstName, testData.lastName, testData.email);
+        await parser.storeProfile(testData.firstName, testData.lastName, testData.email);
         var query = await client.query(
             "SELECT * FROM PROFILE WHERE firstName = $1 AND lastName = $2 AND email = $3",
             [testData.firstName, testData.lastName, testData.email]
@@ -86,7 +86,7 @@ describe('Parser Test', () => {
             "INSERT INTO PROFILE(firstName, lastName, email) VALUES($1, $2, $3)",
             [testData.firstName, testData.lastName, testData.email]
         );
-        var actual = await parser.getProfile(testData.email);
+        var actual = await parser.parseProfile(testData.email);
         expect(actual).toEqual([
             {
                 profile_id: expect.any(Number), 
@@ -109,7 +109,7 @@ describe('Parser Test', () => {
             "INSERT INTO PROFILE(firstName, lastName, email) VALUES($1, $2, $3)",
             [testData.firstName, testData.lastName, testData.email]
         );
-        await parser.insertProfileData(testData.firstName, testData.lastName, testData.profilePicture, testData.jobTitle, testData.bio, testData.email);
+        await parser.updateProfileData(testData.firstName, testData.lastName, testData.profilePicture, testData.jobTitle, testData.bio, testData.email);
         var actual = await client.query(
             "SELECT * FROM PROFILE WHERE email = $1",
             [testData.email]

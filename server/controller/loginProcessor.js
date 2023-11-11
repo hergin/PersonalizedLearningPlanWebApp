@@ -7,16 +7,9 @@ class LoginAPI {
     }
 
     async getAccount(username, password) {
-        console.log("Getting account...");
         try {
             const login = await this.parser.retrieveLogin(username, password);
-            if(login.length == 0) {
-                console.log("Account wasn't found!");
-                return STATUS_CODES.UNAUTHORIZED;
-            } else {
-                console.log("Account found!");
-                return login[0].email;
-            }
+            return (login.length === 0) ? STATUS_CODES.UNAUTHORIZED : login[0].email;
         } catch(error) {
             return this.#getStatusCode(error);
         }
@@ -33,7 +26,7 @@ class LoginAPI {
     
     async createProfile(firstName, lastName, email) {
         try {
-            await this.parser.createProfile(firstName, lastName, email);
+            await this.parser.storeProfile(firstName, lastName, email);
             return STATUS_CODES.OK;
         } catch(error) {
             return this.#getStatusCode(error);
@@ -41,7 +34,12 @@ class LoginAPI {
     }
 
     async getProfile(email) {
-        return await this.parser.getProfile(email);
+        try {
+            const profile = await this.parser.parseProfile(email);
+            return (profile.length === 0) ? STATUS_CODES.UNAUTHORIZED : profile[0];
+        } catch(error) {
+            return this.#getStatusCode(error);
+        }
     }
 
     #getStatusCode(error) {
