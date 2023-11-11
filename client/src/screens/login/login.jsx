@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import axios from "axios";
 import "./login.css";
 
@@ -9,7 +10,6 @@ const LoginScreen = () => {
    
   async function handleLogin(username, password) {
     try {
-      //TODO: Post request to the server.
       const response = await axios.post('http://localhost:4000/api/login', {username, password});
       console.log(response.data);
       setProfile(response.data);
@@ -39,6 +39,12 @@ const LoginScreen = () => {
         {JSON.stringify(profile)}
       </div>
       <button onClick={() => {handleLogin(username, password)}}>Login</button>
+      <div>
+        <p>Don't have an account?</p>
+        <Link to="/register">
+          <p>Register here</p>
+        </Link>
+      </div>
     </div>
   );
 };
