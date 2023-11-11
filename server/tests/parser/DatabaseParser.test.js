@@ -76,7 +76,7 @@ describe('Parser Test', () => {
             }
         ]);
     });
-
+    
     it('get profile', async () => {
         await client.query(
             "INSERT INTO ACCOUNT(email, username, account_password) VALUES($1, $2, $3)",

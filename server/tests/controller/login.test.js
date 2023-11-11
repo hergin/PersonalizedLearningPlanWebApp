@@ -1,19 +1,26 @@
-import LoginAPI from "../../controller/loginProcessor";
-import DatabaseParser from "../../parser/databaseParser";
+const LoginAPI = require("../../controller/loginProcessor");
+const DatabaseParser = require("../../parser/databaseParser");
+const STATUS_CODES = require("../../statusCodes");
 
 jest.mock("../../parser/DatabaseParser", () => {
     const testParser = {
-        mockRetrieveLogin: jest.fn()
+        retrieveLogin: jest.fn()
     };
     return { DatabaseParser : jest.fn(() => testParser) };
 });
 
 describe('Login Functions', () => {
+    const testData = {
+        username: "Xx_george_xX",
+        password: "password",
+        email: "George123@Gmail.com"
+    };
+    
     let loginAPI;
     let parser;
 
     beforeEach(() => {
-        parser = new DatabaseParser();
+        parser = new DatabaseParser.DatabaseParser();
         loginAPI = new LoginAPI();
     });
 
@@ -22,12 +29,6 @@ describe('Login Functions', () => {
     });
 
     it('get account (pass case)', async () => {
-        const testData = {
-            
-            username: "Xx_george_xX",
-            password: "09122001",
-            email: "George123@Gmail.com"
-        };
         parser.retrieveLogin.mockResolvedValueOnce(
             Promise.resolve([{username: testData.username, password: testData.password, email: testData.email}])
         );
@@ -37,6 +38,6 @@ describe('Login Functions', () => {
 
     it('get account (error case)', async () => {
         parser.retrieveLogin.mockResolvedValueOnce([]);
-        expect(loginAPI.getAccount("GregThSimp69", "*****")).toEqual("Invalid Login!");
+        expect(await loginAPI.getAccount(testData.username, testData.password)).toEqual(STATUS_CODES.UNAUTHORIZED);
     });    
 });

@@ -29,7 +29,7 @@ class DatabaseParser {
         const client = await this.pool.connect();
         await client.query(query);
         client.release();
-        console.log("Login stored!");
+        console.log("Login Stored!");
     }
     
     async retrieveLogin(username, password) {
@@ -67,7 +67,7 @@ class DatabaseParser {
         };
         await client.query(query);
         client.release();
-        console.log("Profile created!");
+        console.log("Profile Created!");
     }
 
     async insertProfileData(firstName, lastName, profilePicture, jobTitle, bio, email) {

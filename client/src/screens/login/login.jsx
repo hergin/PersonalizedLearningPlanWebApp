@@ -3,20 +3,39 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import "./login.css";
 
+const STATUS_CODES = {
+  OK: 200,
+  BAD_REQUEST: 400,
+  CONNECTION_ERROR: 404,
+  INTERNAL_SERVER_ERROR: 500
+};
+
 const LoginScreen = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [profile, setProfile] = useState(null);
-   
+
   async function handleLogin(username, password) {
-    try {
-      const response = await axios.post('http://localhost:4000/api/login', {username, password});
-      console.log(response.data);
-      setProfile(response.data);
-      console.log(profile);
-    } catch(error) {
-      alert(error);
+    const response = await axios.post('http://localhost:4000/api/login', {username, password});
+    console.log(response.data);
+    switch(response.status) {
+      case STATUS_CODES.OK:
+        setProfile(response.data);
+        break;
+      case STATUS_CODES.BAD_REQUEST:
+        alert("This account doesn't exist.");
+        break;
+      case STATUS_CODES.CONNECTION_ERROR:
+        alert("A connection error has occurred.");
+        break;
+      case STATUS_CODES.INTERNAL_SERVER_ERROR:
+        alert("An error has occurred.");
+        break;
+      default:
+        alert("Something went wrong!");
+        break;
     }
+    console.log(profile);
   };
 
   return (
