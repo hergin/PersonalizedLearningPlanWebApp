@@ -1,0 +1,29 @@
+#page {
+    display: flex;
+    flex-direction: column;
+    margin: 30px;
+    gap: 25px;
+    align-items: center;
+}
+
+h1 {
+    text-align: center;
+}
+
+.textInput {
+    display: flex;
+    flex-direction: column;
+    width: 40vw;
+}   
+
+.textInput > label {
+    align-self: flex-start;
+}
+
+#registerButton {
+    width: 20vw;
+}
+
+#signInLink {
+    text-align: center;
+}
