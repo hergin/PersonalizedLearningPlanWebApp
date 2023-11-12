@@ -11,7 +11,7 @@ class LoginAPI {
         try {
             const login = await this.parser.retrieveLogin(email);
             if(login.length === 0) {
-                return STATUS_CODES.BAD_REQUEST;
+                return STATUS_CODES.GONE;
             }
             return await bcrypt.compare(password, login[0].account_password) ? STATUS_CODES.OK : STATUS_CODES.UNAUTHORIZED;
         } catch(error) {

@@ -56,7 +56,7 @@ describe('Login Functions', () => {
 
     it('verify login (email does not exist case)', async () => {
         parser.retrieveLogin.mockResolvedValueOnce([]);
-        expect(await loginAPI.verifyLogin(testData.email, testData.password)).toEqual(STATUS_CODES.BAD_REQUEST);
+        expect(await loginAPI.verifyLogin(testData.email, testData.password)).toEqual(STATUS_CODES.GONE);
     });
 
     it('verify login (wrong password case)', async () => {
