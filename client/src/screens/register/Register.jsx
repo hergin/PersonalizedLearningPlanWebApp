@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./register.css";
 
@@ -9,10 +9,18 @@ const Register = () => {
     const [email, setEmail] = useState("");
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+    const submitDisabled = firstName === "" || lastName === "" || email === "" || username === "" || password === "";
+    const navigate = useNavigate();
 
     async function handleRegistration() {
-        const response = await axios.post('http://localhost:4000/api/register', {firstName, lastName, email, username, password});
-        console.log(response.data);
+        try {
+            const response = await axios.post('http://localhost:4000/api/register', {firstName, lastName, email, username, password});
+            console.log(response.data);
+            // Redirects back to login page after creating an account
+            navigate("/login");
+        } catch(error) {
+            alert(error.response.data);
+        }
     }
 
     return(
@@ -68,7 +76,7 @@ const Register = () => {
                     onChange={(input) => {setPassword(input.target.value)}}
                 />
             </div>
-            <button id="registerButton" onClick={handleRegistration}>Register</button>
+            <button id="registerButton" disabled={submitDisabled} onClick={handleRegistration}>Register</button>
             <div id="signInLink">
                 <p>Already have an account?</p>
                 <Link to="/login">

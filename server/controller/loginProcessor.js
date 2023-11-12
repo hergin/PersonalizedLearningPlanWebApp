@@ -3,7 +3,7 @@ const STATUS_CODES = require("../statusCodes");
 
 class LoginAPI {
     constructor() {
-      this.parser = new DatabaseParser.DatabaseParser();  
+      this.parser = new DatabaseParser();  
     }
 
     async getAccount(username, password) {

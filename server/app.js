@@ -11,7 +11,7 @@ function initializeErrorMap() {
     errorMessageMap.set(STATUS_CODES.BAD_REQUEST, "Something is wrong with the data.");
     errorMessageMap.set(STATUS_CODES.UNAUTHORIZED, "Invalid Login.");
     errorMessageMap.set(STATUS_CODES.CONNECTION_ERROR, "Failed to connect to database.");
-    errorMessageMap.set(STATUS_CODES.CONFLICT, "An account with that password already exists.");
+    errorMessageMap.set(STATUS_CODES.CONFLICT, "An account with that email already exists.");
     errorMessageMap.set(STATUS_CODES.INTERVAL_SERVER_ERROR, "A fatal error has occurred.");
     return errorMessageMap;
 }
@@ -24,7 +24,14 @@ app.post('/api/login', async (req, res) => {
     console.log(req.body);
     const api = new LoginAPI();
     const email = await api.getAccount(req.body.username, req.body.password);
+    if(typeof email !== "string") {
+        res.status(email).send(ERROR_MESSAGES.get(email));
+        return;
+    }
     const profile = await api.getProfile(email);
+    if(typeof profile !== "object") {
+        res.status(profile).send(ERROR_MESSAGES.get(profile));
+    }
     res.json(profile);
 });
 

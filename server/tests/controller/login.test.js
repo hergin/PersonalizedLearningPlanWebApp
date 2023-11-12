@@ -9,7 +9,7 @@ jest.mock("../../parser/DatabaseParser", () => {
         storeProfile: jest.fn(),
         parseProfile: jest.fn(),
     };
-    return { DatabaseParser : jest.fn(() => testParser) };
+    return jest.fn(() => testParser);
 });
 
 describe('Login Functions', () => {
@@ -28,7 +28,7 @@ describe('Login Functions', () => {
     let parser;
 
     beforeEach(() => {
-        parser = new DatabaseParser.DatabaseParser();
+        parser = new DatabaseParser();
         loginAPI = new LoginAPI();
     });
 
