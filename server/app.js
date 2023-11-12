@@ -12,7 +12,7 @@ function initializeErrorMap() {
     errorMessageMap.set(STATUS_CODES.UNAUTHORIZED, "Invalid Login.");
     errorMessageMap.set(STATUS_CODES.CONNECTION_ERROR, "Failed to connect to database.");
     errorMessageMap.set(STATUS_CODES.CONFLICT, "An account with that email already exists.");
-    errorMessageMap.set(STATUS_CODES.INTERVAL_SERVER_ERROR, "A fatal error has occurred.");
+    errorMessageMap.set(STATUS_CODES.INTERNAL_SERVER_ERROR, "A fatal error has occurred.");
     return errorMessageMap;
 }
 
