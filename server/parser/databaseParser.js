@@ -29,12 +29,11 @@ class DatabaseParser {
         const client = await this.pool.connect();
         await client.query(query);
         client.release();
-        console.log("Login stored!");
+        console.log("Login Stored!");
     }
     
     async retrieveLogin(username, password) {
         console.log("Retrieving login...");
-        // TODO: "TypeError: CloudflareSocket is not a constructor"
         const client = await this.pool.connect();
         const query = {
             text: "SELECT * FROM ACCOUNT WHERE username = $1 AND account_password = $2",
@@ -46,38 +45,37 @@ class DatabaseParser {
         return result.rows;
     }
 
-    async getProfile(id){
+    async parseProfile(email) {
         console.log("Getting profile...");
         const client = await this.pool.connect();
         const query = {
-            text: "SELECT * FROM PROFILE WHERE account_id = $1",
-            values: [id]
+            text: "SELECT * FROM PROFILE WHERE email = $1",
+            values: [email]
         };
-        await client.query(query);
-        const result = await client.query(`SELECT * FROM PROFILE WHERE account_id = ${id}`);
+        const result = await client.query(query);
         client.release();
         console.log("Found profile!");
         return result.rows;
     }
 
-    async createProfile(firstName, lastName, account_id) {
+    async storeProfile(firstName, lastName, email) {
         console.log("Creating profile...");
         const client = await this.pool.connect();
         const query = {
-            text: "INSERT INTO PROFILE(firstName, lastName, account_id) VALUES($1, $2, $3)",
-            values: [firstName, lastName, account_id]
+            text: "INSERT INTO PROFILE(firstName, lastName, email) VALUES($1, $2, $3)",
+            values: [firstName, lastName, email]
         };
         await client.query(query);
         client.release();
-        console.log("Profile created!");
+        console.log("Profile Created!");
     }
 
-    async insertProfileData(firstName, lastName, profilePicture, jobTitle, bio, account_id) {
+    async updateProfileData(firstName, lastName, profilePicture, jobTitle, bio, email) {
         console.log("Inserting new data into profile...");
         const client = await this.pool.connect();
         const query = {
-            text: "INSERT INTO PROFILE(firstName, lastName, profilePicture, jobTitle, bio) VALUES($1, $2, $3, $4, $5) WHERE account_id = $6",
-            values: [firstName, lastName, profilePicture, jobTitle, bio, account_id]
+            text: "UPDATE PROFILE SET firstName = $1, lastName = $2, profilePicture = $3, jobTitle = $4, bio = $5 WHERE email = $6",
+            values: [firstName, lastName, profilePicture, jobTitle, bio, email]
         };
         await client.query(query);
         client.release();
