@@ -2,7 +2,8 @@ DROP TABLE IF EXISTS ACCOUNT CASCADE;
 CREATE TABLE ACCOUNT(
     email TEXT PRIMARY KEY,
     username TEXT,
-    account_password TEXT
+    account_password TEXT,
+    CONSTRAINT valid_email CHECK (email ~* '^[A-Za-z0-9._%-]+@[A-Za-z0-9.-]+[.][A-Za-z]+$')
 );
 
 DROP TABLE IF EXISTS PROFILE CASCADE;
