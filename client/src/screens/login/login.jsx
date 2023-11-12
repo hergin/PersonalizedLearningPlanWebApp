@@ -9,6 +9,7 @@ const LoginScreen = () => {
   const [profile, setProfile] = useState(null);
   const navigate = useNavigate();
   const location = useLocation();
+  const buttonDisabled = username === "" || password === "";
 
   async function handleLogin(username, password) {
     try {
@@ -43,7 +44,7 @@ const LoginScreen = () => {
         />
         {JSON.stringify(profile)}
       </div>
-      <button onClick={() => {handleLogin(username, password)}}>Login</button>
+      <button onClick={() => {handleLogin(username, password)}} disabled={buttonDisabled}>Login</button>
       <div id="registerLink">
         <p>Don't have an account?</p>
         <Link to="/register">
