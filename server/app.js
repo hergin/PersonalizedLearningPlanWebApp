@@ -3,6 +3,7 @@ const app = express();
 app.use(express.json());
 
 const LoginAPI = require("./controller/loginProcessor");
+const ModuleAPI = require("./controller/moduleProcessor");
 const STATUS_CODES = require("./statusCodes");
 const ERROR_MESSAGES = initializeErrorMap();
 const loginApi = new LoginAPI();
