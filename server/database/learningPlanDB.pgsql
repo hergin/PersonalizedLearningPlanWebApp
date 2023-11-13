@@ -24,9 +24,9 @@ CREATE TABLE MODULE(
     module_name TEXT, 
     completion_percent INT,
     -- Goals to complete the module.
-    sub_goals TEXT[],
-    learningPlan_id INT,
-    FOREIGN KEY (learningPlan_id) REFERENCES LEARNING_PLAN(learningPlan_id)
+    sub_goals TEXT,
+    email TEXT,
+    FOREIGN KEY (email) REFERENCES ACCOUNT(email)
         ON DELETE CASCADE ON UPDATE CASCADE
 );
 

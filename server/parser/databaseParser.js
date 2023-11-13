@@ -81,6 +81,41 @@ class DatabaseParser {
         client.release();
         console.log("Profile data saved!");
     }
+
+    async storeModule(name, completion_percent, sub_goals, email) {
+        console.log("Storing Module...");
+        const query = {
+            text: "INSERT INTO Module(module_name, completion_percent, sub_goals, email) VALUES($1, $2, $3, $4)",
+            values: [name, completion_percent, sub_goals, email]
+        };
+        const client = await this.pool.connect();
+        await client.query(query);
+        client.release();
+        console.log("Module Stored!");
+    }
+    async parseModule(email) {
+        console.log("Getting Module...");
+        const client = await this.pool.connect();
+        const query = {
+            text: "SELECT * FROM Module WHERE email = $1",
+            values: [email]
+        };
+        const result = await client.query(query);
+        client.release();
+        console.log("Found Module!");
+        return result.rows;
+    }
+    async updateModule(name, completion_percent, sub_goals, email, module_id) {
+        console.log("Inserting new data into Module...");
+        const client = await this.pool.connect();
+        const query = {
+            text: "UPDATE Module SET module_name = $1, completion_percent = $2, sub_goals = $3, email = $4 WHERE module_id = $5",
+            values: [name, completion_percent, sub_goals, email, module_id]
+        };
+        await client.query(query);
+        client.release();
+        console.log("Module data saved!");
+    }
 }
 
 module.exports = DatabaseParser;
