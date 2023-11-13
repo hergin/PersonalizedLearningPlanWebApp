@@ -48,7 +48,7 @@ describe('Parser Test', () => {
             "INSERT INTO ACCOUNT(username, email, account_password) VALUES($1, $2, $3)",
             [testData.username, testData.email, testData.password]    
         );
-        let query = await parser.retrieveLogin(testData.username, testData.password);
+        let query = await parser.retrieveLogin(testData.email);
         expect(query).toEqual([
             {email: testData.email, username: testData.username, account_password: testData.password}
         ]);

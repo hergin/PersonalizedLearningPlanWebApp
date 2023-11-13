@@ -6,5 +6,5 @@ content-type: application/json
     "lastName": "last_name",
     "email": "your_email",
     "username": "your_username",
-    "account_password": "your_password"
+    "password": "your_password"
 }

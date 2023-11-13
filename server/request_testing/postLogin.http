@@ -2,6 +2,6 @@ GET http://localhost:4000/api/login
 content-type: application/json
 
 {
-  "username": "your_username",
+  "email": "your_email",
   "password": "your_password"
 }

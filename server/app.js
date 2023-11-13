@@ -3,7 +3,6 @@ const app = express();
 app.use(express.json());
 
 const LoginAPI = require("./controller/loginProcessor");
-const ModuleAPI = require("./controller/moduleProcessor");
 const STATUS_CODES = require("./statusCodes");
 const ERROR_MESSAGES = initializeErrorMap();
 const loginApi = new LoginAPI();
@@ -11,10 +10,11 @@ const moduleAPI = new ModuleAPI();
 
 function initializeErrorMap() {
     const errorMessageMap = new Map();
-    errorMessageMap.set(STATUS_CODES.BAD_REQUEST, "Something is wrong with the data.");
+    errorMessageMap.set(STATUS_CODES.BAD_REQUEST, "Data received is invalid. Please try again.");
     errorMessageMap.set(STATUS_CODES.UNAUTHORIZED, "Invalid Login.");
     errorMessageMap.set(STATUS_CODES.CONNECTION_ERROR, "Failed to connect to database.");
     errorMessageMap.set(STATUS_CODES.CONFLICT, "An account with that email already exists.");
+    errorMessageMap.set(STATUS_CODES.GONE, "An account with that email doesn't exist.");
     errorMessageMap.set(STATUS_CODES.INTERNAL_SERVER_ERROR, "A fatal error has occurred.");
     return errorMessageMap;
 }
@@ -34,12 +34,11 @@ app.get('/api/login', async (req, res) => {
     if(typeof profile !== "object") {
         res.status(profile).send(ERROR_MESSAGES.get(profile));
     }
-    res.json(profile);
+    res.status(STATUS_CODES.OK).json(profileQuery);
 });
 
 app.post('/api/register', async(req, res) => {
     console.log(req.body);
-    
     const accountStatusCode = await loginApi.createAccount(req.body.username, req.body.password, req.body.email);
     if(accountStatusCode != STATUS_CODES.OK) {
         res.status(accountStatusCode).send(ERROR_MESSAGES.get(accountStatusCode));

@@ -4,16 +4,16 @@ import axios from "axios";
 import "./login.css";
 
 const LoginScreen = () => {
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [profile, setProfile] = useState(null);
   const navigate = useNavigate();
   const location = useLocation();
-  const buttonDisabled = username === "" || password === "";
+  const buttonDisabled = email === "" || password === "";
 
-  async function handleLogin(username, password) {
+  async function handleLogin(email, password) {
     try {
-      const response = await axios.post('http://localhost:4000/api/login', {username, password});
+      const response = await axios.post('http://localhost:4000/api/login', {email, password});
       console.log(response.data);
       setProfile(response.data);
       console.log(profile);
@@ -32,19 +32,19 @@ const LoginScreen = () => {
       <div className="login">
         <input
           type="text"
-          placeholder="Username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
+          placeholder="Email"
+          value={email}
+          onChange={(input) => setEmail(input.target.value)}
         />
         <input
           type="password"
           placeholder="Password"
           value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          onChange={(input) => setPassword(input.target.value)}
         />
         {JSON.stringify(profile)}
       </div>
-      <button onClick={() => {handleLogin(username, password)}} disabled={buttonDisabled}>Login</button>
+      <button onClick={() => {handleLogin(email, password)}} disabled={buttonDisabled}>Login</button>
       <div id="registerLink">
         <p>Don't have an account?</p>
         <Link to="/register">

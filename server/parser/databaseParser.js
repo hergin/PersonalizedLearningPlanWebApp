@@ -32,12 +32,12 @@ class DatabaseParser {
         console.log("Login Stored!");
     }
     
-    async retrieveLogin(username, password) {
+    async retrieveLogin(email) {
         console.log("Retrieving login...");
         const client = await this.pool.connect();
         const query = {
-            text: "SELECT * FROM ACCOUNT WHERE username = $1 AND account_password = $2",
-            values: [username, password]
+            text: "SELECT * FROM ACCOUNT WHERE email = $1",
+            values: [email]
         };
         const result = await client.query(query);
         client.release();
