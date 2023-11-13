@@ -7,8 +7,8 @@ import {
 } from "react-router-dom";
 import LearningPlan from "./screens/LearningPlan";
 import LoginScreen from "./screens/login/login";
+import Register from "./screens/register/Register"
 import DefaultScreen from "./screens/Default";
-
 
 function App() {
   return (
@@ -17,7 +17,7 @@ function App() {
         <Route exact path="/" element={<DefaultScreen />}>
           <Route path="/LearningPlan" element={<LearningPlan />} />
           <Route path="/login" element={<LoginScreen />} />
-          
+          <Route path="/register" element={<Register />} />
         </Route>
       </Routes>
     </Router>
