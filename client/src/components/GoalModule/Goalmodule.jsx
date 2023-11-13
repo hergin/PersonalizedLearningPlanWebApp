@@ -68,18 +68,6 @@ const GoalModule = () => {
           />
         ))}
         <ModuleCreator />
-        <Modal className="center" open={open} onClose={() => setOpen(false)}>
-          <div className="creation-dialog">
-            <div className="creation-header">
-            </div>
-            <hr />
-            <div className="creation-body">
-              {goal.map((goal) =>(
-                <Goal goalName={goal.goals.map.description} completion={goal.completion}></Goal>
-              ))}
-            </div>
-          </div>
-        </Modal>
       </div>
     </button>
   );
