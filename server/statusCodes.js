@@ -1,0 +1,11 @@
+const STATUS_CODES = {
+    OK: 200,
+    BAD_REQUEST: 400,
+    UNAUTHORIZED: 401,
+    CONNECTION_ERROR: 404,
+    CONFLICT: 409,
+    GONE: 410,
+    INTERNAL_SERVER_ERROR: 500
+};
+
+module.exports = STATUS_CODES;

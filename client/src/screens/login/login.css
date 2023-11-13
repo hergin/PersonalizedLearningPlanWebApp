@@ -1,0 +1,22 @@
+.login {
+    display: flex;
+    flex-direction: column;
+}
+
+.parent-div {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+#registerLink {
+    text-align: center;
+}
+
+button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
