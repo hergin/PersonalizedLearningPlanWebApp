@@ -82,18 +82,18 @@ class DatabaseParser {
         console.log("Profile data saved!");
     }
 
-    async storeModule(name, completion_percent, sub_goals, email) {
+    async storeModule(name, completion_percent, email) {
         console.log("Storing Module...");
         const query = {
-            text: "INSERT INTO Module(module_name, completion_percent, sub_goals, email) VALUES($1, $2, $3, $4)",
-            values: [name, completion_percent, sub_goals, email]
+            text: "INSERT INTO Module(module_name, completion_percent, email) VALUES($1, $2, $3)",
+            values: [name, completion_percent, email]
         };
         const client = await this.pool.connect();
         await client.query(query);
         client.release();
         console.log("Module Stored!");
     }
-    
+
     async parseModule(email) {
         console.log("Getting Module...");
         const client = await this.pool.connect();

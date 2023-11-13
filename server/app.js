@@ -26,14 +26,14 @@ app.get('/api', (req, res) => {
 
 app.get('/api/login', async (req, res) => {
     console.log(req.body);
-    const email = await loginApi.getAccount(req.body.username, req.body.password);
-    if(typeof email !== "string") {
-        res.status(email).send(ERROR_MESSAGES.get(email));
+    const loginQuery = await loginApi.getAccount(req.body.username, req.body.password);
+    if(typeof loginQuery !== "string") {
+        res.status(loginQuery).send(ERROR_MESSAGES.get(loginQuery));
         return;
     }
-    const profile = await loginApi.getProfile(email);
-    if(typeof profile !== "object") {
-        res.status(profile).send(ERROR_MESSAGES.get(profile));
+    const profileQuery = await loginApi.getProfile(loginQuery);
+    if(typeof profileQuery !== "object") {
+        res.status(profileQuery).send(ERROR_MESSAGES.get(profileQuery));
     }
     res.status(STATUS_CODES.OK).json(profileQuery);
 });
@@ -68,7 +68,7 @@ app.post('/api/module', async(req, res) => {
     console.log(req.body);
     const moduleQuery = await moduleAPI.createModule(req.body.name, req.body.completion_percent, req.body.email);
     if(typeof moduleQuery !== STATUS_CODES.OK) {
-        res.status(moduleQuery).send(ERRORS_MESSAGES.get(moduleQuery));
+        res.status(moduleQuery).send(ERROR_MESSAGES.get(moduleQuery));
         return;
     }
     res.sendStatus(STATUS_CODES.OK);
