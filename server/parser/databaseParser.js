@@ -93,6 +93,7 @@ class DatabaseParser {
         client.release();
         console.log("Module Stored!");
     }
+    
     async parseModule(email) {
         console.log("Getting Module...");
         const client = await this.pool.connect();
@@ -105,6 +106,7 @@ class DatabaseParser {
         console.log("Found Module!");
         return result.rows;
     }
+
     async updateModule(name, completion_percent, sub_goals, email, module_id) {
         console.log("Inserting new data into Module...");
         const client = await this.pool.connect();

@@ -3,8 +3,11 @@ const app = express();
 app.use(express.json());
 
 const LoginAPI = require("./controller/loginProcessor");
+const ModuleAPI = require("./controller/moduleProcessor");
 const STATUS_CODES = require("./statusCodes");
 const ERROR_MESSAGES = initializeErrorMap();
+const loginApi = new LoginAPI();
+const moduleAPI = new ModuleAPI();
 
 function initializeErrorMap() {
     const errorMessageMap = new Map();
@@ -20,15 +23,14 @@ app.get('/api', (req, res) => {
     res.send('Okay');
 });
 
-app.post('/api/login', async (req, res) => {
+app.get('/api/login', async (req, res) => {
     console.log(req.body);
-    const api = new LoginAPI();
-    const email = await api.getAccount(req.body.username, req.body.password);
+    const email = await loginApi.getAccount(req.body.username, req.body.password);
     if(typeof email !== "string") {
         res.status(email).send(ERROR_MESSAGES.get(email));
         return;
     }
-    const profile = await api.getProfile(email);
+    const profile = await loginApi.getProfile(email);
     if(typeof profile !== "object") {
         res.status(profile).send(ERROR_MESSAGES.get(profile));
     }
@@ -37,18 +39,39 @@ app.post('/api/login', async (req, res) => {
 
 app.post('/api/register', async(req, res) => {
     console.log(req.body);
-    const api = new LoginAPI();
-    const accountStatusCode = await api.createAccount(req.body.username, req.body.password, req.body.email);
+    
+    const accountStatusCode = await loginApi.createAccount(req.body.username, req.body.password, req.body.email);
     if(accountStatusCode != STATUS_CODES.OK) {
         res.status(accountStatusCode).send(ERROR_MESSAGES.get(accountStatusCode));
         return;
     }
-    const profileStatusCode = await api.createProfile(req.body.firstName, req.body.lastName, req.body.email);
+    const profileStatusCode = await loginApi.createProfile(req.body.firstName, req.body.lastName, req.body.email);
     if(profileStatusCode != STATUS_CODES.OK) {
         res.status(profileStatusCode).send(ERROR_MESSAGES.get(profileStatusCode));
         return;
     }
     res.sendStatus(200);
+});
+
+app.get('/api/module', async(req, res) => {
+    console.log(req.body);
+    const moduleQuery = await moduleAPI.getModule(req.body.email);
+    if(typeof moduleQuery !== "object") {
+        res.status(moduleQuery).send(ERROR_MESSAGES.get(moduleQuery));
+        return;
+    }
+    res.json(moduleQuery);
+});
+
+
+app.post('/api/module', async(req, res) => {
+    console.log(req.body);
+    const moduleQuery = await moduleAPI.createModule(req.body.name, req.body.completion_percent, req.body.email);
+    if(typeof moduleQuery !== STATUS_CODES.OK) {
+        res.status(moduleQuery).send(ERRORS_MESSAGES.get(moduleQuery));
+        return;
+    }
+    res.sendStatus(STATUS_CODES.OK);
 });
 
 //TODO: Create a routes folder

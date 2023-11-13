@@ -5,6 +5,7 @@ class ModuleAPI {
     constructor() {
         this.parser = new DatabaseParser();
     }
+
     async getModule(email) {
         try {
             const module = await this.parser.parseModule(email);
@@ -13,14 +14,16 @@ class ModuleAPI {
             return this.#getStatusCode(error);
         }
     }
-    async createModule(name, completion_percent, sub_goals, email) {
+
+    async createModule(name, completion_percent, email) {
         try {
-            await this.parser.storeModule(name, completion_percent, sub_goals, email);
+            await this.parser.storeModule(name, completion_percent, email);
             return STATUS_CODES.OK;
         } catch(error) {
             return this.#getStatusCode(error);
         }
     }
+
     #getStatusCode(error) {
         switch(error.code) {
             case '23505':
@@ -35,7 +38,5 @@ class ModuleAPI {
         }
     }
 }
-
-
 
 module.exports = ModuleAPI;
