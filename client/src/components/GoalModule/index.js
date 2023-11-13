@@ -1,1 +1,1 @@
-export {default} from './GoalModule.jsx';
+export {default} from './Goalmodule.jsx';

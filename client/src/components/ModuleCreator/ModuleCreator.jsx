@@ -14,6 +14,7 @@ function ModuleCreator(addModule) {
           <div className="creation-header">
             <h1>Create a new module</h1>
           </div>
+          <hr/>
           <div className="creation-body">
           <input
             id="module"
