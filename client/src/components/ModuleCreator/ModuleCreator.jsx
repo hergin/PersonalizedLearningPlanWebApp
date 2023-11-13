@@ -22,6 +22,13 @@ function ModuleCreator(addModule) {
             type="text"
             placeholder="Module Name"
             required
+            />
+                      <input
+            id="module"
+            name="module"
+            type="text"
+            placeholder="Module Description"
+            required
           />
           <button onClick={() => console.log("Module Created")}>Submit</button>
           </div>

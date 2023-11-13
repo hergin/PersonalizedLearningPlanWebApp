@@ -1,7 +1,6 @@
 import React from "react";
 import ModuleCreator from "../ModuleCreator";
 import "./Goalmodule.css";
-import Modal from "@mui/material/Modal";
 
 const GoalModule = () => {
   const goal = [
@@ -54,10 +53,9 @@ const GoalModule = () => {
       ],
     },
   ];
-  const [open, setOpen] = React.useState(false);
 
   return (
-    <button onClick={() => setOpen(true)} className="fill-div">
+    <button className="fill-div">
       <div className="module-container" style={{}}>
         {goal.map((goal) => (
           <Module
