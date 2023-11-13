@@ -24,27 +24,25 @@ CREATE TABLE MODULE(
     module_id SERIAL PRIMARY KEY,
     module_name TEXT, 
     completion_percent INT,
-    -- Goals to complete the module.
-    sub_goals TEXT[],
-    learningPlan_id INT,
-    FOREIGN KEY (learningPlan_id) REFERENCES LEARNING_PLAN(learningPlan_id)
+    profile_id INT,
+    FOREIGN KEY (profile_id) REFERENCES PROFILE(profile_id)
         ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-DROP TABLE IF EXISTS LEARNING_PLAN CASCADE;
-CREATE TABLE LEARNING_PLAN(
-    learningPlan_id SERIAL PRIMARY KEY,
-    -- Personal Check
-    goal TEXT
+DROP TABLE IF EXISTS GOAL CASCADE;
+CREATE TABLE GOAL(
+    goal_id SERIAL PRIMARY KEY,
+    description TEXT,
+    completion BOOLEAN,
+    module_id SERIAL,
+    FOREIGN KEY (module_id) REFERENCES MODULE(module_id)
+        ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 DROP TABLE IF EXISTS DASHBOARD CASCADE;
 CREATE TABLE DASHBOARD(
     dashboard_id SERIAL PRIMARY KEY,
     profile_id INT,
-    learningPlan_id INT,
     FOREIGN KEY (profile_id) REFERENCES PROFILE(profile_id)
-        ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (learningPlan_id) REFERENCES LEARNING_PLAN(learningPlan_id)
-        ON DELETE SET NULL ON UPDATE CASCADE
+        ON DELETE CASCADE ON UPDATE CASCADE
 );
