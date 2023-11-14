@@ -1,9 +1,10 @@
 import React from "react";
+import GoalModule from "../../components/GoalModule/";
 
 function Dashboard(){
   return (
-    <div>
-      <h1>This is a test for screens</h1>
+    <div style={{ padding: "2%", height: "100vh" }}>
+      <GoalModule />
     </div>
   );
 };
