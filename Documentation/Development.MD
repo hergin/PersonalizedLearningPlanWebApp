@@ -40,6 +40,6 @@
 
   - navigate to the server directory in the project using your preferred terminal and type the command **npm run test**
 
-- # What to Expect from tests
+- ### What to Expect from tests
 
   - Tests should always result in success, if they are not successful something has gone wrong with the code.
