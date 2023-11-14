@@ -24,14 +24,14 @@ app.get('/api', (req, res) => {
     res.send('Okay');
 });
 
-app.get('/api/login', async (req, res) => {
+app.post('/api/login', async (req, res) => {
     console.log(req.body);
-    const loginQuery = await loginApi.getAccount(req.body.username, req.body.password);
-    if(typeof loginQuery !== "string") {
+    const loginQuery = await loginApi.verifyLogin(req.body.email, req.body.password);
+    if(typeof loginQuery !== STATUS_CODES.OK) {
         res.status(loginQuery).send(ERROR_MESSAGES.get(loginQuery));
         return;
     }
-    const profileQuery = await loginApi.getProfile(loginQuery);
+    const profileQuery = await loginApi.getProfile(req.body.email);
     if(typeof profileQuery !== "object") {
         res.status(profileQuery).send(ERROR_MESSAGES.get(profileQuery));
     }
