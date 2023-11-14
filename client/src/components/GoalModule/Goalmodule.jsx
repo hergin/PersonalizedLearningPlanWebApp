@@ -1,71 +1,41 @@
-import React from "react";
+import React, { useState } from "react";
 import ModuleCreator from "../ModuleCreator";
+import { genID } from "../../utils/rng";
 import "./Goalmodule.css";
 
 const GoalModule = () => {
-  const goal = [
+  const sample = [
     {
-      name: "Goal 1",
-      description: "This is a goal",
-      completion: 0,
-      id: 1,
-      goals: [
-        {
-          description: "This is a goal",
-          completion: false,
-        },
-        {
-          description: "This is a goal2",
-          completion: true,
-        },
-      ],
-    },
-    {
-      name: "Goal 2",
-      description: "This is a goal",
-      completion: 100,
-      id: 2,
-      goals: [
-        {
-          description: "This is a goal",
-          completion: false,
-        },
-        {
-          description: "This is a goal2",
-          completion: true,
-        },
-      ],
-    },
-    {
-      name: "Goal 3",
-      description: "This is a goal",
-      completion: 66,
-      id: 3,
-      goals: [
-        {
-          description: "This is a goal",
-          completion: false,
-        },
-        {
-          description: "This is a goal2",
-          completion: true,
-        },
-      ],
-    },
+      module_id: genID(),
+      module_name: "example",
+      description: "This is an example module.",
+      completion_percent: 100,
+      email: "example@Gmail.com"
+    }
   ];
+  const [modules, setModules] = useState(sample);  
+  
+  console.log("Re-rendered!");
+  
+  function addModule(module) {
+    var newModules = [].concat(modules);
+    newModules.push(module);
+    setModules(newModules);
+    console.log(modules);
+  }
 
   return (
     <button className="fill-div">
       <div className="module-container" style={{}}>
-        {goal.map((goal) => (
+        {modules.map((module) => (
           <Module
-            key={goal.id}
-            goalName={goal.name}
-            goalDescription={goal.description}
-            completion={goal.completion}
+            key={module.module_id}
+            goalName={module.module_name}
+            goalDescription={module.description}
+            completion={module.completion_percent}
           />
         ))}
-        <ModuleCreator />
+        <ModuleCreator addModule={addModule}/>
       </div>
     </button>
   );

@@ -1,6 +1,6 @@
-GET https://localhost:4000/api/module
+GET http://localhost:4000/api/module
 content-type: application/json
 
 {
-    "email": "your_email"
+    "email": "example@gmail.com"
 }

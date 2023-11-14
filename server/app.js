@@ -53,7 +53,7 @@ app.post('/api/register', async(req, res) => {
         res.status(profileStatusCode).send(ERROR_MESSAGES.get(profileStatusCode));
         return;
     }
-    res.sendStatus(200);
+    res.sendStatus(STATUS_CODES.OK);
 });
 
 app.get('/api/module', async(req, res) => {
@@ -69,7 +69,8 @@ app.get('/api/module', async(req, res) => {
 app.post('/api/module', async(req, res) => {
     console.log(req.body);
     const moduleQuery = await moduleAPI.createModule(req.body.name, req.body.description, req.body.completion_percent, req.body.email);
-    if(typeof moduleQuery !== STATUS_CODES.OK) {
+    if(moduleQuery !== STATUS_CODES.OK) {
+        console.log("Something went wrong while creating module.");
         res.status(moduleQuery).send(ERROR_MESSAGES.get(moduleQuery));
         return;
     }

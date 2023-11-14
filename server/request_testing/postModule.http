@@ -4,6 +4,6 @@ content-type: application/json
 {
     "name": "your_module",
     "description": "OwO What's this?",
-    "completion-percent": 0,
-    "email": "example@bsu.edu"
+    "completion_percent": 0,
+    "email": "example@gmail.com"
 }

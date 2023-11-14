@@ -33,7 +33,7 @@ class ModuleAPI {
                 console.log("Connection error");
                 return STATUS_CODES.CONNECTION_ERROR;
             default:
-                console.error("Fatal server error.");
+                console.error("Fatal server error.", error);
                 return STATUS_CODES.INTERNAL_SERVER_ERROR;
         }
     }
