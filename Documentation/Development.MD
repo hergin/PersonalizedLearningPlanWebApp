@@ -43,3 +43,13 @@
 - ### What to Expect from tests
 
   - Tests should always result in success, if they are not successful something has gone wrong with the code.
+
+## Running the App
+
+- ### How to Run the App
+
+  - CD one command shell to server and another one to client
+  - Make sure to write your own .env file inside the parser folder with your login information for the sql database
+  - Run command "npm install" on both shells to install the necessary dependencies on each
+  - run command "npm run dev" to open the server
+  - run command "npm run start" to open the react app
