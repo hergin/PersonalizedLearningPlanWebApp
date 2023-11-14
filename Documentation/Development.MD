@@ -4,19 +4,19 @@
 
 - ### Install Git
 
-  - Go to <https://git-scm.com/book/en/v2/Getting-Started-Installing-Git> to find Git, follow the instructions to install it for your enviroment.
+  - Go to <https://git-scm.com/book/en/v2/Getting-Started-Installing-Git> to find Git, follow the instructions to install it for your environment.
 
 - ### Install Node.js
 
-  - Go to https://nodejs.org/en/ and install the recommended version of Node.js
+  - Go to <https://nodejs.org/en/> and install the recommended version of Node.js
 
 - ### Install PostgreSQL Version 16
 
-  - Go to https://www.postgresql.org/download/ and install version 16 of PostgreSQL for your environment.
+  - Go to <https://www.postgresql.org/download/> and install version 16 of PostgreSQL for your environment.
 
 - ### Get the App!
 
-  - Using your preferred terminal interface, navigate to your desired install location and run the command **git clone https://github.com/tsnicholas/PersonaliziedLearningPlanWebApp.git**
+  - Using your preferred terminal interface, navigate to your desired install location and run the command **git clone <https://github.com/tsnicholas/PersonaliziedLearningPlanWebApp.git>**
 
 ## Setup
 
