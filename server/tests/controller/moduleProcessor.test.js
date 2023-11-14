@@ -49,12 +49,12 @@ describe('module processor unit tests', () => {
     });
 
     it('get module (network error case)', async () => {
-        parser.parseModule.mockResolvedValueOnce({code: '08000'});
+        parser.parseModule.mockRejectedValue({code: '08000'});
         expect(await moduleAPI.getModule(TEST_DATA.email)).toEqual(STATUS_CODES.CONNECTION_ERROR);
     });
 
     it('get module (fatal server error case)', async () => {
-        parser.parseModule.mockResolvedValueOnce({code: 'aaaaah'});
+        parser.parseModule.mockRejectedValue({code: 'aaaaah'});
         expect(await moduleAPI.getModule(TEST_DATA.email)).toEqual(STATUS_CODES.INTERNAL_SERVER_ERROR);
     });
 
@@ -65,20 +65,20 @@ describe('module processor unit tests', () => {
     });
 
     it('create module (primary key violation case)', async () => {
-        parser.storeModule.mockResolvedValueOnce({code: '23505'});
+        parser.storeModule.mockRejectedValue({code: '23505'});
         var actual = await moduleAPI.createModule(TEST_DATA.module_name, TEST_DATA.description, TEST_DATA.completion_percent, TEST_DATA.email);
         expect(actual).toEqual(STATUS_CODES.CONFLICT);
     });
 
     it('create module (network error case)', async () => {
-        parser.storeModule.mockResolvedValueOnce({code: '08000'});
+        parser.storeModule.mockRejectedValue({code: '08000'});
         var actual = await moduleAPI.createModule(TEST_DATA.module_name, TEST_DATA.description, TEST_DATA.completion_percent, TEST_DATA.email);
         expect(actual).toEqual(STATUS_CODES.CONNECTION_ERROR);
     });
 
     it('create module (server error case)', async () => {
-        parser.storeModule.mockResolvedValueOnce({code: 'help'});
+        parser.storeModule.mockRejectedValue({code: 'help'});
         var actual = await moduleAPI.createModule(TEST_DATA.module_name, TEST_DATA.description, TEST_DATA.completion_percent, TEST_DATA.email);
         expect(actual).toEqual(STATUS_CODES.INTERNAL_SERVER_ERROR);
-    })
+    });
 });
