@@ -15,9 +15,9 @@ class ModuleAPI {
         }
     }
 
-    async createModule(name, completion_percent, email) {
+    async createModule(name, description, completion_percent, email) {
         try {
-            await this.parser.storeModule(name, completion_percent, email);
+            await this.parser.storeModule(name, description, completion_percent, email);
             return STATUS_CODES.OK;
         } catch(error) {
             return this.#getStatusCode(error);
