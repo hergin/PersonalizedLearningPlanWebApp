@@ -6,7 +6,7 @@ const LoginAPI = require("./controller/loginProcessor");
 const ModuleAPI = require("./controller/moduleProcessor");
 const STATUS_CODES = require("./statusCodes");
 const ERROR_MESSAGES = initializeErrorMap();
-const loginApi = new LoginAPI();
+const loginAPI = new LoginAPI();
 const moduleAPI = new ModuleAPI();
 
 function initializeErrorMap() {
@@ -26,27 +26,30 @@ app.get('/api', (req, res) => {
 
 app.post('/api/login', async (req, res) => {
     console.log(req.body);
-    const loginQuery = await loginApi.verifyLogin(req.body.email, req.body.password);
-    if(typeof loginQuery !== STATUS_CODES.OK) {
+    const loginQuery = await loginAPI.verifyLogin(req.body.email, req.body.password);
+    if(loginQuery !== STATUS_CODES.OK) {
+        console.log("Login verification failed.");
         res.status(loginQuery).send(ERROR_MESSAGES.get(loginQuery));
         return;
     }
-    const profileQuery = await loginApi.getProfile(req.body.email);
+    const profileQuery = await loginAPI.getProfile(req.body.email);
     if(typeof profileQuery !== "object") {
+        console.error("There was a problem retrieving profile.");
         res.status(profileQuery).send(ERROR_MESSAGES.get(profileQuery));
+        return;
     }
     res.status(STATUS_CODES.OK).json(profileQuery);
 });
 
 app.post('/api/register', async(req, res) => {
     console.log(req.body);
-    const accountStatusCode = await loginApi.createAccount(req.body.username, req.body.password, req.body.email);
-    if(accountStatusCode != STATUS_CODES.OK) {
+    const accountStatusCode = await loginAPI.createAccount(req.body.username, req.body.password, req.body.email);
+    if(accountStatusCode !== STATUS_CODES.OK) {
         res.status(accountStatusCode).send(ERROR_MESSAGES.get(accountStatusCode));
         return;
     }
-    const profileStatusCode = await loginApi.createProfile(req.body.firstName, req.body.lastName, req.body.email);
-    if(profileStatusCode != STATUS_CODES.OK) {
+    const profileStatusCode = await loginAPI.createProfile(req.body.firstName, req.body.lastName, req.body.email);
+    if(profileStatusCode !== STATUS_CODES.OK) {
         res.status(profileStatusCode).send(ERROR_MESSAGES.get(profileStatusCode));
         return;
     }
