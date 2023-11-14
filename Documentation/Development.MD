@@ -1,33 +1,39 @@
 ### Development Documentation
 
-## Frontend and Backend
+## Prerequisites
 
-- # Install Prerequisites for Webapp
+- # Install Git
 
-  - node.js and npm
-    - <https://nodejs.org/en/download>
+  - Go to <https://git-scm.com/book/en/v2/Getting-Started-Installing-Git> to find Git, follow the instructions to install it for your enviroment.
 
-- # Clone Repository
+- # Install Node.js
 
-  - run command git clone <https://github.com/tsnicholas/PersonaliziedLearningPlanWebApp.git>
+  - Go to https://nodejs.org/en/ and install the recommended version of Node.js
+
+- # Install PostgreSQL Version 16
+
+  - Go to https://www.postgresql.org/download/ and install version 16 of PostgreSQL for your environment.
+
+- # Get the App!
+
+  - Using your preferred terminal interface, navigate to your desired install location and run the command **git clone https://github.com/tsnicholas/PersonaliziedLearningPlanWebApp.git**
+
+## Setup
+
+- # Setting up the database
+
+  - Create a database using the psql shell
+  - Use \i path-to/database/learningPlanDB.pgsql to set up the database on your local device.
+  
   - run command npm install in the project folder
 
-## Database
+- # Setting up the Node.js Node Package Manager
 
-- # Install Prerequisites for Database
+  - All steps will be completed using the terminal interface of your choice.
+  - Navigate to the root directory of the project and run the **npm install** command.
+  - Navigate to the client folder of the project and run the **npm install** command.
+  - Navigate to the server folder of the project and run the **npm install** command.
 
-  - PostreSQL version 16
-    - <https://www.postgresql.org/download/>
+## What to Expect from Tests
 
-- # Setting up Database
-
-  - Open the psql shell with your username and password and create a database
-  - Use \i path-to/database/learningPlanDB.pgsql to set up the database on your local device.
-
-## Starting the App
-
-    - Open two command shells and cd one to the server folder and one to the client folder.
-    - On each, make sure to run npm install to add all the dependencies that's needed for running the app
-    - On the server shell, use command "npm run dev" to start up the server.
-    - On the client shell, use command "npm run start" to start up the react app.
-    - If the react app doesn't automatically open on your browser, open the link provided in the shell.
+- # 
