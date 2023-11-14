@@ -1,9 +1,24 @@
-import React from "react";
+import React, { useState } from "react";
 import "./ModuleCreate.css";
 import Modal from "@mui/material/Modal";
+import axios from "axios";
 
 function ModuleCreator(addModule) {
-  const [open, setOpen] = React.useState(false);
+  const [moduleName, setModuleName] = useState("");
+  const [description, setDescription] = useState("");
+  const [open, setOpen] = useState(false);
+  const submitDisabled = moduleName === "" || description === "";
+
+  async function handleModuleCreation() {
+    try {
+      const response = await axios.post("http://localhost:4000/api/module", {name: moduleName, description, completionPercent: 0, email: "tsnicholas@bsu.edu"});
+      console.log(response.data);
+      setOpen(false);
+    } catch(error) {
+      alert(error.response.data);
+    }
+  }
+  
   return (
     <div className="divAdd">
       <button onClick={() => setOpen(true)} className="fill-div">
@@ -21,16 +36,20 @@ function ModuleCreator(addModule) {
             name="module"
             type="text"
             placeholder="Module Name"
+            value={moduleName}
+            onChange={(event) => {setModuleName(event.target.value)}}
             required
             />
-                      <input
+          <input
             id="module"
             name="module"
             type="text"
             placeholder="Module Description"
+            value={description}
+            onChange={(event) => {setDescription(event.target.value)}}
             required
           />
-          <button onClick={() => console.log("Module Created")}>Submit</button>
+          <button onClick={handleModuleCreation} disabled={submitDisabled}>Submit</button>
           </div>
         </div>
       </Modal>

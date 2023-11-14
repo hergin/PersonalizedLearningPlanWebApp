@@ -82,11 +82,11 @@ class DatabaseParser {
         console.log("Profile data saved!");
     }
 
-    async storeModule(name, completion_percent, email) {
+    async storeModule(name, description, completion_percent, email) {
         console.log("Storing Module...");
         const query = {
-            text: "INSERT INTO Module(module_name, completion_percent, email) VALUES($1, $2, $3)",
-            values: [name, completion_percent, email]
+            text: "INSERT INTO Module(module_name, description, completion_percent, email) VALUES($1, $2, $3, $4)",
+            values: [name, description, completion_percent, email]
         };
         const client = await this.pool.connect();
         await client.query(query);
@@ -107,12 +107,12 @@ class DatabaseParser {
         return result.rows;
     }
 
-    async updateModule(name, completion_percent, sub_goals, email, module_id) {
+    async updateModule(name, description, completion_percent, email, module_id) {
         console.log("Inserting new data into Module...");
         const client = await this.pool.connect();
         const query = {
-            text: "UPDATE Module SET module_name = $1, completion_percent = $2, sub_goals = $3, email = $4 WHERE module_id = $5",
-            values: [name, completion_percent, sub_goals, email, module_id]
+            text: "UPDATE MODULE SET module_name = $1, description = $2, completion_percent = $3, email = $4 WHERE module_id = $5",
+            values: [name, description, completion_percent, email, module_id]
         };
         await client.query(query);
         client.release();

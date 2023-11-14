@@ -22,7 +22,8 @@ CREATE TABLE PROFILE(
 DROP TABLE IF EXISTS MODULE CASCADE;
 CREATE TABLE MODULE(
     module_id SERIAL PRIMARY KEY,
-    module_name TEXT, 
+    module_name TEXT,
+    description TEXT,
     completion_percent INT,
     email TEXT,
     FOREIGN KEY (email) REFERENCES ACCOUNT(email)
