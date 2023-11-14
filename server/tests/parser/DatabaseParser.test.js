@@ -29,6 +29,7 @@ const CREATE_MODULE_QUERY = {
     values: [TEST_DATA.moduleName, TEST_DATA.description, TEST_DATA.completion, TEST_DATA.email]
 }
 
+// Note: These tests depend on the database already being set up correctly.
 describe('Parser Test', () => {
     const parser = new DatabaseParser();
     var client;

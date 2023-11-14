@@ -63,10 +63,9 @@ app.get('/api/module', async(req, res) => {
     res.json(moduleQuery);
 });
 
-
 app.post('/api/module', async(req, res) => {
     console.log(req.body);
-    const moduleQuery = await moduleAPI.createModule(req.body.name, req.body.completion_percent, req.body.email);
+    const moduleQuery = await moduleAPI.createModule(req.body.name, req.body.description, req.body.completion_percent, req.body.email);
     if(typeof moduleQuery !== STATUS_CODES.OK) {
         res.status(moduleQuery).send(ERROR_MESSAGES.get(moduleQuery));
         return;

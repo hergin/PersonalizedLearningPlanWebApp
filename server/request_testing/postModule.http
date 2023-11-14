@@ -1,8 +1,9 @@
-POST https://localhost:4000/api/module
+POST http://localhost:4000/api/module
 content-type: application/json
 
 {
     "name": "your_module",
-    "completion-percent": "100%",
+    "description": "OwO What's this?",
+    "completion-percent": 0,
     "email": "example@bsu.edu"
 }
