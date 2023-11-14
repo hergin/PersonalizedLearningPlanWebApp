@@ -1,16 +1,36 @@
 const DatabaseParser = require("../../parser/databaseParser");
 
+const TEST_DATA = {
+    email: "testdummy@yahoo.com",
+    username: "test_dummy",
+    password: "01010101010",
+    firstName: "Test",
+    lastName: "Dummy",
+    jobTitle: "Testing Dummy",
+    bio: "...",
+    profilePicture: "",
+    moduleName: "School",
+    description: "My school goals :3",
+    completion: 0
+};
+
+const CREATE_ACCOUNT_QUERY = {
+    text: "INSERT INTO ACCOUNT(username, email, account_password) VALUES($1, $2, $3)",
+    values: [TEST_DATA.username, TEST_DATA.email, TEST_DATA.password]
+}
+
+const CREATE_PROFILE_QUERY = {
+    text: "INSERT INTO PROFILE(firstName, lastName, email) VALUES($1, $2, $3)",
+    values: [TEST_DATA.firstName, TEST_DATA.lastName, TEST_DATA.email]
+}
+
+const CREATE_MODULE_QUERY = {
+    text: "INSERT INTO MODULE(module_name, description, completion_percent, email) VALUES($1, $2, $3, $4)",
+    values: [TEST_DATA.moduleName, TEST_DATA.description, TEST_DATA.completion, TEST_DATA.email]
+}
+
+// Note: These tests depend on the database already being set up correctly.
 describe('Parser Test', () => {
-    const testData = {
-        email: "testdummy@yahoo.com",
-        username: "test_dummy",
-        password: "01010101010",
-        firstName: "Test",
-        lastName: "Dummy",
-        jobTitle: "Testing Dummy",
-        bio: "...",
-        profilePicture: ""
-    };
     const parser = new DatabaseParser();
     var client;
 
@@ -23,7 +43,7 @@ describe('Parser Test', () => {
     afterEach(async () => {
         await client.query(
             "DELETE FROM ACCOUNT WHERE username = $1 AND email = $2 AND account_password = $3",
-            [testData.username, testData.email, testData.password]
+            [TEST_DATA.username, TEST_DATA.email, TEST_DATA.password]
         );
         client.release();
     });
@@ -33,97 +53,138 @@ describe('Parser Test', () => {
     });
     
     it('store login', async () => {
-        await parser.storeLogin(testData.username, testData.email, testData.password);
+        await parser.storeLogin(TEST_DATA.username, TEST_DATA.email, TEST_DATA.password);
         let query = await client.query(
             "SELECT * FROM ACCOUNT WHERE username = $1 AND email = $2 AND account_password = $3", 
-            [testData.username, testData.email, testData.password]
+            [TEST_DATA.username, TEST_DATA.email, TEST_DATA.password]
         );
         expect(query.rows).toEqual([
-            {email: testData.email, username: testData.username, account_password: testData.password}
+            {email: TEST_DATA.email, username: TEST_DATA.username, account_password: TEST_DATA.password}
         ]);
     });
 
     it('retrieve login', async () => {
-        await client.query(
-            "INSERT INTO ACCOUNT(username, email, account_password) VALUES($1, $2, $3)",
-            [testData.username, testData.email, testData.password]    
-        );
-        let query = await parser.retrieveLogin(testData.email);
+        await client.query(CREATE_ACCOUNT_QUERY);
+        let query = await parser.retrieveLogin(TEST_DATA.email);
         expect(query).toEqual([
-            {email: testData.email, username: testData.username, account_password: testData.password}
+            {email: TEST_DATA.email, username: TEST_DATA.username, account_password: TEST_DATA.password}
         ]);
     });
 
-    it('create profile', async () => {
-        await client.query(
-            "INSERT INTO ACCOUNT(email, username, account_password) VALUES($1, $2, $3)",
-            [testData.email, testData.username, testData.password]
-        );
-        await parser.storeProfile(testData.firstName, testData.lastName, testData.email);
+    it('store profile', async () => {
+        await client.query(CREATE_ACCOUNT_QUERY);
+        await parser.storeProfile(TEST_DATA.firstName, TEST_DATA.lastName, TEST_DATA.email);
         var query = await client.query(
             "SELECT * FROM PROFILE WHERE firstName = $1 AND lastName = $2 AND email = $3",
-            [testData.firstName, testData.lastName, testData.email]
+            [TEST_DATA.firstName, TEST_DATA.lastName, TEST_DATA.email]
         );
         expect(query.rows).toEqual([
             {
                 profile_id: expect.any(Number), 
-                firstname: testData.firstName, 
-                lastname: testData.lastName,
+                firstname: TEST_DATA.firstName, 
+                lastname: TEST_DATA.lastName,
                 profilepicture: null,
                 jobtitle: null,
                 bio: null,
-                email: testData.email
+                email: TEST_DATA.email
             }
         ]);
     });
     
-    it('get profile', async () => {
-        await client.query(
-            "INSERT INTO ACCOUNT(email, username, account_password) VALUES($1, $2, $3)",
-            [testData.email, testData.username, testData.password]
-        );
-        await client.query(
-            "INSERT INTO PROFILE(firstName, lastName, email) VALUES($1, $2, $3)",
-            [testData.firstName, testData.lastName, testData.email]
-        );
-        var actual = await parser.parseProfile(testData.email);
+    it('parse profile', async () => {
+        await client.query(CREATE_ACCOUNT_QUERY);
+        await client.query(CREATE_PROFILE_QUERY);
+        var actual = await parser.parseProfile(TEST_DATA.email);
         expect(actual).toEqual([
             {
                 profile_id: expect.any(Number), 
-                firstname: testData.firstName, 
-                lastname: testData.lastName,
+                firstname: TEST_DATA.firstName, 
+                lastname: TEST_DATA.lastName,
                 profilepicture: null,
                 jobtitle: null,
                 bio: null,
-                email: testData.email
+                email: TEST_DATA.email
             }
         ]);
     });
 
-    it('insert profile', async () => {
-        await client.query(
-            "INSERT INTO ACCOUNT(email, username, account_password) VALUES($1, $2, $3)",
-            [testData.email, testData.username, testData.password]
-        );
-        await client.query(
-            "INSERT INTO PROFILE(firstName, lastName, email) VALUES($1, $2, $3)",
-            [testData.firstName, testData.lastName, testData.email]
-        );
-        await parser.updateProfileData(testData.firstName, testData.lastName, testData.profilePicture, testData.jobTitle, testData.bio, testData.email);
+    it('update profile data', async () => {
+        await client.query(CREATE_ACCOUNT_QUERY);
+        await client.query(CREATE_PROFILE_QUERY);
+        await parser.updateProfileData(TEST_DATA.firstName, TEST_DATA.lastName, TEST_DATA.profilePicture, TEST_DATA.jobTitle, TEST_DATA.bio, TEST_DATA.email);
         var actual = await client.query(
             "SELECT * FROM PROFILE WHERE email = $1",
-            [testData.email]
+            [TEST_DATA.email]
         );
         expect(actual.rows).toEqual([
             {
                 profile_id: expect.any(Number),
-                firstname: testData.firstName,
-                lastname: testData.lastName,
-                profilepicture: testData.profilePicture,
-                jobtitle: testData.jobTitle,
-                bio: testData.bio,
-                email: testData.email
+                firstname: TEST_DATA.firstName,
+                lastname: TEST_DATA.lastName,
+                profilepicture: TEST_DATA.profilePicture,
+                jobtitle: TEST_DATA.jobTitle,
+                bio: TEST_DATA.bio,
+                email: TEST_DATA.email
             }
         ]);
-    })
+    });
+
+    it('store module', async () => {
+        await client.query(CREATE_ACCOUNT_QUERY);
+        await parser.storeModule(TEST_DATA.moduleName, TEST_DATA.description, TEST_DATA.completion, TEST_DATA.email);
+        var actual = await client.query(
+            "SELECT * FROM MODULE WHERE email = $1",
+            [TEST_DATA.email]
+        );
+        expect(actual.rows).toEqual([
+            {
+                module_id: expect.any(Number),
+                module_name: TEST_DATA.moduleName,
+                description: TEST_DATA.description,
+                completion_percent: TEST_DATA.completion,
+                email: TEST_DATA.email 
+            }
+        ]);
+    });
+
+    it('parse module', async () => {
+        await client.query(CREATE_ACCOUNT_QUERY);
+        await client.query(CREATE_MODULE_QUERY);
+        var actual = await parser.parseModule(TEST_DATA.email);
+        expect(actual).toEqual([
+            {
+                module_id: expect.any(Number),
+                module_name: TEST_DATA.moduleName,
+                description: TEST_DATA.description,
+                completion_percent: TEST_DATA.completion,
+                email: TEST_DATA.email
+            }
+        ]);
+    });
+
+    it('update module', async () => {
+        const updatedDescription = "My name is jeff.";
+        await client.query(CREATE_ACCOUNT_QUERY);
+        await client.query(CREATE_MODULE_QUERY);
+        var moduleIdQuery = await client.query(
+            "SELECT module_id FROM MODULE WHERE module_name = $1 AND description = $2 AND email = $3",
+            [TEST_DATA.moduleName, TEST_DATA.description, TEST_DATA.email]
+        );
+        var moduleID = moduleIdQuery.rows[0].module_id;
+        console.log(moduleIdQuery.rows[0].module_id);
+        await parser.updateModule(TEST_DATA.moduleName, updatedDescription, TEST_DATA.completion, TEST_DATA.email, moduleID);
+        var actual = await client.query(
+            "SELECT * FROM MODULE WHERE module_id = $1",
+            [moduleID]
+        );
+        expect(actual.rows).toEqual([
+            {
+                module_id: moduleID,
+                module_name: TEST_DATA.moduleName,
+                description: updatedDescription,
+                completion_percent: TEST_DATA.completion,
+                email: TEST_DATA.email
+            }
+        ]);
+    });
 });

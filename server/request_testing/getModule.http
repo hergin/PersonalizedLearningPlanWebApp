@@ -1,0 +1,6 @@
+GET http://localhost:4000/api/module
+content-type: application/json
+
+{
+    "email": "example@gmail.com"
+}

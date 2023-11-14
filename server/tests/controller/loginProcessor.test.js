@@ -88,6 +88,11 @@ describe('Login Functions', () => {
         expect(await loginAPI.createAccount(testData.username, testData.email, testData.password)).toEqual(STATUS_CODES.CONNECTION_ERROR);
     });
 
+    it('create account (bad data case)', async () => {
+        parser.storeLogin.mockRejectedValue({code: '23514'});
+        expect(await loginAPI.createAccount(testData.username, testData.email, testData.password)).toEqual(STATUS_CODES.BAD_REQUEST);
+    });
+
     it('create account (fatal error case)', async () => {
         bcrypt.genSalt.mockResolvedValueOnce();
         bcrypt.hash.mockResolvedValueOnce();
@@ -103,6 +108,11 @@ describe('Login Functions', () => {
     it('create profile (duplicate case)', async () => {
         parser.storeProfile.mockRejectedValue({code: '23505'});
         expect(await loginAPI.createProfile(testData.username, testData.email, testData.password)).toEqual(STATUS_CODES.CONFLICT);
+    });
+
+    it('create profile (bad data case)', async () => {
+        parser.storeProfile.mockRejectedValue({code: '23514'});
+        expect(await loginAPI.createProfile(testData.username, testData.email, testData.password)).toEqual(STATUS_CODES.BAD_REQUEST);
     });
 
     it('create profile (connection lost case)', async () => {

@@ -5,7 +5,7 @@ import { Outlet } from 'react-router';
 const defaultScreen = () => {
   return (
     <>
-      <NavBar />
+      <NavBar /> 
       <Outlet />
     </>
   );

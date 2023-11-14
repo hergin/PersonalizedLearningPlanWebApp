@@ -22,10 +22,11 @@ CREATE TABLE PROFILE(
 DROP TABLE IF EXISTS MODULE CASCADE;
 CREATE TABLE MODULE(
     module_id SERIAL PRIMARY KEY,
-    module_name TEXT, 
+    module_name TEXT,
+    description TEXT,
     completion_percent INT,
-    profile_id INT,
-    FOREIGN KEY (profile_id) REFERENCES PROFILE(profile_id)
+    email TEXT,
+    FOREIGN KEY (email) REFERENCES ACCOUNT(email)
         ON DELETE CASCADE ON UPDATE CASCADE
 );
 
