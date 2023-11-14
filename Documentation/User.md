@@ -9,8 +9,19 @@
 
 ## Register
 
-  - ![Sicherung vorbereiten](/img/export.png)
+  - Navigate to the Login page
+  - Select Register here <br/><br/>
+    ![Login](/img/login_page.png)
+  - The following page will appear, enter your information <br/><br/>
+    ![Registration](/img/reg_page.png)
+  - Once all fields are filled press the register button <br/><br/>
+    ![Filled Registration](/img/reg_page_filled.png)
+  - You are now ready to login!
 
 ## Login
 
-  -
+  - Navigate to the login page <br/><br/>
+    ![Login](/img/login_page.png)
+  - Type a valid username and password <br/><br/>
+    ![Filled Login](/img/login_page_filled.png)
+  - You are now logged in!
