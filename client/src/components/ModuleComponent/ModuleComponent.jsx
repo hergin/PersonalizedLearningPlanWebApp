@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import ModuleCreator from "../ModuleCreator";
 import { genID } from "../../utils/rng";
-import "./Goalmodule.css";
+import "./ModuleComponent.css";
 
-const GoalModule = () => {
+const ModuleComponent = () => {
   const sample = [
     {
       module_id: genID(),
@@ -69,4 +69,4 @@ const Module = ({ goalName, goalDescription, completion }) => {
   );
 };
 
-export default GoalModule;
+export default ModuleComponent;
