@@ -18,7 +18,7 @@ function NavBar() {
       <nav className="nav-bottom">
         <ul className="nav-links">
           <li className="nav-li">
-            <a href="/#"> Learning Plan</a>
+            <a href="/LearningPlan"> Learning Plan</a>
           </li>
           <li className="nav-li">
             <a href="/#"> Coach</a>
