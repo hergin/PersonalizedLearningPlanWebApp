@@ -1,3 +1,20 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  font-family: source-serif-4, serif; 
+}
+
+:root {
+  --mainColor: #8C1515;
+  --mainColorHighlight: white;
+  --secondaryColor: black;
+  --textColor: white;
+  --textBtnColor: black;
+  --headlineFont: 'source sans 3';
+  --bodyFont: 'source serif 4';
+}
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
