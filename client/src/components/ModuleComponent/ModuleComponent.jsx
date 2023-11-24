@@ -41,19 +41,6 @@ const ModuleComponent = () => {
   );
 };
 
-const Goal = ({ goalName, completion }) => {
-  return (
-    <div className="module-div">
-      <div className="module-header">
-        <h1>{goalName}</h1>
-      </div>
-      <div className="module-body">
-        <p>Progress: {completion === 100 ? "Completed" : "In progress"}</p>
-      </div>
-    </div>
-  );
-};
-
 const Module = ({ goalName, goalDescription, completion }) => {
   return (
     <div className="module-div">
