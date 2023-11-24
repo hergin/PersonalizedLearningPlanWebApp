@@ -41,7 +41,7 @@ const Register = () => {
           <h1>Registration</h1>
         </div>
         <div className="register-form">
-          <div class="textInput">
+          <div className="textInput">
             <input
               id="firstName"
               placeholder="First Name"
@@ -52,7 +52,7 @@ const Register = () => {
               }}
             />
           </div>
-          <div class="textInput">
+          <div className="textInput">
             <input
               id="lastName"
               placeholder="Last Name"
@@ -63,7 +63,7 @@ const Register = () => {
               }}
             />
           </div>
-          <div class="textInput">
+          <div className="textInput">
             <input
               id="emailInput"
               placeholder="Email"
@@ -74,7 +74,7 @@ const Register = () => {
               }}
             />
           </div>
-          <div class="textInput">
+          <div className="textInput">
             <input
               id="usernameInput"
               placeholder="Username"
@@ -85,7 +85,7 @@ const Register = () => {
               }}
             />
           </div>
-          <div class="textInput">
+          <div className="textInput">
             <input
               id="passwordInput"
               placeholder="Password"
