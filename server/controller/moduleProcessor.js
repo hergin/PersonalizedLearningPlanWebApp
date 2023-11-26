@@ -24,6 +24,24 @@ class ModuleAPI {
         }
     }
 
+    async updateModule(name, description, completion_percent, email) {
+        try {
+            await this.parser.updateModule(name, description, completion_percent, email);
+            return STATUS_CODES.OK;
+        } catch(error) {
+            return this.#getStatusCode(error);
+        }
+    }
+
+    async deleteModule(email) {
+        try {
+            await this.parser.deleteModule(email);
+            return STATUS_CODES.OK;
+        } catch(error) {
+            return this.#getStatusCode(error);
+        }
+    }
+
     #getStatusCode(error) {
         switch(error.code) {
             case '23505':

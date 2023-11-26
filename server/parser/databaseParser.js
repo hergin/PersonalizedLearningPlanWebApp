@@ -118,6 +118,18 @@ class DatabaseParser {
         client.release();
         console.log("Module data saved!");
     }
+    async deleteModule(email) {
+        console.log("Deleting Module...");
+        const client = await this.pool.connect();
+        const query = {
+            text: "DELETE FROM Module WHERE email = $1",
+            values: [email]
+        };
+        const result = await client.query(query);
+        client.release();
+        console.log("Deleted Module!");
+        return result.rows;
+    }
 }
 
 module.exports = DatabaseParser;
