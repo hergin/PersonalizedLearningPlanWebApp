@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import ModuleCreator from "../ModuleCreator";
 import { genID } from "../../utils/rng";
-import "./Goalmodule.css";
+import "./ModuleComponent.css";
 
-const GoalModule = () => {
+const ModuleComponent = () => {
   const sample = [
     {
       module_id: genID(),
@@ -41,19 +41,6 @@ const GoalModule = () => {
   );
 };
 
-const Goal = ({ goalName, completion }) => {
-  return (
-    <div className="module-div">
-      <div className="module-header">
-        <h1>{goalName}</h1>
-      </div>
-      <div className="module-body">
-        <p>Progress: {completion === 100 ? "Completed" : "In progress"}</p>
-      </div>
-    </div>
-  );
-};
-
 const Module = ({ goalName, goalDescription, completion }) => {
   return (
     <div className="module-div">
@@ -69,4 +56,4 @@ const Module = ({ goalName, goalDescription, completion }) => {
   );
 };
 
-export default GoalModule;
+export default ModuleComponent;
