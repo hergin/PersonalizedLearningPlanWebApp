@@ -1,41 +1,41 @@
 const DatabaseParser = require("../parser/databaseParser");
 const STATUS_CODES = require("../statusCodes");
 
-class ModuleAPI {
+class GoalAPI {
     constructor() {
         this.parser = new DatabaseParser();
     }
 
-    async getModule(email) {
+    async getGoal(module_id) {
         try {
-            const module = await this.parser.parseModule(email);
-            return (module.length === 0) ? STATUS_CODES.UNAUTHORIZED : module[0];
+            const goal = await this.parser.parseGoal(module_id);
+            return (goal.length === 0) ? STATUS_CODES.UNAUTHORIZED : module[0];
         } catch(error) {
             return this.#getStatusCode(error);
         }
     }
 
-    async createModule(name, description, completion_percent, email) {
+    async createGoal(name, description, completion, module_id) {
         try {
-            await this.parser.storeModule(name, description, completion_percent, email);
+            await this.parser.storeGoal(name, description, completion, module_id);
             return STATUS_CODES.OK;
         } catch(error) {
             return this.#getStatusCode(error);
         }
     }
 
-    async updateModule(name, description, completion_percent, email) {
+    async updateGoal(name, description, completion, module_id, goal_id) {
         try {
-            await this.parser.updateModule(name, description, completion_percent, email);
+            await this.parser.updateGoal(name, description, completion, module_id, goal_id);
             return STATUS_CODES.OK;
         } catch(error) {
             return this.#getStatusCode(error);
         }
     }
 
-    async deleteModule(email) {
+    async deleteGoal(goal_id) {
         try {
-            await this.parser.deleteModule(email);
+            await this.parser.deleteGoal(goal_id);
             return STATUS_CODES.OK;
         } catch(error) {
             return this.#getStatusCode(error);
@@ -57,4 +57,4 @@ class ModuleAPI {
     }
 }
 
-module.exports = ModuleAPI;
+module.exports = GoalAPI;
