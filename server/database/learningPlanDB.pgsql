@@ -33,6 +33,7 @@ CREATE TABLE MODULE(
 DROP TABLE IF EXISTS GOAL CASCADE;
 CREATE TABLE GOAL(
     goal_id SERIAL PRIMARY KEY,
+    name TEXT,
     description TEXT,
     completion BOOLEAN,
     module_id SERIAL,
