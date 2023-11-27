@@ -65,7 +65,7 @@ app.get('/api/module', async(req, res) => {
         res.status(moduleQuery).send(ERROR_MESSAGES.get(moduleQuery));
         return;
     }
-    res.json(moduleQuery);
+    res.status(STATUS_CODES.OK).json(moduleQuery);
 });
 
 app.post('/api/module', async(req, res) => {

@@ -20,6 +20,7 @@ const LoginScreen = () => {
       console.log(response.data);
       setProfile(response.data);
       console.log(profile);
+      window.sessionStorage.setItem('email', email);
       // Redirects if user came from another page.
       if (location.state?.from) {
         navigate(location.state.from);

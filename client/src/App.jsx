@@ -7,7 +7,7 @@ import {
 } from "react-router-dom";
 import LearningPlan from "./screens/LearningPlan";
 import LoginScreen from "./screens/login/login";
-import Register from "./screens/register/Register"
+import Register from "./screens/register/Register";
 import DefaultScreen from "./screens/Default";
 
 function App() {
