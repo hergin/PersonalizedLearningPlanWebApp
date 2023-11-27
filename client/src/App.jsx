@@ -9,18 +9,21 @@ import LearningPlan from "./screens/LearningPlan";
 import LoginScreen from "./screens/login/login";
 import Register from "./screens/register/Register";
 import DefaultScreen from "./screens/Default";
+import { AuthProvider } from "./context/AuthContext";
 
 function App() {
   return (
-    <Router>
-      <Routes>
-        <Route exact path="/" element={<DefaultScreen />}>
-          <Route path="/LearningPlan" element={<LearningPlan />} />
-          <Route path="/login" element={<LoginScreen />} />
-          <Route path="/register" element={<Register />} />
-        </Route>
-      </Routes>
-    </Router>
+    <AuthProvider>
+      <Router>
+        <Routes>
+          <Route exact path="/" element={<DefaultScreen />}>
+            <Route path="/LearningPlan" element={<LearningPlan />} />
+            <Route path="/login" element={<LoginScreen />} />
+            <Route path="/register" element={<Register />} />
+          </Route>
+        </Routes>
+      </Router>
+    </AuthProvider>
   );
 }
 
