@@ -18,7 +18,7 @@ class LoginAPI {
             if(login.length === 0) {
                 return STATUS_CODES.GONE;
             }
-            await bcrypt.compare(password, login[0].account_password) ? STATUS_CODES.OK : STATUS_CODES.UNAUTHORIZED;
+            return await bcrypt.compare(password, login[0].account_password) ? STATUS_CODES.OK : STATUS_CODES.UNAUTHORIZED;
         } catch(error) {
             return this.#getStatusCode(error);
         }
@@ -74,10 +74,6 @@ class LoginAPI {
     async #hashPassword(password) {
         const salt = await bcrypt.genSalt(10);
         return await bcrypt.hash(password, salt);
-    }
-
-    #generateAccessToken(email) {
-        return jwt.sign(email, process.env.ACCESS_TOKEN_SECRET, {}, {expiresIn: "30m"});
     }
 }
 
