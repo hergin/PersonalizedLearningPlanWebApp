@@ -18,13 +18,7 @@ class LoginAPI {
             if(login.length === 0) {
                 return STATUS_CODES.GONE;
             }
-            const validLogin = await bcrypt.compare(password, login[0].account_password);
-            if(!validLogin) {
-                return STATUS_CODES.UNAUTHORIZED;
-            }
-            const accessToken = this.#generateAccessToken(email);
-            const refreshToken = jwt.sign(email, process.env.REFRESH_TOKEN_SECRET);
-            return {accessToken, refreshToken};
+            await bcrypt.compare(password, login[0].account_password) ? STATUS_CODES.OK : STATUS_CODES.UNAUTHORIZED;
         } catch(error) {
             return this.#getStatusCode(error);
         }

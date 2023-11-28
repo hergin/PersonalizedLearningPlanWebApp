@@ -1,11 +1,17 @@
 const express = require("express");
 const app = express();
 const cors = require('cors');
+const path = require("path");
+require('dotenv').config({
+    path: path.join(__dirname, ".env")
+});
+const jwt = require("jsonwebtoken");
 app.use(cors());
 app.use(express.json());
 
 const LoginAPI = require("./controller/loginProcessor");
 const ModuleAPI = require("./controller/moduleProcessor");
+
 const STATUS_CODES = require("./statusCodes");
 const ERROR_MESSAGES = initializeErrorMap();
 const loginAPI = new LoginAPI();
@@ -29,12 +35,14 @@ app.get('/api', (req, res) => {
 app.post('/api/login', async (req, res) => {
     console.log(req.body);
     const loginQuery = await loginAPI.verifyLogin(req.body.email, req.body.password);
-    if(typeof loginQuery !== "object") {
+    if(loginQuery !== STATUS_CODES.OK) {
         console.log("Login verification failed.");
         res.status(loginQuery).send(ERROR_MESSAGES.get(loginQuery));
         return;
     }
-    res.status(STATUS_CODES.OK).json(loginQuery);
+    const accessToken = generateAccessToken(req.body.email);
+    const refreshToken = generateRefreshToken(req.body.email);
+    res.status(STATUS_CODES.OK).json({accessToken, refreshToken});
 });
 
 app.get('/api/profile', async(req, res) => {
@@ -92,3 +100,11 @@ app.post('/api/module', async(req, res) => {
 app.listen(4000, () => {
     console.log("Server running!");
 });
+
+function generateAccessToken(email) {
+    return jwt.sign(email, process.env.ACCESS_TOKEN_SECRET, {}, {expiresIn: "30m"});
+}
+
+function generateRefreshToken(email) {
+    return jwt.sign(email, process.env.REFRESH_TOKEN_SECRET);
+}
