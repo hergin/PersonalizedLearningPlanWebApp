@@ -1,4 +1,9 @@
+const path = require("path");
+require('dotenv').config({
+    path: path.join(__dirname, ".env")
+});
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 const DatabaseParser = require("../parser/databaseParser");
 const STATUS_CODES = require("../statusCodes");
 
@@ -13,7 +18,13 @@ class LoginAPI {
             if(login.length === 0) {
                 return STATUS_CODES.GONE;
             }
-            return await bcrypt.compare(password, login[0].account_password) ? STATUS_CODES.OK : STATUS_CODES.UNAUTHORIZED;
+            const validLogin = await bcrypt.compare(password, login[0].account_password);
+            if(!validLogin) {
+                return STATUS_CODES.UNAUTHORIZED;
+            }
+            const accessToken = this.#generateAccessToken(email);
+            const refreshToken = jwt.sign(email, process.env.REFRESH_TOKEN_SECRET);
+            return {accessToken, refreshToken};
         } catch(error) {
             return this.#getStatusCode(error);
         }
@@ -69,6 +80,10 @@ class LoginAPI {
     async #hashPassword(password) {
         const salt = await bcrypt.genSalt(10);
         return await bcrypt.hash(password, salt);
+    }
+
+    #generateAccessToken(email) {
+        return jwt.sign(email, process.env.ACCESS_TOKEN_SECRET, {}, {expiresIn: "30m"});
     }
 }
 
