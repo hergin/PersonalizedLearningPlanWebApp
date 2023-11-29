@@ -6,10 +6,12 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const DatabaseParser = require("../parser/databaseParser");
 const STATUS_CODES = require("../statusCodes");
+const StatusCodes = require("./StatusCodes");
 
 class LoginAPI {
     constructor() {
       this.parser = new DatabaseParser();
+      this.statusCode = new StatusCodes();
     }
 
     async verifyLogin(email, password) {
@@ -18,7 +20,7 @@ class LoginAPI {
             if(login.length === 0) return STATUS_CODES.GONE;
             return await bcrypt.compare(password, login[0].account_password) ? STATUS_CODES.OK : STATUS_CODES.UNAUTHORIZED;
         } catch(error) {
-            return this.#getStatusCode(error);
+            return this.statusCode.getStatusCode(error);
         }
     }
     
@@ -48,24 +50,6 @@ class LoginAPI {
             const result = await this.parser.parseToken(email);
             if(result.length === 0) return STATUS_CODES.GONE;
             return (result[0].refreshtoken === refreshToken) ? STATUS_CODES.OK : STATUS_CODES.UNAUTHORIZED;
-        } catch(error) {
-            return this.#getStatusCode(error);
-        }
-    }
-    
-    async createProfile(firstName, lastName, email) {
-        try {
-            await this.parser.storeProfile(firstName, lastName, email);
-            return STATUS_CODES.OK;
-        } catch(error) {
-            return this.#getStatusCode(error);
-        }
-    }
-
-    async getProfile(email) {
-        try {
-            const profile = await this.parser.parseProfile(email);
-            return (profile.length === 0) ? STATUS_CODES.UNAUTHORIZED : profile;
         } catch(error) {
             return this.#getStatusCode(error);
         }

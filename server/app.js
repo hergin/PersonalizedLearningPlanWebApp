@@ -11,11 +11,14 @@ app.use(express.json());
 
 const LoginAPI = require("./controller/loginProcessor");
 const ModuleAPI = require("./controller/moduleProcessor");
-
+const ProfileAPI = require("./controller/profileProcessor")
 const STATUS_CODES = require("./statusCodes");
+const GoalAPI = require("./controller/goalProcessor");
 const ERROR_MESSAGES = initializeErrorMap();
 const loginAPI = new LoginAPI();
 const moduleAPI = new ModuleAPI();
+const profileAPI = new ProfileAPI();
+const goalAPI = new GoalAPI();
 
 function initializeErrorMap() {
     const errorMessageMap = new Map();
@@ -65,7 +68,7 @@ app.post('/api/token', async (req, res) => {
 });
 
 app.get('/api/profile', async(req, res) => {
-    const profileQuery = await loginAPI.getProfile(req.body.email);
+    const profileQuery = await profileAPI.getProfile(req.body.email);
     if(typeof profileQuery !== "object") {
         console.error("There was a problem retrieving profile.");
         res.status(profileQuery).send(ERROR_MESSAGES.get(profileQuery));
@@ -74,8 +77,14 @@ app.get('/api/profile', async(req, res) => {
     res.status(STATUS_CODES.OK).json(profileQuery);
 });
 
-app.post('/api/profile', async(req, res) => {
-    const profileStatusCode = await loginAPI.createProfile(req.body.firstName, req.body.lastName, req.body.email);
+app.post('/api/register', async(req, res) => {
+    console.log(req.body);
+    const accountStatusCode = await loginAPI.createAccount(req.body.username, req.body.password, req.body.email);
+    if(accountStatusCode !== STATUS_CODES.OK) {
+        res.status(accountStatusCode).send(ERROR_MESSAGES.get(accountStatusCode));
+        return;
+    }
+    const profileStatusCode = await profileAPI.createProfile(req.body.firstName, req.body.lastName, req.body.email);
     if(profileStatusCode !== STATUS_CODES.OK) {
         res.status(profileStatusCode).send(ERROR_MESSAGES.get(profileStatusCode));
         return;
@@ -118,6 +127,28 @@ app.post('/api/module', authenticateToken, async(req, res) => {
         return;
     }
     res.status(STATUS_CODES.OK).json(moduleQuery2);
+});
+//Goals
+//TODO: check post, im having issues with completion_perc because completion is a reserved word
+app.get('/api/goal', async(req, res) => {
+    console.log(req.body);
+    const goalQuery = await goalAPI.getGoal(req.body.module_id);
+    if(typeof goalQuery !== "object") {
+        res.status(goalQuery).send(ERROR_MESSAGES.get(goalQuery));
+        return;
+    }
+    res.json(goalQuery);
+});
+
+app.post('/api/goal', async(req, res) => {
+    console.log(req.body);
+    const goalQuery = await goalAPI.createGoal(req.body.name, req.body.description, req.body.completion_perc, req.body.module_id);
+    if(goalQuery !== STATUS_CODES.OK) {
+        console.log("Something went wrong while creating module.");
+        res.status(goalQuery).send(ERROR_MESSAGES.get(goalQuery));
+        return;
+    }
+    res.sendStatus(STATUS_CODES.OK);
 });
 
 app.listen(4000, () => {

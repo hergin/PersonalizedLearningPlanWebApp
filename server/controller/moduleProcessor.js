@@ -1,9 +1,11 @@
 const DatabaseParser = require("../parser/databaseParser");
 const STATUS_CODES = require("../statusCodes");
+const StatusCodes = require("./StatusCodes");
 
 class ModuleAPI {
     constructor() {
         this.parser = new DatabaseParser();
+        this.statusCode = new StatusCodes();
     }
 
     async getModules(email) {
@@ -12,7 +14,7 @@ class ModuleAPI {
             console.log(`Parsed modules: \n${modules}`);
             return modules;
         } catch(error) {
-            return this.#getStatusCode(error);
+            return this.statusCode.getStatusCode(error);
         }
     }
 
@@ -21,7 +23,7 @@ class ModuleAPI {
             await this.parser.storeModule(name, description, completion_percent, email);
             return STATUS_CODES.OK;
         } catch(error) {
-            return this.#getStatusCode(error);
+            return this.statusCode.getStatusCode(error);
         }
     }
 
@@ -30,7 +32,7 @@ class ModuleAPI {
             await this.parser.updateModule(name, description, completion_percent, email);
             return STATUS_CODES.OK;
         } catch(error) {
-            return this.#getStatusCode(error);
+            return this.statusCode.getStatusCode(error);
         }
     }
 
@@ -39,21 +41,7 @@ class ModuleAPI {
             await this.parser.deleteModule(email);
             return STATUS_CODES.OK;
         } catch(error) {
-            return this.#getStatusCode(error);
-        }
-    }
-
-    #getStatusCode(error) {
-        switch(error.code) {
-            case '23505':
-                console.log("Duplicate data.");
-                return STATUS_CODES.CONFLICT;
-            case '08000': case '08003': case '08007':
-                console.log("Connection error");
-                return STATUS_CODES.CONNECTION_ERROR;
-            default:
-                console.error("Fatal server error.", error);
-                return STATUS_CODES.INTERNAL_SERVER_ERROR;
+            return this.statusCode.getStatusCode(error);
         }
     }
 }

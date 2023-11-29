@@ -1,26 +1,28 @@
 const DatabaseParser = require("../parser/databaseParser");
 const STATUS_CODES = require("../statusCodes");
+const StatusCodes = require("./StatusCodes");
 
 class GoalAPI {
     constructor() {
         this.parser = new DatabaseParser();
+        this.statusCode = new StatusCodes();
     }
 
     async getGoal(module_id) {
         try {
             const goal = await this.parser.parseGoal(module_id);
-            return (goal.length === 0) ? STATUS_CODES.UNAUTHORIZED : module[0];
+            return (goal.length === 0) ? STATUS_CODES.UNAUTHORIZED : goal[0];
         } catch(error) {
-            return this.#getStatusCode(error);
+            return this.statusCode.getStatusCode(error);
         }
     }
 
-    async createGoal(name, description, completion, module_id) {
+    async createGoal(name, description, completion_perc, module_id) {
         try {
-            await this.parser.storeGoal(name, description, completion, module_id);
+            await this.parser.storeGoal(name, description, completion_perc, module_id);
             return STATUS_CODES.OK;
         } catch(error) {
-            return this.#getStatusCode(error);
+            return this.statusCode.getStatusCode(error);
         }
     }
 
@@ -29,7 +31,7 @@ class GoalAPI {
             await this.parser.updateGoal(name, description, completion, module_id, goal_id);
             return STATUS_CODES.OK;
         } catch(error) {
-            return this.#getStatusCode(error);
+            return this.statusCode.getStatusCode(error);
         }
     }
 
@@ -38,21 +40,7 @@ class GoalAPI {
             await this.parser.deleteGoal(goal_id);
             return STATUS_CODES.OK;
         } catch(error) {
-            return this.#getStatusCode(error);
-        }
-    }
-
-    #getStatusCode(error) {
-        switch(error.code) {
-            case '23505':
-                console.log("Duplicate data.");
-                return STATUS_CODES.CONFLICT;
-            case '08000': case '08003': case '08007':
-                console.log("Connection error");
-                return STATUS_CODES.CONNECTION_ERROR;
-            default:
-                console.error("Fatal server error.", error);
-                return STATUS_CODES.INTERNAL_SERVER_ERROR;
+            return this.statusCode.getStatusCode(error);
         }
     }
 }
