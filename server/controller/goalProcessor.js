@@ -11,7 +11,7 @@ class GoalAPI {
     async getGoal(module_id) {
         try {
             const goal = await this.parser.parseGoal(module_id);
-            return (goal.length === 0) ? STATUS_CODES.UNAUTHORIZED : module[0];
+            return (goal.length === 0) ? STATUS_CODES.UNAUTHORIZED : goal[0];
         } catch(error) {
             return this.statusCode.getStatusCode(error);
         }
