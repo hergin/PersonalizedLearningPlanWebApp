@@ -83,7 +83,8 @@ class DatabaseParser {
         client.release();
         console.log("Profile data saved!");
     }
-//Module
+
+    //Module
     async storeModule(name, description, completion_percent, email) {
         console.log("Storing Module...");
         const query = {
@@ -96,7 +97,7 @@ class DatabaseParser {
         console.log("Module Stored!");
     }
 
-    async parseModule(email) {
+    async parseModules(email) {
         console.log("Getting Module...");
         const client = await this.pool.connect();
         const query = {
@@ -120,6 +121,7 @@ class DatabaseParser {
         client.release();
         console.log("Module data updated!");
     }
+    
     async deleteModule(module_id) {
         console.log("Deleting Module...");
         const client = await this.pool.connect();
@@ -133,7 +135,7 @@ class DatabaseParser {
         return result.rows;
     }
 
-//Goal
+    //Goal
     async parseGoal(module_id) {
         console.log("Getting Goals...");
         const client = await this.pool.connect();

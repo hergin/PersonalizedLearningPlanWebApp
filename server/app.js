@@ -33,7 +33,7 @@ app.get('/api', (req, res) => {
 });
 
 app.post('/api/login', async (req, res) => {
-    console.log(req.body);
+    console.log(`Received: ${req.body}`);
     const loginQuery = await loginAPI.verifyLogin(req.body.email, req.body.password);
     if(loginQuery !== STATUS_CODES.OK) {
         console.log("Login verification failed.");
@@ -65,7 +65,7 @@ app.post('/api/profile', async(req, res) => {
 });
 
 app.post('/api/register', async(req, res) => {
-    console.log(req.body);
+    console.log(`Received: ${req.body}`);
     const accountStatusCode = await loginAPI.createAccount(req.body.username, req.body.password, req.body.email);
     if(accountStatusCode !== STATUS_CODES.OK) {
         res.status(accountStatusCode).send(ERROR_MESSAGES.get(accountStatusCode));
@@ -74,25 +74,31 @@ app.post('/api/register', async(req, res) => {
     res.sendStatus(STATUS_CODES.OK);
 });
 
-app.get('/api/module', async(req, res) => {
-    console.log(req.body);
-    const moduleQuery = await moduleAPI.getModule(req.body.email);
+app.post('/api/module/get', async(req, res) => {
+    console.log(`Received: ${req.body.email}`);
+    const moduleQuery = await moduleAPI.getModules(req.body.email);
     if(typeof moduleQuery !== "object") {
         res.status(moduleQuery).send(ERROR_MESSAGES.get(moduleQuery));
         return;
     }
+    console.log(`Result: ${moduleQuery}`);
     res.status(STATUS_CODES.OK).json(moduleQuery);
 });
 
 app.post('/api/module', async(req, res) => {
-    console.log(req.body);
+    console.log(`Received: ${req.body.email}`);
     const moduleQuery = await moduleAPI.createModule(req.body.name, req.body.description, req.body.completion_percent, req.body.email);
     if(moduleQuery !== STATUS_CODES.OK) {
         console.log("Something went wrong while creating module.");
         res.status(moduleQuery).send(ERROR_MESSAGES.get(moduleQuery));
         return;
     }
-    res.sendStatus(STATUS_CODES.OK);
+    const moduleQuery2 = await moduleAPI.getModules(req.body.email);
+    if(typeof moduleQuery2 !== "object") {
+        res.status(moduleQuery2).send(ERROR_MESSAGES.get(moduleQuery2));
+        return;
+    }
+    res.status(STATUS_CODES.OK).json(moduleQuery2);
 });
 
 //TODO: Create a routes folder

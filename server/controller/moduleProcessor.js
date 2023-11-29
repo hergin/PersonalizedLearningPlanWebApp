@@ -6,10 +6,11 @@ class ModuleAPI {
         this.parser = new DatabaseParser();
     }
 
-    async getModule(email) {
+    async getModules(email) {
         try {
-            const module = await this.parser.parseModule(email);
-            return (module.length === 0) ? STATUS_CODES.UNAUTHORIZED : module[0];
+            const modules = await this.parser.parseModules(email);
+            console.log(`Parsed modules: \n${modules}`);
+            return modules;
         } catch(error) {
             return this.#getStatusCode(error);
         }

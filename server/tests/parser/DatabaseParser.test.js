@@ -150,7 +150,7 @@ describe('Parser Test', () => {
     it('parse module', async () => {
         await client.query(CREATE_ACCOUNT_QUERY);
         await client.query(CREATE_MODULE_QUERY);
-        var actual = await parser.parseModule(TEST_DATA.email);
+        var actual = await parser.parseModules(TEST_DATA.email);
         expect(actual).toEqual([
             {
                 module_id: expect.any(Number),
