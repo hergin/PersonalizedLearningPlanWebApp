@@ -10,7 +10,7 @@ function ModuleCreator({addModule}) {
   const [open, setOpen] = useState(false);
   const submitDisabled = moduleName === "" || description === "";
   const { user } = useUser();
-
+  
   async function handleModuleCreation() {
     try {
       const response = await axios.post(

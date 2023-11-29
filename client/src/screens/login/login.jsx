@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import axios from "axios";
+import { ApiClient } from "../../hooks/ApiClient";
 import { useUser } from "../../hooks/useUser";
 import "./login.css";
 
@@ -10,15 +10,12 @@ const LoginScreen = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { addUser } = useUser();
+  const { post } = ApiClient();
   const buttonDisabled = email === "" || password === "";
 
   async function handleLogin(email, password) {
     try {
-      const response = await axios.post("http://localhost:4000/api/login", {
-        email,
-        password,
-      });
-      console.log(response.data);
+      const response = post("/login", {email, password});
       addUser({email, accessToken: response.data.accessToken, refreshToken: response.data.refreshToken});
       // Redirects if user came from another page.
       if (location.state?.from) {

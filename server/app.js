@@ -21,6 +21,7 @@ function initializeErrorMap() {
     const errorMessageMap = new Map();
     errorMessageMap.set(STATUS_CODES.BAD_REQUEST, "Data received is invalid. Please try again.");
     errorMessageMap.set(STATUS_CODES.UNAUTHORIZED, "Invalid Login.");
+    errorMessageMap.set(STATUS_CODES.FORBIDDEN, "Forbidden request.");
     errorMessageMap.set(STATUS_CODES.CONNECTION_ERROR, "Failed to connect to database.");
     errorMessageMap.set(STATUS_CODES.CONFLICT, "An account with that email already exists.");
     errorMessageMap.set(STATUS_CODES.GONE, "An account with that email doesn't exist.");
@@ -42,7 +43,7 @@ app.post('/api/login', async (req, res) => {
     }
     const accessToken = generateAccessToken(req.body.email);
     const refreshToken = generateRefreshToken(req.body.email);
-    const tokenQuery = await loginAPI.setToken(refreshToken);
+    const tokenQuery = await loginAPI.setToken(req.body.email, refreshToken);
     if(tokenQuery !== STATUS_CODES.OK) {
         console.log("Storing token failed.");
         res.status(tokenQuery).send(ERROR_MESSAGES.get(tokenQuery));
@@ -92,7 +93,7 @@ app.post('/api/register', async(req, res) => {
     res.sendStatus(STATUS_CODES.OK);
 });
 
-app.post('/api/module/get', async(req, res) => {
+app.post('/api/module/get', authenticateToken, async(req, res) => {
     console.log(`Received: ${req.body.email}`);
     const moduleQuery = await moduleAPI.getModules(req.body.email);
     if(typeof moduleQuery !== "object") {
@@ -103,7 +104,7 @@ app.post('/api/module/get', async(req, res) => {
     res.status(STATUS_CODES.OK).json(moduleQuery);
 });
 
-app.post('/api/module', async(req, res) => {
+app.post('/api/module', authenticateToken, async(req, res) => {
     console.log(`Received: ${req.body.email}`);
     const moduleQuery = await moduleAPI.createModule(req.body.name, req.body.description, req.body.completion_percent, req.body.email);
     if(moduleQuery !== STATUS_CODES.OK) {
@@ -119,8 +120,6 @@ app.post('/api/module', async(req, res) => {
     res.status(STATUS_CODES.OK).json(moduleQuery2);
 });
 
-//TODO: Create a routes folder
-
 app.listen(4000, () => {
     console.log("Server running!");
 });
@@ -131,4 +130,15 @@ function generateAccessToken(email) {
 
 function generateRefreshToken(email) {
     return jwt.sign(email, process.env.REFRESH_TOKEN_SECRET);
+}
+
+function authenticateToken(req, res, next) {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+    if(token == null) return res.sendStatus(STATUS_CODES.UNAUTHORIZED);
+    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
+        if(err) return res.sendStatus(STATUS_CODES.FORBIDDEN);
+        req.user = user;
+        next();
+    });
 }
