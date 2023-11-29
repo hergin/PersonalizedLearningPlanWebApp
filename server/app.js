@@ -6,10 +6,12 @@ const LoginAPI = require("./controller/loginProcessor");
 const ModuleAPI = require("./controller/moduleProcessor");
 const ProfileAPI = require("./controller/profileProcessor")
 const STATUS_CODES = require("./statusCodes");
+const GoalAPI = require("./controller/goalProcessor");
 const ERROR_MESSAGES = initializeErrorMap();
 const loginAPI = new LoginAPI();
 const moduleAPI = new ModuleAPI();
-const profileAPI = new ProfileAPI()
+const profileAPI = new ProfileAPI();
+const goalAPI = new GoalAPI();
 
 function initializeErrorMap() {
     const errorMessageMap = new Map();
@@ -58,6 +60,7 @@ app.post('/api/register', async(req, res) => {
     res.sendStatus(STATUS_CODES.OK);
 });
 
+//Modules
 app.get('/api/module', async(req, res) => {
     console.log(req.body);
     const moduleQuery = await moduleAPI.getModule(req.body.email);
@@ -74,6 +77,28 @@ app.post('/api/module', async(req, res) => {
     if(moduleQuery !== STATUS_CODES.OK) {
         console.log("Something went wrong while creating module.");
         res.status(moduleQuery).send(ERROR_MESSAGES.get(moduleQuery));
+        return;
+    }
+    res.sendStatus(STATUS_CODES.OK);
+});
+//Goals
+//TODO: check post, im having issues with completion_perc because completion is a reserved word
+app.get('/api/goal', async(req, res) => {
+    console.log(req.body);
+    const goalQuery = await goalAPI.getGoal(req.body.module_id);
+    if(typeof goalQuery !== "object") {
+        res.status(goalQuery).send(ERROR_MESSAGES.get(goalQuery));
+        return;
+    }
+    res.json(goalQuery);
+});
+
+app.post('/api/goal', async(req, res) => {
+    console.log(req.body);
+    const goalQuery = await goalAPI.createGoal(req.body.name, req.body.description, req.body.completion_perc, req.body.module_id);
+    if(goalQuery !== STATUS_CODES.OK) {
+        console.log("Something went wrong while creating module.");
+        res.status(goalQuery).send(ERROR_MESSAGES.get(goalQuery));
         return;
     }
     res.sendStatus(STATUS_CODES.OK);
