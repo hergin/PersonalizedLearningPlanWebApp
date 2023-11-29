@@ -1,9 +1,11 @@
 const DatabaseParser = require("../parser/databaseParser");
 const STATUS_CODES = require("../statusCodes");
+const StatusCodes = require("./StatusCodes")
 
 class ProfileAPI {
     constructor() {
         this.parser = new DatabaseParser();
+        this.statusCode = new StatusCodes();
     }
 
     async createProfile(firstName, lastName, email) {
@@ -11,7 +13,7 @@ class ProfileAPI {
             await this.parser.storeProfile(firstName, lastName, email);
             return STATUS_CODES.OK;
         } catch(error) {
-            return this.#getStatusCode(error);
+            return this.statusCode.getStatusCode(error);
         }
     }
 
@@ -20,7 +22,7 @@ class ProfileAPI {
             const profile = await this.parser.parseProfile(email);
             return (profile.length === 0) ? STATUS_CODES.UNAUTHORIZED : profile;
         } catch(error) {
-            return this.#getStatusCode(error);
+            return this.statusCode.getStatusCode(error);
         }
     }
 
@@ -29,24 +31,7 @@ class ProfileAPI {
             await this.parser.updateProfileData(firstName, lastName, profilePicture, jobTitle, bio, email);
             return STATUS_CODES.OK;
         } catch(error) {
-            return this.#getStatusCode(error);
-        }
-    }
-
-    #getStatusCode(error) {
-        switch(error.code) {
-            case '23505':
-                console.log("Duplicate data.");
-                return STATUS_CODES.CONFLICT;
-            case '08000': case '08003': case '08007':
-                console.log("Connection error");
-                return STATUS_CODES.CONNECTION_ERROR;
-            case '23514':
-                console.log("Bad data.");
-                return STATUS_CODES.BAD_REQUEST;
-            default:
-                console.error("Fatal server error.", error);
-                return STATUS_CODES.INTERNAL_SERVER_ERROR;
+            return this.statusCode.getStatusCode(error);
         }
     }
 }
