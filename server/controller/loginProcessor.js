@@ -1,10 +1,12 @@
 const bcrypt = require("bcrypt");
 const DatabaseParser = require("../parser/databaseParser");
 const STATUS_CODES = require("../statusCodes");
+const StatusCodes = require("./StatusCodes");
 
 class LoginAPI {
     constructor() {
       this.parser = new DatabaseParser();
+      this.statusCode = new StatusCodes();
     }
 
     async verifyLogin(email, password) {
@@ -15,7 +17,7 @@ class LoginAPI {
             }
             return await bcrypt.compare(password, login[0].account_password) ? STATUS_CODES.OK : STATUS_CODES.UNAUTHORIZED;
         } catch(error) {
-            return this.#getStatusCode(error);
+            return this.statusCode.getStatusCode(error);
         }
     }
     
@@ -27,42 +29,7 @@ class LoginAPI {
             await this.parser.storeLogin(username, email, hash);
             return STATUS_CODES.OK;
         } catch(error) {
-            return this.#getStatusCode(error);
-        }
-    }
-    
-    async createProfile(firstName, lastName, email) {
-        try {
-            await this.parser.storeProfile(firstName, lastName, email);
-            return STATUS_CODES.OK;
-        } catch(error) {
-            return this.#getStatusCode(error);
-        }
-    }
-
-    async getProfile(email) {
-        try {
-            const profile = await this.parser.parseProfile(email);
-            return (profile.length === 0) ? STATUS_CODES.UNAUTHORIZED : profile;
-        } catch(error) {
-            return this.#getStatusCode(error);
-        }
-    }
-
-    #getStatusCode(error) {
-        switch(error.code) {
-            case '23505':
-                console.log("Duplicate data.");
-                return STATUS_CODES.CONFLICT;
-            case '08000': case '08003': case '08007':
-                console.log("Connection error");
-                return STATUS_CODES.CONNECTION_ERROR;
-            case '23514':
-                console.log("Bad data.");
-                return STATUS_CODES.BAD_REQUEST;    
-            default:
-                console.error("Fatal server error.", error);
-                return STATUS_CODES.INTERNAL_SERVER_ERROR;
+            return this.statusCode.getStatusCode(error);
         }
     }
 

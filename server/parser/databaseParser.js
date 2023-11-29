@@ -147,11 +147,11 @@ class DatabaseParser {
         return result.rows;
     }
 
-    async storeGoal(name, description, completion, module_id) {
+    async storeGoal(name, description, completion_perc, module_id) {
         console.log("Storing Goal...");
         const query = {
-            text: "INSERT INTO GOAL(name, description, completion, module_id) VALUES($1, $2, $3, $4)",
-            values: [name, description, completion, module_id]
+            text: "INSERT INTO GOAL(name, description, completion_perc, module_id) VALUES($1, $2, $3, $4)",
+            values: [name, description, completion_perc, module_id]
         };
         const client = await this.pool.connect();
         await client.query(query);

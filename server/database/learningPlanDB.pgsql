@@ -35,7 +35,7 @@ CREATE TABLE GOAL(
     goal_id SERIAL PRIMARY KEY,
     name TEXT,
     description TEXT,
-    completion BOOLEAN,
+    completion_perc BOOLEAN,
     module_id SERIAL,
     FOREIGN KEY (module_id) REFERENCES MODULE(module_id)
         ON DELETE CASCADE ON UPDATE CASCADE
