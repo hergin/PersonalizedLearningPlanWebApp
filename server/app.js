@@ -4,10 +4,12 @@ app.use(express.json());
 
 const LoginAPI = require("./controller/loginProcessor");
 const ModuleAPI = require("./controller/moduleProcessor");
+const ProfileAPI = require("./controller/profileProcessor")
 const STATUS_CODES = require("./statusCodes");
 const ERROR_MESSAGES = initializeErrorMap();
 const loginAPI = new LoginAPI();
 const moduleAPI = new ModuleAPI();
+const profileAPI = new ProfileAPI()
 
 function initializeErrorMap() {
     const errorMessageMap = new Map();
@@ -32,7 +34,7 @@ app.post('/api/login', async (req, res) => {
         res.status(loginQuery).send(ERROR_MESSAGES.get(loginQuery));
         return;
     }
-    const profileQuery = await loginAPI.getProfile(req.body.email);
+    const profileQuery = await profileAPI.getProfile(req.body.email);
     if(typeof profileQuery !== "object") {
         console.error("There was a problem retrieving profile.");
         res.status(profileQuery).send(ERROR_MESSAGES.get(profileQuery));
@@ -48,7 +50,7 @@ app.post('/api/register', async(req, res) => {
         res.status(accountStatusCode).send(ERROR_MESSAGES.get(accountStatusCode));
         return;
     }
-    const profileStatusCode = await loginAPI.createProfile(req.body.firstName, req.body.lastName, req.body.email);
+    const profileStatusCode = await profileAPI.createProfile(req.body.firstName, req.body.lastName, req.body.email);
     if(profileStatusCode !== STATUS_CODES.OK) {
         res.status(profileStatusCode).send(ERROR_MESSAGES.get(profileStatusCode));
         return;

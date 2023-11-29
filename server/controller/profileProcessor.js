@@ -1,30 +1,32 @@
-const bcrypt = require("bcrypt");
 const DatabaseParser = require("../parser/databaseParser");
 const STATUS_CODES = require("../statusCodes");
 
-class LoginAPI {
+class ProfileAPI {
     constructor() {
-      this.parser = new DatabaseParser();
+        this.parser = new DatabaseParser();
     }
 
-    async verifyLogin(email, password) {
+    async createProfile(firstName, lastName, email) {
         try {
-            const login = await this.parser.retrieveLogin(email);
-            if(login.length === 0) {
-                return STATUS_CODES.GONE;
-            }
-            return await bcrypt.compare(password, login[0].account_password) ? STATUS_CODES.OK : STATUS_CODES.UNAUTHORIZED;
+            await this.parser.storeProfile(firstName, lastName, email);
+            return STATUS_CODES.OK;
         } catch(error) {
             return this.#getStatusCode(error);
         }
     }
-    
-    async createAccount(username, password, email) {
+
+    async getProfile(email) {
         try {
-            console.log(password);
-            const hash = await this.#hashPassword(password);
-            console.log(hash);
-            await this.parser.storeLogin(username, email, hash);
+            const profile = await this.parser.parseProfile(email);
+            return (profile.length === 0) ? STATUS_CODES.UNAUTHORIZED : profile;
+        } catch(error) {
+            return this.#getStatusCode(error);
+        }
+    }
+
+    async updateProfile(firstName, lastName, profilePicture, jobTitle, bio, email) {
+        try {
+            await this.parser.updateProfileData(firstName, lastName, profilePicture, jobTitle, bio, email);
             return STATUS_CODES.OK;
         } catch(error) {
             return this.#getStatusCode(error);
@@ -41,17 +43,12 @@ class LoginAPI {
                 return STATUS_CODES.CONNECTION_ERROR;
             case '23514':
                 console.log("Bad data.");
-                return STATUS_CODES.BAD_REQUEST;    
+                return STATUS_CODES.BAD_REQUEST;
             default:
                 console.error("Fatal server error.", error);
                 return STATUS_CODES.INTERNAL_SERVER_ERROR;
         }
     }
-
-    async #hashPassword(password) {
-        const salt = await bcrypt.genSalt(10);
-        return await bcrypt.hash(password, salt);
-    }
 }
 
-module.exports = LoginAPI;
+module.exports = ProfileAPI;
