@@ -20,7 +20,7 @@ class ProfileAPI {
     async getProfile(email) {
         try {
             const profile = await this.parser.parseProfile(email);
-            return (profile.length === 0) ? STATUS_CODES.UNAUTHORIZED : profile;
+            return (profile.length === 0) ? STATUS_CODES.UNAUTHORIZED : profile[0];
         } catch(error) {
             return this.statusCode.getStatusCode(error);
         }
