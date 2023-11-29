@@ -1,20 +1,21 @@
 DROP TABLE IF EXISTS ACCOUNT CASCADE;
 CREATE TABLE ACCOUNT(
     email TEXT PRIMARY KEY,
-    username TEXT,
-    account_password TEXT,
+    username TEXT NOT NULL,
+    account_password TEXT NOT NULL,
+    refreshToken TEXT,
     CONSTRAINT valid_email CHECK (email ~* '^[A-Za-z0-9._%-]+@[A-Za-z0-9.-]+[.][A-Za-z]+$')
 );
 
 DROP TABLE IF EXISTS PROFILE CASCADE;
 CREATE TABLE PROFILE(
     profile_id SERIAL PRIMARY KEY,
-    firstName TEXT,
-    lastName TEXT,
+    firstName TEXT NOT NULL,
+    lastName TEXT NOT NULL,
     profilePicture TEXT,
     jobTitle TEXT,
     bio TEXT,
-    email TEXT,
+    email TEXT NOT NULL,
     FOREIGN KEY (email) REFERENCES ACCOUNT(email)
         ON DELETE CASCADE ON UPDATE CASCADE
 );

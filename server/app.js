@@ -42,7 +42,25 @@ app.post('/api/login', async (req, res) => {
     }
     const accessToken = generateAccessToken(req.body.email);
     const refreshToken = generateRefreshToken(req.body.email);
+    const tokenQuery = await loginAPI.setToken(refreshToken);
+    if(tokenQuery !== STATUS_CODES.OK) {
+        console.log("Storing token failed.");
+        res.status(tokenQuery).send(ERROR_MESSAGES.get(tokenQuery));
+        return;
+    }
     res.status(STATUS_CODES.OK).json({accessToken, refreshToken});
+});
+
+app.post('/api/token', async (req, res) => {
+    console.log(`Received: ${req.body.refreshToken}`);
+    const tokenQuery = await loginAPI.verifyToken(req.body.refreshToken);
+    if(tokenQuery !== STATUS_CODES.OK) {
+        console.log("Token verification failed.");
+        res.status(tokenQuery).send(ERROR_MESSAGES.get(tokenQuery));
+        return;
+    }
+    const accessToken = generateAccessToken(req.body.email);
+    res.status(STATUS_CODES.OK).json({accessToken});
 });
 
 app.get('/api/profile', async(req, res) => {

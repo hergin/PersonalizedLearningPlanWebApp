@@ -5,7 +5,7 @@ const STATUS_CODES = require("../../statusCodes");
 jest.mock("../../parser/DatabaseParser", () => {
     const testParser = {
         storeModule: jest.fn(),
-        parseModule: jest.fn(),
+        parseModules: jest.fn(),
         updateModule: jest.fn()
     };
     return jest.fn(() => testParser);
@@ -33,29 +33,24 @@ describe('module processor unit tests', () => {
     });
 
     it('get module (correct case)', async () => {
-        parser.parseModule.mockResolvedValueOnce([
+        parser.parseModules.mockResolvedValueOnce([
             {module_id: TEST_DATA.module_id, module_name: TEST_DATA.module_name, description: TEST_DATA.description, 
                 completion_percent: TEST_DATA.completion_percent, email: TEST_DATA.email}
         ]);
-        expect(await moduleAPI.getModule(TEST_DATA.email)).toEqual(
+        expect(await moduleAPI.getModules(TEST_DATA.email)).toEqual([
             {module_id: TEST_DATA.module_id, module_name: TEST_DATA.module_name, description: TEST_DATA.description, 
                 completion_percent: TEST_DATA.completion_percent, email: TEST_DATA.email}
-        );
+        ]);
     });
     
-    it('get module (unauthorized case)', async () => {
-        parser.parseModule.mockResolvedValueOnce([]);
-        expect(await moduleAPI.getModule(TEST_DATA.email)).toEqual(STATUS_CODES.UNAUTHORIZED);
-    });
-
     it('get module (network error case)', async () => {
-        parser.parseModule.mockRejectedValue({code: '08000'});
-        expect(await moduleAPI.getModule(TEST_DATA.email)).toEqual(STATUS_CODES.CONNECTION_ERROR);
+        parser.parseModules.mockRejectedValue({code: '08000'});
+        expect(await moduleAPI.getModules(TEST_DATA.email)).toEqual(STATUS_CODES.CONNECTION_ERROR);
     });
 
     it('get module (fatal server error case)', async () => {
-        parser.parseModule.mockRejectedValue({code: 'aaaaah'});
-        expect(await moduleAPI.getModule(TEST_DATA.email)).toEqual(STATUS_CODES.INTERNAL_SERVER_ERROR);
+        parser.parseModules.mockRejectedValue({code: 'aaaaah'});
+        expect(await moduleAPI.getModules(TEST_DATA.email)).toEqual(STATUS_CODES.INTERNAL_SERVER_ERROR);
     });
 
     it('create module (correct case)', async () => {

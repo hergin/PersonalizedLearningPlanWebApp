@@ -4,6 +4,7 @@ const TEST_DATA = {
     email: "testdummy@yahoo.com",
     username: "test_dummy",
     password: "01010101010",
+    refreshToken: null,
     firstName: "Test",
     lastName: "Dummy",
     jobTitle: "Testing Dummy",
@@ -59,7 +60,7 @@ describe('Parser Test', () => {
             [TEST_DATA.username, TEST_DATA.email, TEST_DATA.password]
         );
         expect(query.rows).toEqual([
-            {email: TEST_DATA.email, username: TEST_DATA.username, account_password: TEST_DATA.password}
+            {email: TEST_DATA.email, username: TEST_DATA.username, account_password: TEST_DATA.password, refreshtoken: null}
         ]);
     });
 
@@ -67,7 +68,7 @@ describe('Parser Test', () => {
         await client.query(CREATE_ACCOUNT_QUERY);
         let query = await parser.retrieveLogin(TEST_DATA.email);
         expect(query).toEqual([
-            {email: TEST_DATA.email, username: TEST_DATA.username, account_password: TEST_DATA.password}
+            {email: TEST_DATA.email, username: TEST_DATA.username, account_password: TEST_DATA.password, refreshtoken: null}
         ]);
     });
 

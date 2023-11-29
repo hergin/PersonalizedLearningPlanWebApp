@@ -46,6 +46,32 @@ class DatabaseParser {
         return result.rows;
     }
 
+    //Token
+    async storeToken(email, refreshToken) {
+        console.log("Storing refresh token...");
+        const client = await this.pool.connect();
+        const query = {
+            text: "UPDATE ACCOUNT SET refreshToken = $1 WHERE email = $2",
+            values: [refreshToken, email]
+        };
+        await client.query(query);
+        client.release();
+        console.log("Token has been set!");
+    }
+
+    async parseToken(email) {
+        console.log("Retrieving refresh token...");
+        const client = await this.pool.connect();
+        const query = {
+            text: "SELECT refreshToken FROM ACCOUNT WHERE email = $1",
+            values: [email]
+        }
+        const result = await client.query(query);
+        client.release();
+        console.log("Token has been found!");
+        return result.rows;
+    }
+
 //Profile
     async parseProfile(email) {
         console.log("Getting profile...");

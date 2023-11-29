@@ -15,9 +15,7 @@ class LoginAPI {
     async verifyLogin(email, password) {
         try {
             const login = await this.parser.retrieveLogin(email);
-            if(login.length === 0) {
-                return STATUS_CODES.GONE;
-            }
+            if(login.length === 0) return STATUS_CODES.GONE;
             return await bcrypt.compare(password, login[0].account_password) ? STATUS_CODES.OK : STATUS_CODES.UNAUTHORIZED;
         } catch(error) {
             return this.#getStatusCode(error);
@@ -31,6 +29,25 @@ class LoginAPI {
             console.log(hash);
             await this.parser.storeLogin(username, email, hash);
             return STATUS_CODES.OK;
+        } catch(error) {
+            return this.#getStatusCode(error);
+        }
+    }
+
+    async setToken(email, refreshToken) {
+        try {
+            await this.parser.storeToken(email, refreshToken);
+            return STATUS_CODES.OK;
+        } catch(error) {
+            return this.#getStatusCode(error);
+        }
+    }
+
+    async verifyToken(email, refreshToken) {
+        try {
+            const result = await this.parser.parseToken(email);
+            if(result.length === 0) return STATUS_CODES.GONE;
+            return (result[0].refreshtoken === refreshToken) ? STATUS_CODES.OK : STATUS_CODES.UNAUTHORIZED;
         } catch(error) {
             return this.#getStatusCode(error);
         }

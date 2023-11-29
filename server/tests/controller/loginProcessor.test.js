@@ -7,6 +7,8 @@ jest.mock("../../parser/DatabaseParser", () => {
     const testParser = {
         retrieveLogin: jest.fn(),
         storeLogin: jest.fn(),
+        storeToken: jest.fn(),
+        parseToken: jest.fn(),
         storeProfile: jest.fn(),
         parseProfile: jest.fn(),
     };
@@ -27,6 +29,7 @@ describe('Login Functions', () => {
         username: "Xx_george_xX",
         password: "password",
         email: "George123@Gmail.com",
+        refreshToken: "UTDefpAEyREXmgCkK04pL1SXK6jrB2tEc2ZyMbrFs61THq2y3bpRZOCj5RiPoZGa",
         firstName: "George",
         lastName: "Johnson",
         profilePicture: "",
@@ -100,6 +103,16 @@ describe('Login Functions', () => {
         expect(await loginAPI.createAccount(testData.username, testData.email, testData.password)).toEqual(STATUS_CODES.INTERNAL_SERVER_ERROR);
     });
 
+    it('set token (pass case)', async () => {
+        parser.storeToken.mockResolvedValueOnce();
+        expect(await loginAPI.setToken(testData.email)).toEqual(STATUS_CODES.OK);
+    });
+
+    it('parse token (pass case)', async () => {
+        parser.parseToken.mockResolvedValueOnce([{'refreshtoken': testData.refreshToken}]);
+        expect(await loginAPI.verifyToken(testData.email, testData.refreshToken)).toEqual(STATUS_CODES.OK);
+    });
+
     it('create profile (pass case)', async () => {
         parser.storeProfile.mockResolvedValueOnce();
         expect(await loginAPI.createProfile(testData.username, testData.email, testData.password)).toEqual(STATUS_CODES.OK);
@@ -127,13 +140,17 @@ describe('Login Functions', () => {
 
     it('get profile (pass case)', async () => {
         parser.parseProfile.mockResolvedValueOnce([
-            {firstname: testData.firstName, lastname: testData.lastName, profilepicture: testData.profilePicture, 
-                jobtitle: testData.jobTitle, bio: testData.bio, email: testData.email}
+            {
+                firstname: testData.firstName, lastname: testData.lastName, profilepicture: testData.profilePicture, 
+                jobtitle: testData.jobTitle, bio: testData.bio, email: testData.email
+            }
         ]);
-        expect(await loginAPI.getProfile(testData.email)).toEqual({
-            firstname: testData.firstName, lastname: testData.lastName, profilepicture: testData.profilePicture,
-            jobtitle: testData.jobTitle, bio: testData.bio, email: testData.email
-        });
+        expect(await loginAPI.getProfile(testData.email)).toEqual([
+            {
+                firstname: testData.firstName, lastname: testData.lastName, profilepicture: testData.profilePicture,
+                jobtitle: testData.jobTitle, bio: testData.bio, email: testData.email
+            }
+        ]);
     });
 
     it('get profile (profile missing case)', async () => {

@@ -13,7 +13,8 @@ const ModuleComponent = () => {
       console.log(`User: ${user.email} ${user.accessToken} ${user.refreshToken}`);
       const result = await axios.post(
         "http://localhost:4000/api/module/get",
-        {email: user.email}
+          {email: user.email},
+          {headers: {'Content-Type': 'application/json', 'Authorization': `Bearer ${user.accessToken}`}}
       );
       console.log(`Resulting data: ${result.data} ${result.data.module_name} ${result.data.description} ${result.data.completion_percent}`);
       var newModules = [];
