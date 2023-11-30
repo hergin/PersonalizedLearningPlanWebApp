@@ -1,4 +1,4 @@
-const STATUS_CODES = require("../statusCodes");
+const STATUS_CODES = require("../utils/statusCodes");
 
 class StatusCodes {
     getStatusCode(error) {

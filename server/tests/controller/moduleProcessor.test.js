@@ -1,6 +1,6 @@
 const ModuleAPI = require("../../controller/moduleProcessor");
 const DatabaseParser = require("../../parser/databaseParser");
-const STATUS_CODES = require("../../statusCodes");
+const STATUS_CODES = require("../../utils/statusCodes");
 
 jest.mock("../../parser/DatabaseParser", () => {
     const testParser = {

@@ -42,8 +42,8 @@ export const ApiClient = () => {
         }
     );
 
-    const get = async (path, data) => {
-        const response = await api.get(path, data);
+    const get = async (path) => {
+        const response = await api.get(path);
         return response.data;
     };
     
