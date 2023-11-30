@@ -6,9 +6,8 @@ export const ApiClient = () => {
     const api = axios.create({
         baseURL: "http://localhost:4000/api",
         headers: {
-            headers: {
-                "Content-Type": "application/json",
-            }
+            "Content-Type": "application/json",
+            Accept: "application/json"
         }
     });
 
@@ -64,10 +63,5 @@ export const ApiClient = () => {
         return response;
     };
 
-    return {
-        get,
-        post,
-        put,
-        del
-    }
+    return {get, post, put, del}
 }
