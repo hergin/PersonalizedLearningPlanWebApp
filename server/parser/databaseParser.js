@@ -191,7 +191,7 @@ class DatabaseParser {
         console.log("Inserting updated data into Goal...");
         const client = await this.pool.connect();
         const query = {
-            text: "UPDATE GOAL SET name = $1, description = $2, completion = $3, module_id = $4, goal_id = $5 WHERE goal_id = $5",
+            text: "UPDATE GOAL SET name = $1, description = $2, completion_perc = $3, module_id = $4, goal_id = $5 WHERE goal_id = $5",
             values: [name, description, completion, module_id, goal_id]
         };
         await client.query(query);

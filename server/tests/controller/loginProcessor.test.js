@@ -98,12 +98,46 @@ describe('Login Functions', () => {
 
     it('set token (pass case)', async () => {
         parser.storeToken.mockResolvedValueOnce();
-        expect(await loginAPI.setToken(testData.email)).toEqual(STATUS_CODES.OK);
+        expect(await loginAPI.setToken(testData.email, testData.refreshToken)).toEqual(STATUS_CODES.OK);
     });
 
-    it('parse token (pass case)', async () => {
+    it('set token (connection lost case)', async () => {
+        parser.storeToken.mockRejectedValue({code: '08000'});
+        expect(await loginAPI.setToken(testData.email, testData.refreshToken)).toEqual(STATUS_CODES.CONNECTION_ERROR);
+    });
+
+    it('set token (bad data case)', async () => {
+        parser.storeToken.mockRejectedValue({code: '23514'});
+        expect(await loginAPI.setToken(testData.email, testData.refreshToken)).toEqual(STATUS_CODES.BAD_REQUEST);
+    });
+
+    it('set token (fatal error case)', async () => {
+        parser.storeToken.mockRejectedValue({code: 'aaaaah'});
+        expect(await loginAPI.setToken(testData.email, testData.refreshToken)).toEqual(STATUS_CODES.INTERNAL_SERVER_ERROR);
+    })
+
+    it('verify token (pass case)', async () => {
         parser.parseToken.mockResolvedValueOnce([{'refreshtoken': testData.refreshToken}]);
         expect(await loginAPI.verifyToken(testData.email, testData.refreshToken)).toEqual(STATUS_CODES.OK);
     });
+
+    it('verify token (unauthorized case)', async () => {
+        parser.parseToken.mockResolvedValueOnce([{'refreshToken': "I'm a wrong token"}]);
+        expect(await loginAPI.verifyToken(testData.email, testData.refreshToken)).toEqual(STATUS_CODES.UNAUTHORIZED);
+    });
+
+    it('verify token (gone case)', async () => {
+        parser.parseToken.mockResolvedValueOnce([]);
+        expect(await loginAPI.verifyToken(testData.email, testData.refreshToken)).toEqual(STATUS_CODES.GONE);
+    });
+
+    it('verify token (bad data case)', async () => {
+        parser.parseToken.mockRejectedValue({code: '23514'});
+        expect(await loginAPI.verifyToken(testData.email, testData.refreshToken)).toEqual(STATUS_CODES.BAD_REQUEST);
+    });
+
+    it('verify token (fatal error case)', async () => {
+        parser.parseToken.mockRejectedValue({code: 'Im in your walls'});
+        expect(await loginAPI.verifyLogin(testData.email, testData.refreshToken)).toEqual(STATUS_CODES.INTERNAL_SERVER_ERROR);
+    });
 });
-    

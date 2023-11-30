@@ -36,9 +36,9 @@ class ModuleAPI {
         }
     }
 
-    async deleteModule(email) {
+    async deleteModule(moduleID) {
         try {
-            await this.parser.deleteModule(email);
+            await this.parser.deleteModule(moduleID);
             return STATUS_CODES.OK;
         } catch(error) {
             return this.statusCode.getStatusCode(error);

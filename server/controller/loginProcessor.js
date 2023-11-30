@@ -3,7 +3,6 @@ require('dotenv').config({
     path: path.join(__dirname, ".env")
 });
 const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
 const DatabaseParser = require("../parser/databaseParser");
 const STATUS_CODES = require("../statusCodes");
 const StatusCodes = require("./StatusCodes");
@@ -32,7 +31,7 @@ class LoginAPI {
             await this.parser.storeLogin(username, email, hash);
             return STATUS_CODES.OK;
         } catch(error) {
-            return this.#getStatusCode(error);
+            return this.statusCode.getStatusCode(error);
         }
     }
 
@@ -41,7 +40,7 @@ class LoginAPI {
             await this.parser.storeToken(email, refreshToken);
             return STATUS_CODES.OK;
         } catch(error) {
-            return this.#getStatusCode(error);
+            return this.statusCode.getStatusCode(error);
         }
     }
 
@@ -51,24 +50,7 @@ class LoginAPI {
             if(result.length === 0) return STATUS_CODES.GONE;
             return (result[0].refreshtoken === refreshToken) ? STATUS_CODES.OK : STATUS_CODES.UNAUTHORIZED;
         } catch(error) {
-            return this.#getStatusCode(error);
-        }
-    }
-
-    #getStatusCode(error) {
-        switch(error.code) {
-            case '23505':
-                console.log("Duplicate data.");
-                return STATUS_CODES.CONFLICT;
-            case '08000': case '08003': case '08007':
-                console.log("Connection error");
-                return STATUS_CODES.CONNECTION_ERROR;
-            case '23514':
-                console.log("Bad data.");
-                return STATUS_CODES.BAD_REQUEST;    
-            default:
-                console.error("Fatal server error.", error);
-                return STATUS_CODES.INTERNAL_SERVER_ERROR;
+            return this.statusCode.getStatusCode(error);
         }
     }
 
