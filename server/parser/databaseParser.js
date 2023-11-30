@@ -14,9 +14,6 @@ class DatabaseParser {
             database: process.env.POSTGRES_DATABASE,
             port: process.env.POSTGRES_PORT
         });
-        this.pool.on("error", (error) => {
-            console.error("An error has occurred while parsing data.", error);
-        });
         console.log("Constructing complete!");
     }
 
