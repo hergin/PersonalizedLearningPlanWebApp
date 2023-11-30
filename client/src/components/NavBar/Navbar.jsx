@@ -18,16 +18,16 @@ function NavBar() {
       <nav className="nav-bottom">
         <ul className="nav-links">
           <li className="nav-li">
-            <a href="/LearningPlan"> Learning Plan</a>
+            <Link to="/LearningPlan" className="link-dec"> Learning Plan</Link>
           </li>
           <li className="nav-li">
-            <a href="/#"> Coach</a>
+            <Link to="/#" className="link-dec"> Coach</Link>
           </li>
           <li className="nav-li">
-            <a href="/#"> Dashboard</a>
+            <Link to="/#" className="link-dec"> Dashboard</Link>
           </li>
           <li className="nav-li">
-            <a href="/#"> Profile</a>
+            <Link to="/#" className="link-dec"> Profile</Link>
           </li>
         </ul>
       </nav>

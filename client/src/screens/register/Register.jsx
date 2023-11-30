@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
+import { ApiClient } from "../../hooks/ApiClient";
 import "./register.css";
 
 const Register = () => {
@@ -16,21 +16,22 @@ const Register = () => {
     username === "" ||
     password === "";
   const navigate = useNavigate();
+  const { post } = ApiClient();
 
   async function handleRegistration() {
     try {
-      const response = await axios.post("http://localhost:4000/api/register", {
+      const response = await post("/register", {
         firstName,
         lastName,
         email,
         username,
         password,
       });
-      console.log(response.data);
+      console.log(response);
       // Redirects back to login page after creating an account
       navigate("/login");
     } catch (error) {
-      alert(error.response.data);
+      alert(error.message);
     }
   }
 

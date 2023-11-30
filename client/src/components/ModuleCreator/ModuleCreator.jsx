@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import "./ModuleCreate.css";
 import Modal from "@mui/material/Modal";
-import axios from "axios";
 import { useUser } from "../../hooks/useUser";
+import { ApiClient } from "../../hooks/ApiClient";
 
 function ModuleCreator({addModule}) {
   const [moduleName, setModuleName] = useState("");
@@ -10,16 +10,13 @@ function ModuleCreator({addModule}) {
   const [open, setOpen] = useState(false);
   const submitDisabled = moduleName === "" || description === "";
   const { user } = useUser();
+  const { post } = ApiClient();
   
   async function handleModuleCreation() {
     try {
-      const response = await axios.post(
-        "http://localhost:4000/api/module", 
-        {name: moduleName, description, completion_percent: 0, email: user.email},
-        {headers: {'Content-Type': 'application/json', 'Authorization': user.accessToken ? `Bearer ${user.accessToken}` : ""}}
-      );
-      console.log(response.data);
-      const moduleID = response.data.module_id;
+      const response = await post("/module", {name: moduleName, description, completion_percent: 0, email: user.email});
+      console.log(response);
+      const moduleID = response.module_id;
       addModule({module_id: moduleID, module_name: moduleName, description: description, completion_percent: 0});
       setOpen(false);
     } catch(error) {

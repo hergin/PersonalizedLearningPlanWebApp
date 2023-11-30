@@ -1,4 +1,4 @@
-import { axios } from "axios";
+import axios from "axios";
 import { useUser } from "./useUser";
 
 export const ApiClient = () => {
@@ -8,9 +8,8 @@ export const ApiClient = () => {
         headers: {
             headers: {
                 "Content-Type": "application/json",
-                Accept: "application/json"
             }
-        },
+        }
     });
 
     api.interceptors.request.use(
@@ -44,20 +43,25 @@ export const ApiClient = () => {
         }
     );
 
-    const get = (path) => {
-        return api.get(path).then((response) => response.data);
+    const get = async (path) => {
+        const response = await api.get(path);
+        return response.data;
     };
     
-    const post = (path, data) => {
-        return api.post(path, data).then((response) => response.data);
+    const post = async (path, data) => {
+        const response = await api.post(path, data);
+        console.log(response);
+        return response.data;
     };
 
-    const put = (path, data) => {
-        return api.put(path, data).then((response) => response.data);
+    const put = async (path, data) => {
+        const response = await api.put(path, data);
+        return response.data;
     };
 
-    const del = (path) => {
-        return api.delete(path).then((response) => response);
+    const del = async (path) => {
+        const response = await api.delete(path);
+        return response;
     };
 
     return {

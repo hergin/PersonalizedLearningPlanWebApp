@@ -100,7 +100,7 @@ header {
     transition: width .5s ease, background-color .5s ease;
 }
 
-.nav-li a {
+.nav-li .link-dec {
     text-decoration: none;
     color: var(--textBtnColor);
     font-family: var(--headlineFont);
@@ -112,7 +112,7 @@ header {
     
 }
 
-.nav-li:hover a {
+.nav-li:hover .link-dec {
     color: var(--mainColor);
 }
 

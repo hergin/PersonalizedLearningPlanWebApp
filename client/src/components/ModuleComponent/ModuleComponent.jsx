@@ -1,24 +1,21 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import ModuleCreator from "../ModuleCreator";
+import { ApiClient } from "../../hooks/ApiClient";
 import { useUser } from "../../hooks/useUser";
 import "./ModuleComponent.css";
 
 const ModuleComponent = () => {
   const [modules, setModules] = useState([]);
   const { user } = useUser();
+  const { post } = ApiClient();
   
   useEffect(() => {
     async function getModules() {
       console.log(`User: ${user.email} ${user.accessToken} ${user.refreshToken}`);
-      const result = await axios.post(
-        "http://localhost:4000/api/module/get",
-          {email: user.email},
-          {headers: {'Content-Type': 'application/json', 'Authorization': `Bearer ${user.accessToken}`}}
-      );
-      console.log(`Resulting data: ${result.data} ${result.data.module_name} ${result.data.description} ${result.data.completion_percent}`);
+      const result = await post("module/get", {email: user.email});
+      console.log(`Resulting data: ${result}`);
       var newModules = [];
-      for(var module of result.data) {
+      for(var module of result) {
         console.log(`Adding ${module.module_name}`)
         newModules.push(module);
       }
@@ -26,7 +23,8 @@ const ModuleComponent = () => {
     }
     
     getModules();
-  }, [user]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   
   function addModule(module) {
     if(modules.includes(module)) {

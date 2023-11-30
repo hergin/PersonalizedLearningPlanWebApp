@@ -67,7 +67,7 @@ app.post('/api/token', async (req, res) => {
     res.status(STATUS_CODES.OK).json({accessToken});
 });
 
-app.get('/api/profile', async(req, res) => {
+app.get('/api/profile', authenticateToken, async(req, res) => {
     const profileQuery = await profileAPI.getProfile(req.body.email);
     if(typeof profileQuery !== "object") {
         console.error("There was a problem retrieving profile.");
@@ -87,16 +87,6 @@ app.post('/api/register', async(req, res) => {
     const profileStatusCode = await profileAPI.createProfile(req.body.firstName, req.body.lastName, req.body.email);
     if(profileStatusCode !== STATUS_CODES.OK) {
         res.status(profileStatusCode).send(ERROR_MESSAGES.get(profileStatusCode));
-        return;
-    }
-    res.sendStatus(STATUS_CODES.OK);
-});
-
-app.post('/api/register', async(req, res) => {
-    console.log(`Received: ${req.body}`);
-    const accountStatusCode = await loginAPI.createAccount(req.body.username, req.body.password, req.body.email);
-    if(accountStatusCode !== STATUS_CODES.OK) {
-        res.status(accountStatusCode).send(ERROR_MESSAGES.get(accountStatusCode));
         return;
     }
     res.sendStatus(STATUS_CODES.OK);

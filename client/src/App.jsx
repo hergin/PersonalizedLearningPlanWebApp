@@ -14,14 +14,9 @@ function App() {
       <Router>
         <Routes>
           <Route exact path="/" element={<DefaultScreen />}>
-            <Route
-              path="/LearningPlan"
-              element={
-                <ProtectedRoute>
-                  <LearningPlan />
-                </ProtectedRoute>
-              }
-            />
+            <Route element={<ProtectedRoute />}>
+              <Route exact path="/LearningPlan" element={<LearningPlan />} />
+            </Route>
             <Route path="/login" element={<LoginScreen />} />
             <Route path="/register" element={<Register />} />
           </Route>

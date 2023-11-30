@@ -1,6 +1,5 @@
 const bcrypt = require("bcrypt");
 const LoginAPI = require("../../controller/loginProcessor");
-const ProfileAPI = require("../../controller/profileProcessor")
 const DatabaseParser = require("../../parser/databaseParser");
 const STATUS_CODES = require("../../statusCodes");
 
@@ -33,12 +32,10 @@ describe('Login Functions', () => {
     
     let loginAPI;
     let parser;
-    let profileAPI;
 
     beforeEach(() => {
         parser = new DatabaseParser();
         loginAPI = new LoginAPI();
-        profileAPI = new ProfileAPI();
     });
 
     afterEach(() => {

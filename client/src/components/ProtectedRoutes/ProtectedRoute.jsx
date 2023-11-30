@@ -1,13 +1,11 @@
-import { Navigate } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom";
 import { useUser } from "../../hooks/useUser";
 
-const PrivateRoute = ({ children }) => {
-  const isAuthenticated = useUser().user.accessToken !== "";
-
-  if (isAuthenticated) {
-    return children;
-  }
-
-  return <Navigate to="/login" />;
+const PrivateRoute = () => {
+  const { user } = useUser();
+  console.log(`Access Token: ${user.accessToken}`);
+  const isAuthenticated = user.accessToken !== "";
+  return isAuthenticated ? <Outlet /> : <Navigate to="/login" />
 };
+
 export default PrivateRoute;

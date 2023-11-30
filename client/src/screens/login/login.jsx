@@ -15,15 +15,13 @@ const LoginScreen = () => {
 
   async function handleLogin(email, password) {
     try {
-      const response = post("/login", {email, password});
-      addUser({email, accessToken: response.data.accessToken, refreshToken: response.data.refreshToken});
+      const response = await post("/login", {email, password});
+      addUser({email, accessToken: response.accessToken, refreshToken: response.refreshToken});
       // Redirects if user came from another page.
-      if (location.state?.from) {
-        navigate(location.state.from);
-      }
+      (location.state?.from) ? navigate(location.state.from) : navigate("/LearningPlan");
     } catch (error) {
-      console.error(error);
-      alert(error.response.data);
+      console.error(error.message);
+      alert(error.message);
     }
   }
 
