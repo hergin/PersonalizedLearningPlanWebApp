@@ -14,7 +14,7 @@ function ModuleCreator({addModule}) {
   
   async function handleModuleCreation() {
     try {
-      const response = await post("/module", {name: moduleName, description, completion_percent: 0, email: user.email});
+      const response = await post("/module/add", {name: moduleName, description, completion_percent: 0, email: user.email});
       console.log(response);
       const moduleID = response.module_id;
       addModule({module_id: moduleID, module_name: moduleName, description: description, completion_percent: 0});

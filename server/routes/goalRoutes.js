@@ -3,6 +3,7 @@ const router = express.Router();
 const authenticateToken = require("../utils/authenticateToken");
 const initializeErrorMessages = require("../utils/errorMessages");
 const GoalAPI = require("../controller/goalProcessor");
+const STATUS_CODES = require("../utils/statusCodes");
 
 const ERROR_MESSAGES = initializeErrorMessages();
 const goalAPI = new GoalAPI();
