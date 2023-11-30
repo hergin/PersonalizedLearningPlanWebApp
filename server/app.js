@@ -11,7 +11,7 @@ app.use(express.json());
 
 const LoginAPI = require("./controller/loginProcessor");
 const ModuleAPI = require("./controller/moduleProcessor");
-const ProfileAPI = require("./controller/profileProcessor")
+const ProfileAPI = require("./controller/profileProcessor");
 const STATUS_CODES = require("./statusCodes");
 const GoalAPI = require("./controller/goalProcessor");
 const ERROR_MESSAGES = initializeErrorMap();

@@ -11,15 +11,20 @@ const ModuleComponent = () => {
   
   useEffect(() => {
     async function getModules() {
-      console.log(`User: ${user.email} ${user.accessToken} ${user.refreshToken}`);
-      const result = await post("module/get", {email: user.email});
-      console.log(`Resulting data: ${result}`);
-      var newModules = [];
-      for(var module of result) {
-        console.log(`Adding ${module.module_name}`)
-        newModules.push(module);
+      try {
+        console.log(`User: ${user.email} ${user.accessToken} ${user.refreshToken}`);
+        const result = await post("module/get", {email: user.email});
+        console.log(`Resulting data: ${result}`);
+        var newModules = [];
+        for(var module of result) {
+          console.log(`Adding ${module.module_name}`)
+          newModules.push(module);
+        }
+        setModules(newModules);
+      } catch(error) {
+        console.error(error);
+        alert((error.message) ? error.message : error);
       }
-      setModules(newModules);
     }
     
     getModules();

@@ -27,7 +27,7 @@ export const ApiClient = () => {
         (response) => response,
         (error) => {
             const originalRequest = error.config;
-            if(user.refreshToken && error.response.status === 401) {
+            if(user.refreshToken && (error.response && error.response.status === 401)) {
                 let data = JSON.stringify({refreshToken: user.refreshToken});
                 try {
                     const result = post("/token", data);

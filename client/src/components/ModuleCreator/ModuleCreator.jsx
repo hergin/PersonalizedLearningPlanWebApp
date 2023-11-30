@@ -20,8 +20,8 @@ function ModuleCreator({addModule}) {
       addModule({module_id: moduleID, module_name: moduleName, description: description, completion_percent: 0});
       setOpen(false);
     } catch(error) {
-      console.log(error);
-      alert(error?.response.data);
+      console.error(error);
+      alert((error.message) ? error.message : error);
     }
   }
   
