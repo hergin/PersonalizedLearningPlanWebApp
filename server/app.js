@@ -92,9 +92,9 @@ app.post('/api/register', async(req, res) => {
     res.sendStatus(STATUS_CODES.OK);
 });
 
-app.post('/api/module/get', authenticateToken, async(req, res) => {
-    console.log(`Received: ${req.body.email}`);
-    const moduleQuery = await moduleAPI.getModules(req.body.email);
+app.get('/api/module/:id', authenticateToken, async(req, res) => {
+    console.log(`Received: ${req.params.id}`);
+    const moduleQuery = await moduleAPI.getModules(req.params.id);
     if(typeof moduleQuery !== "object") {
         res.status(moduleQuery).send(ERROR_MESSAGES.get(moduleQuery));
         return;
@@ -118,6 +118,30 @@ app.post('/api/module', authenticateToken, async(req, res) => {
     }
     res.status(STATUS_CODES.OK).json(moduleQuery2);
 });
+
+app.delete('/api/module', authenticateToken, async (req, res) => {
+    console.log(`Received: ${req.body.module_id}`);
+    const moduleQuery = await moduleAPI.deleteModule(req.body.module_id);
+    if(moduleQuery !== STATUS_CODES.OK) {
+        console.log("Something went wrong while deleting module.");
+        res.status(moduleQuery).send(ERROR_MESSAGES.get(moduleQuery));
+        return;
+    }
+    res.sendStatus(STATUS_CODES.OK);
+});
+
+app.put('/api/module', authenticateToken, async (req, res) => {
+    console.log(`Received: ${req.body.module_id}`);
+    const moduleQuery = await moduleAPI.updateModule(req.body.name, req.body.description, req.body.completion, req.body.email);
+    if(moduleQuery !== STATUS_CODES.OK) {
+        console.log("Something went wrong while deleting module.");
+        res.status(moduleQuery).send(ERROR_MESSAGES.get(moduleQuery));
+        return;
+    }
+    res.sendStatus(STATUS_CODES.OK);
+});
+
+
 //Goals
 //TODO: check post, im having issues with completion_perc because completion is a reserved word
 app.get('/api/goal', async(req, res) => {

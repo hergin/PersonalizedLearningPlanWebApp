@@ -29,7 +29,7 @@ export const ApiClient = () => {
             if(user.refreshToken && (error.response && error.response.status === 401)) {
                 let data = JSON.stringify({refreshToken: user.refreshToken});
                 try {
-                    const result = post("/token", data);
+                    const result = api.post("/token", data);
                     originalRequest.headers.Authorization = `Bearer ${result.accessToken}`;
                     const response = api(originalRequest).then(response => {return response});
                     replaceToken(result.accessToken);
@@ -42,8 +42,8 @@ export const ApiClient = () => {
         }
     );
 
-    const get = async (path) => {
-        const response = await api.get(path);
+    const get = async (path, data) => {
+        const response = await api.get(path, data);
         return response.data;
     };
     
@@ -65,3 +65,4 @@ export const ApiClient = () => {
 
     return {get, post, put, del}
 }
+

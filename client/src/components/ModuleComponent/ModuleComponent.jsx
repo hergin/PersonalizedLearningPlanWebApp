@@ -7,13 +7,13 @@ import "./ModuleComponent.css";
 const ModuleComponent = () => {
   const [modules, setModules] = useState([]);
   const { user } = useUser();
-  const { post } = ApiClient();
+  const { get } = ApiClient();
   
   useEffect(() => {
     async function getModules() {
       try {
         console.log(`User: ${user.email} ${user.accessToken} ${user.refreshToken}`);
-        const result = await post("module/get", {email: user.email});
+        const result = await get(`/module/${user.email}`);
         console.log(`Resulting data: ${result}`);
         var newModules = [];
         for(var module of result) {
