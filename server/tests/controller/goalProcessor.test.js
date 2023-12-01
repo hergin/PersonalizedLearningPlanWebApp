@@ -87,4 +87,53 @@ describe('goal processor unit tests', () => {
         expect(actual).toEqual(STATUS_CODES.INTERNAL_SERVER_ERROR);
     });
 
+    it('update goal (pass case)', async () => {
+        parser.updateGoal.mockResolvedValueOnce();
+        expect(await goalAPI.updateGoal(TEST_DATA.name, TEST_DATA.description, TEST_DATA.completion, TEST_DATA.module_id, TEST_DATA.goal_id)).toEqual(STATUS_CODES.OK);
+    });
+
+    it('update goal (duplicate case)', async () => {
+        parser.updateGoal.mockRejectedValue({code: '23505'});
+        expect(await goalAPI.updateGoal(TEST_DATA.name, TEST_DATA.description, TEST_DATA.completion, TEST_DATA.module_id, TEST_DATA.goal_id)).toEqual(STATUS_CODES.CONFLICT);
+    });
+
+    it('update goal (bad data case)', async () => {
+        parser.updateGoal.mockRejectedValue({code: '23514'});
+        expect(await goalAPI.updateGoal(TEST_DATA.name, TEST_DATA.description, TEST_DATA.completion, TEST_DATA.module_id, TEST_DATA.goal_id)).toEqual(STATUS_CODES.BAD_REQUEST);
+    });
+
+    it('update goal (connection lost case)', async () => {
+        parser.updateGoal.mockRejectedValue({code: '08000'});
+        expect(await goalAPI.updateGoal(TEST_DATA.name, TEST_DATA.description, TEST_DATA.completion, TEST_DATA.module_id, TEST_DATA.goal_id)).toEqual(STATUS_CODES.CONNECTION_ERROR);
+    });
+
+    it('update goal (fatal error case)', async () => {
+        parser.updateGoal.mockRejectedValue({code: 'adsfa'});
+        expect(await goalAPI.updateGoal(TEST_DATA.name, TEST_DATA.description, TEST_DATA.completion, TEST_DATA.module_id, TEST_DATA.goal_id)).toEqual(STATUS_CODES.INTERNAL_SERVER_ERROR);
+    });
+
+    it('delete goal (pass case)', async () => {
+        parser.deleteGoal.mockResolvedValueOnce();
+        expect(await goalAPI.deleteGoal(TEST_DATA.goal_id)).toEqual(STATUS_CODES.OK);
+    });
+
+    it('delete goal (duplicate case)', async () => {
+        parser.deleteGoal.mockRejectedValue({code: '23505'});
+        expect(await goalAPI.deleteGoal(TEST_DATA.goal_id)).toEqual(STATUS_CODES.CONFLICT);
+    });
+
+    it('delete goal (bad data case)', async () => {
+        parser.deleteGoal.mockRejectedValue({code: '23514'});
+        expect(await goalAPI.deleteGoal(TEST_DATA.goal_id)).toEqual(STATUS_CODES.BAD_REQUEST);
+    });
+
+    it('delete goal (connection lost case)', async () => {
+        parser.deleteGoal.mockRejectedValue({code: '08000'});
+        expect(await goalAPI.deleteGoal(TEST_DATA.goal_id)).toEqual(STATUS_CODES.CONNECTION_ERROR);
+    });
+
+    it('delete goal (fatal error case)', async () => {
+        parser.deleteGoal.mockRejectedValue({code: 'adsfa'});
+        expect(await goalAPI.deleteGoal(TEST_DATA.goal_id)).toEqual(STATUS_CODES.INTERNAL_SERVER_ERROR);
+    });
 });

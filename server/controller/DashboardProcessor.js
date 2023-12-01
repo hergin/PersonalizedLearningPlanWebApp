@@ -2,42 +2,42 @@ const DatabaseParser = require("../parser/databaseParser");
 const STATUS_CODES = require("../utils/statusCodes");
 const StatusCodes = require("./StatusCodes")
 
-class ProfileAPI {
+class DashboardAPI {
     constructor() {
         this.parser = new DatabaseParser();
         this.statusCode = new StatusCodes();
     }
 
-    async createProfile(firstName, lastName, email) {
+    async createDashboard(profile_id) {
         try {
-            await this.parser.storeProfile(firstName, lastName, email);
+            await this.parser.storeDashboard(profile_id);
             return STATUS_CODES.OK;
         } catch(error) {
             return this.statusCode.getStatusCode(error);
         }
     }
 
-    async getProfile(email) {
+    async getDashboard(profile_id) {
         try {
-            const profile = await this.parser.parseProfile(email);
-            return (profile.length === 0) ? STATUS_CODES.UNAUTHORIZED : profile[0];
+            const dashboard = await this.parser.parseDashboard(profile_id);
+            return (dashboard.length === 0) ? STATUS_CODES.UNAUTHORIZED : dashboard[0];
         } catch(error) {
             return this.statusCode.getStatusCode(error);
         }
     }
 
-    async updateProfile(firstName, lastName, profilePicture, jobTitle, bio, email, profile_id) {
+    async updateDashboard(profile_id, dashboard_id) {
         try {
-            await this.parser.updateProfile(firstName, lastName, profilePicture, jobTitle, bio, email, profile_id);
+            await this.parser.updateDashboard(profile_id, dashboard_id);
             return STATUS_CODES.OK;
         } catch(error) {
             return this.statusCode.getStatusCode(error);
         }
     }
 
-    async deleteProfile(profile_id) {
+    async deleteDashboard(dashboard_id) {
         try {
-            await this.parser.deleteProfile(profile_id);
+            await this.parser.deleteDashboard(dashboard_id);
             return STATUS_CODES.OK;
         } catch(error) {
             return this.statusCode.getStatusCode(error);
@@ -45,4 +45,4 @@ class ProfileAPI {
     }
 }
 
-module.exports = ProfileAPI;
+module.exports = DashboardAPI;

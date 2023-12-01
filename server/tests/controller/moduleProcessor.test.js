@@ -6,7 +6,8 @@ jest.mock("../../parser/DatabaseParser", () => {
     const testParser = {
         storeModule: jest.fn(),
         parseModules: jest.fn(),
-        updateModule: jest.fn()
+        updateModule: jest.fn(),
+        deleteModule: jest.fn(),
     };
     return jest.fn(() => testParser);
 });
@@ -75,5 +76,55 @@ describe('module processor unit tests', () => {
         parser.storeModule.mockRejectedValue({code: 'help'});
         var actual = await moduleAPI.createModule(TEST_DATA.module_name, TEST_DATA.description, TEST_DATA.completion_percent, TEST_DATA.email);
         expect(actual).toEqual(STATUS_CODES.INTERNAL_SERVER_ERROR);
+    });
+
+    it('update module (pass case)', async () => {
+        parser.updateModule.mockResolvedValueOnce();
+        expect(await moduleAPI.updateModule(TEST_DATA.name, TEST_DATA.description, TEST_DATA.completion_percent, TEST_DATA.email, TEST_DATA.module_id)).toEqual(STATUS_CODES.OK);
+    });
+
+    it('update module (duplicate case)', async () => {
+        parser.updateModule.mockRejectedValue({code: '23505'});
+        expect(await moduleAPI.updateModule(TEST_DATA.name, TEST_DATA.description, TEST_DATA.completion_percent, TEST_DATA.email, TEST_DATA.module_id)).toEqual(STATUS_CODES.CONFLICT);
+    });
+
+    it('update module (bad data case)', async () => {
+        parser.updateModule.mockRejectedValue({code: '23514'});
+        expect(await moduleAPI.updateModule(TEST_DATA.name, TEST_DATA.description, TEST_DATA.completion_percent, TEST_DATA.email, TEST_DATA.module_id)).toEqual(STATUS_CODES.BAD_REQUEST);
+    });
+
+    it('update module (connection lost case)', async () => {
+        parser.updateModule.mockRejectedValue({code: '08000'});
+        expect(await moduleAPI.updateModule(TEST_DATA.name, TEST_DATA.description, TEST_DATA.completion_percent, TEST_DATA.email, TEST_DATA.module_id)).toEqual(STATUS_CODES.CONNECTION_ERROR);
+    });
+
+    it('update module (fatal error case)', async () => {
+        parser.updateModule.mockRejectedValue({code: 'adsfa'});
+        expect(await moduleAPI.updateModule(TEST_DATA.name, TEST_DATA.description, TEST_DATA.completion_percent, TEST_DATA.email, TEST_DATA.module_id)).toEqual(STATUS_CODES.INTERNAL_SERVER_ERROR);
+    });
+
+    it('delete module (pass case)', async () => {
+        parser.deleteModule.mockResolvedValueOnce();
+        expect(await moduleAPI.deleteModule(TEST_DATA.module_id)).toEqual(STATUS_CODES.OK);
+    });
+
+    it('delete module (duplicate case)', async () => {
+        parser.deleteModule.mockRejectedValue({code: '23505'});
+        expect(await moduleAPI.deleteModule(TEST_DATA.module_id)).toEqual(STATUS_CODES.CONFLICT);
+    });
+
+    it('delete module (bad data case)', async () => {
+        parser.deleteModule.mockRejectedValue({code: '23514'});
+        expect(await moduleAPI.deleteModule(TEST_DATA.module_id)).toEqual(STATUS_CODES.BAD_REQUEST);
+    });
+
+    it('delete module (connection lost case)', async () => {
+        parser.deleteModule.mockRejectedValue({code: '08000'});
+        expect(await moduleAPI.deleteModule(TEST_DATA.module_id)).toEqual(STATUS_CODES.CONNECTION_ERROR);
+    });
+
+    it('delete module (fatal error case)', async () => {
+        parser.deleteModule.mockRejectedValue({code: 'adsfa'});
+        expect(await moduleAPI.deleteModule(TEST_DATA.module_id)).toEqual(STATUS_CODES.INTERNAL_SERVER_ERROR);
     });
 });
