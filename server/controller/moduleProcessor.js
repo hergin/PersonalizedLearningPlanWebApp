@@ -1,5 +1,5 @@
 const DatabaseParser = require("../parser/databaseParser");
-const STATUS_CODES = require("../statusCodes");
+const STATUS_CODES = require("../utils/statusCodes");
 const StatusCodes = require("./StatusCodes");
 
 class ModuleAPI {
@@ -8,10 +8,11 @@ class ModuleAPI {
         this.statusCode = new StatusCodes();
     }
 
-    async getModule(email) {
+    async getModules(email) {
         try {
-            const module = await this.parser.parseModule(email);
-            return (module.length === 0) ? STATUS_CODES.UNAUTHORIZED : module[0];
+            const modules = await this.parser.parseModules(email);
+            console.log(`Parsed modules: \n${modules}`);
+            return modules;
         } catch(error) {
             return this.statusCode.getStatusCode(error);
         }
@@ -35,9 +36,9 @@ class ModuleAPI {
         }
     }
 
-    async deleteModule(email) {
+    async deleteModule(moduleID) {
         try {
-            await this.parser.deleteModule(email);
+            await this.parser.deleteModule(moduleID);
             return STATUS_CODES.OK;
         } catch(error) {
             return this.statusCode.getStatusCode(error);

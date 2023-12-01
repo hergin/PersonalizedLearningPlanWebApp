@@ -1,15 +1,14 @@
 const bcrypt = require("bcrypt");
 const LoginAPI = require("../../controller/loginProcessor");
-const ProfileAPI = require("../../controller/profileProcessor")
 const DatabaseParser = require("../../parser/databaseParser");
-const STATUS_CODES = require("../../statusCodes");
+const STATUS_CODES = require("../../utils/statusCodes");
 
 jest.mock("../../parser/DatabaseParser", () => {
     const testParser = {
         retrieveLogin: jest.fn(),
         storeLogin: jest.fn(),
-        storeProfile: jest.fn(),
-        parseProfile: jest.fn(),
+        storeToken: jest.fn(),
+        parseToken: jest.fn(),
     };
     return jest.fn(() => testParser);
 });
@@ -28,21 +27,15 @@ describe('Login Functions', () => {
         username: "Xx_george_xX",
         password: "password",
         email: "George123@Gmail.com",
-        firstName: "George",
-        lastName: "Johnson",
-        profilePicture: "",
-        bio: "I'm george!",
-        jobTitle: "Unemployed"
+        refreshToken: "UTDefpAEyREXmgCkK04pL1SXK6jrB2tEc2ZyMbrFs61THq2y3bpRZOCj5RiPoZGa",
     };
     
     let loginAPI;
     let parser;
-    let profileAPI;
 
     beforeEach(() => {
         parser = new DatabaseParser();
         loginAPI = new LoginAPI();
-        profileAPI = new ProfileAPI();
     });
 
     afterEach(() => {
@@ -103,54 +96,48 @@ describe('Login Functions', () => {
         expect(await loginAPI.createAccount(testData.username, testData.email, testData.password)).toEqual(STATUS_CODES.INTERNAL_SERVER_ERROR);
     });
 
-    it('create profile (pass case)', async () => {
-        parser.storeProfile.mockResolvedValueOnce();
-        expect(await profileAPI.createProfile(testData.username, testData.email, testData.password)).toEqual(STATUS_CODES.OK);
+    it('set token (pass case)', async () => {
+        parser.storeToken.mockResolvedValueOnce();
+        expect(await loginAPI.setToken(testData.email, testData.refreshToken)).toEqual(STATUS_CODES.OK);
     });
 
-    it('create profile (duplicate case)', async () => {
-        parser.storeProfile.mockRejectedValue({code: '23505'});
-        expect(await profileAPI.createProfile(testData.username, testData.email, testData.password)).toEqual(STATUS_CODES.CONFLICT);
+    it('set token (connection lost case)', async () => {
+        parser.storeToken.mockRejectedValue({code: '08000'});
+        expect(await loginAPI.setToken(testData.email, testData.refreshToken)).toEqual(STATUS_CODES.CONNECTION_ERROR);
     });
 
-    it('create profile (bad data case)', async () => {
-        parser.storeProfile.mockRejectedValue({code: '23514'});
-        expect(await profileAPI.createProfile(testData.username, testData.email, testData.password)).toEqual(STATUS_CODES.BAD_REQUEST);
+    it('set token (bad data case)', async () => {
+        parser.storeToken.mockRejectedValue({code: '23514'});
+        expect(await loginAPI.setToken(testData.email, testData.refreshToken)).toEqual(STATUS_CODES.BAD_REQUEST);
     });
 
-    it('create profile (connection lost case)', async () => {
-        parser.storeProfile.mockRejectedValue({code: '08000'});
-        expect(await profileAPI.createProfile(testData.username, testData.email, testData.password)).toEqual(STATUS_CODES.CONNECTION_ERROR);
+    it('set token (fatal error case)', async () => {
+        parser.storeToken.mockRejectedValue({code: 'aaaaah'});
+        expect(await loginAPI.setToken(testData.email, testData.refreshToken)).toEqual(STATUS_CODES.INTERNAL_SERVER_ERROR);
+    })
+
+    it('verify token (pass case)', async () => {
+        parser.parseToken.mockResolvedValueOnce([{'refreshtoken': testData.refreshToken}]);
+        expect(await loginAPI.verifyToken(testData.email, testData.refreshToken)).toEqual(STATUS_CODES.OK);
     });
 
-    it('create profile (fatal error case)', async () => {
-        parser.storeProfile.mockRejectedValue({code: 'adsfa'});
-        expect(await profileAPI.createProfile(testData.username, testData.email, testData.password)).toEqual(STATUS_CODES.INTERNAL_SERVER_ERROR);
+    it('verify token (unauthorized case)', async () => {
+        parser.parseToken.mockResolvedValueOnce([{'refreshToken': "I'm a wrong token"}]);
+        expect(await loginAPI.verifyToken(testData.email, testData.refreshToken)).toEqual(STATUS_CODES.UNAUTHORIZED);
     });
 
-    it('get profile (pass case)', async () => {
-        parser.parseProfile.mockResolvedValueOnce([
-            {firstname: testData.firstName, lastname: testData.lastName, profilepicture: testData.profilePicture, 
-                jobtitle: testData.jobTitle, bio: testData.bio, email: testData.email}
-        ]);
-        expect(await profileAPI.getProfile(testData.email)).toEqual({
-            firstname: testData.firstName, lastname: testData.lastName, profilepicture: testData.profilePicture,
-            jobtitle: testData.jobTitle, bio: testData.bio, email: testData.email
-        });
+    it('verify token (gone case)', async () => {
+        parser.parseToken.mockResolvedValueOnce([]);
+        expect(await loginAPI.verifyToken(testData.email, testData.refreshToken)).toEqual(STATUS_CODES.GONE);
     });
 
-    it('get profile (profile missing case)', async () => {
-        parser.parseProfile.mockResolvedValueOnce([]);
-        expect(await profileAPI.getProfile(testData.email)).toEqual(STATUS_CODES.UNAUTHORIZED);
+    it('verify token (bad data case)', async () => {
+        parser.parseToken.mockRejectedValue({code: '23514'});
+        expect(await loginAPI.verifyToken(testData.email, testData.refreshToken)).toEqual(STATUS_CODES.BAD_REQUEST);
     });
 
-    it('get profile (connection lost case)', async () => {
-        parser.parseProfile.mockRejectedValue({code: '08000'});
-        expect(await profileAPI.getProfile(testData.email)).toEqual(STATUS_CODES.CONNECTION_ERROR);
-    });
-
-    it('get profile (fatal error case)', async () => {
-        parser.parseProfile.mockRejectedValue({code: 'adfads'});
-        expect(await profileAPI.getProfile(testData.email)).toEqual(STATUS_CODES.INTERNAL_SERVER_ERROR);
+    it('verify token (fatal error case)', async () => {
+        parser.parseToken.mockRejectedValue({code: 'Im in your walls'});
+        expect(await loginAPI.verifyLogin(testData.email, testData.refreshToken)).toEqual(STATUS_CODES.INTERNAL_SERVER_ERROR);
     });
 });

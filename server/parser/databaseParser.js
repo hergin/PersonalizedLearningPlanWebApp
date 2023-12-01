@@ -14,9 +14,6 @@ class DatabaseParser {
             database: process.env.POSTGRES_DATABASE,
             port: process.env.POSTGRES_PORT
         });
-        this.pool.on("error", (error) => {
-            console.error("An error has occurred while parsing data.", error);
-        });
         console.log("Constructing complete!");
     }
 
@@ -43,6 +40,32 @@ class DatabaseParser {
         const result = await client.query(query);
         client.release();
         console.log("Login found!");
+        return result.rows;
+    }
+
+    //Token
+    async storeToken(email, refreshToken) {
+        console.log("Storing refresh token...");
+        const client = await this.pool.connect();
+        const query = {
+            text: "UPDATE ACCOUNT SET refreshToken = $1 WHERE email = $2",
+            values: [refreshToken, email]
+        };
+        await client.query(query);
+        client.release();
+        console.log("Token has been set!");
+    }
+
+    async parseToken(email) {
+        console.log("Retrieving refresh token...");
+        const client = await this.pool.connect();
+        const query = {
+            text: "SELECT refreshToken FROM ACCOUNT WHERE email = $1",
+            values: [email]
+        }
+        const result = await client.query(query);
+        client.release();
+        console.log("Token has been found!");
         return result.rows;
     }
 
@@ -83,7 +106,8 @@ class DatabaseParser {
         client.release();
         console.log("Profile data saved!");
     }
-//Module
+
+    //Module
     async storeModule(name, description, completion_percent, email) {
         console.log("Storing Module...");
         const query = {
@@ -96,7 +120,7 @@ class DatabaseParser {
         console.log("Module Stored!");
     }
 
-    async parseModule(email) {
+    async parseModules(email) {
         console.log("Getting Module...");
         const client = await this.pool.connect();
         const query = {
@@ -120,6 +144,7 @@ class DatabaseParser {
         client.release();
         console.log("Module data updated!");
     }
+    
     async deleteModule(module_id) {
         console.log("Deleting Module...");
         const client = await this.pool.connect();
@@ -133,7 +158,7 @@ class DatabaseParser {
         return result.rows;
     }
 
-//Goal
+    //Goal
     async parseGoal(module_id) {
         console.log("Getting Goals...");
         const client = await this.pool.connect();
@@ -163,7 +188,7 @@ class DatabaseParser {
         console.log("Inserting updated data into Goal...");
         const client = await this.pool.connect();
         const query = {
-            text: "UPDATE GOAL SET name = $1, description = $2, completion = $3, module_id = $4, goal_id = $5 WHERE goal_id = $5",
+            text: "UPDATE GOAL SET name = $1, description = $2, completion_perc = $3, module_id = $4, goal_id = $5 WHERE goal_id = $5",
             values: [name, description, completion, module_id, goal_id]
         };
         await client.query(query);

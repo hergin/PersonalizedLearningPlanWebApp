@@ -12,6 +12,7 @@ coverage
 /build
 
 # misc
+request_testing
 .env
 .vscode
 .DS_Store
