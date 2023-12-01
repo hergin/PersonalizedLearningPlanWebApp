@@ -4,7 +4,8 @@ app.use(express.json());
 
 const LoginAPI = require("./controller/loginProcessor");
 const ModuleAPI = require("./controller/moduleProcessor");
-const ProfileAPI = require("./controller/profileProcessor")
+const ProfileAPI = require("./controller/profileProcessor");
+const DashboardAPI = require("./controller/DashboardProcessor");
 const STATUS_CODES = require("./statusCodes");
 const GoalAPI = require("./controller/goalProcessor");
 const ERROR_MESSAGES = initializeErrorMap();
@@ -12,6 +13,7 @@ const loginAPI = new LoginAPI();
 const moduleAPI = new ModuleAPI();
 const profileAPI = new ProfileAPI();
 const goalAPI = new GoalAPI();
+const dashboardAPI = new DashboardAPI();
 
 function initializeErrorMap() {
     const errorMessageMap = new Map();
@@ -102,6 +104,18 @@ app.post('/api/goal', async(req, res) => {
         return;
     }
     res.sendStatus(STATUS_CODES.OK);
+});
+
+//Dashboard
+
+app.get('/api/dashboard', async(req, res) => {
+    console.log(req.body);
+    const dashboardQuery = await dashboardAPI.getDashboard(req.body.email);
+    if(typeof dashboardQuery !== "object") {
+        res.status(dashboardQuery).send(ERROR_MESSAGES.get(dashboardQuery));
+        return;
+    }
+    res.json(dashboardQuery);
 });
 
 //TODO: Create a routes folder
