@@ -12,7 +12,7 @@ jest.mock("../../parser/DatabaseParser", () => {
     return jest.fn(() => testParser);
 });
 
-describe('Login Functions', () => {
+describe('Dashboard Functions', () => {
     const testData = {
         profile_id: 7,
         dashboard_id: 3,
