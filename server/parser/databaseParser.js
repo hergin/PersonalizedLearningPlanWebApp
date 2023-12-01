@@ -43,7 +43,7 @@ class DatabaseParser {
         return result.rows;
     }
 
-    //Token
+//Token
     async storeToken(email, refreshToken) {
         console.log("Storing refresh token...");
         const client = await this.pool.connect();

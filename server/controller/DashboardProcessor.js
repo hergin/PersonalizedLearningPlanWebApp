@@ -1,5 +1,5 @@
 const DatabaseParser = require("../parser/databaseParser");
-const STATUS_CODES = require("../statusCodes");
+const STATUS_CODES = require("../utils/statusCodes");
 const StatusCodes = require("./StatusCodes")
 
 class DashboardAPI {

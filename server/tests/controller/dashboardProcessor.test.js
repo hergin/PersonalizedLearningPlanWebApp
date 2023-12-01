@@ -1,6 +1,6 @@
 const DashboardAPI = require("../../controller/DashboardProcessor")
 const DatabaseParser = require("../../parser/databaseParser");
-const STATUS_CODES = require("../../statusCodes");
+const STATUS_CODES = require("../../utils/statusCodes");
 
 jest.mock("../../parser/DatabaseParser", () => {
     const testParser = {
@@ -31,59 +31,59 @@ describe('Dashboard Functions', () => {
     });
 
 
-it('create dashboard (pass case)', async () => {
-    parser.storeDashboard.mockResolvedValueOnce();
-    expect(await dashboardAPI.createDashboard(testData.profile_id)).toEqual(STATUS_CODES.OK);
-});
-
-it('create dashboard (duplicate case)', async () => {
-    parser.storeDashboard.mockRejectedValue({code: '23505'});
-    expect(await dashboardAPI.createDashboard(testData.profile_id)).toEqual(STATUS_CODES.CONFLICT);
-});
-
-it('create dashboard (bad data case)', async () => {
-    parser.storeDashboard.mockRejectedValue({code: '23514'});
-    expect(await dashboardAPI.createDashboard(testData.profile_id)).toEqual(STATUS_CODES.BAD_REQUEST);
-});
-
-it('create dashboard (connection lost case)', async () => {
-    parser.storeDashboard.mockRejectedValue({code: '08000'});
-    expect(await dashboardAPI.createDashboard(testData.profile_id)).toEqual(STATUS_CODES.CONNECTION_ERROR);
-});
-
-it('create dashboard (fatal error case)', async () => {
-    parser.storeDashboard.mockRejectedValue({code: 'adsfa'});
-    expect(await dashboardAPI.createDashboard(testData.profile_id)).toEqual(STATUS_CODES.INTERNAL_SERVER_ERROR);
-});
-
-it('get dashboard (pass case)', async () => {
-    parser.parseDashboard.mockResolvedValueOnce([
-        {profile_id: testData.profile_id, dashboard_id: testData.dashboard_id}
-    ]);
-    expect(await dashboardAPI.getDashboard(testData.profile_id)).toEqual({
-        profile_id: testData.profile_id, dashboard_id: testData.dashboard_id
+    it('create dashboard (pass case)', async () => {
+        parser.storeDashboard.mockResolvedValueOnce();
+        expect(await dashboardAPI.createDashboard(testData.profile_id)).toEqual(STATUS_CODES.OK);
     });
-});
 
-it('get dashboard (dashboard missing case)', async () => {
-    parser.parseDashboard.mockResolvedValueOnce([]);
-    expect(await dashboardAPI.getDashboard(testData.profile_id)).toEqual(STATUS_CODES.UNAUTHORIZED);
-});
+    it('create dashboard (duplicate case)', async () => {
+        parser.storeDashboard.mockRejectedValue({code: '23505'});
+        expect(await dashboardAPI.createDashboard(testData.profile_id)).toEqual(STATUS_CODES.CONFLICT);
+    });
 
-it('get dashboard (connection lost case)', async () => {
-    parser.parseDashboard.mockRejectedValue({code: '08000'});
-    expect(await dashboardAPI.getDashboard(testData.profile_id)).toEqual(STATUS_CODES.CONNECTION_ERROR);
-});
+    it('create dashboard (bad data case)', async () => {
+        parser.storeDashboard.mockRejectedValue({code: '23514'});
+        expect(await dashboardAPI.createDashboard(testData.profile_id)).toEqual(STATUS_CODES.BAD_REQUEST);
+    });
 
-it('get dashboard (fatal error case)', async () => {
-    parser.parseDashboard.mockRejectedValue({code: 'adfads'});
-    expect(await dashboardAPI.getDashboard(testData.profile_id)).toEqual(STATUS_CODES.INTERNAL_SERVER_ERROR);
-});
+    it('create dashboard (connection lost case)', async () => {
+        parser.storeDashboard.mockRejectedValue({code: '08000'});
+        expect(await dashboardAPI.createDashboard(testData.profile_id)).toEqual(STATUS_CODES.CONNECTION_ERROR);
+    });
 
-it('update dashboard (pass case)', async () => {
-    parser.updateDashboard.mockResolvedValueOnce();
-    expect(await dashboardAPI.updateDashboard(testData.profile_id, testData.dashboard_id)).toEqual(STATUS_CODES.OK);
-});
+    it('create dashboard (fatal error case)', async () => {
+        parser.storeDashboard.mockRejectedValue({code: 'adsfa'});
+        expect(await dashboardAPI.createDashboard(testData.profile_id)).toEqual(STATUS_CODES.INTERNAL_SERVER_ERROR);
+    });
+
+    it('get dashboard (pass case)', async () => {
+        parser.parseDashboard.mockResolvedValueOnce([
+            {profile_id: testData.profile_id, dashboard_id: testData.dashboard_id}
+        ]);
+        expect(await dashboardAPI.getDashboard(testData.profile_id)).toEqual({
+            profile_id: testData.profile_id, dashboard_id: testData.dashboard_id
+        });
+    });
+
+    it('get dashboard (dashboard missing case)', async () => {
+        parser.parseDashboard.mockResolvedValueOnce([]);
+        expect(await dashboardAPI.getDashboard(testData.profile_id)).toEqual(STATUS_CODES.UNAUTHORIZED);
+    });
+
+    it('get dashboard (connection lost case)', async () => {
+        parser.parseDashboard.mockRejectedValue({code: '08000'});
+        expect(await dashboardAPI.getDashboard(testData.profile_id)).toEqual(STATUS_CODES.CONNECTION_ERROR);
+    });
+
+    it('get dashboard (fatal error case)', async () => {
+        parser.parseDashboard.mockRejectedValue({code: 'adfads'});
+        expect(await dashboardAPI.getDashboard(testData.profile_id)).toEqual(STATUS_CODES.INTERNAL_SERVER_ERROR);
+    });
+
+    it('update dashboard (pass case)', async () => {
+        parser.updateDashboard.mockResolvedValueOnce();
+        expect(await dashboardAPI.updateDashboard(testData.profile_id, testData.dashboard_id)).toEqual(STATUS_CODES.OK);
+    });
 
     it('update dashboard (duplicate case)', async () => {
         parser.updateDashboard.mockRejectedValue({code: '23505'});
