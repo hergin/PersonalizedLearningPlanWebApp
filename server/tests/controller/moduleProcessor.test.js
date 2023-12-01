@@ -78,9 +78,6 @@ describe('module processor unit tests', () => {
         expect(actual).toEqual(STATUS_CODES.INTERNAL_SERVER_ERROR);
     });
 
-
-
-
     it('update module (pass case)', async () => {
         parser.updateModule.mockResolvedValueOnce();
         expect(await moduleAPI.updateModule(TEST_DATA.name, TEST_DATA.description, TEST_DATA.completion_percent, TEST_DATA.email, TEST_DATA.module_id)).toEqual(STATUS_CODES.OK);

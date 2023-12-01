@@ -95,16 +95,29 @@ class DatabaseParser {
         console.log("Profile Created!");
     }
 
-    async updateProfileData(firstName, lastName, profilePicture, jobTitle, bio, email) {
+    async updateProfile(firstName, lastName, profilePicture, jobTitle, bio, email, profile_id) {
         console.log("Inserting new data into profile...");
         const client = await this.pool.connect();
         const query = {
-            text: "UPDATE PROFILE SET firstName = $1, lastName = $2, profilePicture = $3, jobTitle = $4, bio = $5 WHERE email = $6",
-            values: [firstName, lastName, profilePicture, jobTitle, bio, email]
+            text: "UPDATE PROFILE SET firstName = $1, lastName = $2, profilePicture = $3, jobTitle = $4, bio = $5, email = $6 WHERE profile_id = $7",
+            values: [firstName, lastName, profilePicture, jobTitle, bio, email, profile_id]
         };
         await client.query(query);
         client.release();
         console.log("Profile data saved!");
+    }
+
+    async deleteProfile(profile_id) {
+        console.log("Deleting Profile...");
+        const client = await this.pool.connect();
+        const query = {
+            text: "DELETE FROM Profile WHERE profile_id = $1",
+            values: [profile_id]
+        };
+        const result = await client.query(query);
+        client.release();
+        console.log("Deleted Profile!");
+        return result.rows;
     }
 
 //Dashboard

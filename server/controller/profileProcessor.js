@@ -26,9 +26,18 @@ class ProfileAPI {
         }
     }
 
-    async updateProfile(firstName, lastName, profilePicture, jobTitle, bio, email) {
+    async updateProfile(firstName, lastName, profilePicture, jobTitle, bio, email, profile_id) {
         try {
-            await this.parser.updateProfileData(firstName, lastName, profilePicture, jobTitle, bio, email);
+            await this.parser.updateProfile(firstName, lastName, profilePicture, jobTitle, bio, email, profile_id);
+            return STATUS_CODES.OK;
+        } catch(error) {
+            return this.statusCode.getStatusCode(error);
+        }
+    }
+
+    async deleteProfile(profile_id) {
+        try {
+            await this.parser.deleteProfile(profile_id);
             return STATUS_CODES.OK;
         } catch(error) {
             return this.statusCode.getStatusCode(error);
