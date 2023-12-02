@@ -6,6 +6,8 @@ jest.mock("../../parser/DatabaseParser", () => {
     const testParser = {
         storeProfile: jest.fn(),
         parseProfile: jest.fn(),
+        updateProfile: jest.fn(),
+        deleteProfile: jest.fn(),
     };
     return jest.fn(() => testParser);
 });
@@ -17,7 +19,8 @@ describe('profile processor', () => {
         lastName: "Johnson",
         profilePicture: "",
         bio: "I'm george!",
-        jobTitle: "Unemployed"
+        jobTitle: "Unemployed",
+        profile_id: 5,
     }
 
     let parser;
@@ -83,5 +86,55 @@ describe('profile processor', () => {
     it('get profile (fatal error case)', async () => {
         parser.parseProfile.mockRejectedValue({code: 'adfads'});
         expect(await profileAPI.getProfile(testData.email)).toEqual(STATUS_CODES.INTERNAL_SERVER_ERROR);
+    });
+
+    it('update profile (pass case)', async () => {
+        parser.updateProfile.mockResolvedValueOnce();
+        expect(await profileAPI.updateProfile(testData.firstName, testData.lastName, testData.profilePicture, testData.jobTitle, testData.bio, testData.email, testData.profile_id)).toEqual(STATUS_CODES.OK);
+    });
+
+    it('update profile (duplicate case)', async () => {
+        parser.updateProfile.mockRejectedValue({code: '23505'});
+        expect(await profileAPI.updateProfile(testData.firstName, testData.lastName, testData.profilePicture, testData.jobTitle, testData.bio, testData.email, testData.profile_id)).toEqual(STATUS_CODES.CONFLICT);
+    });
+
+    it('update profile (bad data case)', async () => {
+        parser.updateProfile.mockRejectedValue({code: '23514'});
+        expect(await profileAPI.updateProfile(testData.firstName, testData.lastName, testData.profilePicture, testData.jobTitle, testData.bio, testData.email, testData.profile_id)).toEqual(STATUS_CODES.BAD_REQUEST);
+    });
+
+    it('update profile (connection lost case)', async () => {
+        parser.updateProfile.mockRejectedValue({code: '08000'});
+        expect(await profileAPI.updateProfile(testData.firstName, testData.lastName, testData.profilePicture, testData.jobTitle, testData.bio, testData.email, testData.profile_id)).toEqual(STATUS_CODES.CONNECTION_ERROR);
+    });
+
+    it('update profile (fatal error case)', async () => {
+        parser.updateProfile.mockRejectedValue({code: 'adsfa'});
+        expect(await profileAPI.updateProfile(testData.firstName, testData.lastName, testData.profilePicture, testData.jobTitle, testData.bio, testData.email, testData.profile_id)).toEqual(STATUS_CODES.INTERNAL_SERVER_ERROR);
+    });
+
+    it('delete profile (pass case)', async () => {
+        parser.deleteProfile.mockResolvedValueOnce();
+        expect(await profileAPI.deleteProfile(testData.profile_id)).toEqual(STATUS_CODES.OK);
+    });
+
+    it('delete profile (duplicate case)', async () => {
+        parser.deleteProfile.mockRejectedValue({code: '23505'});
+        expect(await profileAPI.deleteProfile(testData.profile_id)).toEqual(STATUS_CODES.CONFLICT);
+    });
+
+    it('delete profile (bad data case)', async () => {
+        parser.deleteProfile.mockRejectedValue({code: '23514'});
+        expect(await profileAPI.deleteProfile(testData.profile_id)).toEqual(STATUS_CODES.BAD_REQUEST);
+    });
+
+    it('delete profile (connection lost case)', async () => {
+        parser.deleteProfile.mockRejectedValue({code: '08000'});
+        expect(await profileAPI.deleteProfile(testData.profile_id)).toEqual(STATUS_CODES.CONNECTION_ERROR);
+    });
+
+    it('delete profile (fatal error case)', async () => {
+        parser.deleteProfile.mockRejectedValue({code: 'adsfa'});
+        expect(await profileAPI.deleteProfile(testData.profile_id)).toEqual(STATUS_CODES.INTERNAL_SERVER_ERROR);
     });
 });
