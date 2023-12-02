@@ -27,9 +27,8 @@ describe('profile parser tests', () => {
     var client;
 
     beforeEach(async () => {
-        console.log("Connecting...");
         client = await parser.pool.connect();
-        console.log("Connected!");
+        await client.query(CREATE_ACCOUNT_QUERY);
     });
 
     afterEach(async () => {
@@ -45,7 +44,6 @@ describe('profile parser tests', () => {
     });
 
     it('store profile', async () => {
-        await client.query(CREATE_ACCOUNT_QUERY);
         await parser.storeProfile(TEST_DATA.firstName, TEST_DATA.lastName, TEST_DATA.email);
         var query = await client.query(
             "SELECT * FROM PROFILE WHERE firstName = $1 AND lastName = $2 AND email = $3",
@@ -65,7 +63,6 @@ describe('profile parser tests', () => {
     });
     
     it('parse profile', async () => {
-        await client.query(CREATE_ACCOUNT_QUERY);
         await client.query(CREATE_PROFILE_QUERY);
         var actual = await parser.parseProfile(TEST_DATA.email);
         expect(actual).toEqual([
@@ -82,7 +79,6 @@ describe('profile parser tests', () => {
     });
 
     it('update profile', async () => {
-        await client.query(CREATE_ACCOUNT_QUERY);
         await client.query(CREATE_PROFILE_QUERY);
         await parser.updateProfile(TEST_DATA.firstName, TEST_DATA.lastName, TEST_DATA.profilePicture, TEST_DATA.jobTitle, TEST_DATA.bio, TEST_DATA.email);
         var actual = await client.query(
@@ -101,4 +97,24 @@ describe('profile parser tests', () => {
             }
         ]);
     });
+
+    it('delete profile', async () => {
+        await client.query(CREATE_PROFILE_QUERY);
+        const profileID = await getProfileID();
+        await parser.deleteProfile(profileID);
+        const actual = await client.query(
+            'SELECT * FROM PROFILE WHERE profile_id = $1',
+            [profileID]
+        );
+        expect(actual.rows).toEqual([]);
+    });
+
+    async function getProfileID() {
+        const query = {
+            text: "SELECT profile_id FROM PROFILE WHERE email = $1",
+            values: [TEST_DATA.email]
+        };
+        const result = await client.query(query);
+        return result.rows[0].profile_id;
+    }
 });

@@ -17,9 +17,7 @@ describe('login parser tests', () => {
     var client;
 
     beforeEach(async () => {
-        console.log("Connecting...");
         client = await parser.pool.connect();
-        console.log("Connected!");
     });
 
     afterEach(async () => {
