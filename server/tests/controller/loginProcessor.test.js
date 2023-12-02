@@ -1,9 +1,9 @@
 const bcrypt = require("bcrypt");
 const LoginAPI = require("../../controller/loginProcessor");
-const DatabaseParser = require("../../parser/databaseParser");
+const LoginParser = require("../../parser/loginParser");
 const STATUS_CODES = require("../../utils/statusCodes");
 
-jest.mock("../../parser/DatabaseParser", () => {
+jest.mock("../../parser/loginParser", () => {
     const testParser = {
         retrieveLogin: jest.fn(),
         storeLogin: jest.fn(),
@@ -34,7 +34,7 @@ describe('Login Functions', () => {
     let parser;
 
     beforeEach(() => {
-        parser = new DatabaseParser();
+        parser = new LoginParser();
         loginAPI = new LoginAPI();
     });
 

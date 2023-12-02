@@ -1,10 +1,10 @@
-const DatabaseParser = require("../parser/databaseParser");
+const ProfileParser = require("../parser/profileParser");
 const STATUS_CODES = require("../utils/statusCodes");
 const StatusCodes = require("./StatusCodes")
 
 class ProfileAPI {
     constructor() {
-        this.parser = new DatabaseParser();
+        this.parser = new ProfileParser();
         this.statusCode = new StatusCodes();
     }
 

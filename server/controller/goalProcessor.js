@@ -1,10 +1,10 @@
-const DatabaseParser = require("../parser/databaseParser");
+const GoalParser = require("../parser/goalParser");
 const STATUS_CODES = require("../utils/statusCodes");
 const StatusCodes = require("./StatusCodes");
 
 class GoalAPI {
     constructor() {
-        this.parser = new DatabaseParser();
+        this.parser = new GoalParser();
         this.statusCode = new StatusCodes();
     }
 
