@@ -17,7 +17,7 @@ function App() {
           <Route exact path="/" element={<DefaultScreen />}>
             <Route element={<ProtectedRoute />}>
               <Route exact path="/LearningPlan" element={<LearningPlan />} />
-              <Route exact path="/goal/:id" element={<Goals />} />
+              <Route exact path="/goals/:id" element={<Goals />} />
             </Route>
 
             <Route path="/login" element={<LoginScreen />} />
