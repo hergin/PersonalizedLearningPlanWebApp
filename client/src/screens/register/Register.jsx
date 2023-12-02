@@ -101,6 +101,7 @@ const Register = () => {
             id="registerButton"
             disabled={submitDisabled}
             onClick={handleRegistration}
+            className="register-button"
           >
             Register
           </button>

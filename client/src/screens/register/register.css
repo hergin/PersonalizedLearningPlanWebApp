@@ -51,10 +51,20 @@
     margin: 40px 40px 0 40px;
     gap: 24px;
 }
+.register-button{
+    height: 40px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+    padding: 0 8px;
+    font-size: 16px;
+    background-color: var(--mainColor);
+    color: var(--mainColorHighlight);
+
+
+}
 
 .login-footer{
     display: flex;
-    margin-top: 0px;
     flex-direction: column;
     justify-content: center;
     align-items: center;

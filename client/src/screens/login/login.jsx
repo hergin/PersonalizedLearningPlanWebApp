@@ -3,7 +3,8 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { ApiClient } from "../../hooks/ApiClient";
 import { useUser } from "../../hooks/useUser";
 import "./login.css";
-
+import { IconButton, InputAdornment, TextField } from "@mui/material";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 const LoginScreen = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -12,13 +13,21 @@ const LoginScreen = () => {
   const { addUser } = useUser();
   const { post } = ApiClient();
   const buttonDisabled = email === "" || password === "";
+  const [showPassword, setShowPassword] = useState(false);
+  const handleClickShowPassword = () => setShowPassword(!showPassword);
 
   async function handleLogin(email, password) {
     try {
-      const response = await post("/login", {email, password});
-      addUser({email, accessToken: response.accessToken, refreshToken: response.refreshToken});
+      const response = await post("/login", { email, password });
+      addUser({
+        email,
+        accessToken: response.accessToken,
+        refreshToken: response.refreshToken,
+      });
       // Redirects if user came from another page.
-      (location.state?.from) ? navigate(location.state.from) : navigate("/LearningPlan");
+      location.state?.from
+        ? navigate(location.state.from)
+        : navigate("/LearningPlan");
     } catch (error) {
       console.error(error.message);
       alert(error.message);
@@ -32,22 +41,40 @@ const LoginScreen = () => {
           <h1>Login</h1>
         </div>
         <div className="login-form">
-          <input
-            type="text"
-            placeholder="Email"
+          <TextField
+            className="login-input"
+            label="Email"
+            variant="outlined"
+            type={"text"}
             value={email}
             onChange={(input) => setEmail(input.target.value)}
           />
-          <input
-            type="password"
-            placeholder="Password"
+          <TextField
+            className="login-input"
             value={password}
+            variant="outlined"
+            type={showPassword ? "text" : "password"}
             onChange={(input) => setPassword(input.target.value)}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label="toggle password visibility"
+                    onClick={handleClickShowPassword}
+                  >
+                    {showPassword ? <Visibility /> : <VisibilityOff />}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
+            label="Password"
           />
+
           <button
             onClick={() => {
               handleLogin(email, password);
             }}
+            className="login-button"
             disabled={buttonDisabled}
           >
             Login

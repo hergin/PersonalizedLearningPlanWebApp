@@ -3,6 +3,7 @@ import ModuleCreator from "../ModuleCreator";
 import { ApiClient } from "../../hooks/ApiClient";
 import { useUser } from "../../hooks/useUser";
 import "./ModuleComponent.css";
+import {Link} from "react-router-dom";
 
 const ModuleComponent = () => {
   const [modules, setModules] = useState([]);
@@ -47,6 +48,7 @@ const ModuleComponent = () => {
         {modules.map((module) => (
           <Module
             key={`ID-${module.module_id}`}
+            moduleId={module.module_id}
             goalName={module.module_name}
             goalDescription={module.description}
             completion={module.completion_percent}
@@ -58,18 +60,18 @@ const ModuleComponent = () => {
   );
 };
 
-const Module = ({ goalName, goalDescription, completion }) => {
+const Module = ({moduleId, moduleName, moduleDescription, moduleCompletion }) => {
   return (
-    <div className="module-div">
+    <Link to={`/goals/${moduleId}`} className="module-div">
       <div className="module-header">
-        <h1>{goalName}</h1>
+        <h1>{moduleName}</h1>
       </div>
       <div className="module-body">
-        <p>Progress: {completion === 100 ? "Completed" : "In progress"}</p>
+        <p>Progress: {moduleCompletion === 100 ? "Completed" : "In progress"}</p>
         <p>Description:</p>
-        <p>{goalDescription}</p>
+        <p>{moduleDescription}</p>
       </div>
-    </div>
+    </Link>
   );
 };
 

@@ -5,6 +5,7 @@ import LearningPlan from "./screens/LearningPlan";
 import LoginScreen from "./screens/login/login";
 import Register from "./screens/register/Register";
 import DefaultScreen from "./screens/Default";
+import Goals from "./screens/Goals/Goal";
 import ProtectedRoute from "./components/ProtectedRoutes/ProtectedRoute";
 import { AuthProvider } from "./context/AuthContext";
 
@@ -16,7 +17,9 @@ function App() {
           <Route exact path="/" element={<DefaultScreen />}>
             <Route element={<ProtectedRoute />}>
               <Route exact path="/LearningPlan" element={<LearningPlan />} />
+              <Route exact path="/goal/:id" element={<Goals />} />
             </Route>
+
             <Route path="/login" element={<LoginScreen />} />
             <Route path="/register" element={<Register />} />
           </Route>

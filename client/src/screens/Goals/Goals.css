@@ -1,0 +1,12 @@
+.goal-screen{
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+
+}
+.goal-body{
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  padding: 10%;
+}
