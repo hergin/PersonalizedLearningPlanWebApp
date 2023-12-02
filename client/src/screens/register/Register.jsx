@@ -20,7 +20,7 @@ const Register = () => {
 
   async function handleRegistration() {
     try {
-      const response = await post("/register", {
+      const response = await post("/auth/register", {
         firstName,
         lastName,
         email,

@@ -8,10 +8,10 @@ class GoalAPI {
         this.statusCode = new StatusCodes();
     }
 
-    async getGoal(module_id) {
+    async getGoals(module_id) {
         try {
-            const goal = await this.parser.parseGoal(module_id);
-            return (goal.length === 0) ? STATUS_CODES.UNAUTHORIZED : goal[0];
+            const goals = await this.parser.parseGoals(module_id);
+            return goals;
         } catch(error) {
             return this.statusCode.getStatusCode(error);
         }

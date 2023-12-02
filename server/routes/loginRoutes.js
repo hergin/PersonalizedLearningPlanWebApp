@@ -2,10 +2,12 @@ const express = require("express");
 const router = express.Router();
 const jwt = require("jsonwebtoken");
 const LoginAPI = require("../controller/loginProcessor");
+const ProfileAPI = require("../controller/profileProcessor");
 const initializeErrorMessages = require("../utils/errorMessages");
 const STATUS_CODES = require("../utils/statusCodes");
 
 const loginAPI = new LoginAPI();
+const profileAPI = new ProfileAPI();
 const ERROR_MESSAGES = initializeErrorMessages()
 
 router.post('/login', async (req, res) => {

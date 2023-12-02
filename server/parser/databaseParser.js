@@ -224,7 +224,7 @@ class DatabaseParser {
     }
 
 //Goal
-    async parseGoal(module_id) {
+    async parseGoals(module_id) {
         console.log("Getting Goals...");
         const client = await this.pool.connect();
         const query = {

@@ -10,7 +10,7 @@ const goalAPI = new GoalAPI();
 
 router.get('/get/:id', authenticateToken, async(req, res) => {
     console.log(`Received in get module: ${req.params.id}`);
-    const goalQuery = await goalAPI.getGoal(req.params.id);
+    const goalQuery = await goalAPI.getGoals(req.params.id);
     if(typeof goalQuery !== "object") {
         res.status(goalQuery).send(ERROR_MESSAGES.get(goalQuery));
         return;

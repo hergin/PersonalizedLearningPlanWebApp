@@ -18,7 +18,7 @@ const LoginScreen = () => {
 
   async function handleLogin(email, password) {
     try {
-      const response = await post("/login", { email, password });
+      const response = await post("/auth/login", { email, password });
       addUser({
         email,
         accessToken: response.accessToken,
