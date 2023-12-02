@@ -3,6 +3,7 @@ const router = express.Router();
 const authenticateToken = require("../utils/authenticateToken");
 const initializeErrorMessages = require("../utils/errorMessages");
 const ModuleAPI = require("../controller/moduleProcessor");
+const STATUS_CODES = require("../utils/statusCodes");
 
 const ERROR_MESSAGES = initializeErrorMessages();
 const moduleAPI = new ModuleAPI();
