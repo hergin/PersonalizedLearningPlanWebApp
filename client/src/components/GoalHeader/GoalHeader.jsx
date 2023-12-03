@@ -6,20 +6,7 @@ import GoalStepper from "../GoalStepper/GoalStepper";
 import { ApiClient } from "../../hooks/ApiClient";
 
 const GoalHeader = (moduleID) => {
-  const [steps, setSteps] = useState([
-    {
-      name: "Goal 1",
-      description: "This is the first goal",
-    },
-    {
-      name: "Goal 2",
-      description: "This is the second goal",
-    },
-    {
-      name: "Goal 3",
-      description: "This is the third goal",
-    },
-  ]);
+  const [steps, setSteps] = useState([]);
   const [goalProgress, setGoalProgress] = useState(0);
   const addGoalProgress = () => {
     if (goalProgress < 100) setGoalProgress(goalProgress + 100 / steps.length);
@@ -34,7 +21,7 @@ const GoalHeader = (moduleID) => {
   useEffect(() => {
     async function getGoals() {
       try {
-        const result = await get(`/goal/${moduleID}`);
+        const result = await get(`/goal/get/${moduleID}`);
         console.log(`Resulting data: ${result}`);
         let newGoals = [];
         for (let goal of result) {
