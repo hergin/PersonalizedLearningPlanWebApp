@@ -9,6 +9,7 @@ jest.mock("../../parser/loginParser", () => {
         storeLogin: jest.fn(),
         storeToken: jest.fn(),
         parseToken: jest.fn(),
+        deleteToken: jest.fn(),
     };
     return jest.fn(() => testParser);
 });
@@ -139,5 +140,15 @@ describe('Login Functions', () => {
     it('verify token (fatal error case)', async () => {
         parser.parseToken.mockRejectedValue({code: 'Im in your walls'});
         expect(await loginAPI.verifyLogin(testData.email, testData.refreshToken)).toEqual(STATUS_CODES.INTERNAL_SERVER_ERROR);
+    });
+
+    it('logout (pass case)', async () => {
+        parser.deleteToken.mockResolvedValueOnce();
+        expect(await loginAPI.logout(testData.email)).toEqual(STATUS_CODES.OK);
+    });
+
+    it('logout (error case)', async () => {
+        parser.deleteToken.mockRejectedValue({code: '23514'});
+        expect(await loginAPI.logout(testData.email)).toEqual(STATUS_CODES.BAD_REQUEST);
     });
 });

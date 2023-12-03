@@ -54,6 +54,15 @@ class LoginAPI {
         }
     }
 
+    async logout(email) {
+        try {
+            await this.parser.deleteToken(email);
+            return STATUS_CODES.OK;
+        } catch(error) {
+            return this.statusCode.getStatusCode(error);
+        }
+    }
+
     async #hashPassword(password) {
         const salt = await bcrypt.genSalt(10);
         return await bcrypt.hash(password, salt);

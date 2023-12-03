@@ -6,7 +6,6 @@ const jwt = require("jsonwebtoken");
 
 function authenticateToken(req, res, next) {
     const authHeader = req.headers['authorization'];
-    // TODO: Decoder
     const token = authHeader && authHeader.split(' ')[1];
     if(token == null) {
         console.log("Token was null!");
