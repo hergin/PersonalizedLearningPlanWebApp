@@ -46,9 +46,9 @@ router.delete('/delete/:id', authenticateToken, async (req, res) => {
     res.sendStatus(STATUS_CODES.OK);
 });
 
-router.put('/edit', authenticateToken, async (req, res) => {
-    console.log(`Received: ${req.body.module_id}`);
-    const moduleQuery = await moduleAPI.updateModule(req.body.name, req.body.description, req.body.completion, req.body.email);
+router.put('/edit/:id', authenticateToken, async (req, res) => {
+    console.log(`Received: ${req.params.id}`);
+    const moduleQuery = await moduleAPI.updateModule(req.params.id, req.body.name, req.body.description, req.body.completion, req.body.email);
     if(moduleQuery !== STATUS_CODES.OK) {
         console.log("Something went wrong while deleting module.");
         res.status(moduleQuery).send(ERROR_MESSAGES.get(moduleQuery));
