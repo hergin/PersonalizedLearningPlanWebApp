@@ -20,7 +20,7 @@ function NavBar() {
             <Link to="/LearningPlan" className="link-dec"> Learning Plan</Link>
           </li>
           <li className="nav-li">
-            <Link to="/coach" className="link-dec"> Coach</Link>
+            <Link to="/#" className="link-dec"> Coach</Link>
           </li>
           <li className="nav-li">
             <Link to="/#" className="link-dec"> Dashboard</Link>
