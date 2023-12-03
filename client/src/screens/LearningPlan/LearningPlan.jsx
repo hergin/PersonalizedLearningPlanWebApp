@@ -1,9 +1,9 @@
-import React, {useEffect} from "react";
+import React, { useEffect } from "react";
 import ModuleComponent from "../../components/ModuleComponent/";
 import { useAuth } from "../../context/AuthContext";
 
-function Dashboard(){
-  const {user, setUser} = useAuth();
+function LearningPlan() {
+  const { user, setUser } = useAuth();
 
   useEffect(() => {
     console.log(`Default screen: ${localStorage.getItem("user")}`);
@@ -15,6 +15,6 @@ function Dashboard(){
       <ModuleComponent />
     </div>
   );
-};
+}
 
-export default Dashboard;
+export default LearningPlan;
