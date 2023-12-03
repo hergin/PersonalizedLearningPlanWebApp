@@ -50,6 +50,18 @@ class LoginParser extends DatabaseParser {
         console.log("Token has been found!");
         return result.rows;
     }
+
+    async deleteToken(email) {
+        console.log("Deleting token...");
+        const client = await this.pool.connect();
+        const query = {
+            text: "UPDATE ACCOUNT SET refreshToken = '' WHERE email = $1",
+            values: [email]
+        };
+        await client.query(query);
+        client.release();
+        console.log("Token deleted!");
+    }
 }
 
 module.exports = LoginParser;

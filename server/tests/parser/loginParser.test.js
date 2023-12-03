@@ -73,4 +73,22 @@ describe('login parser tests', () => {
             }
         ]);
     });
+
+    it('delete token', async () => {
+        await client.query(CREATE_ACCOUNT_QUERY);
+        await client.query(
+            "UPDATE ACCOUNT SET refreshToken = $1 WHERE email = $2",
+            [TEST_DATA.refreshToken, TEST_DATA.email]
+        );
+        await parser.deleteToken(TEST_DATA.email);
+        const actual = await client.query(
+            "SELECT refreshToken FROM ACCOUNT WHERE email = $1",
+            [TEST_DATA.email]
+        );
+        expect(actual.rows).toEqual([
+            {
+                'refreshtoken': ''
+            }
+        ]);
+    });
 });
