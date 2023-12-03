@@ -31,7 +31,7 @@ export const useUser = () => {
     const removeUser = () => {
         console.log("Removing user from local storage...");
         setUser({email: "", accessToken: "", refreshToken: ""});
-        setItem("user", user);
+        setItem("user", JSON.stringify(user));
     }
 
     return {user, addUser, replaceToken, removeUser};
