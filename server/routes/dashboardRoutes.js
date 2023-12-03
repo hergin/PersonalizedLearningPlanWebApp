@@ -28,9 +28,9 @@ router.post('/create', authenticateToken, async (req, res) => {
     res.sendStatus(STATUS_CODES.OK);
 });
 
-router.delete('/delete', authenticateToken, async (req, res) => {
-    console.log(`Received in delete dashboard: ${req.body}`);
-    const dashboardQuery = await api.deleteDashboard(req.body.dashboard_id);
+router.delete('/delete/:id', authenticateToken, async (req, res) => {
+    console.log(`Received in delete dashboard: ${req.params.id}`);
+    const dashboardQuery = await api.deleteDashboard(req.params.id);
     if(dashboardQuery !== STATUS_CODES.OK) {
         res.status(dashboardQuery).send(ERROR_MESSAGES.get(dashboardQuery));
         return;
