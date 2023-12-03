@@ -27,9 +27,9 @@ class ModuleAPI {
         }
     }
 
-    async updateModule(name, description, completion_percent, email) {
+    async updateModule(module_id, name, description, completion_percent, email) {
         try {
-            await this.parser.updateModule(name, description, completion_percent, email);
+            await this.parser.updateModule(name, description, completion_percent, email, module_id);
             return STATUS_CODES.OK;
         } catch(error) {
             return this.statusCode.getStatusCode(error);
