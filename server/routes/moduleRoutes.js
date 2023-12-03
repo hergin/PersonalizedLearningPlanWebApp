@@ -35,9 +35,9 @@ router.post('/add', authenticateToken, async(req, res) => {
     res.status(STATUS_CODES.OK).json(moduleQuery2);
 });
 
-router.delete('/delete', authenticateToken, async (req, res) => {
-    console.log(`Received: ${req.body.module_id}`);
-    const moduleQuery = await moduleAPI.deleteModule(req.body.module_id);
+router.delete('/delete/:id', authenticateToken, async (req, res) => {
+    console.log(`Received: ${req.params.id}`);
+    const moduleQuery = await moduleAPI.deleteModule(req.params.id);
     if(moduleQuery !== STATUS_CODES.OK) {
         console.log("Something went wrong while deleting module.");
         res.status(moduleQuery).send(ERROR_MESSAGES.get(moduleQuery));
