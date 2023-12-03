@@ -65,8 +65,7 @@ describe('profile parser tests', () => {
     it('parse profile', async () => {
         await client.query(CREATE_PROFILE_QUERY);
         var actual = await parser.parseProfile(TEST_DATA.email);
-        expect(actual).toEqual([
-            {
+        expect(actual).toEqual({
                 profile_id: expect.any(Number), 
                 firstname: TEST_DATA.firstName, 
                 lastname: TEST_DATA.lastName,
@@ -74,8 +73,7 @@ describe('profile parser tests', () => {
                 jobtitle: null,
                 bio: null,
                 email: TEST_DATA.email
-            }
-        ]);
+        });
     });
 
     it('update profile', async () => {

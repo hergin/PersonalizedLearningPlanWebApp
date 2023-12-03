@@ -9,9 +9,11 @@ const ERROR_MESSAGES = initializeErrorMessages();
 const profileAPI = new ProfileAPI();
 
 router.get('/get/:id', authenticateToken, async(req, res) => {
-    const profileQuery = await profileAPI.getProfile(req.body.email);
+    console.log(`Data Received in get profile: ${req.params.id}`);
+    const profileQuery = await profileAPI.getProfile(req.params.id);
     if(typeof profileQuery !== "object") {
         console.error("There was a problem retrieving profile.");
+        console.log(profileQuery);
         res.status(profileQuery).send(ERROR_MESSAGES.get(profileQuery));
         return;
     }

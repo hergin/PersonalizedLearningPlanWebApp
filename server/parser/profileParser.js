@@ -11,7 +11,7 @@ class ProfileParser extends DatabaseParser {
         const result = await client.query(query);
         client.release();
         console.log("Found profile!");
-        return result.rows;
+        return result.rows[0];
     }
 
     async storeProfile(firstName, lastName, email) {

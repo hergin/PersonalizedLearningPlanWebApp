@@ -13,12 +13,10 @@
     flex-direction: column;
     justify-content: center;
     align-items: normal;
-    align-items: normal;
     height: 350px;
     width: 300px;
     padding: 10px 0 10px 0;
     border: 0.8px solid rgb(219, 219, 219);
-    
 }
 
 
@@ -69,8 +67,6 @@
     font-size: 16px;
     background-color: var(--mainColor);
     color: var(--mainColorHighlight);
-
-
 }
 
 .login-button:hover {
