@@ -3,13 +3,13 @@ require('dotenv').config({
     path: path.join(__dirname, ".env")
 });
 const bcrypt = require("bcrypt");
-const DatabaseParser = require("../parser/databaseParser");
+const LoginParser = require("../parser/loginParser");
 const STATUS_CODES = require("../utils/statusCodes");
 const StatusCodes = require("./StatusCodes");
 
 class LoginAPI {
     constructor() {
-      this.parser = new DatabaseParser();
+      this.parser = new LoginParser();
       this.statusCode = new StatusCodes();
     }
 
