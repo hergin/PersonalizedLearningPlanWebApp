@@ -5,16 +5,15 @@ import { Box, CircularProgress, Typography } from "@mui/material";
 import GoalStepper from "../GoalStepper/GoalStepper";
 import { ApiClient } from "../../hooks/ApiClient";
 
-const GoalHeader = (moduleID) => {
+const GoalHeader = ({ moduleID }) => {
   const [steps, setSteps] = useState([]);
+  console.log(steps.map((step) => step.name));
   const [goalProgress, setGoalProgress] = useState(0);
   const addGoalProgress = () => {
     if (goalProgress < 100) setGoalProgress(goalProgress + 100 / steps.length);
-    console.log(goalProgress);
   };
   const restGoalProgress = () => {
     if (goalProgress > 0) setGoalProgress(goalProgress - 100 / steps.length);
-    console.log(goalProgress);
   };
   const { get } = ApiClient();
 
@@ -22,11 +21,9 @@ const GoalHeader = (moduleID) => {
     async function getGoals() {
       try {
         const result = await get(`/goal/get/${moduleID}`);
-        console.log(`Resulting data: ${result}`);
         let newGoals = [];
         for (let goal of result) {
-          console.log(`Adding ${goal.goal_name}`);
-          newGoals.push(module);
+          newGoals.push(goal);
         }
         setSteps(newGoals);
       } catch (error) {
@@ -45,7 +42,6 @@ const GoalHeader = (moduleID) => {
     }
     let newGoal = [].concat(steps);
     newGoal.push(goal);
-    console.log(newGoal);
     setSteps(newGoal);
   };
 

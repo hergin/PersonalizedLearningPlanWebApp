@@ -3,8 +3,12 @@ import "./ModuleCreate.css";
 import Modal from "@mui/material/Modal";
 import { useUser } from "../../hooks/useUser";
 import { ApiClient } from "../../hooks/ApiClient";
+import PropTypes from "prop-types";
 
 function ModuleCreator({ addModule }) {
+  ModuleCreator.propTypes = {
+    addModule: PropTypes.func,
+  };
   const [moduleName, setModuleName] = useState("");
   const [description, setDescription] = useState("");
   const [open, setOpen] = useState(false);
