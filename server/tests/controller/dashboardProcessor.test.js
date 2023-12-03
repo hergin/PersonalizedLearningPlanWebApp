@@ -1,8 +1,8 @@
 const DashboardAPI = require("../../controller/DashboardProcessor")
-const DatabaseParser = require("../../parser/databaseParser");
+const DashboardParser = require("../../parser/dashboardParser");
 const STATUS_CODES = require("../../utils/statusCodes");
 
-jest.mock("../../parser/DatabaseParser", () => {
+jest.mock("../../parser/dashboardParser", () => {
     const testParser = {
         storeDashboard: jest.fn(),
         parseDashboard: jest.fn(),
@@ -22,7 +22,7 @@ describe('Dashboard Functions', () => {
     let dashboardAPI;
 
     beforeEach(() => {
-        parser = new DatabaseParser();
+        parser = new DashboardParser();
         dashboardAPI = new DashboardAPI();
     });
 

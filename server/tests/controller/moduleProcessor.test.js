@@ -1,8 +1,8 @@
 const ModuleAPI = require("../../controller/moduleProcessor");
-const DatabaseParser = require("../../parser/databaseParser");
+const ModuleParser = require("../../parser/moduleParser");
 const STATUS_CODES = require("../../utils/statusCodes");
 
-jest.mock("../../parser/DatabaseParser", () => {
+jest.mock("../../parser/moduleParser", () => {
     const testParser = {
         storeModule: jest.fn(),
         parseModules: jest.fn(),
@@ -25,7 +25,7 @@ describe('module processor unit tests', () => {
     let parser;
     
     beforeEach(() => {
-        parser = new DatabaseParser();
+        parser = new ModuleParser();
         moduleAPI = new ModuleAPI();
     });
 

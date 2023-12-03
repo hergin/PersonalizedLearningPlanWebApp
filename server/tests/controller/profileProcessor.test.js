@@ -1,8 +1,8 @@
 const ProfileAPI = require("../../controller/profileProcessor")
-const DatabaseParser = require("../../parser/databaseParser");
+const ProfileParser = require("../../parser/profileParser");
 const STATUS_CODES = require("../../utils/statusCodes");
 
-jest.mock("../../parser/DatabaseParser", () => {
+jest.mock("../../parser/profileParser", () => {
     const testParser = {
         storeProfile: jest.fn(),
         parseProfile: jest.fn(),
@@ -27,7 +27,7 @@ describe('profile processor', () => {
     let profileAPI;
 
     beforeEach(() => {
-        parser = new DatabaseParser();
+        parser = new ProfileParser();
         profileAPI = new ProfileAPI();
     });
 

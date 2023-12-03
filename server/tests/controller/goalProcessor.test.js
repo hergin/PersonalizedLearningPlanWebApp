@@ -1,11 +1,11 @@
 const GoalAPI = require("../../controller/goalProcessor");
-const DatabaseParser = require("../../parser/databaseParser");
+const GoalParser = require("../../parser/goalParser");
 const STATUS_CODES = require("../../utils/statusCodes");
 
-jest.mock("../../parser/DatabaseParser", () => {
+jest.mock("../../parser/goalParser", () => {
     const testParser = {
         storeGoal: jest.fn(),
-        parseGoal: jest.fn(),
+        parseGoals: jest.fn(),
         updateGoal: jest.fn(),
         deleteGoal: jest.fn()
     };
@@ -25,7 +25,7 @@ describe('goal processor unit tests', () => {
     let parser;
 
     beforeEach(() => {
-        parser = new DatabaseParser();
+        parser = new GoalParser();
         goalAPI = new GoalAPI();
     });
 
@@ -33,34 +33,29 @@ describe('goal processor unit tests', () => {
         jest.clearAllMocks();
     });
 
-    it('get goal (correct case)', async () => {
-        parser.parseGoal.mockResolvedValueOnce([
+    it('get goals (correct case)', async () => {
+        parser.parseGoals.mockResolvedValueOnce([
             {
                 name: TEST_DATA.name, description: TEST_DATA.description, completion: TEST_DATA.completion,
                 module_id: TEST_DATA.module_id, goal_id: TEST_DATA.goal_id
             }
         ]);
-        expect(await goalAPI.getGoal(TEST_DATA.module_id)).toEqual(
+        expect(await goalAPI.getGoals(TEST_DATA.module_id)).toEqual([
             {
                 name: TEST_DATA.name, description: TEST_DATA.description, completion: TEST_DATA.completion,
                 module_id: TEST_DATA.module_id, goal_id: TEST_DATA.goal_id
             }
-        );
+        ]);
     });
 
-    it('get goal (unauthorized case)', async () => {
-        parser.parseGoal.mockResolvedValueOnce([]);
-        expect(await goalAPI.getGoal(TEST_DATA.module_id)).toEqual(STATUS_CODES.UNAUTHORIZED);
+    it('get goals (network error case)', async () => {
+        parser.parseGoals.mockRejectedValue({code: '08000'});
+        expect(await goalAPI.getGoals(TEST_DATA.module_id)).toEqual(STATUS_CODES.CONNECTION_ERROR);
     });
 
-    it('get goal (network error case)', async () => {
-        parser.parseGoal.mockRejectedValue({code: '08000'});
-        expect(await goalAPI.getGoal(TEST_DATA.module_id)).toEqual(STATUS_CODES.CONNECTION_ERROR);
-    });
-
-    it('get goal (fatal server error case)', async () => {
-        parser.parseGoal.mockRejectedValue({code: 'aaaaah'});
-        expect(await goalAPI.getGoal(TEST_DATA.module_id)).toEqual(STATUS_CODES.INTERNAL_SERVER_ERROR);
+    it('get goals (fatal server error case)', async () => {
+        parser.parseGoals.mockRejectedValue({code: 'aaaaah'});
+        expect(await goalAPI.getGoals(TEST_DATA.module_id)).toEqual(STATUS_CODES.INTERNAL_SERVER_ERROR);
     });
 
     it('create goal (correct case)', async () => {
