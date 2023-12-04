@@ -26,9 +26,9 @@ class GoalAPI {
         }
     }
 
-    async updateGoal(name, description, completion, module_id, goal_id) {
+    async updateGoal(goal_id, name, description, completion) {
         try {
-            await this.parser.updateGoal(name, description, completion, module_id, goal_id);
+            await this.parser.updateGoal(goal_id, name, description, completion);
             return STATUS_CODES.OK;
         } catch(error) {
             return this.statusCode.getStatusCode(error);

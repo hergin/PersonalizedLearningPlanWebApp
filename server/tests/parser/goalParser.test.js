@@ -89,7 +89,7 @@ describe('goal parser tests', () => {
             [TEST_DATA.goalName, TEST_DATA.goalDescription, TEST_DATA.isComplete, moduleID]
         );
         var goalID = await getGoalID();
-        await parser.updateGoal("Homework", "Complete my homework today.", false, moduleID, goalID);
+        await parser.updateGoal(goalID, "Homework", "Complete my homework today.", false);
         var actual = await client.query(
             "SELECT * FROM GOAL WHERE goal_id = $1",
             [goalID]

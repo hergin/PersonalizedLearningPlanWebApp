@@ -8,9 +8,19 @@ const STATUS_CODES = require("../utils/statusCodes");
 const ERROR_MESSAGES = initializeErrorMessages();
 const goalAPI = new GoalAPI();
 
-router.get('/get/:id', authenticateToken, async(req, res) => {
-    console.log(`Received in get module: ${req.params.id}`);
+router.get('/get/module/:id', authenticateToken, async(req, res) => {
+    console.log(`Received in get goals: ${req.params.id}`);
     const goalQuery = await goalAPI.getGoals(req.params.id);
+    if(typeof goalQuery !== "object") {
+        res.status(goalQuery).send(ERROR_MESSAGES.get(goalQuery));
+        return;
+    }
+    res.json(goalQuery);
+});
+
+router.put('/update/:id', authenticateToken, async(req, res) => {
+    console.log(`Received in update goal: ${req.params.id}`);
+    const goalQuery = await goalAPI.updateGoal(req.params.id, req.body.name, req.body.description, req.body.isComplete);
     if(typeof goalQuery !== "object") {
         res.status(goalQuery).send(ERROR_MESSAGES.get(goalQuery));
         return;

@@ -84,27 +84,27 @@ describe('goal processor unit tests', () => {
 
     it('update goal (pass case)', async () => {
         parser.updateGoal.mockResolvedValueOnce();
-        expect(await goalAPI.updateGoal(TEST_DATA.name, TEST_DATA.description, TEST_DATA.completion, TEST_DATA.module_id, TEST_DATA.goal_id)).toEqual(STATUS_CODES.OK);
+        expect(await goalAPI.updateGoal(TEST_DATA.goal_id, TEST_DATA.name, TEST_DATA.description, TEST_DATA.completion)).toEqual(STATUS_CODES.OK);
     });
 
     it('update goal (duplicate case)', async () => {
         parser.updateGoal.mockRejectedValue({code: '23505'});
-        expect(await goalAPI.updateGoal(TEST_DATA.name, TEST_DATA.description, TEST_DATA.completion, TEST_DATA.module_id, TEST_DATA.goal_id)).toEqual(STATUS_CODES.CONFLICT);
+        expect(await goalAPI.updateGoal(TEST_DATA.goal_id, TEST_DATA.name, TEST_DATA.description, TEST_DATA.completion)).toEqual(STATUS_CODES.CONFLICT);
     });
 
     it('update goal (bad data case)', async () => {
         parser.updateGoal.mockRejectedValue({code: '23514'});
-        expect(await goalAPI.updateGoal(TEST_DATA.name, TEST_DATA.description, TEST_DATA.completion, TEST_DATA.module_id, TEST_DATA.goal_id)).toEqual(STATUS_CODES.BAD_REQUEST);
+        expect(await goalAPI.updateGoal(TEST_DATA.goal_id, TEST_DATA.name, TEST_DATA.description, TEST_DATA.completion)).toEqual(STATUS_CODES.BAD_REQUEST);
     });
 
     it('update goal (connection lost case)', async () => {
         parser.updateGoal.mockRejectedValue({code: '08000'});
-        expect(await goalAPI.updateGoal(TEST_DATA.name, TEST_DATA.description, TEST_DATA.completion, TEST_DATA.module_id, TEST_DATA.goal_id)).toEqual(STATUS_CODES.CONNECTION_ERROR);
+        expect(await goalAPI.updateGoal(TEST_DATA.goal_id, TEST_DATA.name, TEST_DATA.description, TEST_DATA.completion)).toEqual(STATUS_CODES.CONNECTION_ERROR);
     });
 
     it('update goal (fatal error case)', async () => {
         parser.updateGoal.mockRejectedValue({code: 'adsfa'});
-        expect(await goalAPI.updateGoal(TEST_DATA.name, TEST_DATA.description, TEST_DATA.completion, TEST_DATA.module_id, TEST_DATA.goal_id)).toEqual(STATUS_CODES.INTERNAL_SERVER_ERROR);
+        expect(await goalAPI.updateGoal(TEST_DATA.goal_id, TEST_DATA.name, TEST_DATA.description, TEST_DATA.completion)).toEqual(STATUS_CODES.INTERNAL_SERVER_ERROR);
     });
 
     it('delete goal (pass case)', async () => {
