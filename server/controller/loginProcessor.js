@@ -2,7 +2,7 @@ const path = require("path");
 require('dotenv').config({
     path: path.join(__dirname, ".env")
 });
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 const LoginParser = require("../parser/loginParser");
 const STATUS_CODES = require("../utils/statusCodes");
 const StatusCodes = require("./StatusCodes");

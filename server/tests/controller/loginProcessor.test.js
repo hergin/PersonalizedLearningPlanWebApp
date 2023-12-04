@@ -1,4 +1,4 @@
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 const LoginAPI = require("../../controller/loginProcessor");
 const LoginParser = require("../../parser/loginParser");
 const STATUS_CODES = require("../../utils/statusCodes");
@@ -14,7 +14,7 @@ jest.mock("../../parser/loginParser", () => {
     return jest.fn(() => testParser);
 });
 
-jest.mock("bcrypt", () => {
+jest.mock("bcryptjs", () => {
     const testBcrypt = {
         compare: jest.fn(),
         genSalt: jest.fn(),
