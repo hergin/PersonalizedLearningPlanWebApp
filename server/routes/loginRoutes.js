@@ -56,6 +56,16 @@ router.post('/register', async(req, res) => {
     res.sendStatus(STATUS_CODES.OK);
 });
 
+router.post('/logout', async(req, res) => {
+    console.log(`Received in logout: ${req.body}`);
+    const logoutQuery = await loginAPI.logout(req.body.email);
+    if(logoutQuery !== STATUS_CODES.OK) {
+        res.status(logoutQuery).send(ERROR_MESSAGES.get(logoutQuery));
+        return;
+    }
+    res.sendStatus(STATUS_CODES.OK);
+});
+
 function generateAccessToken(email) {
     return jwt.sign(email, process.env.ACCESS_TOKEN_SECRET, {}, {expiresIn: "30m"});
 }
