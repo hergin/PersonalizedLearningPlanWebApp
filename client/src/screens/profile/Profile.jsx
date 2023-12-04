@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { useUser } from "../../hooks/useUser";
 import { ApiClient } from "../../hooks/ApiClient";
 import profilePicture from "../../resources/Default_Profile_Picture.jpg";
@@ -12,7 +13,8 @@ function Profile() {
     const [jobTitle, setJobTitle] = useState();
     const [bio, setBio] = useState();
     const [editMode, setEditMode] = useState(false);
-    const { user } = useUser();
+    const navigate = useNavigate();
+    const { user, removeUser } = useUser();
     const { get, put, del } = ApiClient();
 
     useEffect(() => {
@@ -49,6 +51,9 @@ function Profile() {
     async function deleteAccount() {
         try {
             await del(`/profile/delete/${id}`);
+            await del(`/auth/delete/${user.email}`);
+            removeUser();
+            navigate("/#");
         } catch(error) {
             console.error(error);
             alert(error.message ? error.message : error);
@@ -57,91 +62,85 @@ function Profile() {
 
     return (
         <div className="parent-div">
-            <div className="profile-container">
-                {editMode ?
-                    <div className="basic information-container">
-                        <div className="text-entry">    
-                            <label for="firstName">First name:</label>
-                            <input
-                                id="firstName"
-                                name="profile"
-                                type="text"
-                                placeholder="First Name"
-                                value={firstName}
-                                defaultValue={firstName}
-                                onChange={(event) => {setFirstName(event.target.value)}}
-                            />
-                        </div>
-                        <div className="text-entry">    
-                            <label for="lastName">Last name:</label>
-                            <input
-                                id="lastName"
-                                name="profile"
-                                type="text"
-                                placeholder="Last Name"
-                                value={lastName}
-                                defaultValue={lastName}
-                                onChange={(event) => {setLastName(event.target.value)}}
-                            />
-                        </div>
-                        <div className="text-entry">
-                            <label for="jobTitle">Job title:</label>
-                            <input
-                                id="jobTitle"
-                                name="profile"
-                                type="text"
-                                placeholder="Job Title"
-                                value={jobTitle}
-                                defaultValue={jobTitle}
-                                onChange={(event) => {setJobTitle(event.target.value)}}
-                            />
-                        </div>
-                    </div>    
+            <div className="profile-header">
+                <img src={profilePicture} alt="pfp here"/>
+                {
+                    editMode ?
+                    <input
+                        id="profile"
+                        name="profile"
+                        type="text"
+                        placeholder="username"
+                        value={username}
+                        defaultValue={username}
+                        onChange={(event) => {setUsername(event.target.value)}}
+                    />
                     :
-                    <div className="basic information-container">
-                        <p>First name: {firstName ? firstName : ""}</p>
-                        <p>Last name: {lastName ? lastName : ""}</p>
-                        <p>Job title: {jobTitle ? jobTitle : ""}</p>
-                    </div>
+                    <p className="username-display">{username}</p>    
                 }
+            </div>
+            {editMode ?
                 <div className="information-container">
-                    <div className="bio-header">
-                        <img src={profilePicture} alt="pfp here"/>
-                        {
-                            editMode ?
-                            <input
-                                id="profile"
-                                name="profile"
-                                type="text"
-                                placeholder="username"
-                                value={username}
-                                defaultValue={username}
-                                onChange={(event) => {setUsername(event.target.value)}}
-                            />
-                            :
-                            <p className="usernameDisplay">{username}</p>    
-                        }
+                    <div className="text-entry">    
+                        <label for="firstName">First name:</label>
+                        <input
+                            id="firstName"
+                            name="profile"
+                            type="text"
+                            placeholder="First Name"
+                            value={firstName}
+                            defaultValue={firstName}
+                            onChange={(event) => {setFirstName(event.target.value)}}
+                        />
+                    </div>
+                    <div className="text-entry">    
+                        <label for="lastName">Last name:</label>
+                        <input
+                            id="lastName"
+                            name="profile"
+                            type="text"
+                            placeholder="Last Name"
+                            value={lastName}
+                            defaultValue={lastName}
+                            onChange={(event) => {setLastName(event.target.value)}}
+                        />
+                    </div>
+                    <div className="text-entry">
+                        <label for="jobTitle">Job title:</label>
+                        <input
+                            id="jobTitle"
+                            name="profile"
+                            type="text"
+                            placeholder="Job Title"
+                            value={jobTitle}
+                            defaultValue={jobTitle}
+                            onChange={(event) => {setJobTitle(event.target.value)}}
+                        />
                     </div>
                     <p>About Me:</p>
-                    {
-                        editMode ?
-                        <input
-                            id="profile"
-                            name="profile"
-                            type="textarea"
-                            placeholder="bio"
-                            value={bio}
-                            defaultValue={bio}
-                            onChange={(event) => {setBio(event.target.value)}}
-                            className="bigTextBox"
-                        />
-                        :
+                    <input
+                        id="profile"
+                        name="profile"
+                        type="textarea"
+                        placeholder="bio"
+                        value={bio}
+                        defaultValue={bio}
+                        onChange={(event) => {setBio(event.target.value)}}
+                        className="bigTextBox"
+                    />
+                </div>    
+                :
+                <div className="information-container">
+                    <p>First name: {firstName ? firstName : ""}</p>
+                    <p>Last name: {lastName ? lastName : ""}</p>
+                    <p>Job title: {jobTitle ? jobTitle : ""}</p>
+                    <p>About Me:</p>
+                    <br/>
+                    <div className="about-me">
                         <p>{bio ? bio : ""}</p>
-                         
-                    }
-
+                    </div>    
                 </div>
-            </div>
+            }
             <div className="profile-footer">
                 {
                     editMode ?
