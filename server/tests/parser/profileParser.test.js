@@ -78,14 +78,15 @@ describe('profile parser tests', () => {
 
     it('update profile', async () => {
         await client.query(CREATE_PROFILE_QUERY);
-        await parser.updateProfile(TEST_DATA.firstName, TEST_DATA.lastName, TEST_DATA.profilePicture, TEST_DATA.jobTitle, TEST_DATA.bio, TEST_DATA.email);
+        const profileID = await getProfileID();
+        await parser.updateProfile(profileID, TEST_DATA.firstName, TEST_DATA.lastName, TEST_DATA.profilePicture, TEST_DATA.jobTitle, TEST_DATA.bio);
         var actual = await client.query(
-            "SELECT * FROM PROFILE WHERE email = $1",
-            [TEST_DATA.email]
+            "SELECT * FROM PROFILE WHERE profile_id = $1",
+            [profileID]
         );
         expect(actual.rows).toEqual([
             {
-                profile_id: expect.any(Number),
+                profile_id: profileID,
                 firstname: TEST_DATA.firstName,
                 lastname: TEST_DATA.lastName,
                 profilepicture: TEST_DATA.profilePicture,

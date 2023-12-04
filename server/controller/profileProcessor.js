@@ -26,9 +26,9 @@ class ProfileAPI {
         }
     }
 
-    async updateProfile(firstName, lastName, profilePicture, jobTitle, bio, email, profile_id) {
+    async updateProfile(profile_id, firstName, lastName, profilePicture, jobTitle, bio) {
         try {
-            await this.parser.updateProfile(firstName, lastName, profilePicture, jobTitle, bio, email, profile_id);
+            await this.parser.updateProfile(profile_id, firstName, lastName, profilePicture, jobTitle, bio);
             return STATUS_CODES.OK;
         } catch(error) {
             return this.statusCode.getStatusCode(error);
