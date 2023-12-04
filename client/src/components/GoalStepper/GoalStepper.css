@@ -8,3 +8,12 @@
   color: black;
   padding: 20px;
 }
+
+.empty-message {
+  display: flex;
+  color: black;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+}
