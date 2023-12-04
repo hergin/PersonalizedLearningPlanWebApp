@@ -43,7 +43,7 @@ function Profile() {
                 </div>
             </div>
             <div className="profile-footer">
-                <Link to={{pathname: `/profile/edit/`, id: profile?.profile_id}}>
+                <Link to={{pathname: `/profile/edit/${profile?.profile_id}`}}>
                     <button className="edit-btn">Edit Profile</button>
                 </Link>
             </div>
