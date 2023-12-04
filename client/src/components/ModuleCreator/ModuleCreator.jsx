@@ -37,25 +37,25 @@ function ModuleCreator({addModule}) {
           </div>
           <hr/>
           <div className="creation-body">
-          <input
-            id="module"
-            name="module"
-            type="text"
-            placeholder="Module Name"
-            value={moduleName}
-            onChange={(event) => {setModuleName(event.target.value)}}
-            required
+            <input
+              id="module"
+              name="module"
+              type="text"
+              placeholder="Module Name"
+              value={moduleName}
+              onChange={(event) => {setModuleName(event.target.value)}}
+              required
+              />
+            <input
+              id="module"
+              name="module"
+              type="text"
+              placeholder="Module Description"
+              value={description}
+              onChange={(event) => {setDescription(event.target.value)}}
+              required
             />
-          <input
-            id="module"
-            name="module"
-            type="text"
-            placeholder="Module Description"
-            value={description}
-            onChange={(event) => {setDescription(event.target.value)}}
-            required
-          />
-          <button onClick={handleModuleCreation} disabled={submitDisabled}>Submit</button>
+            <button onClick={handleModuleCreation} disabled={submitDisabled}>Submit</button>
           </div>
         </div>
       </Modal>

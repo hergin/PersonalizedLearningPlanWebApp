@@ -9,6 +9,7 @@ import Goals from "./screens/Goals/Goal";
 import Profile from "./screens/profile/Profile";
 import ProtectedRoute from "./components/ProtectedRoutes/ProtectedRoute";
 import { AuthProvider } from "./context/AuthContext";
+import ProfileEditor from "./screens/ProfileEditor/ProfileEditor";
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
             <Route element={<ProtectedRoute />}>
               <Route exact path="/LearningPlan" element={<LearningPlan />} />
               <Route exact path="/profile" element={<Profile />} />
+              <Route exact path="/profile/edit/:id" element={<ProfileEditor />} />
               <Route exact path="/goal/:id" element={<Goals />} />
             </Route>
             <Route path="/login" element={<LoginScreen />} />

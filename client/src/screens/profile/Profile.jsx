@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom"
 import { useUser } from "../../hooks/useUser";
 import { ApiClient } from "../../hooks/ApiClient";
 import "./profile.css";
@@ -25,21 +26,28 @@ function Profile() {
     }, []);
 
     return (
-        <div className="profile-container">
-            <div className="basic-information-container">
-                <p>First name: {profile ? profile.firstname : ""}</p>
-                <p>Last name: {profile ? profile.lastname : ""}</p>
-                <p>Job title: {profile ? profile.jobtitle : ""}</p>
-            </div>
-            <div className="bio-display-container">
-                <div className="bio-header">
-                    <img src={profile ? profile.profilepicture : ""} alt="pfp here"/>
+        <div className="parent-div">    
+            <div className="profile-container">
+                <div className="information-container">
+                    <p>First name: {profile ? profile.firstname : ""}</p>
+                    <p>Last name: {profile ? profile.lastname : ""}</p>
+                    <p>Job title: {profile ? profile.jobtitle : ""}</p>
                 </div>
-                <p>Bio:</p>
-                <br/>
-                <p>{profile ? profile.bio : ""}</p>
+                <div className="information-container">
+                    <div className="bio-header">
+                        <img src={profile ? profile.profilepicture : ""} alt="pfp here"/>
+                    </div>
+                    <p>Bio:</p>
+                    <br/>
+                    <p>{profile ? profile.bio : ""}</p>
+                </div>
             </div>
-        </div>
+            <div className="profile-footer">
+                <Link to={{pathname: `/profile/edit/`, id: profile?.profile_id}}>
+                    <button className="edit-btn">Edit Profile</button>
+                </Link>
+            </div>
+        </div>    
     );
 }
 
