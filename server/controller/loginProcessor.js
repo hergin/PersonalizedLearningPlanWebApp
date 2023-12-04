@@ -1,68 +1,74 @@
-const bcrypt = require("bcrypt");
-const DatabaseParser = require("../parser/databaseParser");
-const STATUS_CODES = require("../statusCodes");
+const path = require("path");
+require('dotenv').config({
+    path: path.join(__dirname, ".env")
+});
+const bcrypt = require("bcryptjs");
+const LoginParser = require("../parser/loginParser");
+const STATUS_CODES = require("../utils/statusCodes");
+const StatusCodes = require("./StatusCodes");
 
 class LoginAPI {
     constructor() {
-      this.parser = new DatabaseParser();
+      this.parser = new LoginParser();
+      this.statusCode = new StatusCodes();
     }
 
     async verifyLogin(email, password) {
         try {
             const login = await this.parser.retrieveLogin(email);
-            if(login.length === 0) {
-                return STATUS_CODES.GONE;
-            }
+            if(login.length === 0) return STATUS_CODES.GONE;
             return await bcrypt.compare(password, login[0].account_password) ? STATUS_CODES.OK : STATUS_CODES.UNAUTHORIZED;
         } catch(error) {
-            return this.#getStatusCode(error);
+            return this.statusCode.getStatusCode(error);
         }
     }
     
-    async createAccount(username, password, email) {
+    async createAccount(email, password) {
         try {
             console.log(password);
             const hash = await this.#hashPassword(password);
             console.log(hash);
-            await this.parser.storeLogin(username, email, hash);
+            await this.parser.storeLogin(email, hash);
             return STATUS_CODES.OK;
         } catch(error) {
-            return this.#getStatusCode(error);
-        }
-    }
-    
-    async createProfile(firstName, lastName, email) {
-        try {
-            await this.parser.storeProfile(firstName, lastName, email);
-            return STATUS_CODES.OK;
-        } catch(error) {
-            return this.#getStatusCode(error);
+            return this.statusCode.getStatusCode(error);
         }
     }
 
-    async getProfile(email) {
+    async setToken(email, refreshToken) {
         try {
-            const profile = await this.parser.parseProfile(email);
-            return (profile.length === 0) ? STATUS_CODES.UNAUTHORIZED : profile;
+            await this.parser.storeToken(email, refreshToken);
+            return STATUS_CODES.OK;
         } catch(error) {
-            return this.#getStatusCode(error);
+            return this.statusCode.getStatusCode(error);
         }
     }
 
-    #getStatusCode(error) {
-        switch(error.code) {
-            case '23505':
-                console.log("Duplicate data.");
-                return STATUS_CODES.CONFLICT;
-            case '08000': case '08003': case '08007':
-                console.log("Connection error");
-                return STATUS_CODES.CONNECTION_ERROR;
-            case '23514':
-                console.log("Bad data.");
-                return STATUS_CODES.BAD_REQUEST;    
-            default:
-                console.error("Fatal server error.", error);
-                return STATUS_CODES.INTERNAL_SERVER_ERROR;
+    async verifyToken(email, refreshToken) {
+        try {
+            const result = await this.parser.parseToken(email);
+            if(result.length === 0) return STATUS_CODES.GONE;
+            return (result[0].refresh_token === refreshToken) ? STATUS_CODES.OK : STATUS_CODES.UNAUTHORIZED;
+        } catch(error) {
+            return this.statusCode.getStatusCode(error);
+        }
+    }
+
+    async logout(email) {
+        try {
+            await this.parser.deleteToken(email);
+            return STATUS_CODES.OK;
+        } catch(error) {
+            return this.statusCode.getStatusCode(error);
+        }
+    }
+
+    async delete(email) {
+        try {
+            await this.parser.deleteAccount(email);
+            return STATUS_CODES.OK;
+        } catch(error) {
+            return this.statusCode.getStatusCode(error);
         }
     }
 

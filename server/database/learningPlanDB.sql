@@ -1,20 +1,21 @@
 DROP TABLE IF EXISTS ACCOUNT CASCADE;
 CREATE TABLE ACCOUNT(
     email TEXT PRIMARY KEY,
-    username TEXT,
-    account_password TEXT,
+    account_password TEXT NOT NULL,
+    refresh_token TEXT,
     CONSTRAINT valid_email CHECK (email ~* '^[A-Za-z0-9._%-]+@[A-Za-z0-9.-]+[.][A-Za-z]+$')
 );
 
 DROP TABLE IF EXISTS PROFILE CASCADE;
 CREATE TABLE PROFILE(
     profile_id SERIAL PRIMARY KEY,
-    firstName TEXT,
-    lastName TEXT,
-    profilePicture TEXT,
-    jobTitle TEXT,
+    username TEXT NOT NULL,
+    first_name TEXT NOT NULL,
+    last_name TEXT NOT NULL,
+    profile_picture TEXT,
+    job_title TEXT,
     bio TEXT,
-    email TEXT,
+    email TEXT NOT NULL,
     FOREIGN KEY (email) REFERENCES ACCOUNT(email)
         ON DELETE CASCADE ON UPDATE CASCADE
 );
@@ -33,8 +34,9 @@ CREATE TABLE MODULE(
 DROP TABLE IF EXISTS GOAL CASCADE;
 CREATE TABLE GOAL(
     goal_id SERIAL PRIMARY KEY,
+    name TEXT,
     description TEXT,
-    completion BOOLEAN,
+    is_complete BOOLEAN,
     module_id SERIAL,
     FOREIGN KEY (module_id) REFERENCES MODULE(module_id)
         ON DELETE CASCADE ON UPDATE CASCADE

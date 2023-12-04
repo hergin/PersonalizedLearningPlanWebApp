@@ -1,19 +1,21 @@
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 const LoginAPI = require("../../controller/loginProcessor");
-const DatabaseParser = require("../../parser/databaseParser");
-const STATUS_CODES = require("../../statusCodes");
+const LoginParser = require("../../parser/loginParser");
+const STATUS_CODES = require("../../utils/statusCodes");
 
-jest.mock("../../parser/DatabaseParser", () => {
+jest.mock("../../parser/loginParser", () => {
     const testParser = {
         retrieveLogin: jest.fn(),
         storeLogin: jest.fn(),
-        storeProfile: jest.fn(),
-        parseProfile: jest.fn(),
+        storeToken: jest.fn(),
+        parseToken: jest.fn(),
+        deleteToken: jest.fn(),
+        deleteAccount: jest.fn(),
     };
     return jest.fn(() => testParser);
 });
 
-jest.mock("bcrypt", () => {
+jest.mock("bcryptjs", () => {
     const testBcrypt = {
         compare: jest.fn(),
         genSalt: jest.fn(),
@@ -24,21 +26,16 @@ jest.mock("bcrypt", () => {
 
 describe('Login Functions', () => {
     const testData = {
-        username: "Xx_george_xX",
-        password: "password",
         email: "George123@Gmail.com",
-        firstName: "George",
-        lastName: "Johnson",
-        profilePicture: "",
-        bio: "I'm george!",
-        jobTitle: "Unemployed"
+        password: "password",
+        refreshToken: "UTDefpAEyREXmgCkK04pL1SXK6jrB2tEc2ZyMbrFs61THq2y3bpRZOCj5RiPoZGa",
     };
     
     let loginAPI;
     let parser;
 
     beforeEach(() => {
-        parser = new DatabaseParser();
+        parser = new LoginParser();
         loginAPI = new LoginAPI();
     });
 
@@ -48,7 +45,7 @@ describe('Login Functions', () => {
 
     it('verify login (pass case)', async () => {
         parser.retrieveLogin.mockResolvedValueOnce([
-            {email: testData.email, username: testData.username, account_password: testData.password}
+            {email: testData.email, account_password: testData.password}
         ]);
         bcrypt.compare.mockResolvedValueOnce((password, hash) => {password == hash});
         expect(await loginAPI.verifyLogin(testData.email, testData.password)).toEqual(STATUS_CODES.OK);
@@ -61,7 +58,7 @@ describe('Login Functions', () => {
 
     it('verify login (wrong password case)', async () => {
         parser.retrieveLogin.mockResolvedValueOnce([
-            {email: testData.email, username: testData.username, account_password: testData.password}
+            {email: testData.email, account_password: testData.password}
         ]);
         bcrypt.compare.mockResolvedValueOnce(false);
         expect(await loginAPI.verifyLogin(testData.email, testData.password)).toEqual(STATUS_CODES.UNAUTHORIZED);
@@ -71,83 +68,97 @@ describe('Login Functions', () => {
         bcrypt.genSalt.mockResolvedValueOnce();
         bcrypt.hash.mockResolvedValueOnce();
         parser.storeLogin.mockResolvedValueOnce();
-        expect(await loginAPI.createAccount(testData.username, testData.email, testData.password)).toEqual(STATUS_CODES.OK);
+        expect(await loginAPI.createAccount(testData.email, testData.password)).toEqual(STATUS_CODES.OK);
     });
 
     it('create account (duplicate case)', async () => {
         bcrypt.genSalt.mockResolvedValueOnce();
         bcrypt.hash.mockResolvedValueOnce();
         parser.storeLogin.mockRejectedValue({code: '23505'});
-        expect(await loginAPI.createAccount(testData.username, testData.email, testData.password)).toEqual(STATUS_CODES.CONFLICT);
+        expect(await loginAPI.createAccount(testData.email, testData.password)).toEqual(STATUS_CODES.CONFLICT);
     });
 
     it('create account (connection lost case)', async () => {
         bcrypt.genSalt.mockResolvedValueOnce();
         bcrypt.hash.mockResolvedValueOnce();
         parser.storeLogin.mockRejectedValue({code: '08000'});
-        expect(await loginAPI.createAccount(testData.username, testData.email, testData.password)).toEqual(STATUS_CODES.CONNECTION_ERROR);
+        expect(await loginAPI.createAccount(testData.email, testData.password)).toEqual(STATUS_CODES.CONNECTION_ERROR);
     });
 
     it('create account (bad data case)', async () => {
         parser.storeLogin.mockRejectedValue({code: '23514'});
-        expect(await loginAPI.createAccount(testData.username, testData.email, testData.password)).toEqual(STATUS_CODES.BAD_REQUEST);
+        expect(await loginAPI.createAccount(testData.email, testData.password)).toEqual(STATUS_CODES.BAD_REQUEST);
     });
 
     it('create account (fatal error case)', async () => {
         bcrypt.genSalt.mockResolvedValueOnce();
         bcrypt.hash.mockResolvedValueOnce();
         parser.storeLogin.mockRejectedValue({code: '11111'});
-        expect(await loginAPI.createAccount(testData.username, testData.email, testData.password)).toEqual(STATUS_CODES.INTERNAL_SERVER_ERROR);
+        expect(await loginAPI.createAccount(testData.email, testData.password)).toEqual(STATUS_CODES.INTERNAL_SERVER_ERROR);
     });
 
-    it('create profile (pass case)', async () => {
-        parser.storeProfile.mockResolvedValueOnce();
-        expect(await loginAPI.createProfile(testData.username, testData.email, testData.password)).toEqual(STATUS_CODES.OK);
+    it('set token (pass case)', async () => {
+        parser.storeToken.mockResolvedValueOnce();
+        expect(await loginAPI.setToken(testData.email, testData.refreshToken)).toEqual(STATUS_CODES.OK);
     });
 
-    it('create profile (duplicate case)', async () => {
-        parser.storeProfile.mockRejectedValue({code: '23505'});
-        expect(await loginAPI.createProfile(testData.username, testData.email, testData.password)).toEqual(STATUS_CODES.CONFLICT);
+    it('set token (connection lost case)', async () => {
+        parser.storeToken.mockRejectedValue({code: '08000'});
+        expect(await loginAPI.setToken(testData.email, testData.refreshToken)).toEqual(STATUS_CODES.CONNECTION_ERROR);
     });
 
-    it('create profile (bad data case)', async () => {
-        parser.storeProfile.mockRejectedValue({code: '23514'});
-        expect(await loginAPI.createProfile(testData.username, testData.email, testData.password)).toEqual(STATUS_CODES.BAD_REQUEST);
+    it('set token (bad data case)', async () => {
+        parser.storeToken.mockRejectedValue({code: '23514'});
+        expect(await loginAPI.setToken(testData.email, testData.refreshToken)).toEqual(STATUS_CODES.BAD_REQUEST);
     });
 
-    it('create profile (connection lost case)', async () => {
-        parser.storeProfile.mockRejectedValue({code: '08000'});
-        expect(await loginAPI.createProfile(testData.username, testData.email, testData.password)).toEqual(STATUS_CODES.CONNECTION_ERROR);
+    it('set token (fatal error case)', async () => {
+        parser.storeToken.mockRejectedValue({code: 'aaaaah'});
+        expect(await loginAPI.setToken(testData.email, testData.refreshToken)).toEqual(STATUS_CODES.INTERNAL_SERVER_ERROR);
     });
 
-    it('create profile (fatal error case)', async () => {
-        parser.storeProfile.mockRejectedValue({code: 'adsfa'});
-        expect(await loginAPI.createProfile(testData.username, testData.email, testData.password)).toEqual(STATUS_CODES.INTERNAL_SERVER_ERROR);
+    it('verify token (pass case)', async () => {
+        parser.parseToken.mockResolvedValueOnce([{'refresh_token': testData.refreshToken}]);
+        expect(await loginAPI.verifyToken(testData.email, testData.refreshToken)).toEqual(STATUS_CODES.OK);
     });
 
-    it('get profile (pass case)', async () => {
-        parser.parseProfile.mockResolvedValueOnce([
-            {firstname: testData.firstName, lastname: testData.lastName, profilepicture: testData.profilePicture, 
-                jobtitle: testData.jobTitle, bio: testData.bio, email: testData.email}
-        ]);
-        expect(await loginAPI.getProfile(testData.email)).toEqual({
-            firstname: testData.firstName, lastname: testData.lastName, profilepicture: testData.profilePicture,
-            jobtitle: testData.jobTitle, bio: testData.bio, email: testData.email
-        });
+    it('verify token (unauthorized case)', async () => {
+        parser.parseToken.mockResolvedValueOnce([{'refresh_token': "I'm a wrong token"}]);
+        expect(await loginAPI.verifyToken(testData.email, testData.refreshToken)).toEqual(STATUS_CODES.UNAUTHORIZED);
     });
 
-    it('get profile (profile missing case)', async () => {
-        parser.parseProfile.mockResolvedValueOnce([]);
-        expect(await loginAPI.getProfile(testData.email)).toEqual(STATUS_CODES.UNAUTHORIZED);
+    it('verify token (gone case)', async () => {
+        parser.parseToken.mockResolvedValueOnce([]);
+        expect(await loginAPI.verifyToken(testData.email, testData.refreshToken)).toEqual(STATUS_CODES.GONE);
     });
 
-    it('get profile (connection lost case)', async () => {
-        parser.parseProfile.mockRejectedValue({code: '08000'});
-        expect(await loginAPI.getProfile(testData.email)).toEqual(STATUS_CODES.CONNECTION_ERROR);
+    it('verify token (bad data case)', async () => {
+        parser.parseToken.mockRejectedValue({code: '23514'});
+        expect(await loginAPI.verifyToken(testData.email, testData.refreshToken)).toEqual(STATUS_CODES.BAD_REQUEST);
     });
 
-    it('get profile (fatal error case)', async () => {
-        parser.parseProfile.mockRejectedValue({code: 'adfads'});
-        expect(await loginAPI.getProfile(testData.email)).toEqual(STATUS_CODES.INTERNAL_SERVER_ERROR);
+    it('verify token (fatal error case)', async () => {
+        parser.parseToken.mockRejectedValue({code: 'Im in your walls'});
+        expect(await loginAPI.verifyLogin(testData.email, testData.refreshToken)).toEqual(STATUS_CODES.INTERNAL_SERVER_ERROR);
+    });
+
+    it('logout (pass case)', async () => {
+        parser.deleteToken.mockResolvedValueOnce();
+        expect(await loginAPI.logout(testData.email)).toEqual(STATUS_CODES.OK);
+    });
+
+    it('logout (error case)', async () => {
+        parser.deleteToken.mockRejectedValue({code: '23514'});
+        expect(await loginAPI.logout(testData.email)).toEqual(STATUS_CODES.BAD_REQUEST);
+    });
+
+    it('delete account (pass case)', async () => {
+        parser.deleteAccount.mockResolvedValueOnce();
+        expect(await loginAPI.delete(testData.email)).toEqual(STATUS_CODES.OK);
+    });
+
+    it('delete account (error case)', async () => {
+        parser.deleteAccount.mockRejectedValue({code: '23514'});
+        expect(await loginAPI.delete(testData.email)).toEqual(STATUS_CODES.BAD_REQUEST);
     });
 });
