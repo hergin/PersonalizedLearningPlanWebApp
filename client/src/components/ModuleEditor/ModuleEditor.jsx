@@ -59,7 +59,6 @@ export default function LongMenu({
   async function handleModuleEdit() {
     try {
       await put(`/module/edit/${id}`, {
-        id: id,
         name: dataNameLocal,
         description: dataDescriptionLocal,
         completion: moduleCompletion,

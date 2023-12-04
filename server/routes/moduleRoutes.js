@@ -50,7 +50,7 @@ router.put('/edit/:id', authenticateToken, async (req, res) => {
     console.log(`Received: ${req.params.id}`);
     const moduleQuery = await moduleAPI.updateModule(req.params.id, req.body.name, req.body.description, req.body.completion, req.body.email);
     if(moduleQuery !== STATUS_CODES.OK) {
-        console.log("Something went wrong while deleting module.");
+        console.log("Something went wrong while editing a module.");
         res.status(moduleQuery).send(ERROR_MESSAGES.get(moduleQuery));
         return;
     }
