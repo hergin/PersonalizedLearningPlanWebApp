@@ -56,3 +56,9 @@
     height: 70%;
     width: 100%;
 }
+
+img {
+    height: 20vh;
+    width: 10vw;
+    border-radius: 15px;
+}

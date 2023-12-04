@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useUser } from "../../hooks/useUser";
 import { ApiClient } from "../../hooks/ApiClient";
+import profilePicture from "../../resources/Default_Profile_Picture.jpg";
 import "./profile.css";
 
 function Profile() {
@@ -94,7 +95,7 @@ function Profile() {
                 }
                 <div className="information-container">
                     <div className="bio-header">
-                        <img src="" alt="pfp here"/>
+                        <img src={profilePicture} alt="pfp here"/>
                     </div>
                     <p>Bio:</p>
                     {
