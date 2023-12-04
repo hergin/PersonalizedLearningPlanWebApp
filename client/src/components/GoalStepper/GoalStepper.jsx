@@ -11,8 +11,11 @@ import {
 import "./GoalStepper.css";
 import PropTypes from "prop-types";
 import GoalCreator from "../GoalCreator/GoalCreator";
+import GoalEditor from "../GoalEditor/GoalEditor";
 
 export default function GoalStepper({
+  deleteGoal,
+  editGoal,
   restGoalProgress,
   addGoalProgress,
   steps,
@@ -20,6 +23,8 @@ export default function GoalStepper({
   moduleID,
 }) {
   GoalStepper.propTypes = {
+    deleteGoal: PropTypes.func,
+    editGoal: PropTypes.func,
     restGoalProgress: PropTypes.func,
     addGoalProgress: PropTypes.func,
     steps: PropTypes.array,
@@ -51,16 +56,7 @@ export default function GoalStepper({
         >
           {steps.map((step, index) => (
             <Step key={step.id} sx={{}}>
-              <StepLabel
-                optional={
-                  index === steps.length - 1 ? (
-                    <Typography variant="caption">Last step</Typography>
-                  ) : null
-                }
-                sx={{ fontSize: "1.2rem" }}
-              >
-                {step.name}
-              </StepLabel>
+              <StepLabel sx={{ fontSize: "1.2rem" }}>{step.name}</StepLabel>
 
               <StepContent>
                 <div className="step-content">
@@ -71,6 +67,15 @@ export default function GoalStepper({
                   </Typography>
                   <Box sx={{ mb: 2 }}>
                     <div>
+                      <GoalEditor
+                        editObject={editGoal}
+                        dataName={step.name}
+                        dataDescription={step.description}
+                        id={step.goal_id}
+                        moduleID={moduleID}
+                        goalCompletion={step.completion_percent}
+                        deleteObject={deleteGoal}
+                      />
                       <Button
                         variant="contained"
                         onClick={handleNext}

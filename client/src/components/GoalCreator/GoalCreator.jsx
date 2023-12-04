@@ -20,16 +20,17 @@ function GoalCreator({ addGoal, moduleID }) {
     try {
       const response = await post("/goal/add", {
         name: goalName,
-        description,
-        completion_percent: 0,
+        description: description,
+        is_complete: false,
         module_id: moduleID,
       });
-      console.log(response);
+      console.log(response.goal_id);
       addGoal({
-        module_id: response.module_id,
-        module_name: goalName,
+        goal_id: response.goal_id,
+        name: goalName,
         description: description,
-        completion_percent: 0,
+        is_complete: false,
+        module_id: moduleID,
       });
       setOpen(false);
     } catch (error) {

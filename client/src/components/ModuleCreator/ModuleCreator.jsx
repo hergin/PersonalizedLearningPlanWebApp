@@ -21,10 +21,10 @@ function ModuleCreator({ addModule }) {
       const response = await post("/module/add", {
         name: moduleName,
         description,
-        completion_percent: 0,
+        is_complete: 0,
         email: user.email,
       });
-      console.log(response);
+      console.log(response.module_id);
       addModule({
         module_id: response.module_id,
         module_name: moduleName,
@@ -50,7 +50,6 @@ function ModuleCreator({ addModule }) {
           </div>
           <hr />
           <div className="creation-body">
-
             <input
               className="module-name"
               name="module"
@@ -73,7 +72,11 @@ function ModuleCreator({ addModule }) {
               }}
               required
             />
-            <button onClick={handleModuleCreation} disabled={submitDisabled} className="module-create-button">
+            <button
+              onClick={handleModuleCreation}
+              disabled={submitDisabled}
+              className="module-create-button"
+            >
               Submit
             </button>
           </div>

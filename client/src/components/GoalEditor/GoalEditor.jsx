@@ -12,62 +12,62 @@ import {
   TextField,
 } from "@mui/material";
 import PropTypes from "prop-types";
-import { useUser } from "../../hooks/useUser";
 import { ApiClient } from "../../hooks/ApiClient";
 
-export default function LongMenu({
+export default function GoalEditor({
   editObject,
   dataName,
   dataDescription,
   id,
-  moduleCompletion,
+  moduleID,
+  goalCompletion,
   deleteObject,
 }) {
-  LongMenu.propTypes = {
+  GoalEditor.propTypes = {
     editObject: PropTypes.func,
     dataName: PropTypes.string,
     dataDescription: PropTypes.string,
     id: PropTypes.number,
-    moduleCompletion: PropTypes.number,
+    moduleID: PropTypes.string,
+    goalCompletion: PropTypes.number,
     deleteObject: PropTypes.func,
   };
 
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const open = Boolean(anchorEl);
+  const [anchorElGoal, setAnchorElGoal] = React.useState(null);
+  const open = Boolean(anchorElGoal);
   const [dataNameLocal, setDataNameLocal] = useState(dataName);
   const [dataDescriptionLocal, setDataDescriptionLocal] =
     useState(dataDescription);
   const [openModal, setOpenModal] = useState(false);
   const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
+    setAnchorElGoal(event.currentTarget);
   };
   const handleOpenModal = () => {
     setDataNameLocal(dataName);
     setDataDescriptionLocal(dataDescription);
     setOpenModal(true);
-    setAnchorEl(null); // Close the menu when the modal opens
+    setAnchorElGoal(null); // Close the menu when the modal opens
   };
   const handleClose = () => {
-    setAnchorEl(null);
+    setAnchorElGoal(null);
   };
   const handleCloseModal = () => {
     setOpenModal(false);
   };
-  const { user } = useUser();
   const { put, del } = ApiClient();
 
-  async function handleModuleEdit() {
+  async function handleGoalEdit() {
     try {
-      await put(`/module/edit/${id}`, {
+      await put(`/goal/update/${id}`, {
+        id: id,
         name: dataNameLocal,
         description: dataDescriptionLocal,
-        completion: moduleCompletion,
-        email: user.email,
+        is_complete: goalCompletion,
       });
       editObject({
-        module_name: dataNameLocal,
+        name: dataNameLocal,
         description: dataDescriptionLocal,
-        id: id,
+        goal_id: id,
       });
       handleCloseModal();
     } catch (error) {
@@ -76,9 +76,9 @@ export default function LongMenu({
     }
   }
 
-  async function handleModuleDelete() {
+  async function handleGoalDelete() {
     try {
-      const result = await del(`/module/delete/${id}`);
+      const result = await del(`/goal/delete/${id}`);
       console.log(result);
       deleteObject(id);
       handleClose();
@@ -105,14 +105,14 @@ export default function LongMenu({
         MenuListProps={{
           "aria-labelledby": "long-button",
         }}
-        anchorEl={anchorEl}
+        anchorEl={anchorElGoal}
         open={open}
         onClose={handleClose}
       >
         <MenuItem key={"edit"} onClick={handleOpenModal}>
           Edit
         </MenuItem>
-        <MenuItem key={"delete"} onClick={handleModuleDelete}>
+        <MenuItem key={"delete"} onClick={handleGoalDelete}>
           Delete
         </MenuItem>
       </Menu>
@@ -131,7 +131,7 @@ export default function LongMenu({
             fullWidth
             margin="normal"
           />
-          <Button variant="contained" onClick={handleModuleEdit}>
+          <Button variant="contained" onClick={handleGoalEdit}>
             Save Changes
           </Button>
         </DialogContent>

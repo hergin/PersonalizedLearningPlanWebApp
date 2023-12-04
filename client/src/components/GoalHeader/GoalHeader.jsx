@@ -24,7 +24,7 @@ const GoalHeader = ({ moduleID }) => {
   useEffect(() => {
     async function getGoals() {
       try {
-        const result = await get(`/goal/get/${moduleID}`);
+        const result = await get(`/goal/get/module/${moduleID}`);
         let newGoals = [];
         for (let goal of result) {
           newGoals.push(goal);
@@ -47,6 +47,24 @@ const GoalHeader = ({ moduleID }) => {
     let newGoal = [].concat(steps);
     newGoal.push(goal);
     setSteps(newGoal);
+  };
+  function editGoal(updatedGoal) {
+    const newGoal = steps.map((goal) => {
+      if (goal.goal_id === updatedGoal.goal_id) {
+        return {
+          ...goal,
+          name: updatedGoal.name,
+          description: updatedGoal.description,
+        };
+      }
+      return goal;
+    });
+    setSteps(newGoal);
+  }
+
+  const deleteGoal = (id) => {
+    const newGoals = steps.filter((goal) => goal.goal_id !== id);
+    setSteps(newGoals);
   };
 
   return (
@@ -85,6 +103,8 @@ const GoalHeader = ({ moduleID }) => {
             steps={steps}
             setSteps={setSteps}
             addGoal={addGoal}
+            deleteGoal={deleteGoal}
+            editGoal={editGoal}
           />
         </div>
       </div>
