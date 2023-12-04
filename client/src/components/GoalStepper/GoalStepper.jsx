@@ -10,18 +10,21 @@ import {
 } from "@mui/material";
 import "./GoalStepper.css";
 import PropTypes from "prop-types";
+import GoalCreator from "../GoalCreator/GoalCreator";
 
 export default function GoalStepper({
   restGoalProgress,
   addGoalProgress,
   steps,
   addGoal,
+  moduleID,
 }) {
   GoalStepper.propTypes = {
     restGoalProgress: PropTypes.func,
     addGoalProgress: PropTypes.func,
     steps: PropTypes.array,
     addGoal: PropTypes.func,
+    moduleID: PropTypes.string,
   };
   const [activeStep, setActiveStep] = React.useState(0);
   const handleNext = () => {
@@ -37,7 +40,9 @@ export default function GoalStepper({
   return (
     <div>
       {steps.length === 0 ? (
-        <div className="empty-message">Empty</div>
+        <div className="no-goals-div">
+          <GoalCreator addGoal={addGoal} moduleID={moduleID} />
+        </div>
       ) : (
         <Stepper
           activeStep={activeStep}
@@ -45,7 +50,7 @@ export default function GoalStepper({
           sx={{ width: 1, display: "flex" }}
         >
           {steps.map((step, index) => (
-            <Step key={step.name} sx={{}}>
+            <Step key={step.id} sx={{}}>
               <StepLabel
                 optional={
                   index === steps.length - 1 ? (
@@ -89,13 +94,7 @@ export default function GoalStepper({
           <Step key={"stepcreate"} sx={{}} active={true}>
             <Box sx={{ mb: 2, marginLeft: "1%" }}>
               <div>
-                <Button
-                  variant="contained"
-                  onClick={() => addGoal({ name: "New Goal", description: "" })}
-                  sx={{ mt: 1, mr: 1, fontSize: "1rem" }}
-                >
-                  Create a new Goal
-                </Button>
+                <GoalCreator addGoal={addGoal} moduleID={moduleID} />
               </div>
             </Box>
           </Step>

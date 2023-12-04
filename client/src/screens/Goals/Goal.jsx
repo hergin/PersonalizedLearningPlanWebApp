@@ -2,9 +2,8 @@ import "./Goals.css";
 import { useParams } from "react-router-dom";
 import GoalHeader from "../../components/GoalHeader/GoalHeader";
 
-const Goals = ({ globalStore, props }) => {
+const Goals = () => {
   const { id } = useParams();
-  console.log(typeof id);
   return (
     <div className="goal-screen">
       <GoalHeader moduleID={id} />

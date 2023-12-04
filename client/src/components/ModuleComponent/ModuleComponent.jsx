@@ -7,7 +7,7 @@ import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 
 const ModuleComponent = () => {
-  const {modules, setModules} = useModuleData();
+  const { modules, setModules } = useModuleData();
 
   function addModule(module) {
     if (modules.includes(module)) {
@@ -93,9 +93,9 @@ const Module = ({
       <hr />
       <Link to={`/goals/${moduleId}`} className="module-body">
         <p>
-          Progress: {moduleCompletion === 100 ? "Completed" : "In progress"}
+          <span>Progress: </span>
+          {moduleCompletion === 100 ? "Completed" : "In progress"}
         </p>
-        <p>Description:</p>
         <p>{moduleDescription}</p>
       </Link>
     </div>

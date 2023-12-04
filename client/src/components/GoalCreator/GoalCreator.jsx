@@ -1,33 +1,33 @@
 import React, { useState } from "react";
-import "./ModuleCreate.css";
+import "./GoalCreator.css";
 import Modal from "@mui/material/Modal";
-import { useUser } from "../../hooks/useUser";
 import { ApiClient } from "../../hooks/ApiClient";
 import PropTypes from "prop-types";
+import { Button } from "@mui/material";
 
-function ModuleCreator({ addModule }) {
-  ModuleCreator.propTypes = {
-    addModule: PropTypes.func,
+function GoalCreator({ addGoal, moduleID }) {
+  GoalCreator.propTypes = {
+    addGoal: PropTypes.func,
+    moduleID: PropTypes.string,
   };
-  const [moduleName, setModuleName] = useState("");
+  const [goalName, setGoalName] = useState("");
   const [description, setDescription] = useState("");
   const [open, setOpen] = useState(false);
-  const submitDisabled = moduleName === "" || description === "";
-  const { user } = useUser();
+  const submitDisabled = goalName === "" || description === "";
   const { post } = ApiClient();
 
   async function handleModuleCreation() {
     try {
-      const response = await post("/module/add", {
-        name: moduleName,
+      const response = await post("/goal/add", {
+        name: goalName,
         description,
         completion_percent: 0,
-        email: user.email,
+        module_id: moduleID,
       });
       console.log(response);
-      addModule({
+      addGoal({
         module_id: response.module_id,
-        module_name: moduleName,
+        module_name: goalName,
         description: description,
         completion_percent: 0,
       });
@@ -39,26 +39,29 @@ function ModuleCreator({ addModule }) {
   }
 
   return (
-    <div className="divAdd">
-      <button onClick={() => setOpen(true)} className="fill-div">
-        <h1>+</h1>
-      </button>
+    <div>
+      <Button
+        variant="contained"
+        onClick={() => setOpen(true)}
+        sx={{ mt: 1, mr: 1, fontSize: "1rem" }}
+      >
+        Create a new Goal
+      </Button>
       <Modal className="center" open={open} onClose={() => setOpen(false)}>
         <div className="creation-dialog">
           <div className="creation-header">
-            <h1>Create a new module</h1>
+            <h1>Create a new goal</h1>
           </div>
           <hr />
           <div className="creation-body">
-
             <input
               className="module-name"
               name="module"
               type="text"
-              placeholder="Module Name"
-              value={moduleName}
+              placeholder="Goal Name"
+              value={goalName}
               onChange={(event) => {
-                setModuleName(event.target.value);
+                setGoalName(event.target.value);
               }}
               required
             />
@@ -66,14 +69,18 @@ function ModuleCreator({ addModule }) {
               className="module-description"
               name="module"
               type="text"
-              placeholder="Module Description"
+              placeholder="Goal Description"
               value={description}
               onChange={(event) => {
                 setDescription(event.target.value);
               }}
               required
             />
-            <button onClick={handleModuleCreation} disabled={submitDisabled} className="module-create-button">
+            <button
+              onClick={handleModuleCreation}
+              disabled={submitDisabled}
+              className="module-create-button"
+            >
               Submit
             </button>
           </div>
@@ -83,4 +90,4 @@ function ModuleCreator({ addModule }) {
   );
 }
 
-export default ModuleCreator;
+export default GoalCreator;

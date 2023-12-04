@@ -4,8 +4,12 @@ import { Box, CircularProgress, Typography } from "@mui/material";
 
 import GoalStepper from "../GoalStepper/GoalStepper";
 import { ApiClient } from "../../hooks/ApiClient";
+import PropTypes from "prop-types";
 
 const GoalHeader = ({ moduleID }) => {
+  GoalHeader.propTypes = {
+    moduleID: PropTypes.string,
+  };
   const [steps, setSteps] = useState([]);
   console.log(steps.map((step) => step.name));
   const [goalProgress, setGoalProgress] = useState(0);
@@ -77,6 +81,7 @@ const GoalHeader = ({ moduleID }) => {
           <GoalStepper
             addGoalProgress={addGoalProgress}
             restGoalProgress={restGoalProgress}
+            moduleID={moduleID}
             steps={steps}
             setSteps={setSteps}
             addGoal={addGoal}
