@@ -20,14 +20,8 @@ const Register = () => {
 
   async function handleRegistration() {
     try {
-      const response = await post("/auth/register", {
-        firstName,
-        lastName,
-        email,
-        username,
-        password,
-      });
-      console.log(response);
+      await post("/auth/register", {email, password});
+      await post("/profile/create", {username, firstName, lastName, email});
       // Redirects back to login page after creating an account
       navigate("/login");
     } catch (error) {

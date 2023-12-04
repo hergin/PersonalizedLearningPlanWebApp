@@ -2,7 +2,6 @@ const ModuleParser = require('../../parser/moduleParser');
 
 const TEST_DATA = {
     email: "testdummy@yahoo.com",
-    username: "test_dummy",
     password: "01010101010",
     refreshToken: "UTDefpAEyREXmgCkK04pL1SXK6jrB2tEc2ZyMbrFs61THq2y3bpRZOCj5RiPoZGa",
     moduleName: "School",
@@ -11,8 +10,8 @@ const TEST_DATA = {
 }
 
 const CREATE_ACCOUNT_QUERY = {
-    text: "INSERT INTO ACCOUNT(username, email, account_password) VALUES($1, $2, $3)",
-    values: [TEST_DATA.username, TEST_DATA.email, TEST_DATA.password]
+    text: "INSERT INTO ACCOUNT(email, account_password) VALUES($1, $2)",
+    values: [TEST_DATA.email, TEST_DATA.password]
 }
 
 const CREATE_MODULE_QUERY = {
@@ -30,8 +29,8 @@ describe('module parser',() => {
 
     afterEach(async () => {
         await client.query(
-            "DELETE FROM ACCOUNT WHERE username = $1 AND email = $2 AND account_password = $3",
-            [TEST_DATA.username, TEST_DATA.email, TEST_DATA.password]
+            "DELETE FROM ACCOUNT WHERE email = $1 AND account_password = $2",
+            [TEST_DATA.email, TEST_DATA.password]
         );
         client.release();
     });

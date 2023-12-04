@@ -2,12 +2,10 @@ const express = require("express");
 const router = express.Router();
 const jwt = require("jsonwebtoken");
 const LoginAPI = require("../controller/loginProcessor");
-const ProfileAPI = require("../controller/profileProcessor");
 const initializeErrorMessages = require("../utils/errorMessages");
 const STATUS_CODES = require("../utils/statusCodes");
 
 const loginAPI = new LoginAPI();
-const profileAPI = new ProfileAPI();
 const ERROR_MESSAGES = initializeErrorMessages()
 
 router.post('/login', async (req, res) => {
@@ -43,14 +41,9 @@ router.post('/token', async (req, res) => {
 
 router.post('/register', async(req, res) => {
     console.log(req.body);
-    const accountStatusCode = await loginAPI.createAccount(req.body.username, req.body.password, req.body.email);
+    const accountStatusCode = await loginAPI.createAccount(req.body.email, req.body.password);
     if(accountStatusCode !== STATUS_CODES.OK) {
         res.status(accountStatusCode).send(ERROR_MESSAGES.get(accountStatusCode));
-        return;
-    }
-    const profileStatusCode = await profileAPI.createProfile(req.body.firstName, req.body.lastName, req.body.email);
-    if(profileStatusCode !== STATUS_CODES.OK) {
-        res.status(profileStatusCode).send(ERROR_MESSAGES.get(profileStatusCode));
         return;
     }
     res.sendStatus(STATUS_CODES.OK);

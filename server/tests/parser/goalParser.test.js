@@ -2,7 +2,6 @@ const GoalParser = require('../../parser/goalParser');
 
 const TEST_DATA = {
     email: "testdummy@yahoo.com",
-    username: "test_dummy",
     password: "01010101010",
     moduleName: "School",
     moduleDescription: "My school goals :3",
@@ -13,8 +12,8 @@ const TEST_DATA = {
 }
 
 const CREATE_ACCOUNT_QUERY = {
-    text: "INSERT INTO ACCOUNT(username, email, account_password) VALUES($1, $2, $3)",
-    values: [TEST_DATA.username, TEST_DATA.email, TEST_DATA.password]
+    text: "INSERT INTO ACCOUNT(email, account_password) VALUES($1, $2)",
+    values: [TEST_DATA.email, TEST_DATA.password]
 }
 
 const CREATE_MODULE_QUERY = {
@@ -32,8 +31,8 @@ describe('goal parser tests', () => {
 
     afterEach(async () => {
         await client.query(
-            "DELETE FROM ACCOUNT WHERE username = $1 AND email = $2 AND account_password = $3",
-            [TEST_DATA.username, TEST_DATA.email, TEST_DATA.password]
+            "DELETE FROM ACCOUNT WHERE email = $1 AND account_password = $2",
+            [TEST_DATA.email, TEST_DATA.password]
         );
         client.release();
     });
@@ -56,7 +55,7 @@ describe('goal parser tests', () => {
                 goal_id: expect.any(Number),
                 name: TEST_DATA.goalName,
                 description: TEST_DATA.goalDescription,
-                completion_perc: TEST_DATA.isComplete,
+                is_complete: TEST_DATA.isComplete,
                 module_id: moduleID
             }
         ]);
@@ -67,7 +66,7 @@ describe('goal parser tests', () => {
         await client.query(CREATE_MODULE_QUERY);
         var moduleID = await getModuleID();
         await client.query(
-            "INSERT INTO GOAL(name, description, completion_perc, module_id) VALUES ($1, $2, $3, $4)",
+            "INSERT INTO GOAL(name, description, is_complete, module_id) VALUES ($1, $2, $3, $4)",
             [TEST_DATA.goalName, TEST_DATA.goalDescription, TEST_DATA.isComplete, moduleID]
         );
         expect(await parser.parseGoals(moduleID)).toEqual([
@@ -75,7 +74,7 @@ describe('goal parser tests', () => {
                 goal_id: expect.any(Number),
                 name: TEST_DATA.goalName,
                 description: TEST_DATA.goalDescription,
-                completion_perc: TEST_DATA.isComplete,
+                is_complete: TEST_DATA.isComplete,
                 module_id: moduleID
             }
         ]);
@@ -86,7 +85,7 @@ describe('goal parser tests', () => {
         await client.query(CREATE_MODULE_QUERY);
         var moduleID = await getModuleID();
         await client.query(
-            "INSERT INTO GOAL(name, description, completion_perc, module_id) VALUES ($1, $2, $3, $4)",
+            "INSERT INTO GOAL(name, description, is_complete, module_id) VALUES ($1, $2, $3, $4)",
             [TEST_DATA.goalName, TEST_DATA.goalDescription, TEST_DATA.isComplete, moduleID]
         );
         var goalID = await getGoalID();
@@ -100,7 +99,7 @@ describe('goal parser tests', () => {
                 goal_id: goalID,
                 name: "Homework",
                 description: "Complete my homework today.",
-                completion_perc: false,
+                is_complete: false,
                 module_id: moduleID
             }
         ]);
@@ -111,7 +110,7 @@ describe('goal parser tests', () => {
         await client.query(CREATE_MODULE_QUERY);
         var moduleID = await getModuleID();
         await client.query(
-            "INSERT INTO GOAL(name, description, completion_perc, module_id) VALUES ($1, $2, $3, $4)",
+            "INSERT INTO GOAL(name, description, is_complete, module_id) VALUES ($1, $2, $3, $4)",
             [TEST_DATA.goalName, TEST_DATA.goalDescription, TEST_DATA.isComplete, moduleID]
         );
         var goalID = await getGoalID();
@@ -133,7 +132,7 @@ describe('goal parser tests', () => {
 
     async function getGoalID() {
         const goalIDQuery = await client.query(
-            "SELECT goal_id FROM GOAL WHERE name = $1 AND description = $2 AND completion_perc = $3",
+            "SELECT goal_id FROM GOAL WHERE name = $1 AND description = $2 AND is_complete = $3",
             [TEST_DATA.goalName, TEST_DATA.goalDescription, TEST_DATA.isComplete]
         );
         return goalIDQuery.rows[0].goal_id;

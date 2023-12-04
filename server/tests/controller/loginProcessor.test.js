@@ -25,9 +25,8 @@ jest.mock("bcryptjs", () => {
 
 describe('Login Functions', () => {
     const testData = {
-        username: "Xx_george_xX",
-        password: "password",
         email: "George123@Gmail.com",
+        password: "password",
         refreshToken: "UTDefpAEyREXmgCkK04pL1SXK6jrB2tEc2ZyMbrFs61THq2y3bpRZOCj5RiPoZGa",
     };
     
@@ -45,7 +44,7 @@ describe('Login Functions', () => {
 
     it('verify login (pass case)', async () => {
         parser.retrieveLogin.mockResolvedValueOnce([
-            {email: testData.email, username: testData.username, account_password: testData.password}
+            {email: testData.email, account_password: testData.password}
         ]);
         bcrypt.compare.mockResolvedValueOnce((password, hash) => {password == hash});
         expect(await loginAPI.verifyLogin(testData.email, testData.password)).toEqual(STATUS_CODES.OK);
@@ -58,7 +57,7 @@ describe('Login Functions', () => {
 
     it('verify login (wrong password case)', async () => {
         parser.retrieveLogin.mockResolvedValueOnce([
-            {email: testData.email, username: testData.username, account_password: testData.password}
+            {email: testData.email, account_password: testData.password}
         ]);
         bcrypt.compare.mockResolvedValueOnce(false);
         expect(await loginAPI.verifyLogin(testData.email, testData.password)).toEqual(STATUS_CODES.UNAUTHORIZED);
@@ -68,33 +67,33 @@ describe('Login Functions', () => {
         bcrypt.genSalt.mockResolvedValueOnce();
         bcrypt.hash.mockResolvedValueOnce();
         parser.storeLogin.mockResolvedValueOnce();
-        expect(await loginAPI.createAccount(testData.username, testData.email, testData.password)).toEqual(STATUS_CODES.OK);
+        expect(await loginAPI.createAccount(testData.email, testData.password)).toEqual(STATUS_CODES.OK);
     });
 
     it('create account (duplicate case)', async () => {
         bcrypt.genSalt.mockResolvedValueOnce();
         bcrypt.hash.mockResolvedValueOnce();
         parser.storeLogin.mockRejectedValue({code: '23505'});
-        expect(await loginAPI.createAccount(testData.username, testData.email, testData.password)).toEqual(STATUS_CODES.CONFLICT);
+        expect(await loginAPI.createAccount(testData.email, testData.password)).toEqual(STATUS_CODES.CONFLICT);
     });
 
     it('create account (connection lost case)', async () => {
         bcrypt.genSalt.mockResolvedValueOnce();
         bcrypt.hash.mockResolvedValueOnce();
         parser.storeLogin.mockRejectedValue({code: '08000'});
-        expect(await loginAPI.createAccount(testData.username, testData.email, testData.password)).toEqual(STATUS_CODES.CONNECTION_ERROR);
+        expect(await loginAPI.createAccount(testData.email, testData.password)).toEqual(STATUS_CODES.CONNECTION_ERROR);
     });
 
     it('create account (bad data case)', async () => {
         parser.storeLogin.mockRejectedValue({code: '23514'});
-        expect(await loginAPI.createAccount(testData.username, testData.email, testData.password)).toEqual(STATUS_CODES.BAD_REQUEST);
+        expect(await loginAPI.createAccount(testData.email, testData.password)).toEqual(STATUS_CODES.BAD_REQUEST);
     });
 
     it('create account (fatal error case)', async () => {
         bcrypt.genSalt.mockResolvedValueOnce();
         bcrypt.hash.mockResolvedValueOnce();
         parser.storeLogin.mockRejectedValue({code: '11111'});
-        expect(await loginAPI.createAccount(testData.username, testData.email, testData.password)).toEqual(STATUS_CODES.INTERNAL_SERVER_ERROR);
+        expect(await loginAPI.createAccount(testData.email, testData.password)).toEqual(STATUS_CODES.INTERNAL_SERVER_ERROR);
     });
 
     it('set token (pass case)', async () => {

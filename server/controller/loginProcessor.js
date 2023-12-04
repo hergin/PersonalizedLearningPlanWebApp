@@ -23,12 +23,12 @@ class LoginAPI {
         }
     }
     
-    async createAccount(username, password, email) {
+    async createAccount(email, password) {
         try {
             console.log(password);
             const hash = await this.#hashPassword(password);
             console.log(hash);
-            await this.parser.storeLogin(username, email, hash);
+            await this.parser.storeLogin(email, hash);
             return STATUS_CODES.OK;
         } catch(error) {
             return this.statusCode.getStatusCode(error);

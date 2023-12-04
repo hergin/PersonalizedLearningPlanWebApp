@@ -14,11 +14,11 @@ class GoalParser extends DatabaseParser {
         return result.rows;
     }
 
-    async storeGoal(name, description, completion_perc, module_id) {
+    async storeGoal(name, description, is_complete, module_id) {
         console.log("Storing Goal...");
         const query = {
-            text: "INSERT INTO GOAL(name, description, completion_perc, module_id) VALUES($1, $2, $3, $4)",
-            values: [name, description, completion_perc, module_id]
+            text: "INSERT INTO GOAL(name, description, is_complete, module_id) VALUES($1, $2, $3, $4)",
+            values: [name, description, is_complete, module_id]
         };
         const client = await this.pool.connect();
         await client.query(query);
@@ -30,7 +30,7 @@ class GoalParser extends DatabaseParser {
         console.log("Inserting updated data into Goal...");
         const client = await this.pool.connect();
         const query = {
-            text: "UPDATE GOAL SET name = $1, description = $2, completion_perc = $3, module_id = $4, goal_id = $5 WHERE goal_id = $5",
+            text: "UPDATE GOAL SET name = $1, description = $2, is_complete = $3, module_id = $4, goal_id = $5 WHERE goal_id = $5",
             values: [name, description, completion, module_id, goal_id]
         };
         await client.query(query);

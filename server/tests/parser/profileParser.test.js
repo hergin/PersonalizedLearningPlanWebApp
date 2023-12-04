@@ -13,13 +13,13 @@ const TEST_DATA = {
 }
 
 const CREATE_ACCOUNT_QUERY = {
-    text: "INSERT INTO ACCOUNT(username, email, account_password) VALUES($1, $2, $3)",
-    values: [TEST_DATA.username, TEST_DATA.email, TEST_DATA.password]
+    text: "INSERT INTO ACCOUNT(email, account_password) VALUES($1, $2)",
+    values: [TEST_DATA.email, TEST_DATA.password]
 }
 
 const CREATE_PROFILE_QUERY = {
-    text: "INSERT INTO PROFILE(firstName, lastName, email) VALUES($1, $2, $3)",
-    values: [TEST_DATA.firstName, TEST_DATA.lastName, TEST_DATA.email]
+    text: "INSERT INTO PROFILE(username, first_name, last_name, email) VALUES($1, $2, $3, $4)",
+    values: [TEST_DATA.username, TEST_DATA.firstName, TEST_DATA.lastName, TEST_DATA.email]
 }
 
 describe('profile parser tests', () => {
@@ -33,8 +33,8 @@ describe('profile parser tests', () => {
 
     afterEach(async () => {
         await client.query(
-            "DELETE FROM ACCOUNT WHERE username = $1 AND email = $2 AND account_password = $3",
-            [TEST_DATA.username, TEST_DATA.email, TEST_DATA.password]
+            "DELETE FROM ACCOUNT WHERE email = $1 AND account_password = $2",
+            [TEST_DATA.email, TEST_DATA.password]
         );
         client.release();
     });
@@ -44,18 +44,19 @@ describe('profile parser tests', () => {
     });
 
     it('store profile', async () => {
-        await parser.storeProfile(TEST_DATA.firstName, TEST_DATA.lastName, TEST_DATA.email);
+        await parser.storeProfile(TEST_DATA.username, TEST_DATA.firstName, TEST_DATA.lastName, TEST_DATA.email);
         var query = await client.query(
-            "SELECT * FROM PROFILE WHERE firstName = $1 AND lastName = $2 AND email = $3",
-            [TEST_DATA.firstName, TEST_DATA.lastName, TEST_DATA.email]
+            "SELECT * FROM PROFILE WHERE username = $1 AND first_name = $2 AND last_name = $3 AND email = $4",
+            [TEST_DATA.username, TEST_DATA.firstName, TEST_DATA.lastName, TEST_DATA.email]
         );
         expect(query.rows).toEqual([
             {
-                profile_id: expect.any(Number), 
-                firstname: TEST_DATA.firstName, 
-                lastname: TEST_DATA.lastName,
-                profilepicture: null,
-                jobtitle: null,
+                profile_id: expect.any(Number),
+                username: TEST_DATA.username, 
+                first_name: TEST_DATA.firstName, 
+                last_name: TEST_DATA.lastName,
+                profile_picture: null,
+                job_title: null,
                 bio: null,
                 email: TEST_DATA.email
             }
@@ -66,11 +67,12 @@ describe('profile parser tests', () => {
         await client.query(CREATE_PROFILE_QUERY);
         var actual = await parser.parseProfile(TEST_DATA.email);
         expect(actual).toEqual({
-                profile_id: expect.any(Number), 
-                firstname: TEST_DATA.firstName, 
-                lastname: TEST_DATA.lastName,
-                profilepicture: null,
-                jobtitle: null,
+                profile_id: expect.any(Number),
+                username: TEST_DATA.username,
+                first_name: TEST_DATA.firstName, 
+                last_name: TEST_DATA.lastName,
+                profile_picture: null,
+                job_title: null,
                 bio: null,
                 email: TEST_DATA.email
         });
@@ -79,7 +81,7 @@ describe('profile parser tests', () => {
     it('update profile', async () => {
         await client.query(CREATE_PROFILE_QUERY);
         const profileID = await getProfileID();
-        await parser.updateProfile(profileID, TEST_DATA.firstName, TEST_DATA.lastName, TEST_DATA.profilePicture, TEST_DATA.jobTitle, TEST_DATA.bio);
+        await parser.updateProfile(profileID, TEST_DATA.username, TEST_DATA.firstName, TEST_DATA.lastName, TEST_DATA.profilePicture, TEST_DATA.jobTitle, TEST_DATA.bio);
         var actual = await client.query(
             "SELECT * FROM PROFILE WHERE profile_id = $1",
             [profileID]
@@ -87,10 +89,11 @@ describe('profile parser tests', () => {
         expect(actual.rows).toEqual([
             {
                 profile_id: profileID,
-                firstname: TEST_DATA.firstName,
-                lastname: TEST_DATA.lastName,
-                profilepicture: TEST_DATA.profilePicture,
-                jobtitle: TEST_DATA.jobTitle,
+                username: TEST_DATA.username,
+                first_name: TEST_DATA.firstName,
+                last_name: TEST_DATA.lastName,
+                profile_picture: TEST_DATA.profilePicture,
+                job_title: TEST_DATA.jobTitle,
                 bio: TEST_DATA.bio,
                 email: TEST_DATA.email
             }

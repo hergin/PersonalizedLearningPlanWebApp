@@ -2,7 +2,7 @@ const DashboardParser = require('../../parser/dashboardParser');
 
 const TEST_DATA = {
     email: "testdummy@yahoo.com",
-    username: "test_dummy",
+    username: "testing_dummy",
     password: "01010101010",
     firstName: "Test",
     lastName: "Dummy",
@@ -12,13 +12,13 @@ const TEST_DATA = {
 }
 
 const CREATE_ACCOUNT_QUERY = {
-    text: "INSERT INTO ACCOUNT(username, email, account_password) VALUES($1, $2, $3)",
-    values: [TEST_DATA.username, TEST_DATA.email, TEST_DATA.password]
+    text: "INSERT INTO ACCOUNT(email, account_password) VALUES($1, $2)",
+    values: [TEST_DATA.email, TEST_DATA.password]
 }
 
 const CREATE_PROFILE_QUERY = {
-    text: "INSERT INTO PROFILE(firstName, lastName, email) VALUES($1, $2, $3)",
-    values: [TEST_DATA.firstName, TEST_DATA.lastName, TEST_DATA.email]
+    text: "INSERT INTO PROFILE(username, first_name, last_name, email) VALUES($1, $2, $3, $4)",
+    values: [TEST_DATA.username, TEST_DATA.firstName, TEST_DATA.lastName, TEST_DATA.email]
 }
 
 describe('dashboard parser', () => {
@@ -35,8 +35,8 @@ describe('dashboard parser', () => {
 
     afterEach(async () => {
         await client.query(
-            "DELETE FROM ACCOUNT WHERE username = $1 AND email = $2 AND account_password = $3",
-            [TEST_DATA.username, TEST_DATA.email, TEST_DATA.password]
+            "DELETE FROM ACCOUNT WHERE email = $1 AND account_password = $2",
+            [TEST_DATA.email, TEST_DATA.password]
         );
         client.release();
     });
@@ -107,4 +107,4 @@ describe('dashboard parser', () => {
         const result = await client.query(query);
         return result.rows[0].dashboard_id;
     }
-})
+});

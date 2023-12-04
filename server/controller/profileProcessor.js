@@ -8,9 +8,9 @@ class ProfileAPI {
         this.statusCode = new StatusCodes();
     }
 
-    async createProfile(firstName, lastName, email) {
+    async createProfile(username, firstName, lastName, email) {
         try {
-            await this.parser.storeProfile(firstName, lastName, email);
+            await this.parser.storeProfile(username, firstName, lastName, email);
             return STATUS_CODES.OK;
         } catch(error) {
             return this.statusCode.getStatusCode(error);
@@ -26,9 +26,9 @@ class ProfileAPI {
         }
     }
 
-    async updateProfile(profile_id, firstName, lastName, profilePicture, jobTitle, bio) {
+    async updateProfile(profile_id, username, firstName, lastName, profilePicture, jobTitle, bio) {
         try {
-            await this.parser.updateProfile(profile_id, firstName, lastName, profilePicture, jobTitle, bio);
+            await this.parser.updateProfile(profile_id, username, firstName, lastName, profilePicture, jobTitle, bio);
             return STATUS_CODES.OK;
         } catch(error) {
             return this.statusCode.getStatusCode(error);

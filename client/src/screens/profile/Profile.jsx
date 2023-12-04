@@ -6,13 +6,14 @@ import "./profile.css";
 
 function Profile() {
     const [id, setID] = useState();
+    const [username, setUsername] = useState();
     const [firstName, setFirstName] = useState();
     const [lastName, setLastName] = useState();
     const [jobTitle, setJobTitle] = useState();
     const [bio, setBio] = useState();
     const [editMode, setEditMode] = useState(false);
     const { user } = useUser();
-    const { get, put } = ApiClient();
+    const { get, put, del } = ApiClient();
 
     useEffect(() => {
         async function getProfile() {  
@@ -21,9 +22,10 @@ function Profile() {
                 const response = await get(`profile/get/${user.email}`);
                 console.log(response);
                 setID(response.profile_id);
-                setFirstName(response.firstname);
-                setLastName(response.lastname);
-                setJobTitle(response.jobtitle);
+                setUsername(response.username);
+                setFirstName(response.first_name);
+                setLastName(response.last_name);
+                setJobTitle(response.job_title);
                 setBio(response.bio);
             } catch(error) {
                 console.error(error);
@@ -36,8 +38,17 @@ function Profile() {
 
     async function saveChanges() {
         try {
-            await put(`/profile/edit/${id}`, {firstName, lastName, profilePicture: "", jobTitle, bio});
+            await put(`/profile/edit/${id}`, {username, firstName, lastName, profilePicture: "", jobTitle, bio});
             setEditMode(false);
+        } catch(error) {
+            console.error(error);
+            alert(error.message ? error.message : error);
+        }
+    }
+
+    async function deleteAccount() {
+        try {
+            await del(`/profile/delete/${id}`);
         } catch(error) {
             console.error(error);
             alert(error.message ? error.message : error);
@@ -96,6 +107,20 @@ function Profile() {
                 <div className="information-container">
                     <div className="bio-header">
                         <img src={profilePicture} alt="pfp here"/>
+                        {
+                            editMode ?
+                            <input
+                                id="profile"
+                                name="profile"
+                                type="text"
+                                placeholder="username"
+                                value={username}
+                                defaultValue={username}
+                                onChange={(event) => {setUsername(event.target.value)}}
+                            />
+                            :
+                            <p className="usernameDisplay">{username}</p>    
+                        }
                     </div>
                     <p>About Me:</p>
                     {
@@ -124,7 +149,7 @@ function Profile() {
                     :
                     <button className="button" onClick={() => {setEditMode(true)}}>Edit Profile</button>
                 }
-                <button className="button" onClick={() => {}}>Delete Account</button>
+                <button className="button" onClick={deleteAccount}>Delete Account</button>
             </div>
         </div>
     );
