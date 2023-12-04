@@ -16,7 +16,7 @@ function Profile() {
 
     useEffect(() => {
         async function getProfile() {  
-            console.log(`User received in profile: ${user.email}`)  
+            console.log(`User received in profile: ${user.email}`);
             try {
                 const response = await get(`profile/get/${user.email}`);
                 console.log(response);
@@ -45,7 +45,7 @@ function Profile() {
     }
 
     return (
-        <div className="parent-div">    
+        <div className="parent-div">
             <div className="profile-container">
                 {editMode ?
                     <div className="basic information-container">
@@ -124,6 +124,7 @@ function Profile() {
                     :
                     <button className="button" onClick={() => {setEditMode(true)}}>Edit Profile</button>
                 }
+                <button className="button" onClick={() => {}}>Delete Account</button>
             </div>
         </div>
     );

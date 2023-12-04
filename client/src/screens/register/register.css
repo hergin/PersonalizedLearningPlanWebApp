@@ -17,7 +17,6 @@
 .register-header h1 {
     font-size: 48px;
     margin-bottom: 10px;
-    
 }
 
 .register-container{
@@ -31,7 +30,6 @@
     width: 300px;
     padding: 10px 0 10px 0;
     border: 0.8px solid rgb(219, 219, 219);
-    
 }
 
 .register-container input{
@@ -51,6 +49,7 @@
     margin: 40px 40px 0 40px;
     gap: 24px;
 }
+
 .register-button{
     height: 40px;
     border-radius: 4px;
@@ -59,8 +58,6 @@
     font-size: 16px;
     background-color: var(--mainColor);
     color: var(--mainColorHighlight);
-
-
 }
 
 .login-footer{
