@@ -48,7 +48,7 @@ function Profile() {
         <div className="parent-div">    
             <div className="profile-container">
                 {editMode ?
-                    <div className="edit-container">
+                    <div className="basic information-container">
                         <div className="text-entry">    
                             <label for="firstName">First name:</label>
                             <input
@@ -87,7 +87,7 @@ function Profile() {
                         </div>
                     </div>    
                     :
-                    <div className="information-container">
+                    <div className="basic information-container">
                         <p>First name: {firstName ? firstName : ""}</p>
                         <p>Last name: {lastName ? lastName : ""}</p>
                         <p>Job title: {jobTitle ? jobTitle : ""}</p>
@@ -97,13 +97,13 @@ function Profile() {
                     <div className="bio-header">
                         <img src={profilePicture} alt="pfp here"/>
                     </div>
-                    <p>Bio:</p>
+                    <p>About Me:</p>
                     {
                         editMode ?
                         <input
                             id="profile"
                             name="profile"
-                            type="text"
+                            type="textarea"
                             placeholder="bio"
                             value={bio}
                             defaultValue={bio}
