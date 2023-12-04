@@ -10,6 +10,7 @@ jest.mock("../../parser/loginParser", () => {
         storeToken: jest.fn(),
         parseToken: jest.fn(),
         deleteToken: jest.fn(),
+        deleteAccount: jest.fn(),
     };
     return jest.fn(() => testParser);
 });
@@ -114,15 +115,15 @@ describe('Login Functions', () => {
     it('set token (fatal error case)', async () => {
         parser.storeToken.mockRejectedValue({code: 'aaaaah'});
         expect(await loginAPI.setToken(testData.email, testData.refreshToken)).toEqual(STATUS_CODES.INTERNAL_SERVER_ERROR);
-    })
+    });
 
     it('verify token (pass case)', async () => {
-        parser.parseToken.mockResolvedValueOnce([{'refreshtoken': testData.refreshToken}]);
+        parser.parseToken.mockResolvedValueOnce([{'refresh_token': testData.refreshToken}]);
         expect(await loginAPI.verifyToken(testData.email, testData.refreshToken)).toEqual(STATUS_CODES.OK);
     });
 
     it('verify token (unauthorized case)', async () => {
-        parser.parseToken.mockResolvedValueOnce([{'refreshToken': "I'm a wrong token"}]);
+        parser.parseToken.mockResolvedValueOnce([{'refresh_token': "I'm a wrong token"}]);
         expect(await loginAPI.verifyToken(testData.email, testData.refreshToken)).toEqual(STATUS_CODES.UNAUTHORIZED);
     });
 
@@ -149,5 +150,15 @@ describe('Login Functions', () => {
     it('logout (error case)', async () => {
         parser.deleteToken.mockRejectedValue({code: '23514'});
         expect(await loginAPI.logout(testData.email)).toEqual(STATUS_CODES.BAD_REQUEST);
+    });
+
+    it('delete account (pass case)', async () => {
+        parser.deleteAccount.mockResolvedValueOnce();
+        expect(await loginAPI.delete(testData.email)).toEqual(STATUS_CODES.OK);
+    });
+
+    it('delete account (error case)', async () => {
+        parser.deleteAccount.mockRejectedValue({code: '23514'});
+        expect(await loginAPI.delete(testData.email)).toEqual(STATUS_CODES.BAD_REQUEST);
     });
 });

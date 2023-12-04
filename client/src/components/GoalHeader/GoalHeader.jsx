@@ -28,7 +28,7 @@ const GoalHeader = ({ moduleID }) => {
         setSteps(newGoals);
       } catch (error) {
         console.error(error);
-        alert(error.message ? error.message : error);
+        alert(error.response ? error.response.data : error);
       }
     }
 

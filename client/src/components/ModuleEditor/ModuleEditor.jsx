@@ -58,7 +58,7 @@ export default function LongMenu({
 
   async function handleModuleEdit() {
     try {
-      const response = await put(`/module/edit/${id}`, {
+      await put(`/module/edit/${id}`, {
         id: id,
         name: dataNameLocal,
         description: dataDescriptionLocal,
@@ -73,7 +73,7 @@ export default function LongMenu({
       handleCloseModal();
     } catch (error) {
       console.error(error);
-      alert(error.message ? error.message : error);
+      alert(error.response ? error.response.data : error);
     }
   }
 

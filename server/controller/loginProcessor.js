@@ -48,7 +48,7 @@ class LoginAPI {
         try {
             const result = await this.parser.parseToken(email);
             if(result.length === 0) return STATUS_CODES.GONE;
-            return (result[0].refreshtoken === refreshToken) ? STATUS_CODES.OK : STATUS_CODES.UNAUTHORIZED;
+            return (result[0].refresh_token === refreshToken) ? STATUS_CODES.OK : STATUS_CODES.UNAUTHORIZED;
         } catch(error) {
             return this.statusCode.getStatusCode(error);
         }
@@ -57,6 +57,15 @@ class LoginAPI {
     async logout(email) {
         try {
             await this.parser.deleteToken(email);
+            return STATUS_CODES.OK;
+        } catch(error) {
+            return this.statusCode.getStatusCode(error);
+        }
+    }
+
+    async delete(email) {
+        try {
+            await this.parser.deleteAccount(email);
             return STATUS_CODES.OK;
         } catch(error) {
             return this.statusCode.getStatusCode(error);

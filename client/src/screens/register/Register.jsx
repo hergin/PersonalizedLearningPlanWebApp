@@ -25,7 +25,8 @@ const Register = () => {
       // Redirects back to login page after creating an account
       navigate("/login");
     } catch (error) {
-      alert(error.message);
+      console.error(error);
+      alert(error.response ? error.response.data : error);
     }
   }
 

@@ -29,8 +29,8 @@ const LoginScreen = () => {
         ? navigate(location.state.from)
         : navigate("/LearningPlan");
     } catch (error) {
-      console.error(error.message);
-      alert(error.message);
+      console.error(error);
+      alert(error.response ? error.response.data : error);
     }
   }
 

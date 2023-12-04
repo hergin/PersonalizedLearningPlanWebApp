@@ -59,6 +59,16 @@ router.post('/logout', async(req, res) => {
     res.sendStatus(STATUS_CODES.OK);
 });
 
+router.delete('/delete/:id', async(req, res) => {
+    console.log(`Received in delete account: ${req.params.id}`);
+    const deleteQuery = await loginAPI.delete(req.params.id);
+    if(deleteQuery !== STATUS_CODES.OK) {
+        res.status(deleteQuery).send(ERROR_MESSAGES.get(logoutQuery));
+        return;
+    }
+    res.sendStatus(STATUS_CODES.OK);
+});
+
 function generateAccessToken(email) {
     return jwt.sign(email, process.env.ACCESS_TOKEN_SECRET, {}, {expiresIn: "30m"});
 }
