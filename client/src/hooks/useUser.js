@@ -4,7 +4,7 @@ import { useLocalStorage } from "./useLocalStorage";
 
 export const useUser = () => {
     const { user, setUser } = useAuth();
-    const { setItem, getItem } = useLocalStorage();
+    const { setItem, getItem, removeItem } = useLocalStorage();
 
     useEffect(() => {
         const currentUser = getItem("user");
@@ -31,7 +31,7 @@ export const useUser = () => {
     const removeUser = () => {
         console.log("Removing user from local storage...");
         setUser({email: "", accessToken: "", refreshToken: ""});
-        setItem("user", JSON.stringify(user));
+        removeItem("user");
     }
 
     return {user, addUser, replaceToken, removeUser};

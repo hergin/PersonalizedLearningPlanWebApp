@@ -1,0 +1,64 @@
+.profile-container {
+    display: flex;
+    flex: 1;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    height: 80vh;
+    padding: 10px 0px 10px 0px;
+}
+
+.information-container {
+    height: 50vh;
+    width: 30vw;
+    border: 0.8px solid rgb(219, 219, 219);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: normal;
+    padding: 10px;
+    margin: 24px 40px 0 40px;
+    gap: 24px;
+    font-size: 24px;
+}
+
+.edit-container {
+    height: 50vh;
+    width: 30vw;
+    border: 0.8px solid rgb(219, 219, 219);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: normal;
+    padding: 10px;
+    margin: 24px 40px 0 40px;
+    gap: 24px;
+    font-size: 24px;
+}
+
+.button {
+    height: 40px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+    padding: 0 8px;
+    font-size: 16px;
+    background-color: var(--mainColor);
+    color: var(--mainColorHighlight);
+}
+
+.text-entry {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+
+.bigTextBox {
+    height: 70%;
+    width: 100%;
+}
+
+img {
+    height: 20vh;
+    width: 10vw;
+    border-radius: 15px;
+}

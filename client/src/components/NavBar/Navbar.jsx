@@ -26,7 +26,7 @@ function NavBar() {
             <Link to="/#" className="link-dec"> Dashboard</Link>
           </li>
           <li className="nav-li">
-            <Link to="/#" className="link-dec"> Profile</Link>
+            <Link to="/profile" className="link-dec"> Profile</Link>
           </li>
         </ul>
       </nav>

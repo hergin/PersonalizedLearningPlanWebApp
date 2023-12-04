@@ -11,7 +11,7 @@ class ProfileParser extends DatabaseParser {
         const result = await client.query(query);
         client.release();
         console.log("Found profile!");
-        return result.rows;
+        return result.rows[0];
     }
 
     async storeProfile(firstName, lastName, email) {
@@ -26,12 +26,12 @@ class ProfileParser extends DatabaseParser {
         console.log("Profile Created!");
     }
 
-    async updateProfile(firstName, lastName, profilePicture, jobTitle, bio, email) {
+    async updateProfile(id, firstName, lastName, profilePicture, jobTitle, bio) {
         console.log("Inserting new data into profile...");
         const client = await this.pool.connect();
         const query = {
-            text: "UPDATE PROFILE SET firstName = $1, lastName = $2, profilePicture = $3, jobTitle = $4, bio = $5 WHERE email = $6",
-            values: [firstName, lastName, profilePicture, jobTitle, bio, email]
+            text: "UPDATE PROFILE SET firstName = $1, lastName = $2, profilePicture = $3, jobTitle = $4, bio = $5 WHERE profile_id = $6",
+            values: [firstName, lastName, profilePicture, jobTitle, bio, id]
         };
         await client.query(query);
         client.release();

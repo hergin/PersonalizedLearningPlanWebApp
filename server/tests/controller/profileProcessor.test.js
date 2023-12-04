@@ -61,12 +61,10 @@ describe('profile processor', () => {
     });
 
     it('get profile (pass case)', async () => {
-        parser.parseProfile.mockResolvedValueOnce([
-            {
+        parser.parseProfile.mockResolvedValueOnce({
                 firstname: testData.firstName, lastname: testData.lastName, profilepicture: testData.profilePicture, 
                 jobtitle: testData.jobTitle, bio: testData.bio, email: testData.email
-            }
-        ]);
+        });
         expect(await profileAPI.getProfile(testData.email)).toEqual({
             firstname: testData.firstName, lastname: testData.lastName, profilepicture: testData.profilePicture,
             jobtitle: testData.jobTitle, bio: testData.bio, email: testData.email
@@ -74,7 +72,7 @@ describe('profile processor', () => {
     });
 
     it('get profile (profile missing case)', async () => {
-        parser.parseProfile.mockResolvedValueOnce([]);
+        parser.parseProfile.mockResolvedValueOnce(undefined);
         expect(await profileAPI.getProfile(testData.email)).toEqual(STATUS_CODES.UNAUTHORIZED);
     });
 

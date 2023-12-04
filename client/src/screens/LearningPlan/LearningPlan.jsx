@@ -1,13 +1,14 @@
-import React, {useEffect} from "react";
+import React, { useEffect } from "react";
 import ModuleComponent from "../../components/ModuleComponent/";
 import { useAuth } from "../../context/AuthContext";
 
-function Dashboard(){
-  const {user, setUser} = useAuth();
+function LearningPlan() {
+  const { setUser } = useAuth();
 
   useEffect(() => {
     console.log(`Default screen: ${localStorage.getItem("user")}`);
     setUser(JSON.parse(localStorage.getItem("user")));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -15,6 +16,6 @@ function Dashboard(){
       <ModuleComponent />
     </div>
   );
-};
+}
 
-export default Dashboard;
+export default LearningPlan;

@@ -20,15 +20,15 @@ class ProfileAPI {
     async getProfile(email) {
         try {
             const profile = await this.parser.parseProfile(email);
-            return (profile.length === 0) ? STATUS_CODES.UNAUTHORIZED : profile[0];
+            return (profile) ? profile : STATUS_CODES.UNAUTHORIZED;
         } catch(error) {
             return this.statusCode.getStatusCode(error);
         }
     }
 
-    async updateProfile(firstName, lastName, profilePicture, jobTitle, bio, email, profile_id) {
+    async updateProfile(profile_id, firstName, lastName, profilePicture, jobTitle, bio) {
         try {
-            await this.parser.updateProfile(firstName, lastName, profilePicture, jobTitle, bio, email, profile_id);
+            await this.parser.updateProfile(profile_id, firstName, lastName, profilePicture, jobTitle, bio);
             return STATUS_CODES.OK;
         } catch(error) {
             return this.statusCode.getStatusCode(error);
