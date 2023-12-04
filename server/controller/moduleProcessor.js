@@ -20,8 +20,8 @@ class ModuleAPI {
 
     async createModule(name, description, completion_percent, email) {
         try {
-            await this.parser.storeModule(name, description, completion_percent, email);
-            return STATUS_CODES.OK;
+            const result = await this.parser.storeModule(name, description, completion_percent, email);
+            return result;
         } catch(error) {
             return this.statusCode.getStatusCode(error);
         }

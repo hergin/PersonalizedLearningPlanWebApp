@@ -3,14 +3,20 @@ const DatabaseParser = require('./dashboardParser');
 class ModuleParser extends DatabaseParser {
     async storeModule(name, description, completion_percent, email) {
         console.log("Storing Module...");
-        const query = {
+        const storingQuery = {
             text: "INSERT INTO Module(module_name, description, completion_percent, email) VALUES($1, $2, $3, $4)",
             values: [name, description, completion_percent, email]
         };
         const client = await this.pool.connect();
-        await client.query(query);
-        client.release();
+        await client.query(storingQuery);
         console.log("Module Stored!");
+        const idQuery = {
+            text: "SELECT module_id FROM MODULE WHERE module_name = $1 AND description = $2 AND email = $3",
+            values: [name, description, email]
+        };
+        const result = await client.query(idQuery);
+        client.release();
+        return result.rows[0];
     }
 
     async parseModules(email) {

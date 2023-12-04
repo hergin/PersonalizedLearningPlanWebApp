@@ -22,17 +22,12 @@ router.get('/get/:id', authenticateToken, async(req, res) => {
 router.post('/add', authenticateToken, async(req, res) => {
     console.log(`Received: ${req.body.email}`);
     const moduleQuery = await moduleAPI.createModule(req.body.name, req.body.description, req.body.completion_percent, req.body.email);
-    if(moduleQuery !== STATUS_CODES.OK) {
+    if(typeof moduleQuery !== "object") {
         console.log("Something went wrong while creating module.");
         res.status(moduleQuery).send(ERROR_MESSAGES.get(moduleQuery));
         return;
     }
-    const moduleQuery2 = await moduleAPI.getModules(req.body.email);
-    if(typeof moduleQuery2 !== "object") {
-        res.status(moduleQuery2).send(ERROR_MESSAGES.get(moduleQuery2));
-        return;
-    }
-    res.status(STATUS_CODES.OK).json(moduleQuery2);
+    res.status(STATUS_CODES.OK).json(moduleQuery);
 });
 
 router.delete('/delete/:id', authenticateToken, async (req, res) => {

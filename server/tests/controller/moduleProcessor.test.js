@@ -55,9 +55,9 @@ describe('module processor unit tests', () => {
     });
 
     it('create module (correct case)', async () => {
-        parser.storeModule.mockResolvedValueOnce();
+        parser.storeModule.mockResolvedValueOnce({module_id: TEST_DATA.module_id});
         var actual = await moduleAPI.createModule(TEST_DATA.module_name, TEST_DATA.description, TEST_DATA.completion_percent, TEST_DATA.email);
-        expect(actual).toEqual(STATUS_CODES.OK);
+        expect(actual).toEqual({module_id: TEST_DATA.module_id});
     });
 
     it('create module (primary key violation case)', async () => {

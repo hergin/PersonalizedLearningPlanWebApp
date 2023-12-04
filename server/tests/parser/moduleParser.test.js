@@ -41,14 +41,15 @@ describe('module parser',() => {
 
     it('store module', async () => {
         await client.query(CREATE_ACCOUNT_QUERY);
-        await parser.storeModule(TEST_DATA.moduleName, TEST_DATA.moduleDescription, TEST_DATA.completion, TEST_DATA.email);
+        const result = await parser.storeModule(TEST_DATA.moduleName, TEST_DATA.moduleDescription, TEST_DATA.completion, TEST_DATA.email);
+        expect(result).toEqual({module_id: expect.any(Number)});
         var actual = await client.query(
             "SELECT * FROM MODULE WHERE email = $1",
             [TEST_DATA.email]
         );
         expect(actual.rows).toEqual([
             {
-                module_id: expect.any(Number),
+                module_id: result.module_id,
                 module_name: TEST_DATA.moduleName,
                 description: TEST_DATA.moduleDescription,
                 completion_percent: TEST_DATA.completion,

@@ -25,9 +25,8 @@ function ModuleCreator({ addModule }) {
         email: user.email,
       });
       console.log(response);
-      const moduleID = response.module_id;
       addModule({
-        module_id: moduleID,
+        module_id: response.module_id,
         module_name: moduleName,
         description: description,
         completion_percent: 0,

@@ -1,39 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import ModuleCreator from "../ModuleCreator";
-import { ApiClient } from "../../hooks/ApiClient";
-import { useUser } from "../../hooks/useUser";
+import { useModuleData } from "../../context/ModuleContext";
 import "./ModuleComponent.css";
 import LongMenu from "../ModuleEditor/ModuleEditor";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 
 const ModuleComponent = () => {
-  const [modules, setModules] = useState([]);
-  const { user } = useUser();
-  const { get } = ApiClient();
-
-  useEffect(() => {
-    async function getModules() {
-      try {
-        console.log(
-          `User: ${user.email} ${user.accessToken} ${user.refreshToken}`,
-        );
-        const result = await get(`/module/get/${user.email}`);
-        console.log(`Resulting data: ${result}`);
-        let newModules = [];
-        for (let module of result) {
-          newModules.push(module);
-        }
-        setModules(newModules);
-      } catch (error) {
-        console.error(error);
-        alert(error.response ? error.response.data : error);
-      }
-    }
-
-    getModules();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const {modules, setModules} = useModuleData();
 
   function addModule(module) {
     if (modules.includes(module)) {

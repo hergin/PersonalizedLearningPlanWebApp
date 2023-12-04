@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import ModuleComponent from "../../components/ModuleComponent/";
 import { useAuth } from "../../context/AuthContext";
+import { ModuleProvider } from "../../context/ModuleContext";
 
 function LearningPlan() {
   const { setUser } = useAuth();
@@ -12,9 +13,11 @@ function LearningPlan() {
   }, []);
 
   return (
-    <div style={{ padding: "2%", height: "100vh" }}>
-      <ModuleComponent />
-    </div>
+    <ModuleProvider>
+      <div style={{ padding: "2%", height: "100vh" }}>
+        <ModuleComponent />
+      </div>
+    </ModuleProvider>
   );
 }
 
