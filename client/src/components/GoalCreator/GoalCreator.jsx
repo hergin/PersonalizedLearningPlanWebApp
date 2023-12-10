@@ -24,9 +24,9 @@ function GoalCreator({ addGoal, moduleID }) {
         is_complete: false,
         module_id: moduleID,
       });
-      console.log(response.goal_id);
+      console.log(response[0].goal_id);
       addGoal({
-        goal_id: response.goal_id,
+        goal_id: response[0].goal_id,
         name: goalName,
         description: description,
         is_complete: false,
@@ -35,7 +35,7 @@ function GoalCreator({ addGoal, moduleID }) {
       setOpen(false);
     } catch (error) {
       console.error(error);
-      alert(error.response ? error.response.data : error);
+      alert(error.message ? error.message : error);
     }
   }
 

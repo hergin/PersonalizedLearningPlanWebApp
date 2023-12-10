@@ -22,8 +22,14 @@ class GoalParser extends DatabaseParser {
         };
         const client = await this.pool.connect();
         await client.query(query);
+        const idQuery = {
+            text: "SELECT goal_id FROM GOAL WHERE name = $1 AND description = $2 AND module_id = $3",
+            values: [name, description, module_id]
+        }
+        const result = await client.query(idQuery);
         client.release();
         console.log("Goal Stored!");
+        return result.rows;
     }
 
     async updateGoal(goal_id, name, description, completion) {

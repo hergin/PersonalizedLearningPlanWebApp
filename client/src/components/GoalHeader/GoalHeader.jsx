@@ -48,6 +48,7 @@ const GoalHeader = ({ moduleID }) => {
     newGoal.push(goal);
     setSteps(newGoal);
   };
+  
   function editGoal(updatedGoal) {
     const newGoal = steps.map((goal) => {
       if (goal.goal_id === updatedGoal.goal_id) {

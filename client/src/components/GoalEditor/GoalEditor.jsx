@@ -19,7 +19,6 @@ export default function GoalEditor({
   dataName,
   dataDescription,
   id,
-  moduleID,
   goalCompletion,
   deleteObject,
 }) {
@@ -58,8 +57,8 @@ export default function GoalEditor({
 
   async function handleGoalEdit() {
     try {
+      console.log(`ID in handleGoalEdit: ${id}`);
       await put(`/goal/update/${id}`, {
-        id: id,
         name: dataNameLocal,
         description: dataDescriptionLocal,
         is_complete: goalCompletion,

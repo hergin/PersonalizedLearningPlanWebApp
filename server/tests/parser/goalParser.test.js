@@ -45,7 +45,12 @@ describe('goal parser tests', () => {
         await client.query(CREATE_ACCOUNT_QUERY);
         await client.query(CREATE_MODULE_QUERY);
         var moduleID = await getModuleID();
-        await parser.storeGoal(TEST_DATA.goalName, TEST_DATA.goalDescription, TEST_DATA.isComplete, moduleID);
+        const goalID = await parser.storeGoal(TEST_DATA.goalName, TEST_DATA.goalDescription, TEST_DATA.isComplete, moduleID);
+        expect(goalID).toEqual([
+            {
+                goal_id: expect.any(Number)
+            }
+        ]);
         var actual = await client.query(
             "SELECT * FROM GOAL WHERE module_id = $1",
             [moduleID]
