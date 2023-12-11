@@ -19,8 +19,8 @@ class GoalAPI {
 
     async createGoal(name, description, completion_perc, module_id) {
         try {
-            await this.parser.storeGoal(name, description, completion_perc, module_id);
-            return STATUS_CODES.OK;
+            const results = await this.parser.storeGoal(name, description, completion_perc, module_id);
+            return results;
         } catch(error) {
             return this.statusCode.getStatusCode(error);
         }

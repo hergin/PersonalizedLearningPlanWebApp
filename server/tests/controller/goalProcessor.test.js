@@ -59,9 +59,9 @@ describe('goal processor unit tests', () => {
     });
 
     it('create goal (correct case)', async () => {
-        parser.storeGoal.mockResolvedValueOnce();
+        parser.storeGoal.mockResolvedValueOnce({goal_id: TEST_DATA.goal_id});
         var actual = await goalAPI.createGoal(TEST_DATA.name, TEST_DATA.description, TEST_DATA.completion, TEST_DATA.module_id);
-        expect(actual).toEqual(STATUS_CODES.OK);
+        expect(actual).toEqual({goal_id: TEST_DATA.goal_id});
     });
 
     it('create goal (primary key violation case)', async () => {
