@@ -1,9 +1,0 @@
-POST http://localhost:4000/api/module
-content-type: application/json
-
-{
-    "name": "your_module",
-    "description": "OwO What's this?",
-    "completion_percent": 0,
-    "email": "example@gmail.com"
-}
