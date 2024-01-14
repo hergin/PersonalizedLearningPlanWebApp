@@ -11,77 +11,71 @@ import {
   DialogTitle,
   TextField,
 } from "@mui/material";
-import PropTypes from "prop-types";
+import { useUser } from "../../hooks/useUser";
 import { ApiClient } from "../../hooks/ApiClient";
+import { Module } from "../../custom_typing/types";
 
-export default function GoalEditor({
-  editObject,
-  dataName,
-  dataDescription,
-  id,
-  goalCompletion,
-  deleteObject,
-}) {
-  GoalEditor.propTypes = {
-    editObject: PropTypes.func,
-    dataName: PropTypes.string,
-    dataDescription: PropTypes.string,
-    id: PropTypes.number,
-    moduleID: PropTypes.string,
-    goalCompletion: PropTypes.number,
-    deleteObject: PropTypes.func,
-  };
+interface LongMenuProps {
+  editObject: (module: Module) => void,
+  dataName: string,
+  dataDescription: string,
+  id: number,
+  moduleCompletion: number,
+  deleteObject: (id: number) => void
+}
 
-  const [anchorElGoal, setAnchorElGoal] = React.useState(null);
-  const open = Boolean(anchorElGoal);
+export default function LongMenu({editObject, dataName, dataDescription, id, moduleCompletion, deleteObject}: LongMenuProps) {
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const open = Boolean(anchorEl);
   const [dataNameLocal, setDataNameLocal] = useState(dataName);
-  const [dataDescriptionLocal, setDataDescriptionLocal] =
-    useState(dataDescription);
+  const [dataDescriptionLocal, setDataDescriptionLocal] = useState(dataDescription);
   const [openModal, setOpenModal] = useState(false);
-  const handleClick = (event) => {
-    setAnchorElGoal(event.currentTarget);
+  const handleClick = (event : any) => {
+    setAnchorEl(event.currentTarget);
   };
   const handleOpenModal = () => {
     setDataNameLocal(dataName);
     setDataDescriptionLocal(dataDescription);
     setOpenModal(true);
-    setAnchorElGoal(null); // Close the menu when the modal opens
+    setAnchorEl(null); // Close the menu when the modal opens
   };
   const handleClose = () => {
-    setAnchorElGoal(null);
+    setAnchorEl(null);
   };
   const handleCloseModal = () => {
     setOpenModal(false);
   };
+  const { user } = useUser();
   const { put, del } = ApiClient();
 
-  async function handleGoalEdit() {
+  async function handleModuleEdit() {
     try {
-      console.log(`ID in handleGoalEdit: ${id}`);
-      await put(`/goal/update/${id}`, {
+      await put(`/module/edit/${id}`, {
         name: dataNameLocal,
         description: dataDescriptionLocal,
-        is_complete: goalCompletion,
+        completion: moduleCompletion,
+        email: user.email,
       });
       editObject({
         name: dataNameLocal,
         description: dataDescriptionLocal,
-        goal_id: id,
+        id: id,
+        completion: moduleCompletion
       });
       handleCloseModal();
-    } catch (error) {
+    } catch (error : any) {
       console.error(error);
       alert(error.response ? error.response.data : error);
     }
   }
 
-  async function handleGoalDelete() {
+  async function handleModuleDelete() {
     try {
-      const result = await del(`/goal/delete/${id}`);
+      const result = await del(`/module/delete/${id}`);
       console.log(result);
       deleteObject(id);
       handleClose();
-    } catch (error) {
+    } catch (error : any) {
       console.error(error);
       alert(error.message ? error.message : error);
     }
@@ -104,14 +98,14 @@ export default function GoalEditor({
         MenuListProps={{
           "aria-labelledby": "long-button",
         }}
-        anchorEl={anchorElGoal}
+        anchorEl={anchorEl}
         open={open}
         onClose={handleClose}
       >
         <MenuItem key={"edit"} onClick={handleOpenModal}>
           Edit
         </MenuItem>
-        <MenuItem key={"delete"} onClick={handleGoalDelete}>
+        <MenuItem key={"delete"} onClick={handleModuleDelete}>
           Delete
         </MenuItem>
       </Menu>
@@ -130,7 +124,7 @@ export default function GoalEditor({
             fullWidth
             margin="normal"
           />
-          <Button variant="contained" onClick={handleGoalEdit}>
+          <Button variant="contained" onClick={handleModuleEdit}>
             Save Changes
           </Button>
         </DialogContent>

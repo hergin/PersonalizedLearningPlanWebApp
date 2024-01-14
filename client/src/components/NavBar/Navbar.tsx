@@ -44,9 +44,9 @@ function AccountButton() {
       await post("/auth/logout", {email: user.email});
       removeUser();
       navigate("/#");
-    } catch(error) {
-      console.error(error?.message);
-      alert(error?.message);
+    } catch (error : any) {
+      console.error(error);
+      alert(error.response ? error.response.data : error);
     }
   }
 

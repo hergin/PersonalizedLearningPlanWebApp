@@ -1,18 +1,18 @@
 import { useState } from "react";
 
 export const useLocalStorage = () => {
-  const [value, setValue] = useState(null);
+  const [value, setValue] = useState<String | null>(null);
 
-  const setItem = (key, value) => {
+  const setItem = (key : string, value : string) => {
     localStorage.setItem(key, value);
     setValue(value);
   };
 
-  const getItem = (key) => {
+  const getItem = (key : string) => {
     return localStorage.getItem(key);
   };
 
-  const removeItem = (key) => {
+  const removeItem = (key : string) => {
     localStorage.removeItem(key);
     setValue(null);
   };

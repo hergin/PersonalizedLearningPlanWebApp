@@ -5,6 +5,7 @@ import { useUser } from "../../hooks/useUser";
 import "./login.css";
 import { IconButton, InputAdornment, TextField } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
+
 const LoginScreen = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -16,7 +17,7 @@ const LoginScreen = () => {
   const [showPassword, setShowPassword] = useState(false);
   const handleClickShowPassword = () => setShowPassword(!showPassword);
 
-  async function handleLogin(email, password) {
+  async function handleLogin(email : string, password : string) {
     try {
       const response = await post("/auth/login", { email, password });
       addUser({
@@ -28,7 +29,7 @@ const LoginScreen = () => {
       location.state?.from
         ? navigate(location.state.from)
         : navigate("/LearningPlan");
-    } catch (error) {
+    } catch (error : any) {
       console.error(error);
       alert(error.response ? error.response.data : error);
     }

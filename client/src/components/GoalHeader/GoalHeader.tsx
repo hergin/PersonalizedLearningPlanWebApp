@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from "react";
 import "./GoalHeader.css";
 import { Box, CircularProgress, Typography } from "@mui/material";
-
 import GoalStepper from "../GoalStepper/GoalStepper";
 import { ApiClient } from "../../hooks/ApiClient";
-import PropTypes from "prop-types";
+import { Goal } from "../../custom_typing/types";
 
-const GoalHeader = ({ moduleID }) => {
-  GoalHeader.propTypes = {
-    moduleID: PropTypes.string,
-  };
-  const [steps, setSteps] = useState([]);
-  console.log(steps.map((step) => step.name));
+interface GoalHeaderParams {
+  moduleID: number
+}
+
+const GoalHeader = ({moduleID}: GoalHeaderParams) => {
+  const [steps, setSteps] = useState<Goal[]>([]);
+  console.log(steps.map((step : Goal) => step.name));
   const [goalProgress, setGoalProgress] = useState(0);
   const addGoalProgress = () => {
     if (goalProgress < 100) setGoalProgress(goalProgress + 100 / steps.length);
@@ -25,12 +25,12 @@ const GoalHeader = ({ moduleID }) => {
     async function getGoals() {
       try {
         const result = await get(`/goal/get/module/${moduleID}`);
-        let newGoals = [];
+        let newGoals : Goal[] = [];
         for (let goal of result) {
           newGoals.push(goal);
         }
         setSteps(newGoals);
-      } catch (error) {
+      } catch (error : any) {
         console.error(error);
         alert(error.response ? error.response.data : error);
       }
@@ -40,18 +40,18 @@ const GoalHeader = ({ moduleID }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const addGoal = (goal) => {
+  const addGoal = (goal : Goal) => {
     if (steps.includes(goal)) {
       return;
     }
-    let newGoal = [].concat(steps);
-    newGoal.push(goal);
-    setSteps(newGoal);
+    let newGoals : Goal[] = ([] as Goal[]).concat(steps);
+    newGoals.push(goal);
+    setSteps(newGoals);
   };
   
-  function editGoal(updatedGoal) {
+  function editGoal(updatedGoal : Goal) {
     const newGoal = steps.map((goal) => {
-      if (goal.goal_id === updatedGoal.goal_id) {
+      if (goal.id === updatedGoal.id) {
         return {
           ...goal,
           name: updatedGoal.name,
@@ -63,8 +63,8 @@ const GoalHeader = ({ moduleID }) => {
     setSteps(newGoal);
   }
 
-  const deleteGoal = (id) => {
-    const newGoals = steps.filter((goal) => goal.goal_id !== id);
+  const deleteGoal = (id : number) => {
+    const newGoals = steps.filter((goal) => goal.id !== id);
     setSteps(newGoals);
   };
 
@@ -102,13 +102,12 @@ const GoalHeader = ({ moduleID }) => {
             restGoalProgress={restGoalProgress}
             moduleID={moduleID}
             steps={steps}
-            setSteps={setSteps}
             addGoal={addGoal}
             deleteGoal={deleteGoal}
             editGoal={editGoal}
           />
         </div>
-      </div>
+      </div>s
     </div>
   );
 };

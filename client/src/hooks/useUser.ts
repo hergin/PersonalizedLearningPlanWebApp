@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useLocalStorage } from "./useLocalStorage";
+import { User } from "../custom_typing/types";
 
 export const useUser = () => {
     const { user, setUser } = useAuth();
@@ -15,14 +16,14 @@ export const useUser = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    const addUser = (user) => {
+    const addUser = (user : User) => {
         console.log("Adding user to local storage...");
         setUser(user);
         setItem("user", JSON.stringify(user));
         console.log(`Local storage: ${getItem("user")}`);
     }
 
-    const replaceToken = (accessToken) => {
+    const replaceToken = (accessToken : string) => {
         setUser({email: user.email, accessToken, refreshToken: user.refreshToken});
         setItem("user", JSON.stringify(user));
         console.log(`Local storage: ${user}`);

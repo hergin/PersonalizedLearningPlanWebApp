@@ -2,14 +2,15 @@ import React, { useState } from "react";
 import "./GoalCreator.css";
 import Modal from "@mui/material/Modal";
 import { ApiClient } from "../../hooks/ApiClient";
-import PropTypes from "prop-types";
 import { Button } from "@mui/material";
+import { Goal } from "../../custom_typing/types";
 
-function GoalCreator({ addGoal, moduleID }) {
-  GoalCreator.propTypes = {
-    addGoal: PropTypes.func,
-    moduleID: PropTypes.string,
-  };
+interface GoalCreatorProps {
+  moduleID: number,
+  addGoal: (goal: Goal) => void,
+}
+
+function GoalCreator({ moduleID, addGoal } : GoalCreatorProps) {
   const [goalName, setGoalName] = useState("");
   const [description, setDescription] = useState("");
   const [open, setOpen] = useState(false);
@@ -26,14 +27,14 @@ function GoalCreator({ addGoal, moduleID }) {
       });
       console.log(response[0].goal_id);
       addGoal({
-        goal_id: response[0].goal_id,
+        id: response[0].goal_id,
         name: goalName,
         description: description,
         is_complete: false,
         module_id: moduleID,
       });
       setOpen(false);
-    } catch (error) {
+    } catch (error : any) {
       console.error(error);
       alert(error.message ? error.message : error);
     }

@@ -3,12 +3,13 @@ import "./ModuleCreate.css";
 import Modal from "@mui/material/Modal";
 import { useUser } from "../../hooks/useUser";
 import { ApiClient } from "../../hooks/ApiClient";
-import PropTypes from "prop-types";
+import { Module } from "../../custom_typing/types";
 
-function ModuleCreator({ addModule }) {
-  ModuleCreator.propTypes = {
-    addModule: PropTypes.func,
-  };
+interface ModuleCreatorProps {
+  addModule: ({id, name, description, completion}: Module) => void,
+}
+
+function ModuleCreator({ addModule }: ModuleCreatorProps) {
   const [moduleName, setModuleName] = useState("");
   const [description, setDescription] = useState("");
   const [open, setOpen] = useState(false);
@@ -26,13 +27,13 @@ function ModuleCreator({ addModule }) {
       });
       console.log(response.module_id);
       addModule({
-        module_id: response.module_id,
-        module_name: moduleName,
+        id: response.module_id,
+        name: moduleName,
         description: description,
-        completion_percent: 0,
+        completion: 0,
       });
       setOpen(false);
-    } catch (error) {
+    } catch (error : any) {
       console.error(error);
       alert(error.response ? error.response.data : error);
     }

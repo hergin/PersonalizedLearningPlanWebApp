@@ -24,7 +24,7 @@ export const ApiClient = () => {
 
   api.interceptors.response.use(
     (response) => response,
-    (error) => {
+    async (error) => {
       const originalRequest = error.config;
       if (
         user.refreshToken &&
@@ -33,12 +33,12 @@ export const ApiClient = () => {
       ) {
         let data = JSON.stringify({ refreshToken: user.refreshToken });
         try {
-          const result = api.post("/token", data);
-          originalRequest.headers.Authorization = `Bearer ${result.accessToken}`;
+          const result = await api.post("/token", data);
+          originalRequest.headers.Authorization = `Bearer ${result.data}`;
           const response = api(originalRequest).then((response) => {
             return response;
           });
-          replaceToken(result.accessToken);
+          replaceToken(result.data);
           return response;
         } catch (error) {
           console.error(error);
@@ -48,23 +48,23 @@ export const ApiClient = () => {
     },
   );
 
-  const get = async (path) => {
+  const get = async (path : string) => {
     const response = await api.get(path);
     return response.data;
   };
 
-  const post = async (path, data) => {
+  const post = async (path : string, data : object) => {
     const response = await api.post(path, data);
     console.log(response);
     return response.data;
   };
 
-  const put = async (path, data) => {
+  const put = async (path : string, data : object) => {
     const response = await api.put(path, data);
     return response.data;
   };
 
-  const del = async (path) => {
+  const del = async (path : string) => {
     return await api.delete(path);
   };
 

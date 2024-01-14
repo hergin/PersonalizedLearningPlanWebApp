@@ -24,7 +24,7 @@ const Register = () => {
       await post("/profile/create", {username, firstName, lastName, email});
       // Redirects back to login page after creating an account
       navigate("/login");
-    } catch (error) {
+    } catch (error : any) {
       console.error(error);
       alert(error.response ? error.response.data : error);
     }

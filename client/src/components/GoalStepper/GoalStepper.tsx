@@ -9,9 +9,19 @@ import {
   Typography,
 } from "@mui/material";
 import "./GoalStepper.css";
-import PropTypes from "prop-types";
 import GoalCreator from "../GoalCreator/GoalCreator";
 import GoalEditor from "../GoalEditor/GoalEditor";
+import { Goal } from "../../custom_typing/types";
+
+interface GoalStepperProps {
+  moduleID: number,
+  steps: Goal[],
+  addGoal: (goal: Goal) => void,
+  editGoal: (goal: Goal) => void,
+  deleteGoal: (id : number) => void,
+  restGoalProgress: () => void,
+  addGoalProgress: () => void,
+}
 
 export default function GoalStepper({
   deleteGoal,
@@ -21,16 +31,7 @@ export default function GoalStepper({
   steps,
   addGoal,
   moduleID,
-}) {
-  GoalStepper.propTypes = {
-    deleteGoal: PropTypes.func,
-    editGoal: PropTypes.func,
-    restGoalProgress: PropTypes.func,
-    addGoalProgress: PropTypes.func,
-    steps: PropTypes.array,
-    addGoal: PropTypes.func,
-    moduleID: PropTypes.string,
-  };
+} : GoalStepperProps) {
   const [activeStep, setActiveStep] = React.useState(0);
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -71,9 +72,9 @@ export default function GoalStepper({
                         editObject={editGoal}
                         dataName={step.name}
                         dataDescription={step.description}
-                        id={step.goal_id}
-                        moduleID={moduleID}
-                        goalCompletion={step.completion_percent}
+                        id={step.id}
+                        moduleID={step.module_id}
+                        goalCompletion={step.is_complete}
                         deleteObject={deleteGoal}
                       />
                       <Button

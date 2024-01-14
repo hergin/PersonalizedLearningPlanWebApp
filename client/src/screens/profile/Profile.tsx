@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../../hooks/useUser";
 import { ApiClient } from "../../hooks/ApiClient";
@@ -6,12 +6,12 @@ import profilePicture from "../../resources/Default_Profile_Picture.jpg";
 import "./profile.css";
 
 function Profile() {
-    const [id, setID] = useState();
-    const [username, setUsername] = useState();
-    const [firstName, setFirstName] = useState();
-    const [lastName, setLastName] = useState();
-    const [jobTitle, setJobTitle] = useState();
-    const [bio, setBio] = useState();
+    const [id, setID] = useState<number>();
+    const [username, setUsername] = useState("");
+    const [firstName, setFirstName] = useState("");
+    const [lastName, setLastName] = useState("");
+    const [jobTitle, setJobTitle] = useState("");
+    const [bio, setBio] = useState("");
     const [editMode, setEditMode] = useState(false);
     const navigate = useNavigate();
     const { user, removeUser } = useUser();
@@ -29,7 +29,7 @@ function Profile() {
                 setLastName(response.last_name);
                 setJobTitle(response.job_title);
                 setBio(response.bio);
-            } catch(error) {
+            } catch(error : any) {
                 console.error(error);
                 alert(error.message ? error.message : error);
             }
@@ -42,7 +42,7 @@ function Profile() {
         try {
             await put(`/profile/edit/${id}`, {username, firstName, lastName, profilePicture: "", jobTitle, bio});
             setEditMode(false);
-        } catch(error) {
+        } catch(error : any) {
             console.error(error);
             alert(error.message ? error.message : error);
         }
@@ -54,7 +54,7 @@ function Profile() {
             await del(`/auth/delete/${user.email}`);
             removeUser();
             navigate("/#");
-        } catch(error) {
+        } catch(error : any) {
             console.error(error);
             alert(error.response ? error.response : error);
         }
@@ -67,7 +67,7 @@ function Profile() {
                 {
                     editMode ?
                     <input
-                        id="profile"
+                        id="username"
                         name="profile"
                         type="text"
                         placeholder="username"
@@ -82,7 +82,7 @@ function Profile() {
             {editMode ?
                 <div className="information-container">
                     <div className="text-entry">    
-                        <label for="firstName">First name:</label>
+                        <label htmlFor="firstName">First name:</label>
                         <input
                             id="firstName"
                             name="profile"
@@ -94,7 +94,7 @@ function Profile() {
                         />
                     </div>
                     <div className="text-entry">    
-                        <label for="lastName">Last name:</label>
+                        <label htmlFor="lastName">Last name:</label>
                         <input
                             id="lastName"
                             name="profile"
@@ -106,7 +106,7 @@ function Profile() {
                         />
                     </div>
                     <div className="text-entry">
-                        <label for="jobTitle">Job title:</label>
+                        <label htmlFor="jobTitle">Job title:</label>
                         <input
                             id="jobTitle"
                             name="profile"
@@ -119,7 +119,7 @@ function Profile() {
                     </div>
                     <p>About Me:</p>
                     <input
-                        id="profile"
+                        id="bio"
                         name="profile"
                         type="textarea"
                         placeholder="bio"

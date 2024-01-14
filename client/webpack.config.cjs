@@ -2,7 +2,7 @@ const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 module.exports = {
-    entry: path.join(__dirname, "src", "index.jsx"),
+    entry: path.join(__dirname, "src", "index.tsx"),
     output: {
         file: "output.js",
         path: path.resolve(__dirname, "dist"),
@@ -10,13 +10,13 @@ module.exports = {
     module: {
         rules: [
             {
-                test: /\.m?(js|jsx)$/,
+                test: /\.m?(js|jsx|ts|tsx)$/,
                 include: path.resolve(__dirname, 'src'),
                 type: "javascript/auto",
                 exclude: /node_modules/,
-                use: ["babel-loader", "jsx-loader"],
+                use: ["babel-loader", "ts-loader"],
                 resolve: {
-                    extensions: ['.js', '.jsx'],
+                    extensions: ['.js', '.jsx', '.ts', '.tsx'],
                     fullySpecified: false,
                 }
             },
