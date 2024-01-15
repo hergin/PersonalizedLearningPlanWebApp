@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ApiClient } from "../../hooks/ApiClient";
-import "./register.css";
 
 const Register = () => {
   const [firstName, setFirstName] = useState("");
@@ -20,8 +19,8 @@ const Register = () => {
 
   async function handleRegistration() {
     try {
-      await post("/auth/register", {email, password});
-      await post("/profile/create", {username, firstName, lastName, email});
+      await post("/auth/register", { email, password });
+      await post("/profile/create", { username, firstName, lastName, email });
       // Redirects back to login page after creating an account
       navigate("/login");
     } catch (error : any) {
@@ -31,15 +30,16 @@ const Register = () => {
   }
 
   return (
-    <div className="register-page">
-      <div className="register-container">
-        <div className="register-header">
-          <h1>Registration</h1>
+    <div className="flex flex-col m-8 items-center ">
+      <div className="flex flex-nowrap flex-col justify-center h-[500px] w-[300px] py-2.5 border border-solid border-[#DBDBDB]">
+        <div className="flex flex-col justify-center items-center h-24">
+          <h1 className="text-5xl">Registration</h1>
         </div>
-        <div className="register-form">
-          <div className="textInput">
+        <div className="flex flex-col h-full justify-center mx-10 gap-6">
+          <div>
             <input
               id="firstName"
+              className="h-10 rounded text-base w-full border border-solid border-gray-300 px-2 "
               placeholder="First Name"
               type="text"
               value={firstName}
@@ -48,9 +48,10 @@ const Register = () => {
               }}
             />
           </div>
-          <div className="textInput">
+          <div>
             <input
               id="lastName"
+              className="h-10 rounded text-base w-full border border-solid border-gray-300 px-2 "
               placeholder="Last Name"
               type="text"
               value={lastName}
@@ -59,9 +60,10 @@ const Register = () => {
               }}
             />
           </div>
-          <div className="textInput">
+          <div>
             <input
               id="emailInput"
+              className="h-10 rounded text-base w-full border border-solid border-gray-300 px-2 "
               placeholder="Email"
               type="text"
               value={email}
@@ -70,9 +72,10 @@ const Register = () => {
               }}
             />
           </div>
-          <div className="textInput">
+          <div>
             <input
               id="usernameInput"
+              className="h-10 rounded text-base w-full border border-solid border-gray-300 px-2 "
               placeholder="Username"
               type="text"
               value={username}
@@ -81,9 +84,10 @@ const Register = () => {
               }}
             />
           </div>
-          <div className="textInput">
+          <div>
             <input
               id="passwordInput"
+              className="h-10 rounded text-base w-full border border-solid border-gray-300 px-2"
               placeholder="Password"
               type="password"
               value={password}
@@ -96,15 +100,15 @@ const Register = () => {
             id="registerButton"
             disabled={submitDisabled}
             onClick={handleRegistration}
-            className="register-button"
+            className="h-10 border-1 border-solid border-gray-300 rounded px-2 text-base bg-element-base text-text-color hover:bg-[#820000] hover:cursor-pointer disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-element-base"
           >
             Register
           </button>
         </div>
       </div>
-      <div className="login-footer">
+      <div className="flex flex-col justify-center items-center mt-2 h-24 w-[300px] border border-solid border-[#DBDBDB]">
         <p>Already have an account?</p>
-        <Link to="/login" className="login-link">
+        <Link to="/login" className="no-underline text-blue-700 text-base mb-2">
           <p>Sign in here</p>
         </Link>
       </div>
