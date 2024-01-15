@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { ApiClient } from "../../hooks/ApiClient";
 import { useUser } from "../../hooks/useUser";
-import "./login.css";
 import { IconButton, InputAdornment, TextField } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 
@@ -36,14 +35,13 @@ const LoginScreen = () => {
   }
 
   return (
-    <div className="parent-div">
-      <div className="login-container">
-        <div className="login-header">
-          <h1>Login</h1>
+    <div className="flex flex-col flex-1 justify-center items-center h-[80vh] ">
+      <div className="flex flex-nowrap flex-col justify-center h-[350px] w-[300px] py-2.5 border border-solid border-[#DBDBDB]">
+        <div className="flex flex-col justify-center items-center h-24 w-full">
+          <h1 className="text-5xl mb-2">Login</h1>
         </div>
-        <div className="login-form">
+        <div className="flex flex-col h-full justify-center gap-6 mx-10">
           <TextField
-            className="login-input"
             label="Email"
             variant="outlined"
             type={"text"}
@@ -51,7 +49,6 @@ const LoginScreen = () => {
             onChange={(input) => setEmail(input.target.value)}
           />
           <TextField
-            className="login-input"
             value={password}
             variant="outlined"
             type={showPassword ? "text" : "password"}
@@ -75,16 +72,16 @@ const LoginScreen = () => {
             onClick={() => {
               handleLogin(email, password);
             }}
-            className="login-button"
+            className="h-10 border-1 border-solid border-gray-300 rounded px-2 text-base bg-element-base text-text-color hover:bg-[#820000] hover:cursor-pointer disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-element-base"
             disabled={buttonDisabled}
           >
             Login
           </button>
         </div>
       </div>
-      <div className="register-footer">
+      <div className="flex mt-2 flex-col justify-center items-center h-24 w-[300px] border border-solid border-[#DBDBDB]">
         <p>Don't have an account?</p>
-        <Link to="/register" className="register-link">
+        <Link to="/register" className="no-underline text-blue-700 text-base mb-2">
           <p>Register here</p>
         </Link>
       </div>
