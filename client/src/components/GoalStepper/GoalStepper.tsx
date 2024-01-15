@@ -8,7 +8,6 @@ import {
   Stepper,
   Typography,
 } from "@mui/material";
-import "./GoalStepper.css";
 import GoalCreator from "../GoalCreator/GoalCreator";
 import GoalEditor from "../GoalEditor/GoalEditor";
 import { Goal } from "../../custom_typing/types";
@@ -46,7 +45,7 @@ export default function GoalStepper({
   return (
     <div>
       {steps.length === 0 ? (
-        <div className="no-goals-div">
+        <div className="flex flex-col justify-center items-center w-full h-1/2">
           <GoalCreator addGoal={addGoal} moduleID={moduleID} />
         </div>
       ) : (
@@ -60,7 +59,7 @@ export default function GoalStepper({
               <StepLabel sx={{ fontSize: "1.2rem" }}>{step.name}</StepLabel>
 
               <StepContent>
-                <div className="step-content">
+                <div className="flex flex-row justify-between items-center rounded text-black p-5 shadow-md">
                   <Typography
                     sx={{ fontSize: "1.2rem", fontFamily: "var(--bodyFont)" }}
                   >
