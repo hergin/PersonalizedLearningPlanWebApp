@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import "./GoalHeader.css";
 import { Box, CircularProgress, Typography } from "@mui/material";
 import GoalStepper from "../GoalStepper/GoalStepper";
 import { ApiClient } from "../../hooks/ApiClient";
@@ -69,8 +68,8 @@ const GoalHeader = ({moduleID}: GoalHeaderParams) => {
   };
 
   return (
-    <div className="header-component-body">
-      <div className="header-component">
+    <div className="relative flex h-screen">
+      <div className="flex w-full relative items-center bg-element-base text-text-color h-[300px] pl-[3%]">
         <Box display="flex" justifyContent="center" alignItems="center">
           <CircularProgress
             variant={"determinate"}
@@ -96,7 +95,7 @@ const GoalHeader = ({moduleID}: GoalHeaderParams) => {
           </Typography>
         </Box>
 
-        <div className="header-component-buttons">
+        <div className="flex overflow-hidden bg-white flex-col absolute h-auto w-3/5 rounded min-h-[80vh] top-1/2 left-[20%] gap-5 p-[3%] shadow-md">
           <GoalStepper
             addGoalProgress={addGoalProgress}
             restGoalProgress={restGoalProgress}
