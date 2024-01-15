@@ -7,6 +7,10 @@ module.exports = {
         "element-base": "var(--mainColor)",
         "text-color": "var(--mainColorHighlight)",
       },
+      fontFamily: {
+        headlineFont: ["headlineFont", "var(--headlineFont)"],
+        bodyFont: ["bodyFont", "var(--bodyFont)"]
+      }
     },
   },
   plugins: [],

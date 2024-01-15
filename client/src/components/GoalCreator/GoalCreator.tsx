@@ -1,16 +1,15 @@
 import React, { useState } from "react";
-import "./GoalCreator.css";
 import Modal from "@mui/material/Modal";
 import { ApiClient } from "../../hooks/ApiClient";
 import { Button } from "@mui/material";
 import { Goal } from "../../custom_typing/types";
 
 interface GoalCreatorProps {
-  moduleID: number,
-  addGoal: (goal: Goal) => void,
+  moduleID: number;
+  addGoal: (goal: Goal) => void;
 }
 
-function GoalCreator({ moduleID, addGoal } : GoalCreatorProps) {
+function GoalCreator({ moduleID, addGoal }: GoalCreatorProps) {
   const [goalName, setGoalName] = useState("");
   const [description, setDescription] = useState("");
   const [open, setOpen] = useState(false);
@@ -34,7 +33,7 @@ function GoalCreator({ moduleID, addGoal } : GoalCreatorProps) {
         module_id: moduleID,
       });
       setOpen(false);
-    } catch (error : any) {
+    } catch (error: any) {
       console.error(error);
       alert(error.message ? error.message : error);
     }
@@ -49,15 +48,18 @@ function GoalCreator({ moduleID, addGoal } : GoalCreatorProps) {
       >
         Create a new Goal
       </Button>
-      <Modal className="center" open={open} onClose={() => setOpen(false)}>
-        <div className="creation-dialog">
-          <div className="creation-header">
-            <h1>Create a new goal</h1>
+      <Modal
+        className="absolute float-left flex items-center justify-center top-2/4 left-2/4 "
+        open={open}
+        onClose={() => setOpen(false)}
+      >
+        <div className="bg-white w-2/5 flex flex-col items-center justify-start border border-black border-solid h-1/3 p-4">
+          <div className="w-full flex justify-center">
+            <h1 className="font-headlineFont text-5xl">Create a new goal</h1>
           </div>
-          <hr />
-          <div className="creation-body">
+          <div className="w-full h-full flex flex-col items-center justify-center gap-10">
             <input
-              className="module-name"
+              className="h-10 rounded text-base w-full border border-solid border-gray-300 px-2 "
               name="module"
               type="text"
               placeholder="Goal Name"
@@ -68,7 +70,7 @@ function GoalCreator({ moduleID, addGoal } : GoalCreatorProps) {
               required
             />
             <input
-              className="module-description"
+              className="h-10 rounded text-base w-full border border-solid border-gray-300 px-2 "
               name="module"
               type="text"
               placeholder="Goal Description"
@@ -81,7 +83,7 @@ function GoalCreator({ moduleID, addGoal } : GoalCreatorProps) {
             <button
               onClick={handleModuleCreation}
               disabled={submitDisabled}
-              className="module-create-button"
+              className="w-6/12 h-10 border-1 border-solid border-gray-300 rounded px-2 text-base bg-element-base text-text-color hover:bg-[#820000] hover:cursor-pointer disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-element-base"
             >
               Submit
             </button>
