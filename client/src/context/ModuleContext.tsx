@@ -29,7 +29,13 @@ export function ModuleProvider({children}: PropsWithChildren) {
           console.log(`Resulting data: ${result}`);
           let newModules : Module[] = [];
           for (let module of result) {
-            newModules.push(module);
+            const data : Module = {
+              id: module.module_id, 
+              name: module.module_name, 
+              description: module.description,
+              completion: module.completion_percent, 
+            };
+            newModules.push(data);
           }
           setModules(newModules);
         } catch (error : any) {

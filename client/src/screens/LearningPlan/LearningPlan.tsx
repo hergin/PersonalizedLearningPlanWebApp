@@ -15,9 +15,12 @@ function LearningPlan() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // TODO: My lint tool doesn't like that we're going an inline style here because all styling should be moved to an external file. 
+  // Yet, when I move it to the css file, it doesn't work. Please fix this when you get the chance since I'm not sure what's going on here.
+  // - Tim
   return (
     <ModuleProvider>
-      <div>
+      <div style={{padding: "2%", height: "100vh"}}>
         <ModuleComponent />
       </div>
     </ModuleProvider>
