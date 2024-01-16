@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import "./ModuleCreate.css";
 import Modal from "@mui/material/Modal";
 import { useUser } from "../../hooks/useUser";
 import { ApiClient } from "../../hooks/ApiClient";
@@ -40,19 +39,18 @@ function ModuleCreator({ addModule }: ModuleCreatorProps) {
   }
 
   return (
-    <div className="divAdd">
-      <button onClick={() => setOpen(true)} className="fill-div">
+    <div className="flex flex-col transition-transform rounded border border-solid border-black w-[300px] h-[500px] duration-300 shadow-md hover:scale-110 hover:shadow-lg">
+      <button onClick={() => setOpen(true)} className="bg-transparent block h-full w-full no-underline items-center justify-center">
         <h1>+</h1>
       </button>
-      <Modal className="center" open={open} onClose={() => setOpen(false)}>
-        <div className="creation-dialog">
-          <div className="creation-header">
-            <h1>Create a new module</h1>
+      <Modal className="absolute float-left flex items-center justify-center top-2/4 left-2/4" open={open} onClose={() => setOpen(false)}>
+        <div className="bg-white w-2/4 flex flex-col items-center justify-start border border-black border-solid h-1/3 p-4">
+          <div className="w-full flex justify-center">
+            <h1 className="font-headlineFont text-5xl">Create a new module</h1>
           </div>
-          <hr />
-          <div className="creation-body">
+          <div className="w-full h-full flex flex-col items-center justify-center gap-10">
             <input
-              className="module-name"
+              className="h-10 rounded text-base w-full border border-solid border-gray-300 px-2"
               name="module"
               type="text"
               placeholder="Module Name"
@@ -63,7 +61,7 @@ function ModuleCreator({ addModule }: ModuleCreatorProps) {
               required
             />
             <input
-              className="module-description"
+              className="h-10 rounded text-base w-full border border-solid border-gray-300 px-2"
               name="module"
               type="text"
               placeholder="Module Description"
@@ -76,7 +74,7 @@ function ModuleCreator({ addModule }: ModuleCreatorProps) {
             <button
               onClick={handleModuleCreation}
               disabled={submitDisabled}
-              className="module-create-button"
+              className="w-6/12 h-10 border-1 border-solid border-gray-300 rounded px-2 text-base bg-element-base text-text-color hover:bg-[#820000] hover:cursor-pointer disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-element-base"
             >
               Submit
             </button>
