@@ -12,7 +12,7 @@ import {
   TextField,
 } from "@mui/material";
 import { ApiClient } from "../../hooks/ApiClient";
-import { Goal } from "../../custom_typing/types";
+import { Goal } from "../../types";
 
 interface GoalEditorProps {
   id: number,

@@ -3,7 +3,7 @@ import "./GoalHeader.css";
 import { Box, CircularProgress, Typography } from "@mui/material";
 import GoalStepper from "../GoalStepper/GoalStepper";
 import { ApiClient } from "../../hooks/ApiClient";
-import { Goal } from "../../custom_typing/types";
+import { Goal } from "../../types";
 
 interface GoalHeaderParams {
   moduleID: number

@@ -3,7 +3,7 @@ import "./GoalCreator.css";
 import Modal from "@mui/material/Modal";
 import { ApiClient } from "../../hooks/ApiClient";
 import { Button } from "@mui/material";
-import { Goal } from "../../custom_typing/types";
+import { Goal } from "../../types";
 
 interface GoalCreatorProps {
   moduleID: number,

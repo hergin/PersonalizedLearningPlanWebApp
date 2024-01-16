@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 import { useUser } from "../../hooks/useUser";
 import { ApiClient } from "../../hooks/ApiClient";
-import { Module } from "../../custom_typing/types";
+import { Module } from "../../types";
 
 interface LongMenuProps {
   editObject: (module: Module) => void,
