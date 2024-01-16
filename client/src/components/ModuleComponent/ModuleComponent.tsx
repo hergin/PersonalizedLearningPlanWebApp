@@ -1,7 +1,6 @@
 import React from "react";
 import ModuleCreator from "../ModuleCreator/ModuleCreator";
 import { useModuleData } from "../../context/ModuleContext";
-import "./ModuleComponent.css";
 import LongMenu from "../ModuleEditor/ModuleEditor";
 import { Link } from "react-router-dom";
 import { Module } from "../../custom_typing/types";
@@ -39,8 +38,8 @@ const ModuleComponent = () => {
   };
 
   return (
-    <button className="fill-div">
-      <div className="module-container">
+    <button className="bg-transparent block h-full w-full no-underline items-center justify-center">
+      <div className="flex flex-wrap w-full h-full justify-start gap-[5%]">
         {modules.map((module : Module) => (
           <ModuleDisplay
             key={`ID-${module.id}`}
@@ -63,11 +62,11 @@ interface ModuleProps {
 
 const ModuleDisplay = ({module, editModule, deleteModule}: ModuleProps) => {
   return (
-    <div className="module-div">
-      <div className="module-header">
-        <div className="header-content">
-          <div className="empty-div"></div>
-          <h1>{module.name}</h1>
+    <div className="flex flex-col transition-transform rounded border border-solid border-black w-[300px] h-[500px] duration-300 shadow-md hover:scale-110 hover:shadow-lg">
+      <div className="flex">
+        <div className="flex items-center justify-between w-full">
+          <div className="h-full w-[14%]"></div>
+          <h1 className="text-3xl font-extrabold">{module.name}</h1>
           <LongMenu
             dataName={module.name}
             dataDescription={module.description}
@@ -79,12 +78,12 @@ const ModuleDisplay = ({module, editModule, deleteModule}: ModuleProps) => {
         </div>
       </div>
       <hr />
-      <Link to={`/goals/${module.id}`} className="module-body">
-        <p>
-          <span>Progress: </span>
+      <Link to={`/goals/${module.id}`} className="flex flex-col justify-start w-full h-full text-left no-underline text-black gap-[5%] p-[5%] hover:underline">
+        <p className="text-2xl">
+          <span className="text-2xl font-bold">Progress: </span>
           {module.completion === 100 ? "Completed" : "In progress"}
         </p>
-        <p>{module.description}</p>
+        <p className="text-2xl">{module.description}</p>
       </Link>
     </div>
   );
