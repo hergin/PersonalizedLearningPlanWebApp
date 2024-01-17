@@ -1,7 +1,9 @@
-import bcrypt from "bcryptjs";
-import LoginAPI from "../../controller/loginProcessor";
-import LoginParser from "../../parser/loginParser";
-import { STATUS_CODES } from "../../utils/statusCodes";
+export {};
+
+const bcrypt = require("bcryptjs");
+const LoginAPI = require("../../controller/loginProcessor");
+const LoginParser = require("../../parser/loginParser");
+const STATUS_CODES = require("../../utils/statusCodes");
 
 jest.mock("../../parser/loginParser", () => {
     const testParser = {
@@ -22,7 +24,7 @@ describe('Login Functions', () => {
         refreshToken: "UTDefpAEyREXmgCkK04pL1SXK6jrB2tEc2ZyMbrFs61THq2y3bpRZOCj5RiPoZGa",
     };
     
-    let loginAPI : LoginAPI;
+    let loginAPI : typeof LoginAPI;
     let parser : any;
 
     beforeEach(() => {

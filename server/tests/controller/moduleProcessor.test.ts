@@ -1,6 +1,8 @@
-import ModuleAPI from "../../controller/moduleProcessor";
-import ModuleParser from "../../parser/moduleParser";
-import { STATUS_CODES } from "../../utils/statusCodes";
+export {};
+
+const ModuleAPI = require("../../controller/moduleProcessor");
+const ModuleParser = require("../../parser/moduleParser");
+const STATUS_CODES = require("../../utils/statusCodes");
 
 jest.mock("../../parser/moduleParser", () => {
     const testParser = {
@@ -21,7 +23,7 @@ const TEST_DATA = {
 }
 
 describe('module processor unit tests', () => {
-    let moduleAPI : ModuleAPI;
+    let moduleAPI : typeof ModuleAPI;
     let parser : any;
     
     beforeEach(() => {

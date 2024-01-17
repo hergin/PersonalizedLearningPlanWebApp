@@ -1,6 +1,8 @@
-import { STATUS_CODES } from "./statusCodes";
+export {};
 
-export function initializeErrorMap() {
+const STATUS_CODES = require("./statusCodes");
+
+function initializeErrorMap() {
     const errorMessageMap = new Map();
     errorMessageMap.set(STATUS_CODES.BAD_REQUEST, "Data received is invalid. Please try again.");
     errorMessageMap.set(STATUS_CODES.UNAUTHORIZED, "Invalid Login.");
@@ -11,3 +13,5 @@ export function initializeErrorMap() {
     errorMessageMap.set(STATUS_CODES.INTERNAL_SERVER_ERROR, "A fatal error has occurred.");
     return errorMessageMap;
 }
+
+module.exports = initializeErrorMap;

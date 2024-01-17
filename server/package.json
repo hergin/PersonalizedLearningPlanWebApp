@@ -15,7 +15,7 @@
         "typescript": "^5.3.3"
     },
     "scripts": {
-        "dev": "nodemon app.js",
+        "dev": "nodemon app.ts",
         "test": "jest --testPathPattern=tests --detectOpenHandles --coverage"
     },
     "eslintConfig": {
@@ -49,20 +49,12 @@
     },
     "jest": {
         "transform": {
-            "^.+\\.m?[tj]sx?$": [
-                "ts-jest",
-                {
-                    "useESM": true
-                }
-            ]
+            "^.+\\.m?[tj]sx?$": ["ts-jest"]
         },
         "verbose": true,
         "testEnvironment": "node",
         "testPathIgnorePatterns": [
             "/node_modules/"
-        ],
-        "extensionsToTreatAsEsm": [
-            ".ts"
         ]
     },
     "babel": {

@@ -1,6 +1,8 @@
-import DashboardAPI from "../../controller/dashboardProcessor";
-import DashboardParser from "../../parser/dashboardParser";
-import { STATUS_CODES } from "../../utils/statusCodes";
+export {};
+
+const DashboardAPI = require("../../controller/dashboardProcessor");
+const DashboardParser = require("../../parser/dashboardParser");
+const STATUS_CODES = require("../../utils/statusCodes");
 
 jest.mock("../../parser/dashboardParser", () => {
     const mockedParser = {
@@ -19,7 +21,7 @@ describe('Dashboard Functions', () => {
     };
 
     let parser : any;
-    let dashboardAPI : DashboardAPI;
+    let dashboardAPI : typeof DashboardAPI;
 
     beforeEach(() => {
         parser = new DashboardParser();

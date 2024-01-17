@@ -1,4 +1,6 @@
-import ProfileParser from '../../parser/profileParser';
+export {};
+
+const ProfileParser = require('../../parser/profileParser');
 
 const TEST_DATA = {
     email: "testdummy@yahoo.com",

@@ -1,6 +1,8 @@
-import { authenticateToken } from '../../utils/authenticateToken';
-import { STATUS_CODES } from "../../utils/statusCodes";
+export {};
+
+const authenticateToken = require('../../utils/authenticateToken');
 const jwt = require("jsonwebtoken");
+const STATUS_CODES = require("../../utils/statusCodes");
 
 describe('authenticate token tests', () => {
     test('authenticateToken pass case', () => {

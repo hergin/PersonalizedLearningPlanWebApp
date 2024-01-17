@@ -1,6 +1,8 @@
-import DatabaseParser from './databaseParser';
+export {};
 
-export default class ProfileParser extends DatabaseParser {
+const DatabaseParser = require('./databaseParser');
+
+class ProfileParser extends DatabaseParser {
     async parseProfile(email : string) {
         console.log("Getting profile...");
         const client = await this.pool.connect();
@@ -52,3 +54,5 @@ export default class ProfileParser extends DatabaseParser {
         return result.rows;
     }
 }
+
+module.exports = ProfileParser;

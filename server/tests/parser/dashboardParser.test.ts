@@ -1,4 +1,6 @@
-import DashboardParser from '../../parser/dashboardParser';
+export {};
+
+const DashboardParser = require('../../parser/dashboardParser');
 
 const TEST_DATA = {
     email: "testdummy@yahoo.com",

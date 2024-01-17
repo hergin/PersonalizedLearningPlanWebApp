@@ -1,11 +1,13 @@
-import pg from "pg";
-import path from "path";
+export {};
+
+const pg = require("pg");
+const path = require("path");
 require('dotenv').config({
     path: path.join(__dirname, ".env")
 });
 
-export default class DatabaseParser {
-    pool;
+class DatabaseParser {
+    pool : any;
 
     constructor() {
         console.log("Constructing...");
@@ -19,3 +21,5 @@ export default class DatabaseParser {
         console.log("Constructing complete!");
     }
 }
+
+module.exports = DatabaseParser;

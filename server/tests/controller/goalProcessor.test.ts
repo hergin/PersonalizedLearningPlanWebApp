@@ -1,6 +1,8 @@
-import GoalAPI from "../../controller/goalProcessor";
-import GoalParser from "../../parser/goalParser";
-import { STATUS_CODES } from "../../utils/statusCodes";
+export {};
+
+const GoalAPI = require("../../controller/goalProcessor");
+const GoalParser = require("../../parser/goalParser");
+const STATUS_CODES = require("../../utils/statusCodes");
 
 jest.mock("../../parser/goalParser", () => {
     const testParser = {
@@ -21,7 +23,7 @@ const TEST_DATA = {
 }
 
 describe('goal processor unit tests', () => {
-    let goalAPI : GoalAPI;
+    let goalAPI : typeof GoalAPI;
     let parser : any;
 
     beforeEach(() => {

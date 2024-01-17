@@ -1,15 +1,17 @@
-import path from "path";
+export {};
+
+const path = require("path");
 require('dotenv').config({
     path: path.join(__dirname, ".env")
 });
-import bcrypt from "bcryptjs";
-import LoginParser from "../parser/loginParser";
-import { STATUS_CODES } from "../utils/statusCodes";
-import ErrorCodeInterpreter from "./errorCodeInterpreter";
+const bcrypt = require("bcryptjs");
+const LoginParser = require("../parser/loginParser");
+const STATUS_CODES = require("../utils/statusCodes");
+const ErrorCodeInterpreter = require("./errorCodeInterpreter");
 
-export default class LoginAPI {
-    parser : LoginParser;
-    errorCodeInterpreter : ErrorCodeInterpreter;
+class LoginAPI {
+    parser : typeof LoginParser;
+    errorCodeInterpreter : typeof ErrorCodeInterpreter;
 
     constructor() {
       this.parser = new LoginParser();
@@ -29,7 +31,7 @@ export default class LoginAPI {
     async createAccount(email : string, password : string) {
         try {
             console.log(password);
-            const hash = await this.hashPassword(password);
+            const hash = await this.#hashPassword(password);
             console.log(hash);
             await this.parser.storeLogin(email, hash);
             return STATUS_CODES.OK;
@@ -75,8 +77,10 @@ export default class LoginAPI {
         }
     }
 
-    async hashPassword(password : string) {
+    async #hashPassword(password : string) {
         const salt = await bcrypt.genSalt(10);
         return await bcrypt.hash(password, salt);
     }
 }
+
+module.exports = LoginAPI;

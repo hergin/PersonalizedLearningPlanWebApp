@@ -1,14 +1,16 @@
-import express from "express";
-import { authenticateToken } from "../utils/authenticateToken";
-import { initializeErrorMap } from "../utils/errorMessages";
-import ProfileAPI from "../controller/profileProcessor";
-import { STATUS_CODES } from "../utils/statusCodes";
+export {};
+
+const express = require("express");
+const authenticateToken = require("../utils/authenticateToken");
+const initializeErrorMap = require("../utils/errorMessages");
+const ProfileAPI = require("../controller/profileProcessor");
+const STATUS_CODES = require("../utils/statusCodes");
 
 const router = express.Router();
 const ERROR_MESSAGES = initializeErrorMap();
 const profileAPI = new ProfileAPI();
 
-router.get('/get/:id', authenticateToken, async(req, res) => {
+router.get('/get/:id', authenticateToken, async(req : any, res : any) => {
     console.log(`Data received in get profile: ${req.params.id}`);
     const profileQuery = await profileAPI.getProfile(req.params.id);
     if(typeof profileQuery !== "object") {
@@ -19,7 +21,7 @@ router.get('/get/:id', authenticateToken, async(req, res) => {
     res.status(STATUS_CODES.OK).json(profileQuery);
 });
 
-router.post('/create', async(req, res) => {
+router.post('/create', async(req : any, res : any) => {
     console.log(`Data received in create profile: ${req.body.email}`);
     const profileQuery = await profileAPI.createProfile(req.body.username, req.body.firstName, req.body.lastName, req.body.email);
     if(typeof profileQuery !== "object") {
@@ -30,7 +32,7 @@ router.post('/create', async(req, res) => {
     res.sendStatus(STATUS_CODES.OK);
 });
 
-router.put('/edit/:id', authenticateToken, async(req, res) => {
+router.put('/edit/:id', authenticateToken, async(req : any, res : any) => {
     console.log(`Data received in update profile: ${req.params.id}`);
     const profileQuery = await profileAPI.updateProfile(
         parseInt(req.params.id), req.body.username, req.body.firstName, req.body.lastName, req.body.profilePicture, 
@@ -44,7 +46,7 @@ router.put('/edit/:id', authenticateToken, async(req, res) => {
     res.sendStatus(STATUS_CODES.OK);
 });
 
-router.delete('/delete/:id', authenticateToken, async(req, res) => {
+router.delete('/delete/:id', authenticateToken, async(req : any, res : any) => {
     console.log(`Data received in delete profile: ${req.params.id}`);
     const profileQuery = await profileAPI.deleteProfile(parseInt(req.params.id));
     if(typeof profileQuery !== "object") {
@@ -55,4 +57,4 @@ router.delete('/delete/:id', authenticateToken, async(req, res) => {
     res.sendStatus(STATUS_CODES.OK);
 });
 
-export default router;
+module.exports = router;

@@ -1,6 +1,8 @@
-import DatabaseParser from "./databaseParser";
+export {};
 
-export default class GoalParser extends DatabaseParser {
+const DatabaseParser = require("./databaseParser");
+
+class GoalParser extends DatabaseParser {
     async parseGoals(module_id : number) {
         console.log("Getting Goals...");
         const client = await this.pool.connect();
@@ -57,3 +59,5 @@ export default class GoalParser extends DatabaseParser {
         return result.rows;
     }
 }
+
+module.exports = GoalParser;

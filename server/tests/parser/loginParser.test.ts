@@ -1,4 +1,6 @@
-import LoginParser from '../../parser/loginParser';
+export {};
+
+const LoginParser = require('../../parser/loginParser');
 
 const TEST_DATA = {
     email: "testdummy@yahoo.com",

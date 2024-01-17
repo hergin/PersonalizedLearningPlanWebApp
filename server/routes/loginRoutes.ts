@@ -1,14 +1,16 @@
-import express from "express";
-import LoginAPI from "../controller/loginProcessor";
-import { initializeErrorMap } from "../utils/errorMessages";
-import { STATUS_CODES } from "../utils/statusCodes";
-import { generateAccessToken, generateRefreshToken } from "../utils/authenticateToken";
+export {};
+
+const express = require("express");
+const LoginAPI = require("../controller/loginProcessor");
+const initializeErrorMap = require("../utils/errorMessages");
+const STATUS_CODES = require("../utils/statusCodes");
+const {generateAccessToken, generateRefreshToken} = require("../utils/authenticateToken");
 
 const router = express.Router();
 const loginAPI = new LoginAPI();
 const ERROR_MESSAGES = initializeErrorMap();
 
-router.post('/login', async (req, res) => {
+router.post('/login', async (req : any, res : any) => {
     console.log(`Received: ${req.body}`);
     const loginQuery = await loginAPI.verifyLogin(req.body.email, req.body.password);
     if(loginQuery !== STATUS_CODES.OK) {
@@ -27,7 +29,7 @@ router.post('/login', async (req, res) => {
     res.status(STATUS_CODES.OK).json({accessToken, refreshToken});
 });
 
-router.post('/token', async (req, res) => {
+router.post('/token', async (req : any, res : any) => {
     console.log(`Received: ${req.body.refreshToken}`);
     const tokenQuery = await loginAPI.verifyToken(req.body.email, req.body.refreshToken);
     if(tokenQuery !== STATUS_CODES.OK) {
@@ -39,7 +41,7 @@ router.post('/token', async (req, res) => {
     res.status(STATUS_CODES.OK).json({accessToken});
 });
 
-router.post('/register', async(req, res) => {
+router.post('/register', async(req : any, res : any) => {
     console.log(req.body);
     const accountStatusCode = await loginAPI.createAccount(req.body.email, req.body.password);
     if(accountStatusCode !== STATUS_CODES.OK) {
@@ -49,7 +51,7 @@ router.post('/register', async(req, res) => {
     res.sendStatus(STATUS_CODES.OK);
 });
 
-router.post('/logout', async(req, res) => {
+router.post('/logout', async(req : any, res : any) => {
     console.log(`Received in logout: ${req.body}`);
     const logoutQuery = await loginAPI.logout(req.body.email);
     if(logoutQuery !== STATUS_CODES.OK) {
@@ -59,7 +61,7 @@ router.post('/logout', async(req, res) => {
     res.sendStatus(STATUS_CODES.OK);
 });
 
-router.delete('/delete/:id', async(req, res) => {
+router.delete('/delete/:id', async(req : any, res : any) => {
     console.log(`Received in delete account: ${req.params.id}`);
     const deleteQuery = await loginAPI.delete(req.params.id);
     if(deleteQuery !== STATUS_CODES.OK) {
@@ -69,4 +71,4 @@ router.delete('/delete/:id', async(req, res) => {
     res.sendStatus(STATUS_CODES.OK);
 });
 
-export default router;
+module.exports = router;

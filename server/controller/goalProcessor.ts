@@ -1,10 +1,12 @@
-import GoalParser from "../parser/goalParser";
-import { STATUS_CODES } from "../utils/statusCodes";
-import ErrorCodeInterpreter from "./errorCodeInterpreter";
+export {};
 
-export default class GoalAPI {
-    parser : GoalParser;
-    errorCodeInterpreter : ErrorCodeInterpreter;
+const GoalParser = require("../parser/goalParser");
+const STATUS_CODES = require("../utils/statusCodes");
+const ErrorCodeInterpreter = require("./errorCodeInterpreter");
+
+class GoalAPI {
+    parser : typeof GoalParser;
+    errorCodeInterpreter : typeof ErrorCodeInterpreter;
     
     constructor() {
         this.parser = new GoalParser();
@@ -47,3 +49,5 @@ export default class GoalAPI {
         }
     }
 }
+
+module.exports = GoalAPI;

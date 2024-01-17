@@ -1,6 +1,8 @@
-import DatabaseParser from "./databaseParser";
+export {};
 
-export default class LoginParser extends DatabaseParser {
+const DatabaseParser = require("./databaseParser");
+
+class LoginParser extends DatabaseParser {
     async storeLogin(email : string, password : string) {
         console.log("Storing login...");
         const query = {
@@ -75,3 +77,5 @@ export default class LoginParser extends DatabaseParser {
         console.log("Account deleted!");
     }
 }
+
+module.exports = LoginParser;

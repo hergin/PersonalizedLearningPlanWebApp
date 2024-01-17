@@ -1,14 +1,16 @@
-import express from 'express';
-import { STATUS_CODES } from '../utils/statusCodes';
-import { initializeErrorMap } from '../utils/errorMessages';
-import { authenticateToken } from '../utils/authenticateToken';
-import DashboardAPI from '../controller/dashboardProcessor';
+export {};
+
+const express = require('express');
+const STATUS_CODES = require('../utils/statusCodes');
+const initializeErrorMap = require('../utils/errorMessages');
+const authenticateToken = require('../utils/authenticateToken');
+const DashboardAPI = require('../controller/dashboardProcessor');
 
 const router = express.Router();
 const ERROR_MESSAGES = initializeErrorMap();
 const api = new DashboardAPI();
 
-router.get('/get/:id', authenticateToken, async (req, res) => {
+router.get('/get/:id', authenticateToken, async (req : any, res : any) => {
     console.log(`Received in get dashboard: ${req.params.id}`);
     const dashboardQuery = await api.getDashboard(parseInt(req.params.id));
     if(typeof dashboardQuery !== "object") {
@@ -18,7 +20,7 @@ router.get('/get/:id', authenticateToken, async (req, res) => {
     res.status(STATUS_CODES.OK).json(dashboardQuery);
 });
 
-router.post('/create', authenticateToken, async (req, res) => {
+router.post('/create', authenticateToken, async (req : any, res : any) => {
     console.log(`Received in create dashboard: ${req.body}`);
     const dashboardQuery = await api.createDashboard(req.body.profile_id);
     if(dashboardQuery !== STATUS_CODES.OK) {
@@ -28,7 +30,7 @@ router.post('/create', authenticateToken, async (req, res) => {
     res.sendStatus(STATUS_CODES.OK);
 });
 
-router.delete('/delete/:id', authenticateToken, async (req, res) => {
+router.delete('/delete/:id', authenticateToken, async (req : any, res : any) => {
     console.log(`Received in delete dashboard: ${req.params.id}`);
     const dashboardQuery = await api.deleteDashboard(parseInt(req.params.id));
     if(dashboardQuery !== STATUS_CODES.OK) {
@@ -38,4 +40,4 @@ router.delete('/delete/:id', authenticateToken, async (req, res) => {
     res.sendStatus(STATUS_CODES.OK);
 });
 
-export default router;
+module.exports = router;

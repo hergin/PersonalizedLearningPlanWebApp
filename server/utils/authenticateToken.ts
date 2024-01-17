@@ -1,11 +1,13 @@
-import path from "path";
+export {};
+
+const path = require("path");
 require("dotenv").config({
     path: path.join(__dirname, ".env"),
 });
-import jwt from "jsonwebtoken";
-import { STATUS_CODES } from "./statusCodes";
+const jwt = require("jsonwebtoken");
+const STATUS_CODES = require("./statusCodes");
 
-export function authenticateToken(req : any, res : any, next : any) {
+function authenticateToken(req : any, res : any, next : any) {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
     if(token == null) {
@@ -22,10 +24,12 @@ export function authenticateToken(req : any, res : any, next : any) {
     });
 }
 
-export function generateAccessToken(email : string) {
+function generateAccessToken(email : string) {
     return jwt.sign(email, process.env.ACCESS_TOKEN_SECRET!, {expiresIn: "30m"});
 }
 
-export function generateRefreshToken(email : string) {
+function generateRefreshToken(email : string) {
     return jwt.sign(email, process.env.REFRESH_TOKEN_SECRET!);
 }
+
+module.exports = authenticateToken, generateAccessToken, generateRefreshToken;

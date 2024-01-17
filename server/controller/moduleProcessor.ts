@@ -1,10 +1,12 @@
-import ModuleParser from "../parser/moduleParser";
-import { STATUS_CODES } from "../utils/statusCodes";
-import ErrorCodeInterpreter from "./errorCodeInterpreter";
+export {};
 
-export default class ModuleAPI {
-    parser : ModuleParser;
-    errorCodeInterpreter : ErrorCodeInterpreter;
+const ModuleParser = require("../parser/moduleParser");
+const STATUS_CODES = require("../utils/statusCodes");
+const ErrorCodeInterpreter = require("./errorCodeInterpreter");
+
+class ModuleAPI {
+    parser : typeof ModuleParser;
+    errorCodeInterpreter : typeof ErrorCodeInterpreter;
 
     constructor() {
         this.parser = new ModuleParser();
@@ -48,3 +50,5 @@ export default class ModuleAPI {
         }
     }
 }
+
+module.exports = ModuleAPI;

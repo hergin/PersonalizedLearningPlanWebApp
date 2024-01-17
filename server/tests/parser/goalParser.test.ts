@@ -1,4 +1,6 @@
-import GoalParser from '../../parser/goalParser';
+export {};
+
+const GoalParser = require('../../parser/goalParser');
 
 const TEST_DATA = {
     email: "testdummy@yahoo.com",

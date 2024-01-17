@@ -1,6 +1,8 @@
-import DatabaseParser from "./databaseParser";
+export {};
 
-export default class DashboardParser extends DatabaseParser {
+const DatabaseParser = require("./databaseParser");
+
+class DashboardParser extends DatabaseParser {
     async parseDashboard(profile_id : number) {
         console.log("Getting Dashboard...");
         const client = await this.pool.connect();
@@ -51,3 +53,5 @@ export default class DashboardParser extends DatabaseParser {
         return result.rows;
     }
 }
+
+module.exports = DashboardParser;

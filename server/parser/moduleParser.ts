@@ -1,6 +1,8 @@
-import DatabaseParser from './dashboardParser';
+export {};
 
-export default class ModuleParser extends DatabaseParser {
+const DatabaseParser = require('./dashboardParser');
+
+class ModuleParser extends DatabaseParser {
     async storeModule(name : string, description : string, completion_percent : number, email : string) {
         console.log("Storing Module...");
         const storingQuery = {
@@ -57,3 +59,5 @@ export default class ModuleParser extends DatabaseParser {
         return result.rows;
     }
 }
+
+module.exports = ModuleParser;

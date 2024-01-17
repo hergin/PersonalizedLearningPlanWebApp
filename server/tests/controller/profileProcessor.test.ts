@@ -1,6 +1,8 @@
-import ProfileAPI from "../../controller/profileProcessor";
-import ProfileParser from "../../parser/profileParser";
-import { STATUS_CODES } from "../../utils/statusCodes";
+export {};
+
+const ProfileAPI = require("../../controller/profileProcessor")
+const ProfileParser = require("../../parser/profileParser");
+const STATUS_CODES = require("../../utils/statusCodes");
 
 jest.mock("../../parser/profileParser", () => {
     const testParser = {
@@ -25,7 +27,7 @@ describe('profile processor', () => {
     }
 
     let parser : any;
-    let profileAPI : ProfileAPI;
+    let profileAPI : typeof ProfileAPI;
 
     beforeEach(() => {
         parser = new ProfileParser();

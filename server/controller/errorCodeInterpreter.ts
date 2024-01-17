@@ -1,6 +1,8 @@
-import { STATUS_CODES } from "../utils/statusCodes";
+export {};
 
-export default class ErrorCodeInterpreter {
+const STATUS_CODES = require("../utils/statusCodes");
+
+class ErrorCodeInterpreter {
     getStatusCode(error : any) {
         switch (error.code) {
             case '23505':
@@ -18,3 +20,5 @@ export default class ErrorCodeInterpreter {
         }
     }
 }
+
+module.exports = ErrorCodeInterpreter;
