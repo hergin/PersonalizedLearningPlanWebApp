@@ -2,11 +2,7 @@ import React, { useState } from "react";
 import Modal from "@mui/material/Modal";
 import { useUser } from "../../hooks/useUser";
 import { ApiClient } from "../../hooks/ApiClient";
-import { Module } from "../../types";
-
-interface ModuleCreatorProps {
-  addModule: ({id, name, description, completion}: Module) => void,
-}
+import { ModuleCreatorProps } from "../../types";
 
 function ModuleCreator({ addModule }: ModuleCreatorProps) {
   const [moduleName, setModuleName] = useState("");

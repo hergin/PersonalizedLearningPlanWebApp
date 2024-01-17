@@ -48,6 +48,14 @@ class GoalAPI {
             return this.errorCodeInterpreter.getStatusCode(error);
         }
     }
+
+    async addSubGoal(parent_goal_id : number, name: string, description : string, is_complete : boolean) {
+        try {
+            const parentGoal = await this.parser.getGoal(parent_goal_id);
+        } catch(error) {
+            return this.errorCodeInterpreter.getStatusCode(error);
+        }
+    }
 }
 
 module.exports = GoalAPI;

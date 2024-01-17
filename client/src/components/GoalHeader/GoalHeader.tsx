@@ -2,13 +2,9 @@ import React, { useEffect, useState } from "react";
 import { Box, CircularProgress, Typography } from "@mui/material";
 import GoalStepper from "../GoalStepper/GoalStepper";
 import { ApiClient } from "../../hooks/ApiClient";
-import { Goal } from "../../types";
+import { Goal, GoalHeaderProps } from "../../types";
 
-interface GoalHeaderParams {
-  moduleID: number
-}
-
-const GoalHeader = ({moduleID}: GoalHeaderParams) => {
+const GoalHeader = ({moduleID}: GoalHeaderProps) => {
   const [steps, setSteps] = useState<Goal[]>([]);
   console.log(steps.map((step : Goal) => step.name));
   const [goalProgress, setGoalProgress] = useState(0);

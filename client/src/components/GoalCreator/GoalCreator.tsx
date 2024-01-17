@@ -2,12 +2,7 @@ import React, { useState } from "react";
 import Modal from "@mui/material/Modal";
 import { ApiClient } from "../../hooks/ApiClient";
 import { Button } from "@mui/material";
-import { Goal } from "../../types";
-
-interface GoalCreatorProps {
-  moduleID: number;
-  addGoal: (goal: Goal) => void;
-}
+import { GoalCreatorProps } from "../../types";
 
 function GoalCreator({ moduleID, addGoal }: GoalCreatorProps) {
   const [goalName, setGoalName] = useState("");

@@ -58,6 +58,19 @@ class GoalParser extends DatabaseParser {
         console.log("Deleted Goal!");
         return result.rows;
     }
+
+    async getGoal(goal_id : number) {
+        console.log("Getting goal...");
+        const client = await this.pool.connect();
+        const query = {
+            text: "SELECT * FROM GOAL WHERE goal_id = $1",
+            values: [goal_id]
+        };
+        const result = await client.query(query);
+        client.release();
+        console.log("Got goal!");
+        return result.rows;
+    }
 }
 
 module.exports = GoalParser;

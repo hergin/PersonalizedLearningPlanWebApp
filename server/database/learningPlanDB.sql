@@ -31,6 +31,10 @@ CREATE TABLE MODULE(
         ON DELETE CASCADE ON UPDATE CASCADE
 );
 
+-- Repeatable Goals should be possible
+-- We need
+--  - Time of completion.
+--  - An algorithm to determine when the completion expires.
 DROP TABLE IF EXISTS GOAL CASCADE;
 CREATE TABLE GOAL(
     goal_id SERIAL PRIMARY KEY,
@@ -38,6 +42,7 @@ CREATE TABLE GOAL(
     description TEXT,
     is_complete BOOLEAN,
     module_id SERIAL,
+    sub_goals INT[],
     FOREIGN KEY (module_id) REFERENCES MODULE(module_id)
         ON DELETE CASCADE ON UPDATE CASCADE
 );

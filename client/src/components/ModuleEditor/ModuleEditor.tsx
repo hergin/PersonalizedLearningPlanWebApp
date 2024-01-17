@@ -13,16 +13,7 @@ import {
 } from "@mui/material";
 import { useUser } from "../../hooks/useUser";
 import { ApiClient } from "../../hooks/ApiClient";
-import { Module } from "../../types";
-
-interface LongMenuProps {
-  editObject: (module: Module) => void,
-  dataName: string,
-  dataDescription: string,
-  id: number,
-  moduleCompletion: number,
-  deleteObject: (id: number) => void
-}
+import { LongMenuProps } from "../../types";
 
 export default function LongMenu({editObject, dataName, dataDescription, id, moduleCompletion, deleteObject}: LongMenuProps) {
   const [anchorEl, setAnchorEl] = React.useState(null);

@@ -51,4 +51,9 @@ router.delete('/delete/:id', authenticateToken, async(req : any, res : any) => {
     res.sendStatus(STATUS_CODES.OK);
 });
 
+router.post('/add/:id', authenticateToken, async(req : any, res : any) => {
+    console.log(`Received in add sub goal: ${req.params.id}`);
+    const subGoalQuery = await goalAPI.addSubGoal(parseInt(req.params.id), req.body.name, req.body.description, req.body.completion_perc);
+})
+
 module.exports = router;

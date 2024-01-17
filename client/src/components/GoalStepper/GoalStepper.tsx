@@ -10,17 +10,7 @@ import {
 } from "@mui/material";
 import GoalCreator from "../GoalCreator/GoalCreator";
 import GoalEditor from "../GoalEditor/GoalEditor";
-import { Goal } from "../../types";
-
-interface GoalStepperProps {
-  moduleID: number,
-  steps: Goal[],
-  addGoal: (goal: Goal) => void,
-  editGoal: (goal: Goal) => void,
-  deleteGoal: (id : number) => void,
-  restGoalProgress: () => void,
-  addGoalProgress: () => void,
-}
+import { GoalStepperProps } from "../../types";
 
 export default function GoalStepper({
   deleteGoal,

@@ -12,17 +12,7 @@ import {
   TextField,
 } from "@mui/material";
 import { ApiClient } from "../../hooks/ApiClient";
-import { Goal } from "../../types";
-
-interface GoalEditorProps {
-  id: number,
-  dataName: string,
-  dataDescription: string,
-  goalCompletion: boolean,
-  moduleID: number,
-  editObject: (goal: Goal) => void,
-  deleteObject: (id : number) => void
-}
+import { GoalEditorProps } from "../../types";
 
 export default function GoalEditor({id, dataName, dataDescription, goalCompletion, moduleID, editObject, deleteObject} : GoalEditorProps) {
   const [anchorElGoal, setAnchorElGoal] = React.useState(null);

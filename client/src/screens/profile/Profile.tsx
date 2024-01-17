@@ -7,6 +7,7 @@ import "./profile.css";
 
 function Profile() {
     const [id, setID] = useState<number>();
+    // TODO: Move into useReducer
     const [username, setUsername] = useState("");
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
