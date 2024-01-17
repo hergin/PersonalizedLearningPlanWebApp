@@ -3,7 +3,7 @@ import ModuleCreator from "../ModuleCreator/ModuleCreator";
 import { useModuleData } from "../../context/ModuleContext";
 import LongMenu from "../ModuleEditor/ModuleEditor";
 import { Link } from "react-router-dom";
-import { Module } from "../../custom_typing/types";
+import { Module } from "../../types";
 
 const ModuleComponent = () => {
   const { modules, setModules } = useModuleData();

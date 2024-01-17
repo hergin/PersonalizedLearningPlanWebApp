@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Modal from "@mui/material/Modal";
 import { useUser } from "../../hooks/useUser";
 import { ApiClient } from "../../hooks/ApiClient";
-import { Module } from "../../custom_typing/types";
+import { Module } from "../../types";
 
 interface ModuleCreatorProps {
   addModule: ({id, name, description, completion}: Module) => void,

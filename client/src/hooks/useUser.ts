@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useLocalStorage } from "./useLocalStorage";
-import { User } from "../custom_typing/types";
+import { User } from "../types";
 
 export const useUser = () => {
     const { user, setUser } = useAuth();

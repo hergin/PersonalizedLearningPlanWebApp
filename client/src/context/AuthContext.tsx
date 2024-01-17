@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, PropsWithChildren } from "react";
-import { User, emptyUser } from "../custom_typing/types";
+import { User, emptyUser } from "../types";
 
 interface AuthContextProps {
     user: User,

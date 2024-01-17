@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import GoalCreator from "../GoalCreator/GoalCreator";
 import GoalEditor from "../GoalEditor/GoalEditor";
-import { Goal } from "../../custom_typing/types";
+import { Goal } from "../../types";
 
 interface GoalStepperProps {
   moduleID: number,

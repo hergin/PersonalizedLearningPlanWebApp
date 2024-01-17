@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, PropsWithChildren } from "react";
 import { useUser } from "../hooks/useUser";
 import { ApiClient } from "../hooks/ApiClient";
-import { Module } from "../custom_typing/types";
+import { Module } from "../types";
 
 interface ModuleContextProps {
   modules: Module[],

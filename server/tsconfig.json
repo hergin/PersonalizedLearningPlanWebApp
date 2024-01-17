@@ -2,8 +2,8 @@
     "compilerOptions": {
         "outDir": "./dist/",
         "noImplicitAny": true,
-        "module": "es6",
-        "target": "es6",
+        "module": "commonJS",
+        "target": "es2018",
         "jsx": "react",
         "allowJs": true,
         "moduleResolution": "node",
@@ -14,7 +14,7 @@
         "lib": ["es5", "es6", "dom"]
     },
     "typeRoots": [
-        "../custom_typing",
+        "custom_typing",
         "node_modules/@types"
     ]
 }
