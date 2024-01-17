@@ -11,8 +11,8 @@ import {
   DialogTitle,
   TextField,
 } from "@mui/material";
-import { ApiClient } from "../../hooks/ApiClient";
-import { GoalEditorProps } from "../../types";
+import { ApiClient } from "../hooks/ApiClient";
+import { GoalEditorProps } from "../types";
 
 export default function GoalEditor({id, dataName, dataDescription, goalCompletion, moduleID, editObject, deleteObject} : GoalEditorProps) {
   const [anchorElGoal, setAnchorElGoal] = React.useState(null);

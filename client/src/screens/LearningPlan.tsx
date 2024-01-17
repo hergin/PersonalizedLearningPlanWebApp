@@ -1,8 +1,8 @@
 import React, { useEffect } from "react";
-import ModuleComponent from "../../components/ModuleComponent/ModuleComponent";
-import { useAuth } from "../../context/AuthContext";
-import { ModuleProvider } from "../../context/ModuleContext";
-import { emptyUser } from "../../types";
+import ModuleComponent from "../components/ModuleComponent";
+import { useAuth } from "../context/AuthContext";
+import { ModuleProvider } from "../context/ModuleContext";
+import { emptyUser } from "../types";
 import "./LearningPlan.css";
 
 function LearningPlan() {

@@ -1,13 +1,13 @@
 import React from "react";
 import "./App.css";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import LearningPlan from "./screens/LearningPlan/LearningPlan";
-import LoginScreen from "./screens/login/login";
-import Register from "./screens/register/Register";
-import DefaultScreen from "./screens/Default/DefaultContainer";
-import Goals from "./screens/Goals/Goals";
+import LearningPlan from "./screens/LearningPlan";
+import LoginScreen from "./screens/Login";
+import Register from "./screens/Register";
+import DefaultScreen from "./screens/DefaultContainer";
+import Goals from "./screens/Goals";
 import Profile from "./screens/profile/Profile";
-import ProtectedRoute from "./components/ProtectedRoutes/ProtectedRoute";
+import ProtectedRoute from "./components/ProtectedRoute";
 import { AuthProvider } from "./context/AuthContext";
 
 function App() {

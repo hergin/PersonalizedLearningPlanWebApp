@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import Modal from "@mui/material/Modal";
-import { ApiClient } from "../../hooks/ApiClient";
+import { ApiClient } from "../hooks/ApiClient";
 import { Button } from "@mui/material";
-import { GoalCreatorProps } from "../../types";
+import { GoalCreatorProps } from "../types";
 
 function GoalCreator({ moduleID, addGoal }: GoalCreatorProps) {
   const [goalName, setGoalName] = useState("");

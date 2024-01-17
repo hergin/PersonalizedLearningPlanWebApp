@@ -1,6 +1,6 @@
 import React from "react";
 import { useParams } from "react-router-dom";
-import GoalHeader from "../../components/GoalHeader/GoalHeader";
+import GoalHeader from "../components/GoalHeader";
 
 const Goals = () => {
   const { id } = useParams();

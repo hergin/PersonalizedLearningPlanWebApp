@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { ApiClient } from "../../hooks/ApiClient";
-import { useUser } from "../../hooks/useUser";
+import { ApiClient } from "../hooks/ApiClient";
+import { useUser } from "../hooks/useUser";
 import { IconButton, InputAdornment, TextField } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 

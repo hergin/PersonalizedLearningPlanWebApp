@@ -1,9 +1,9 @@
 import React from "react";
-import ModuleCreator from "../ModuleCreator/ModuleCreator";
-import { useModuleData } from "../../context/ModuleContext";
-import LongMenu from "../ModuleEditor/ModuleEditor";
+import ModuleCreator from "./ModuleCreator";
+import { useModuleData } from "../context/ModuleContext";
+import LongMenu from "./ModuleEditor";
 import { Link } from "react-router-dom";
-import { Module } from "../../types";
+import { Module } from "../types";
 
 const ModuleComponent = () => {
   const { modules, setModules } = useModuleData();

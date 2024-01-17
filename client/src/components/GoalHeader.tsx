@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Box, CircularProgress, Typography } from "@mui/material";
-import GoalStepper from "../GoalStepper/GoalStepper";
-import { ApiClient } from "../../hooks/ApiClient";
-import { Goal, GoalHeaderProps } from "../../types";
+import GoalStepper from "./GoalStepper";
+import { ApiClient } from "../hooks/ApiClient";
+import { Goal, GoalHeaderProps } from "../types";
 
 const GoalHeader = ({moduleID}: GoalHeaderProps) => {
   const [steps, setSteps] = useState<Goal[]>([]);

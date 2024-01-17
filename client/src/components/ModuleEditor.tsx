@@ -11,9 +11,9 @@ import {
   DialogTitle,
   TextField,
 } from "@mui/material";
-import { useUser } from "../../hooks/useUser";
-import { ApiClient } from "../../hooks/ApiClient";
-import { LongMenuProps } from "../../types";
+import { useUser } from "../hooks/useUser";
+import { ApiClient } from "../hooks/ApiClient";
+import { LongMenuProps } from "../types";
 
 export default function LongMenu({editObject, dataName, dataDescription, id, moduleCompletion, deleteObject}: LongMenuProps) {
   const [anchorEl, setAnchorEl] = React.useState(null);

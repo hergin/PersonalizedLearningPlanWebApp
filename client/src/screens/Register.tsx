@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { ApiClient } from "../../hooks/ApiClient";
+import { ApiClient } from "../hooks/ApiClient";
 
 const Register = () => {
   const [firstName, setFirstName] = useState("");

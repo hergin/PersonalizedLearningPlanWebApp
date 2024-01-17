@@ -8,9 +8,9 @@ import {
   Stepper,
   Typography,
 } from "@mui/material";
-import GoalCreator from "../GoalCreator/GoalCreator";
-import GoalEditor from "../GoalEditor/GoalEditor";
-import { GoalStepperProps } from "../../types";
+import GoalCreator from "./GoalCreator";
+import GoalEditor from "./GoalEditor";
+import { GoalStepperProps } from "../types";
 
 export default function GoalStepper({
   deleteGoal,
