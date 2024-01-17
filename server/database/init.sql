@@ -1,3 +1,7 @@
+SELECT 'CREATE DATABASE learningplan'
+WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'learningplan')\gexec
+\c learningplan;
+
 DROP TABLE IF EXISTS ACCOUNT CASCADE;
 CREATE TABLE ACCOUNT(
     email TEXT PRIMARY KEY,
@@ -32,7 +36,7 @@ CREATE TABLE MODULE(
 );
 
 -- Repeatable Goals should be possible
--- We need
+-- We need:
 --  - Time of completion.
 --  - An algorithm to determine when the completion expires.
 DROP TABLE IF EXISTS GOAL CASCADE;
