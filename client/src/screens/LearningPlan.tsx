@@ -3,7 +3,6 @@ import ModuleComponent from "../components/ModuleComponent";
 import { useAuth } from "../context/AuthContext";
 import { ModuleProvider } from "../context/ModuleContext";
 import { emptyUser } from "../types";
-import "./LearningPlan.css";
 
 function LearningPlan() {
   const { setUser } = useAuth();
