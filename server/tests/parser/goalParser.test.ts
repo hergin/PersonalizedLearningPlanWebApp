@@ -16,23 +16,31 @@ const TEST_DATA = {
     altGoalDescription: "Complete my homework today."
 }
 
-const CREATE_ACCOUNT_QUERY = {
-    text: "INSERT INTO ACCOUNT(email, account_password) VALUES($1, $2)",
-    values: [TEST_DATA.email, TEST_DATA.password]
-}
-
-const CREATE_MODULE_QUERY = {
-    text: "INSERT INTO MODULE(email) VALUES($1)",
-    values: [TEST_DATA.email]
-}
-
 describe('goal parser tests', () => {
     var parser = new GoalParser();
     var client : any;
+    var moduleID : number;
     
     beforeEach(async () => {
         client = await parser.pool.connect();
+        await client.query({
+            text: "INSERT INTO ACCOUNT(email, account_password) VALUES($1, $2)",
+            values: [TEST_DATA.email, TEST_DATA.password]
+        });
+        await client.query({
+            text: "INSERT INTO MODULE(email) VALUES($1)",
+            values: [TEST_DATA.email]
+        });
+        moduleID = await getModuleID();
     });
+
+    async function getModuleID() {
+        const moduleIDQuery = await client.query(
+            "SELECT module_id FROM MODULE WHERE email = $1",
+            [TEST_DATA.email]
+        );
+        return moduleIDQuery.rows[0].module_id;
+    }
 
     afterEach(async () => {
         await client.query(
@@ -47,9 +55,6 @@ describe('goal parser tests', () => {
     });
     
     it('store goal', async () => {
-        await client.query(CREATE_ACCOUNT_QUERY);
-        await client.query(CREATE_MODULE_QUERY);
-        var moduleID = await getModuleID();
         const goalID = await parser.storeGoal(TEST_DATA.goalName, TEST_DATA.goalDescription, TEST_DATA.isComplete, moduleID);
         expect(goalID).toEqual([
             {
@@ -74,10 +79,7 @@ describe('goal parser tests', () => {
         ]);
     });
 
-    it('parse goal', async () => {
-        await client.query(CREATE_ACCOUNT_QUERY);
-        await client.query(CREATE_MODULE_QUERY);
-        var moduleID = await getModuleID();
+    it('parse goals', async () => {
         await client.query(
             "INSERT INTO GOAL(name, description, is_complete, module_id) VALUES ($1, $2, $3, $4)",
             [TEST_DATA.goalName, TEST_DATA.goalDescription, TEST_DATA.isComplete, moduleID]
@@ -96,10 +98,21 @@ describe('goal parser tests', () => {
         ]);
     });
 
+    it('get module id', async () => {
+        await client.query(
+            "INSERT INTO GOAL(name, description, is_complete, module_id) VALUES ($1, $2, $3, $4)",
+            [TEST_DATA.goalName, TEST_DATA.goalDescription, TEST_DATA.isComplete, moduleID]
+        );
+        var goalID = await getGoalID();
+        var result = await parser.getModuleID(goalID);
+        expect(result).toEqual([
+            {
+                module_id: moduleID
+            }
+        ]);
+    });
+
     it('update goal', async () => {
-        await client.query(CREATE_ACCOUNT_QUERY);
-        await client.query(CREATE_MODULE_QUERY);
-        var moduleID = await getModuleID();
         await client.query(
             "INSERT INTO GOAL(name, description, is_complete, module_id) VALUES ($1, $2, $3, $4)",
             [TEST_DATA.goalName, TEST_DATA.goalDescription, TEST_DATA.isComplete, moduleID]
@@ -125,9 +138,6 @@ describe('goal parser tests', () => {
     });
 
     it('update goal timestamps (no expiration)', async () => {
-        await client.query(CREATE_ACCOUNT_QUERY);
-        await client.query(CREATE_MODULE_QUERY);
-        var moduleID = await getModuleID();
         await client.query(
             "INSERT INTO GOAL(name, description, is_complete, module_id) VALUES ($1, $2, $3, $4)",
             [TEST_DATA.goalName, TEST_DATA.goalDescription, true, moduleID]
@@ -153,9 +163,6 @@ describe('goal parser tests', () => {
     });
 
     it('update goal timestamp (with expiration)', async () => {
-        await client.query(CREATE_ACCOUNT_QUERY);
-        await client.query(CREATE_MODULE_QUERY);
-        var moduleID = await getModuleID();
         await client.query(
             "INSERT INTO GOAL(name, description, is_complete, module_id) VALUES ($1, $2, $3, $4)",
             [TEST_DATA.goalName, TEST_DATA.goalDescription, true, moduleID]
@@ -181,9 +188,6 @@ describe('goal parser tests', () => {
     });
 
     it('delete goal', async () => {
-        await client.query(CREATE_ACCOUNT_QUERY);
-        await client.query(CREATE_MODULE_QUERY);
-        var moduleID = await getModuleID();
         await client.query(
             "INSERT INTO GOAL(name, description, is_complete, module_id) VALUES ($1, $2, $3, $4)",
             [TEST_DATA.goalName, TEST_DATA.goalDescription, TEST_DATA.isComplete, moduleID]
@@ -198,15 +202,17 @@ describe('goal parser tests', () => {
     });
 
     it('store sub goal', async () => {
-        await client.query(CREATE_ACCOUNT_QUERY);
-        await client.query(CREATE_MODULE_QUERY);
-        var moduleID = await getModuleID();
         await client.query(
             "INSERT INTO GOAL(name, description, is_complete, module_id) VALUES ($1, $2, $3, $4)",
             [TEST_DATA.goalName, TEST_DATA.goalDescription, TEST_DATA.isComplete, moduleID]
         );
         var goalID = await getGoalID();
-        await parser.storeSubGoal(goalID, TEST_DATA.subGoalName, TEST_DATA.subGoalDescription, false, moduleID);
+        var subGoalID = await parser.storeSubGoal(goalID, TEST_DATA.subGoalName, TEST_DATA.subGoalDescription, false, moduleID);
+        expect(subGoalID).toEqual([
+            {
+                goal_id: expect.any(Number)
+            }
+        ]);
         var actual = await client.query(
             "SELECT * FROM GOAL WHERE parent_goal = $1",
             [goalID]
@@ -226,9 +232,6 @@ describe('goal parser tests', () => {
     });
 
     it('parse sub goals', async () => {
-        await client.query(CREATE_ACCOUNT_QUERY);
-        await client.query(CREATE_MODULE_QUERY);
-        var moduleID = await getModuleID();
         await client.query(
             "INSERT INTO GOAL(name, description, is_complete, module_id) VALUES ($1, $2, $3, $4)",
             [TEST_DATA.goalName, TEST_DATA.goalDescription, TEST_DATA.isComplete, moduleID]
@@ -262,14 +265,6 @@ describe('goal parser tests', () => {
             }
         ]);
     })
-
-    async function getModuleID() {
-        const moduleIDQuery = await client.query(
-            "SELECT module_id FROM MODULE WHERE email = $1",
-            [TEST_DATA.email]
-        );
-        return moduleIDQuery.rows[0].module_id;
-    }
 
     async function getGoalID() {
         const goalIDQuery = await client.query(
