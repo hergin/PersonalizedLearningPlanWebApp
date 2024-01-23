@@ -46,10 +46,23 @@ CREATE TABLE GOAL(
     description TEXT,
     is_complete BOOLEAN,
     module_id SERIAL,
-    sub_goals INT[],
+    completion_time TIMESTAMP,
+    expiration TIMESTAMP,
+    parent_goal INT,
     FOREIGN KEY (module_id) REFERENCES MODULE(module_id)
         ON DELETE CASCADE ON UPDATE CASCADE
 );
+
+-- Check to see if the goal's completion has expired.
+CREATE OR REPLACE FUNCTION get_goal(id int)
+RETURNS GOAL AS $$
+    UPDATE GOAL g
+    SET is_complete = g.completion_time < g.expiration
+    WHERE g.expiration IS NOT NULL AND g.completion_time IS NOT NULL;
+
+    SELECT * FROM GOAL g
+    WHERE g.goal_id = get_goal.id;
+$$ language sql security definer;
 
 DROP TABLE IF EXISTS DASHBOARD CASCADE;
 CREATE TABLE DASHBOARD(
