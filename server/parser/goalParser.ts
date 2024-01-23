@@ -41,6 +41,17 @@ class GoalParser extends DatabaseParser {
         console.log("Goal data updated!");
     }
 
+    async updateGoalTimestamps(goal_id : number, completion_time : string, expiration? : string) {
+        console.log("Inserting timestamp values into Goal...");
+        const queryString = `UPDATE GOAL SET completion_time = $1${expiration ? ", expiration = $2" : ""} WHERE goal_id = ${expiration ? "$3" : "$2"}`;
+        const query = {
+            text: queryString,
+            values: expiration ? [completion_time, expiration, goal_id] : [completion_time, goal_id]
+        };
+        await this.updateDatabase(query);
+        console.log("Timestamps updated!");
+    }
+
     async deleteGoal(goal_id : number) {
         console.log("Deleting Goal...");
         const query = {

@@ -1,6 +1,6 @@
 export {};
 
-const authenticateToken = require('../../utils/authenticateToken');
+const tokenMethods = require('../../utils/authenticateToken');
 const jwt = require("jsonwebtoken");
 const STATUS_CODES = require("../../utils/statusCodes");
 
@@ -20,7 +20,7 @@ describe('authenticate token tests', () => {
         const mockResponse = {
             sendStatus: sendStatus
         };
-        authenticateToken(mockRequest, mockResponse, next);
+        tokenMethods.authenticateToken(mockRequest, mockResponse, next);
         expect(next).toHaveBeenCalledTimes(1);
         expect(sendStatus).toHaveBeenCalledTimes(0);
     });
@@ -34,7 +34,7 @@ describe('authenticate token tests', () => {
         const mockResponse = {
             sendStatus: sendStatus
         };
-        authenticateToken(mockRequest, mockResponse, next);
+        tokenMethods.authenticateToken(mockRequest, mockResponse, next);
         expect(sendStatus).toHaveBeenCalledTimes(1);
         expect(sendStatus).toHaveBeenCalledWith(STATUS_CODES.UNAUTHORIZED);
     });
@@ -54,7 +54,7 @@ describe('authenticate token tests', () => {
         const mockResponse = {
             sendStatus: sendStatus
         };
-        authenticateToken(mockRequest, mockResponse, next);
+        tokenMethods.authenticateToken(mockRequest, mockResponse, next);
         expect(sendStatus).toHaveBeenCalledTimes(1);
         expect(sendStatus).toHaveBeenCalledWith(STATUS_CODES.FORBIDDEN);
         expect(next).toHaveBeenCalledTimes(0);
