@@ -10,7 +10,7 @@ class GoalParser extends DatabaseParser {
     async parseGoals(module_id : number) {
         console.log("Getting Goals...");
         const query = {
-            text: "SELECT * FROM Goal WHERE module_id = $1",
+            text: "SELECT * FROM get_goals($1)",
             values: [module_id]
         };
         return this.parseDatabase(query);
@@ -65,7 +65,7 @@ class GoalParser extends DatabaseParser {
     async getGoal(goal_id : number) {
         console.log("Getting goal...");
         const query = {
-            text: "SELECT * FROM GOAL WHERE goal_id = $1",
+            text: "SELECT * FROM get_goal($1)",
             values: [goal_id]
         };
         return this.parseDatabase(query);
@@ -76,8 +76,17 @@ class GoalParser extends DatabaseParser {
         const query = {
             text: "INSERT INTO goal(name, description, is_complete, module_id, parent_goal) VALUES ($1, $2, $3, $4, $5)",
             values: [name, description, is_complete, module_id, parent_goal_id]
-        }
+        };
         await this.updateDatabase(query);
+    }
+
+    async parseSubGoals(goal_id : number) {
+        console.log("Getting sub goals...");
+        const query = {
+            text: "SELECT * FROM GOAL WHERE parent_goal = $1",
+            values: [goal_id]
+        };
+        return this.parseDatabase(query);
     }
 }
 
