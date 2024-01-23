@@ -1,6 +1,6 @@
 export {};
 
-const tokenMethods = require('../../utils/authenticateToken');
+const tokenMethods = require('../../utils/token');
 const jwt = require("jsonwebtoken");
 const STATUS_CODES = require("../../utils/statusCodes");
 

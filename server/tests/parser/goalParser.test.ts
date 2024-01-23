@@ -194,6 +194,34 @@ describe('goal parser tests', () => {
         expect(actual.rows).toEqual([]);
     });
 
+    it('store sub goal', async () => {
+        await client.query(CREATE_ACCOUNT_QUERY);
+        await client.query(CREATE_MODULE_QUERY);
+        var moduleID = await getModuleID();
+        await client.query(
+            "INSERT INTO GOAL(name, description, is_complete, module_id) VALUES ($1, $2, $3, $4)",
+            [TEST_DATA.goalName, TEST_DATA.goalDescription, TEST_DATA.isComplete, moduleID]
+        );
+        var goalID = await getGoalID();
+        await parser.storeSubGoal(goalID, "sub-goal", "this is a sub goal.", false, moduleID);
+        var actual = await client.query(
+            "SELECT * FROM GOAL WHERE parent_goal = $1",
+            [goalID]
+        );
+        expect(actual.rows).toEqual([
+            {
+                goal_id: expect.any(Number),
+                name: "sub-goal",
+                description: "this is a sub goal.",
+                is_complete: false,
+                module_id: moduleID,
+                completion_time: null,
+                expiration: null,
+                parent_goal: goalID
+            }
+        ]);
+    });
+
     async function getModuleID() {
         const moduleIDQuery = await client.query(
             "SELECT module_id FROM MODULE WHERE email = $1",

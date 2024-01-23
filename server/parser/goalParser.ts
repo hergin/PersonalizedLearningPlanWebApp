@@ -70,6 +70,15 @@ class GoalParser extends DatabaseParser {
         };
         return this.parseDatabase(query);
     }
+
+    async storeSubGoal(parent_goal_id : number, name: string, description : string, is_complete : boolean, module_id : number) {
+        console.log("Storing sub goal...");
+        const query = {
+            text: "INSERT INTO goal(name, description, is_complete, module_id, parent_goal) VALUES ($1, $2, $3, $4, $5)",
+            values: [name, description, is_complete, module_id, parent_goal_id]
+        }
+        await this.updateDatabase(query);
+    }
 }
 
 module.exports = GoalParser;

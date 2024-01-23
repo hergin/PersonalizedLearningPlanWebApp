@@ -3,7 +3,7 @@ export {};
 const express = require('express');
 const STATUS_CODES = require('../utils/statusCodes');
 const initializeErrorMap = require('../utils/errorMessages');
-const tokenMethods = require('../utils/authenticateToken');
+const tokenMethods = require('../utils/token');
 const DashboardAPI = require('../controller/dashboardProcessor');
 
 const router = express.Router();
