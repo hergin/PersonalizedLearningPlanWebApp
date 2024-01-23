@@ -27,15 +27,11 @@ class DatabaseParser {
     }
 
     async updateDatabase(query : Query) {
-        const client = await this.pool.connect();
-        await client.query(query);
-        client.release();
+        await this.pool.query(query);
     }
 
     async parseDatabase(query : Query) {
-        const client = await this.pool.connect();
-        const result = await client.query(query);
-        client.release();
+        const result = await this.pool.query(query);
         return result.rows;
     }
 }
