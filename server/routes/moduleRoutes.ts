@@ -1,7 +1,7 @@
 export {};
 
 const express = require("express");
-const authenticateToken = require("../utils/authenticateToken");
+const tokenMethods = require("../utils/authenticateToken");
 const initializeErrorMap = require("../utils/errorMessages");
 const ModuleAPI = require("../controller/moduleProcessor");
 const STATUS_CODES = require("../utils/statusCodes");
@@ -11,7 +11,7 @@ const router = express.Router();
 const ERROR_MESSAGES = initializeErrorMap();
 const moduleAPI = new ModuleAPI();
 
-router.get('/get/:id', authenticateToken, async(req : any, res : any) => {
+router.get('/get/:id', tokenMethods.authenticateToken, async(req : any, res : any) => {
     console.log(`Received: ${req.params.id}`);
     const moduleQuery = await moduleAPI.getModules(req.params.id);
     if(typeof moduleQuery !== "object") {
@@ -22,7 +22,7 @@ router.get('/get/:id', authenticateToken, async(req : any, res : any) => {
     res.status(STATUS_CODES.OK).json(moduleQuery);
 });
 
-router.post('/add', authenticateToken, async(req : any, res : any) => {
+router.post('/add', tokenMethods.authenticateToken, async(req : any, res : any) => {
     console.log(`Received: ${req.body.email}`);
     const moduleQuery = await moduleAPI.createModule(req.body.name, req.body.description, req.body.completion_percent, req.body.email);
     if(typeof moduleQuery !== "object") {
@@ -33,7 +33,7 @@ router.post('/add', authenticateToken, async(req : any, res : any) => {
     res.status(STATUS_CODES.OK).json(moduleQuery);
 });
 
-router.delete('/delete/:id', authenticateToken, async (req : any, res : any) => {
+router.delete('/delete/:id', tokenMethods.authenticateToken, async (req : any, res : any) => {
     console.log(`Received: ${req.params.id}`);
     const moduleQuery = await moduleAPI.deleteModule(parseInt(req.params.id));
     if(moduleQuery !== STATUS_CODES.OK) {
@@ -44,7 +44,7 @@ router.delete('/delete/:id', authenticateToken, async (req : any, res : any) => 
     res.sendStatus(STATUS_CODES.OK);
 });
 
-router.put('/edit/:id', authenticateToken, async (req : any, res : any) => {
+router.put('/edit/:id', tokenMethods.authenticateToken, async (req : any, res : any) => {
     console.log(`Received: ${req.params.id}`);
     const moduleQuery = await moduleAPI.updateModule(parseInt(req.params.id), req.body.name, req.body.description, req.body.completion, req.body.email);
     if(moduleQuery !== STATUS_CODES.OK) {

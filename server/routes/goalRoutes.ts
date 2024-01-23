@@ -1,7 +1,7 @@
 export {};
 
 const express = require("express");
-const authenticateToken = require("../utils/authenticateToken");
+const tokenMethods = require("../utils/authenticateToken");
 const initializeErrorMap = require("../utils/errorMessages");
 const GoalAPI = require("../controller/goalProcessor");
 const STATUS_CODES = require("../utils/statusCodes");
@@ -10,7 +10,7 @@ const router = express.Router();
 const ERROR_MESSAGES = initializeErrorMap();
 const goalAPI = new GoalAPI();
 
-router.get('/get/module/:id', authenticateToken, async(req : any, res : any) => {
+router.get('/get/module/:id', tokenMethods.authenticateToken, async(req : any, res : any) => {
     console.log(`Received in get goals: ${req.params.id}`);
     const goalQuery = await goalAPI.getGoals(parseInt(req.params.id));
     if(typeof goalQuery !== "object") {
@@ -20,7 +20,7 @@ router.get('/get/module/:id', authenticateToken, async(req : any, res : any) => 
     res.json(goalQuery);
 });
 
-router.post('/add', authenticateToken, async(req : any, res : any) => {
+router.post('/add', tokenMethods.authenticateToken, async(req : any, res : any) => {
     console.log(req.body);
     const goalQuery = await goalAPI.createGoal(req.body.name, req.body.description, req.body.completion_perc, req.body.module_id);
     if(typeof goalQuery !== "object") {
@@ -31,7 +31,7 @@ router.post('/add', authenticateToken, async(req : any, res : any) => {
     res.status(STATUS_CODES.OK).json(goalQuery);
 });
 
-router.put('/update/:id', authenticateToken, async(req : any, res : any) => {
+router.put('/update/:id', tokenMethods.authenticateToken, async(req : any, res : any) => {
     console.log(`Received in update goal: ${req.params.id}`);
     const goalQuery = await goalAPI.updateGoal(parseInt(req.params.id), req.body.name, req.body.description, req.body.isComplete);
     if(typeof goalQuery !== "object") {
@@ -41,7 +41,7 @@ router.put('/update/:id', authenticateToken, async(req : any, res : any) => {
     res.json(goalQuery);
 });
 
-router.delete('/delete/:id', authenticateToken, async(req : any, res : any) => {
+router.delete('/delete/:id', tokenMethods.authenticateToken, async(req : any, res : any) => {
     console.log(`Received in delete goal: ${req.params.id}`);
     const goalQuery = await goalAPI.deleteGoal(parseInt(req.params.id));
     if(goalQuery !== STATUS_CODES.OK) {
@@ -51,7 +51,7 @@ router.delete('/delete/:id', authenticateToken, async(req : any, res : any) => {
     res.sendStatus(STATUS_CODES.OK);
 });
 
-router.post('/add/:id', authenticateToken, async(req : any, res : any) => {
+router.post('/add/:id', tokenMethods.authenticateToken, async(req : any, res : any) => {
     console.log(`Received in add sub goal: ${req.params.id}`);
     const subGoalQuery = await goalAPI.addSubGoal(parseInt(req.params.id), req.body.name, req.body.description, req.body.completion_perc);
 })

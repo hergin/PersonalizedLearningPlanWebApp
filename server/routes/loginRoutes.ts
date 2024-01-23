@@ -4,7 +4,7 @@ const express = require("express");
 const LoginAPI = require("../controller/loginProcessor");
 const initializeErrorMap = require("../utils/errorMessages");
 const STATUS_CODES = require("../utils/statusCodes");
-const {generateAccessToken, generateRefreshToken} = require("../utils/authenticateToken");
+const tokenMethods = require("../utils/authenticateToken");
 
 const router = express.Router();
 const loginAPI = new LoginAPI();
@@ -18,8 +18,8 @@ router.post('/login', async (req : any, res : any) => {
         res.status(loginQuery).send(ERROR_MESSAGES.get(loginQuery));
         return;
     }
-    const accessToken = generateAccessToken(req.body.email);
-    const refreshToken = generateRefreshToken(req.body.email);
+    const accessToken = tokenMethods.generateAccessToken(req.body.email);
+    const refreshToken = tokenMethods.generateRefreshToken(req.body.email);
     const tokenQuery = await loginAPI.setToken(req.body.email, refreshToken);
     if(tokenQuery !== STATUS_CODES.OK) {
         console.log("Storing token failed.");
@@ -37,7 +37,7 @@ router.post('/token', async (req : any, res : any) => {
         res.status(tokenQuery).send(ERROR_MESSAGES.get(tokenQuery));
         return;
     }
-    const accessToken = generateAccessToken(req.body.email);
+    const accessToken = tokenMethods.generateAccessToken(req.body.email);
     res.status(STATUS_CODES.OK).json({accessToken});
 });
 
