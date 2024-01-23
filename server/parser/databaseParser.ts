@@ -6,6 +6,11 @@ require('dotenv').config({
     path: path.join(__dirname, ".env")
 });
 
+interface Query {
+    text: string,
+    values: (string | number | boolean)[]
+}
+
 class DatabaseParser {
     pool : any;
 
@@ -19,6 +24,19 @@ class DatabaseParser {
             port: process.env.POSTGRES_PORT ? parseInt(process.env.POSTGRES_PORT) : 0
         });
         console.log("Constructing complete!");
+    }
+
+    async updateDatabase(query : Query) {
+        const client = await this.pool.connect();
+        await client.query(query);
+        client.release();
+    }
+
+    async parseDatabase(query : Query) {
+        const client = await this.pool.connect();
+        const result = await client.query(query);
+        client.release();
+        return result.rows;
     }
 }
 

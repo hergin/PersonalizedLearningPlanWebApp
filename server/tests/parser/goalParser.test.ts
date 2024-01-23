@@ -10,7 +10,8 @@ const TEST_DATA = {
     completion: 0,
     goalName: "Complete this quiz",
     goalDescription: "This is a quiz that I need to complete.",
-    isComplete: false
+    isComplete: false,
+    sub_goals: null,
 }
 
 const CREATE_ACCOUNT_QUERY = {
@@ -63,7 +64,8 @@ describe('goal parser tests', () => {
                 name: TEST_DATA.goalName,
                 description: TEST_DATA.goalDescription,
                 is_complete: TEST_DATA.isComplete,
-                module_id: moduleID
+                module_id: moduleID,
+                sub_goals: TEST_DATA.sub_goals
             }
         ]);
     });
@@ -82,7 +84,8 @@ describe('goal parser tests', () => {
                 name: TEST_DATA.goalName,
                 description: TEST_DATA.goalDescription,
                 is_complete: TEST_DATA.isComplete,
-                module_id: moduleID
+                module_id: moduleID,
+                sub_goals: TEST_DATA.sub_goals
             }
         ]);
     });
@@ -107,7 +110,8 @@ describe('goal parser tests', () => {
                 name: "Homework",
                 description: "Complete my homework today.",
                 is_complete: false,
-                module_id: moduleID
+                module_id: moduleID,
+                sub_goals: TEST_DATA.sub_goals
             }
         ]);
     });
