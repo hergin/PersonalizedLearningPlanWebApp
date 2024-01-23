@@ -24,12 +24,12 @@ function authenticateToken(req : any, res : any, next : any) {
     });
 }
 
-function generateAccessToken(email : string) {
-    return jwt.sign(email, process.env.ACCESS_TOKEN_SECRET!, {expiresIn: "30m"});
+const generateAccessToken = function(email : string) {
+    return jwt.sign({email}, process.env.ACCESS_TOKEN_SECRET!, {expiresIn: '24h'});
 }
 
-function generateRefreshToken(email : string) {
-    return jwt.sign(email, process.env.REFRESH_TOKEN_SECRET!);
+const generateRefreshToken = function(email : string) {
+    return jwt.sign({email}, process.env.REFRESH_TOKEN_SECRET!);
 }
 
-module.exports = authenticateToken, generateAccessToken, generateRefreshToken;
+module.exports = {authenticateToken, generateAccessToken, generateRefreshToken};
