@@ -1,25 +1,27 @@
-import React from "react";
-import ModuleCreator from "./ModuleCreator";
+import React, { useState } from "react";
 import { useModuleData } from "../context/ModuleContext";
 import LongMenu from "./ModuleEditor";
 import { Link } from "react-router-dom";
 import { Module } from "../types";
+import CreationModal from "./CreationModal";
 
 const ModuleComponent = () => {
   const { modules, setModules } = useModuleData();
+  const [open, setOpen] = useState(false);
 
-  function addModule(module : Module) {
+  function addModule(module: Module) {
+
     if (modules.includes(module)) {
       return;
     }
-    let newModules : Module[] = ([] as Module[]).concat(modules);
+    let newModules: Module[] = ([] as Module[]).concat(modules);
     newModules.push(module);
     console.log(newModules);
     setModules(newModules);
   }
 
-  function editModule(updatedModule : Module) {
-    const newModule = modules.map((module : Module) => {
+  function editModule(updatedModule: Module) {
+    const newModule = modules.map((module: Module) => {
       if (module.id === updatedModule.id) {
         return {
           ...module,
@@ -32,15 +34,15 @@ const ModuleComponent = () => {
     setModules(newModule);
   }
 
-  const deleteModule = (id : number) => {
-    const newModules = modules.filter((module : Module) => module.id !== id);
+  const deleteModule = (id: number) => {
+    const newModules = modules.filter((module: Module) => module.id !== id);
     setModules(newModules);
   };
 
   return (
     <button className="bg-transparent block h-full w-full no-underline items-center justify-center">
       <div className="flex flex-wrap w-full h-full justify-start gap-[5%]">
-        {modules.map((module : Module) => (
+        {modules.map((module: Module) => (
           <ModuleDisplay
             key={`ID-${module.id}`}
             module={module}
@@ -48,7 +50,7 @@ const ModuleComponent = () => {
             deleteModule={deleteModule}
           />
         ))}
-        <ModuleCreator addModule={addModule} />
+        <CreationModal addModule={addModule} modalTitle={"Create a new modal"} open={open} />
       </div>
     </button>
   );
@@ -60,7 +62,7 @@ interface ModuleProps {
   deleteModule: (id: number) => void
 }
 
-const ModuleDisplay = ({module, editModule, deleteModule}: ModuleProps) => {
+const ModuleDisplay = ({ module, editModule, deleteModule }: ModuleProps) => {
   return (
     <div className="flex flex-col transition-transform rounded border border-solid border-black w-[300px] h-[500px] duration-300 shadow-md hover:scale-110 hover:shadow-lg">
       <div className="flex">
