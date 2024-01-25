@@ -65,7 +65,7 @@ describe('goal parser tests', () => {
             }
         ]);
         var actual = await client.query(
-            "SELECT * FROM GOAL WHERE module_id = $1",
+            "SELECT * FROM get_goals($1)",
             [moduleID]
         );
         expect(actual.rows).toEqual([
@@ -84,7 +84,7 @@ describe('goal parser tests', () => {
         ]);
     });
 
-    it('store goals (with due date)', async () => {
+    it('store goal (with due date)', async () => {
         const goalID = await parser.storeGoal(TEST_DATA.goalName, TEST_DATA.goalDescription, goalTypes[1], TEST_DATA.isComplete, moduleID, TEST_DATA.dueDate);
         expect(goalID).toEqual([
             {
@@ -92,7 +92,7 @@ describe('goal parser tests', () => {
             }
         ]);
         var actual = await client.query(
-            "SELECT * FROM GOAL WHERE module_id = $1",
+            "SELECT * FROM get_goals($1)",
             [moduleID]
         );
         expect(actual.rows).toEqual([
@@ -146,7 +146,7 @@ describe('goal parser tests', () => {
         ]);
     });
 
-    it('update goal', async () => {
+    it('update goal (no due date)', async () => {
         await client.query(
             "INSERT INTO GOAL(name, description, goal_type, is_complete, module_id) VALUES ($1, $2, $3, $4, $5)",
             [TEST_DATA.goalName, TEST_DATA.goalDescription, goalTypes[0], TEST_DATA.isComplete, moduleID]
@@ -154,7 +154,7 @@ describe('goal parser tests', () => {
         var goalID = await getGoalID();
         await parser.updateGoal(goalID, TEST_DATA.altGoalName, TEST_DATA.altGoalDescription, false);
         var actual = await client.query(
-            "SELECT * FROM GOAL WHERE goal_id = $1",
+            "SELECT * FROM get_goal($1)",
             [goalID]
         );
         expect(actual.rows).toEqual([
@@ -173,6 +173,33 @@ describe('goal parser tests', () => {
         ]);
     });
 
+    it('update goal (with due date)', async () => {
+        await client.query(
+            "INSERT INTO GOAL(name, description, goal_type, is_complete, module_id) VALUES ($1, $2, $3, $4, $5)",
+            [TEST_DATA.goalName, TEST_DATA.goalDescription, goalTypes[0], TEST_DATA.isComplete, moduleID]
+        );
+        var goalID = await getGoalID();
+        await parser.updateGoal(goalID, TEST_DATA.altGoalName, TEST_DATA.altGoalDescription, false, TEST_DATA.dueDate);
+        var actual = await client.query(
+            "SELECT * FROM get_goal($1)",
+            [goalID]
+        );
+        expect(actual.rows).toEqual([
+            {
+                goal_id: goalID,
+                name: TEST_DATA.altGoalName,
+                description: TEST_DATA.altGoalDescription,
+                goal_type: goalTypes[0],
+                is_complete: false,
+                module_id: moduleID,
+                due_date: TEST_DATA.dueDate,
+                completion_time: null,
+                expiration: null,
+                parent_goal: null
+            }
+        ]);
+    });
+
     it('update goal timestamps (no expiration)', async () => {
         await client.query(
             "INSERT INTO GOAL(name, description, goal_type, is_complete, module_id) VALUES ($1, $2, $3, $4, $5)",
@@ -181,7 +208,7 @@ describe('goal parser tests', () => {
         var goalID = await getGoalID();
         await parser.updateGoalTimestamps(goalID, TEST_DATA.completionTime);
         var actual = await client.query(
-            "SELECT * FROM GOAL WHERE goal_id = $1",
+            "SELECT * FROM get_goal($1)",
             [goalID]
         );
         expect(actual.rows).toEqual([
@@ -208,7 +235,7 @@ describe('goal parser tests', () => {
         var goalID = await getGoalID();
         await parser.updateGoalTimestamps(goalID, TEST_DATA.completionTime, TEST_DATA.expiration);
         var actual = await client.query(
-            "SELECT * FROM GOAL WHERE goal_id = $1",
+            "SELECT * FROM get_goal($1)",
             [goalID]
         );
         expect(actual.rows).toEqual([

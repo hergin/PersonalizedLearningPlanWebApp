@@ -22,18 +22,21 @@ class GoalAPI {
         }
     }
 
-    async createGoal(name : string, description : string, is_complete : boolean, module_id : number) {
+    async createGoal(name : string, description : string, goalType: string, is_complete : boolean, module_id : number, dueDate? : Date) {
         try {
-            const results = await this.parser.storeGoal(name, description, is_complete, module_id);
+            const results = await this.parser.storeGoal(name, description, goalType, is_complete, module_id, dueDate);
             return results;
         } catch(error) {
             return this.errorCodeInterpreter.getStatusCode(error);
         }
     }
 
-    async updateGoal(goal_id : number, name : string, description : string, is_complete : boolean) {
+    async updateGoal(goal_id : number, name : string, description : string, is_complete : boolean, dueDate? : Date, completionTime? : Date, expiration? : Date) {
         try {
-            await this.parser.updateGoal(goal_id, name, description, is_complete);
+            await this.parser.updateGoal(goal_id, name, description, is_complete, dueDate);
+            if(completionTime) {
+                await this.parser.updateGoalTimestamps(goal_id, completionTime, expiration);
+            }
             return STATUS_CODES.OK;
         } catch(error) {
             return this.errorCodeInterpreter.getStatusCode(error);
