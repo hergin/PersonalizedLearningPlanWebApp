@@ -16,11 +16,11 @@ class GoalParser extends DatabaseParser {
         return this.parseDatabase(query);
     }
 
-    async storeGoal(name : string, description : string, isComplete : boolean, moduleID : number) {
+    async storeGoal(name : string, description : string, goalType: string, isComplete : boolean, moduleID : number, due_date? : string) {
         console.log("Storing Goal...");
         const query = {
-            text: "INSERT INTO GOAL(name, description, is_complete, module_id) VALUES($1, $2, $3, $4)",
-            values: [name, description, isComplete, moduleID]
+            text: `INSERT INTO GOAL(name, description, goal_type, is_complete, module_id${due_date ? ", due_date" : ""}) VALUES($1, $2, $3, $4, $5${due_date ? ", $6" : ""})`,
+            values: due_date ? [name, description, goalType, isComplete, moduleID, due_date] : [name, description, goalType, isComplete, moduleID]
         };
         await this.updateDatabase(query);
         console.log("Goal Stored! Now returning id...");
@@ -71,11 +71,12 @@ class GoalParser extends DatabaseParser {
         return this.parseDatabase(query);
     }
 
-    async storeSubGoal(parentGoalID : number, name: string, description : string, isComplete : boolean, moduleID : number) {
+    async storeSubGoal(parentGoalID : number, name: string, description : string, goalType : string, isComplete : boolean, moduleID : number, due_date? : string) {
         console.log("Storing sub goal...");
+        const text = `INSERT INTO goal(name, description, goal_type, is_complete, module_id, parent_goal${due_date ? ", due_date" : ""}) VALUES ($1, $2, $3, $4, $5, $6${due_date ? ", $7" : ""})`;
         const query = {
-            text: "INSERT INTO goal(name, description, is_complete, module_id, parent_goal) VALUES ($1, $2, $3, $4, $5)",
-            values: [name, description, isComplete, moduleID, parentGoalID]
+            text: text,
+            values: due_date ? [name, description, goalType, isComplete, moduleID, parentGoalID, due_date] : [name, description, goalType, isComplete, moduleID, parentGoalID]
         };
         await this.updateDatabase(query);
         console.log("Sub goal stored! Now returning id...");

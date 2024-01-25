@@ -1,3 +1,5 @@
+export type GoalType = "todo" | "daily";
+
 export interface Module {
     id: number,
     name: string,
