@@ -21,6 +21,7 @@ export interface User {
 
 export interface ModuleCreatorProps {
   addModule: ({ id, name, description, completion }: Module) => void,
+  closeModal: () => void,
   modalTitle: string;
   open: boolean;
 

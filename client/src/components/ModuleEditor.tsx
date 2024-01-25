@@ -15,7 +15,7 @@ import { useUser } from "../hooks/useUser";
 import { ApiClient } from "../hooks/ApiClient";
 import { LongMenuProps } from "../types";
 
-export default function LongMenu({editObject, dataName, dataDescription, id, moduleCompletion, deleteObject}: LongMenuProps) {
+const  ModuleEditorButton = ({editObject, dataName, dataDescription, id, moduleCompletion, deleteObject}: LongMenuProps) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const [dataNameLocal, setDataNameLocal] = useState(dataName);
@@ -123,3 +123,5 @@ export default function LongMenu({editObject, dataName, dataDescription, id, mod
     </>
   );
 }
+
+export default ModuleEditorButton;
