@@ -46,10 +46,52 @@ CREATE TABLE GOAL(
     description TEXT,
     is_complete BOOLEAN,
     module_id SERIAL,
-    sub_goals INT[],
+    completion_time TIMESTAMP,
+    expiration TIMESTAMP,
+    parent_goal INT,
     FOREIGN KEY (module_id) REFERENCES MODULE(module_id)
         ON DELETE CASCADE ON UPDATE CASCADE
 );
+
+-- This will update every goal's completion status.
+CREATE OR REPLACE FUNCTION update_goal_completion()
+RETURNS TRIGGER AS $$
+    BEGIN
+        IF OLD.expiration IS NOT NULL THEN
+            NEW.is_complete = CURRENT_TIMESTAMP < OLD.expiration;
+            RETURN NEW;
+        ELSE
+            RETURN NULL;
+        END IF;
+    END;
+$$ language 'plpgsql';
+
+-- This will trigger update goal completion after every update query.
+CREATE TRIGGER trigger_update_goal_completion
+AFTER INSERT OR UPDATE ON GOAL FOR EACH ROW
+EXECUTE PROCEDURE update_goal_completion();
+
+-- Checks to see if the goal's completion has expired before returning the data.
+-- You must use this function to parse a goal otherwise it might be inaccurate.
+CREATE OR REPLACE FUNCTION get_goal(id int)
+RETURNS GOAL AS $$
+    UPDATE GOAL g
+    SET is_complete = CURRENT_TIMESTAMP < g.expiration
+    WHERE g.expiration IS NOT NULL;
+
+    SELECT * FROM GOAL g
+    WHERE g.goal_id = get_goal.id;
+$$ language sql security definer;
+
+CREATE OR REPLACE FUNCTION get_goals(id int)
+RETURNS GOAL AS $$
+    UPDATE GOAL g
+    SET is_complete = CURRENT_TIMESTAMP < g.expiration
+    WHERE g.expiration IS NOT NULL;
+
+    SELECT * FROM GOAL g
+    WHERE g.module_id = get_goals.id;
+$$ language sql security definer;
 
 DROP TABLE IF EXISTS DASHBOARD CASCADE;
 CREATE TABLE DASHBOARD(

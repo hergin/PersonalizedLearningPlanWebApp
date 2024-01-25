@@ -1,7 +1,7 @@
 export {};
 
 const express = require("express");
-const tokenMethods = require("../utils/authenticateToken");
+const tokenMethods = require("../utils/token");
 const initializeErrorMap = require("../utils/errorMessages");
 const ModuleAPI = require("../controller/moduleProcessor");
 const STATUS_CODES = require("../utils/statusCodes");

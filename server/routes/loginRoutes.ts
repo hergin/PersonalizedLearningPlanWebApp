@@ -4,7 +4,7 @@ const express = require("express");
 const LoginAPI = require("../controller/loginProcessor");
 const initializeErrorMap = require("../utils/errorMessages");
 const STATUS_CODES = require("../utils/statusCodes");
-const tokenMethods = require("../utils/authenticateToken");
+const tokenMethods = require("../utils/token");
 
 const router = express.Router();
 const loginAPI = new LoginAPI();
