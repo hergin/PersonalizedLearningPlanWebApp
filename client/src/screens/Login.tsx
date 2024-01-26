@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { ApiClient } from "../hooks/ApiClient";
 import { useUser } from "../hooks/useUser";
+import { useEnterKey } from "../hooks/useEnterKey";
 import { IconButton, InputAdornment, TextField } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 
@@ -12,6 +13,7 @@ const LoginScreen = () => {
   const location = useLocation();
   const { addUser } = useUser();
   const { post } = ApiClient();
+  const { handleKeyPress } = useEnterKey();
   const buttonDisabled = email === "" || password === "";
   const [showPassword, setShowPassword] = useState(false);
   const handleClickShowPassword = () => setShowPassword(!showPassword);
@@ -34,13 +36,6 @@ const LoginScreen = () => {
     }
   }
 
-  function handleKeyPress(event : any) {
-    console.log(`Key press detected: ${event.key}`);
-    if(event.key === 'Enter') {
-      handleLogin();
-    }
-  }
-
   return (
     <div className="flex flex-col flex-1 justify-center items-center h-[80vh] ">
       <div className="flex flex-nowrap flex-col justify-center h-[350px] w-[300px] py-2.5 border border-solid border-[#DBDBDB]">
@@ -53,14 +48,14 @@ const LoginScreen = () => {
             variant="outlined"
             type={"text"}
             value={email}
-            onKeyUp={handleKeyPress}
+            onKeyUp={(event) => {handleKeyPress(event, handleLogin)}}
             onChange={(input) => setEmail(input.target.value)}
           />
           <TextField
             value={password}
             variant="outlined"
             type={showPassword ? "text" : "password"}
-            onKeyUp={handleKeyPress}
+            onKeyUp={(event) => {handleKeyPress(event, handleLogin)}}
             onChange={(input) => setPassword(input.target.value)}
             InputProps={{
               endAdornment: (
