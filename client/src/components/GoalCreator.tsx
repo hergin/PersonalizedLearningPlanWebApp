@@ -26,8 +26,8 @@ function GoalCreator({ moduleID, addGoal }: GoalCreatorProps) {
         id: response[0].goal_id,
         name: goalName,
         description: description,
-        is_complete: false,
-        module_id: moduleID,
+        isComplete: false,
+        moduleId: moduleID,
       });
       setOpen(false);
     } catch (error: any) {

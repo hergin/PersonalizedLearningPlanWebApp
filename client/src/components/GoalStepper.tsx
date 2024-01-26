@@ -10,7 +10,8 @@ import {
 } from "@mui/material";
 import GoalCreator from "./GoalCreator";
 import GoalEditor from "./GoalEditor";
-import { GoalStepperProps } from "../types";
+import { GoalStepperProps, Goal } from "../types";
+import { ApiClient } from "../hooks/ApiClient";
 
 export default function GoalStepper({
   deleteGoal,
@@ -22,15 +23,37 @@ export default function GoalStepper({
   moduleID,
 } : GoalStepperProps) {
   const [activeStep, setActiveStep] = React.useState(0);
-  const handleNext = () => {
+  const { put } = ApiClient();
+  
+  const handleNext = async () => {
+    const step = steps.at(activeStep);
+    if(step) {
+      step.isComplete = true;
+      await updateDatabase(step);
+    }
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
     addGoalProgress();
   };
 
-  const handleBack = () => {
+  const handleBack = async () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
+    const step = steps.at(activeStep);
+    if(step) {
+      step.isComplete = false;
+      await updateDatabase(step);
+    }
     restGoalProgress();
   };
+
+  async function updateDatabase(goal: Goal) {
+    try {
+      console.log(`${goal.id}`);
+      await put(`/goal/update/${goal.id}`, {name: goal.name, description: goal.description, is_complete: goal.isComplete, moduleId: goal.moduleId});
+    } catch(error: any) {
+      console.error(error);
+      alert(error.response ? error.response.data : error);
+    }
+  }
 
   return (
     <div>
@@ -62,20 +85,20 @@ export default function GoalStepper({
                         dataName={step.name}
                         dataDescription={step.description}
                         id={step.id}
-                        moduleID={step.module_id}
-                        goalCompletion={step.is_complete}
+                        moduleID={step.moduleId}
+                        goalCompletion={step.isComplete}
                         deleteObject={deleteGoal}
                       />
                       <Button
                         variant="contained"
-                        onClick={handleNext}
+                        onClick={async () => {await handleNext()}}
                         sx={{ mt: 1, mr: 1, fontSize: "1rem" }}
                       >
                         {index === steps.length - 1 ? "Finish" : "Complete"}
                       </Button>
                       <Button
                         disabled={index === 0}
-                        onClick={handleBack}
+                        onClick={async () => {await handleBack()}}
                         sx={{ mt: 1, mr: 1, fontSize: "1rem" }}
                       >
                         Back

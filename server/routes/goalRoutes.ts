@@ -26,7 +26,7 @@ router.post('/add', tokenMethods.authenticateToken, async(req : any, res : any) 
         name: req.body.name, 
         description: req.body.description, 
         goalType: req.body.goal_type, 
-        isComplete: req.body.completion_perc, 
+        isComplete: req.body.is_complete, 
         moduleId: req.body.module_id, 
         dueDate: req.body.due_date
     });
