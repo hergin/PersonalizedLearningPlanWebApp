@@ -22,7 +22,14 @@ router.get('/get/module/:id', tokenMethods.authenticateToken, async(req : any, r
 
 router.post('/add', tokenMethods.authenticateToken, async(req : any, res : any) => {
     console.log(req.body);
-    const goalQuery = await goalAPI.createGoal(req.body.name, req.body.description, req.body.goal_type, req.body.completion_perc, req.body.module_id, req.body.due_date);
+    const goalQuery = await goalAPI.createGoal({
+        name: req.body.name, 
+        description: req.body.description, 
+        goalType: req.body.goal_type, 
+        isComplete: req.body.completion_perc, 
+        moduleId: req.body.module_id, 
+        dueDate: req.body.due_date
+    });
     if(typeof goalQuery !== "object") {
         console.log("Something went wrong while creating module.");
         res.status(goalQuery).send(ERROR_MESSAGES.get(goalQuery));

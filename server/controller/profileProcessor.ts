@@ -1,3 +1,5 @@
+import { Profile } from "../types";
+
 export {};
 
 const ProfileParser = require("../parser/profileParser");
@@ -31,9 +33,9 @@ class ProfileAPI {
         }
     }
 
-    async updateProfile(profile_id : number, username : string, firstName : string, lastName : string, profilePicture : string, jobTitle : string, bio : string) {
+    async updateProfile(profile: Profile) {
         try {
-            await this.parser.updateProfile(profile_id, username, firstName, lastName, profilePicture, jobTitle, bio);
+            await this.parser.updateProfile(profile);
             return STATUS_CODES.OK;
         } catch(error) {
             return this.errorCodeInterpreter.getStatusCode(error);

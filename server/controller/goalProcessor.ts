@@ -1,3 +1,5 @@
+import { Goal } from "../types";
+
 export {};
 
 const GoalParser = require("../parser/goalParser");
@@ -13,29 +15,29 @@ class GoalAPI {
         this.errorCodeInterpreter = new ErrorCodeInterpreter();
     }
 
-    async getGoals(module_id : number) {
+    async getGoals(moduleId : number) {
         try {
-            const goals = await this.parser.parseGoals(module_id);
+            const goals = await this.parser.parseGoals(moduleId);
             return goals[0].goal_id ? goals : [];
         } catch(error) {
             return this.errorCodeInterpreter.getStatusCode(error);
         }
     }
 
-    async createGoal(name : string, description : string, goal_type: string, is_complete : boolean, module_id : number, due_date? : Date) {
+    async createGoal(goal: Goal) {
         try {
-            const results = await this.parser.storeGoal(name, description, goal_type, is_complete, module_id, due_date);
+            const results = await this.parser.storeGoal(goal);
             return results;
         } catch(error) {
             return this.errorCodeInterpreter.getStatusCode(error);
         }
     }
 
-    async updateGoal(goal_id : number, name : string, description : string, is_complete : boolean, due_date? : Date, completion_time? : Date, expiration? : Date) {
+    async updateGoal(goalId : number, name : string, description : string, isComplete : boolean, dueDate? : Date, completionTime? : Date, expiration? : Date) {
         try {
-            await this.parser.updateGoal(goal_id, name, description, is_complete, due_date);
-            if(completion_time) {
-                await this.parser.updateGoalTimestamps(goal_id, completion_time, expiration);
+            await this.parser.updateGoal(goalId, name, description, isComplete, dueDate);
+            if(completionTime) {
+                await this.parser.updateGoalTimestamps(goalId, completionTime, expiration);
             }
             return STATUS_CODES.OK;
         } catch(error) {
@@ -43,9 +45,9 @@ class GoalAPI {
         }
     }
 
-    async deleteGoal(goal_id : number) {
+    async deleteGoal(goalId : number) {
         try {
-            await this.parser.deleteGoal(goal_id);
+            await this.parser.deleteGoal(goalId);
             return STATUS_CODES.OK;
         } catch(error) {
             return this.errorCodeInterpreter.getStatusCode(error);

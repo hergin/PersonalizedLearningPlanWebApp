@@ -58,7 +58,10 @@ describe('goal parser tests', () => {
     });
     
     it('store goal (no due date)', async () => {
-        const goalID = await parser.storeGoal(TEST_DATA.goalName, TEST_DATA.goalDescription, goalTypes[0], TEST_DATA.isComplete, moduleID);
+        const goalID = await parser.storeGoal({
+            name: TEST_DATA.goalName, description: TEST_DATA.goalDescription, goalType: goalTypes[0], 
+            isComplete: TEST_DATA.isComplete, moduleId: moduleID
+        });
         expect(goalID).toEqual([
             {
                 goal_id: expect.any(Number)
@@ -85,7 +88,9 @@ describe('goal parser tests', () => {
     });
 
     it('store goal (with due date)', async () => {
-        const goalID = await parser.storeGoal(TEST_DATA.goalName, TEST_DATA.goalDescription, goalTypes[1], TEST_DATA.isComplete, moduleID, TEST_DATA.dueDate);
+        const goalID = await parser.storeGoal({
+            name: TEST_DATA.goalName, description: TEST_DATA.goalDescription, goalType: goalTypes[1], 
+            isComplete: TEST_DATA.isComplete, moduleId: moduleID, dueDate: TEST_DATA.dueDate});
         expect(goalID).toEqual([
             {
                 goal_id: expect.any(Number)
@@ -274,7 +279,9 @@ describe('goal parser tests', () => {
             [TEST_DATA.goalName, TEST_DATA.goalDescription, goalTypes[1], TEST_DATA.isComplete, moduleID]
         );
         var goalID = await getGoalID();
-        var subGoalID = await parser.storeSubGoal(goalID, TEST_DATA.subGoalName, TEST_DATA.subGoalDescription, goalTypes[0], false, moduleID);
+        var subGoalID = await parser.storeSubGoal(goalID, 
+            {name: TEST_DATA.subGoalName, description: TEST_DATA.subGoalDescription, goalType: goalTypes[0], 
+                isComplete: false, moduleId: moduleID});
         expect(subGoalID).toEqual([
             {
                 goal_id: expect.any(Number)
@@ -306,7 +313,9 @@ describe('goal parser tests', () => {
             [TEST_DATA.goalName, TEST_DATA.goalDescription, goalTypes[1], TEST_DATA.isComplete, moduleID, TEST_DATA.dueDate]
         );
         var goalID = await getGoalID();
-        var subGoalID = await parser.storeSubGoal(goalID, TEST_DATA.subGoalName, TEST_DATA.subGoalDescription, goalTypes[0], false, moduleID, TEST_DATA.dueDate);
+        var subGoalID = await parser.storeSubGoal(goalID, 
+            {name: TEST_DATA.subGoalName, description: TEST_DATA.subGoalDescription, goalType: goalTypes[0], 
+                isComplete: false, moduleId: moduleID, dueDate: TEST_DATA.dueDate});
         expect(subGoalID).toEqual([
             {
                 goal_id: expect.any(Number)
