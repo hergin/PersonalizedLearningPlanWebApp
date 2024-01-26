@@ -22,7 +22,7 @@ router.get('/get/module/:id', tokenMethods.authenticateToken, async(req : any, r
 
 router.post('/add', tokenMethods.authenticateToken, async(req : any, res : any) => {
     console.log(req.body);
-    const goalQuery = await goalAPI.createGoal(req.body.name, req.body.description, req.body.completion_perc, req.body.module_id);
+    const goalQuery = await goalAPI.createGoal(req.body.name, req.body.description, req.body.goal_type, req.body.completion_perc, req.body.module_id, req.body.due_date);
     if(typeof goalQuery !== "object") {
         console.log("Something went wrong while creating module.");
         res.status(goalQuery).send(ERROR_MESSAGES.get(goalQuery));
@@ -33,7 +33,7 @@ router.post('/add', tokenMethods.authenticateToken, async(req : any, res : any) 
 
 router.put('/update/:id', tokenMethods.authenticateToken, async(req : any, res : any) => {
     console.log(`Received in update goal: ${req.params.id}`);
-    const goalQuery = await goalAPI.updateGoal(parseInt(req.params.id), req.body.name, req.body.description, req.body.isComplete);
+    const goalQuery = await goalAPI.updateGoal(parseInt(req.params.id), req.body.name, req.body.description, req.body.is_complete, req.body.due_due, req.body.completion_time, req.body.expiration);
     if(typeof goalQuery !== "object") {
         res.status(goalQuery).send(ERROR_MESSAGES.get(goalQuery));
         return;
