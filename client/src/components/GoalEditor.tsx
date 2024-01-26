@@ -12,6 +12,7 @@ import {
   TextField,
 } from "@mui/material";
 import { ApiClient } from "../hooks/ApiClient";
+import { useHotKeys } from "../hooks/useHotKeys";
 import { GoalEditorProps } from "../types";
 
 export default function GoalEditor({id, dataName, dataDescription, goalCompletion, moduleID, editObject, deleteObject} : GoalEditorProps) {
@@ -37,6 +38,7 @@ export default function GoalEditor({id, dataName, dataDescription, goalCompletio
     setOpenModal(false);
   };
   const { put, del } = ApiClient();
+  const { handleEnterPress } = useHotKeys();
 
   async function handleGoalEdit() {
     try {
@@ -106,12 +108,14 @@ export default function GoalEditor({id, dataName, dataDescription, goalCompletio
           <TextField
             value={dataNameLocal}
             onChange={(e) => setDataNameLocal(e.target.value)}
+            onKeyDown={(event) => {handleEnterPress(event, handleGoalEdit)}}
             fullWidth
             margin="normal"
           />
           <TextField
             value={dataDescriptionLocal}
             onChange={(e) => setDataDescriptionLocal(e.target.value)}
+            onKeyDown={(event) => {handleEnterPress(event, handleGoalEdit)}}
             fullWidth
             margin="normal"
           />

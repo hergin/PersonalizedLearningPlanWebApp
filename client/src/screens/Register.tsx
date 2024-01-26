@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ApiClient } from "../hooks/ApiClient";
-import { useEnterKey } from "../hooks/useEnterKey";
+import { useHotKeys } from "../hooks/useHotKeys";
 
 const Register = () => {
   const [firstName, setFirstName] = useState("");
@@ -17,7 +17,7 @@ const Register = () => {
     password === "";
   const navigate = useNavigate();
   const { post } = ApiClient();
-  const { handleKeyPress } = useEnterKey();
+  const { handleEnterPress } = useHotKeys();
 
   async function handleRegistration() {
     try {
@@ -48,10 +48,7 @@ const Register = () => {
               onChange={(input) => {
                 setFirstName(input.target.value);
               }}
-              onKeyUp={(event) => {
-                if(submitDisabled) return;
-                handleKeyPress(event, handleRegistration);
-              }}
+              onKeyUp={(event) => {handleEnterPress(event, handleRegistration, submitDisabled)}}
             />
           </div>
           <div>
@@ -64,10 +61,7 @@ const Register = () => {
               onChange={(input) => {
                 setLastName(input.target.value);
               }}
-              onKeyUp={(event) => {
-                if(submitDisabled) return;
-                handleKeyPress(event, handleRegistration);
-              }}
+              onKeyUp={(event) => {handleEnterPress(event, handleRegistration, submitDisabled)}}
             />
           </div>
           <div>
@@ -80,10 +74,7 @@ const Register = () => {
               onChange={(input) => {
                 setEmail(input.target.value);
               }}
-              onKeyUp={(event) => {
-                if(submitDisabled) return;
-                handleKeyPress(event, handleRegistration);
-              }}
+              onKeyUp={(event) => {handleEnterPress(event, handleRegistration, submitDisabled)}}
             />
           </div>
           <div>
@@ -96,10 +87,7 @@ const Register = () => {
               onChange={(input) => {
                 setUsername(input.target.value);
               }}
-              onKeyUp={(event) => {
-                if(submitDisabled) return;
-                handleKeyPress(event, handleRegistration);
-              }}
+              onKeyUp={(event) => {handleEnterPress(event, handleRegistration, submitDisabled)}}
             />
           </div>
           <div>
@@ -112,10 +100,7 @@ const Register = () => {
               onChange={(input) => {
                 setPassword(input.target.value);
               }}
-              onKeyUp={(event) => {
-                if(submitDisabled) return;
-                handleKeyPress(event, handleRegistration);
-              }}
+              onKeyUp={(event) => {handleEnterPress(event, handleRegistration, submitDisabled)}}
             />
           </div>
           <button

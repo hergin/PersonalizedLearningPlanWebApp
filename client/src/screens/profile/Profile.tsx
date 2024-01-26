@@ -4,7 +4,7 @@ import { useUser } from "../../hooks/useUser";
 import { ApiClient } from "../../hooks/ApiClient";
 import profilePicture from "../../resources/Default_Profile_Picture.jpg";
 import "./profile.css";
-import { useEnterKey } from "../../hooks/useEnterKey";
+import { useHotKeys } from "../../hooks/useHotKeys";
 
 function Profile() {
     const [id, setID] = useState<number>();
@@ -18,7 +18,7 @@ function Profile() {
     const navigate = useNavigate();
     const { user, removeUser } = useUser();
     const { get, put, del } = ApiClient();
-    const { handleKeyPress } = useEnterKey();
+    const { handleEnterPress } = useHotKeys();
 
     useEffect(() => {
         async function getProfile() {  
@@ -76,7 +76,7 @@ function Profile() {
                         placeholder="username"
                         value={username}
                         defaultValue={username}
-                        onKeyUp={(event) => {handleKeyPress(event, saveChanges)}}
+                        onKeyUp={(event) => {handleEnterPress(event, saveChanges)}}
                         onChange={(event) => {setUsername(event.target.value)}}
                     />
                     :
@@ -94,7 +94,7 @@ function Profile() {
                             placeholder="First Name"
                             value={firstName}
                             defaultValue={firstName}
-                            onKeyUp={(event) => {handleKeyPress(event, saveChanges)}}
+                            onKeyUp={(event) => {handleEnterPress(event, saveChanges)}}
                             onChange={(event) => {setFirstName(event.target.value)}}
                         />
                     </div>
@@ -107,7 +107,7 @@ function Profile() {
                             placeholder="Last Name"
                             value={lastName}
                             defaultValue={lastName}
-                            onKeyUp={(event) => {handleKeyPress(event, saveChanges)}}
+                            onKeyUp={(event) => {handleEnterPress(event, saveChanges)}}
                             onChange={(event) => {setLastName(event.target.value)}}
                         />
                     </div>
@@ -120,7 +120,7 @@ function Profile() {
                             placeholder="Job Title"
                             value={jobTitle}
                             defaultValue={jobTitle}
-                            onKeyUp={(event) => {handleKeyPress(event, saveChanges)}}
+                            onKeyUp={(event) => {handleEnterPress(event, saveChanges)}}
                             onChange={(event) => {setJobTitle(event.target.value)}}
                         />
                     </div>
@@ -132,7 +132,7 @@ function Profile() {
                         placeholder="bio"
                         value={bio}
                         defaultValue={bio}
-                        onKeyUp={(event) => {handleKeyPress(event, saveChanges)}}
+                        onKeyUp={(event) => {handleEnterPress(event, saveChanges)}}
                         onChange={(event) => {setBio(event.target.value)}}
                         className="bigTextBox"
                     />

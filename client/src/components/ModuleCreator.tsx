@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Modal from "@mui/material/Modal";
 import { useUser } from "../hooks/useUser";
 import { ApiClient } from "../hooks/ApiClient";
+import { useHotKeys } from "../hooks/useHotKeys";
 import { ModuleCreatorProps } from "../types";
 
 function ModuleCreator({ addModule }: ModuleCreatorProps) {
@@ -11,6 +12,7 @@ function ModuleCreator({ addModule }: ModuleCreatorProps) {
   const submitDisabled = moduleName === "" || description === "";
   const { user } = useUser();
   const { post } = ApiClient();
+  const { handleEnterPress } = useHotKeys();
 
   async function handleModuleCreation() {
     try {
@@ -54,6 +56,12 @@ function ModuleCreator({ addModule }: ModuleCreatorProps) {
               onChange={(event) => {
                 setModuleName(event.target.value);
               }}
+              onKeyUp={(event) => {
+                if(submitDisabled) {
+                  return;
+                }
+                handleEnterPress(event, handleModuleCreation);
+              }}
               required
             />
             <input
@@ -64,6 +72,12 @@ function ModuleCreator({ addModule }: ModuleCreatorProps) {
               value={description}
               onChange={(event) => {
                 setDescription(event.target.value);
+              }}
+              onKeyUp={(event) => {
+                if(submitDisabled) {
+                  return;
+                }
+                handleEnterPress(event, handleModuleCreation);
               }}
               required
             />
