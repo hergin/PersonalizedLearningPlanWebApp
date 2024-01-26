@@ -7,6 +7,7 @@ export interface Module {
     completion: number,
 }
 
+// TODO: We need to add due date as an optional Date and goal type to determine the goal's type.
 export interface Goal {
     id: number,
     name: string,

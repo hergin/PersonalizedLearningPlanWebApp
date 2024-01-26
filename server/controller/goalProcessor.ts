@@ -16,7 +16,7 @@ class GoalAPI {
     async getGoals(module_id : number) {
         try {
             const goals = await this.parser.parseGoals(module_id);
-            return goals;
+            return goals[0].goal_id ? goals : [];
         } catch(error) {
             return this.errorCodeInterpreter.getStatusCode(error);
         }
