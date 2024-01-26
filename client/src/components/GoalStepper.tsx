@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Box,
   Button,
@@ -24,7 +24,20 @@ export default function GoalStepper({
 } : GoalStepperProps) {
   const [activeStep, setActiveStep] = React.useState(0);
   const { put } = ApiClient();
-  
+  console.log(`Active Step: ${activeStep}`);
+  console.log(`Completion Status: ${steps.at(activeStep)?.isComplete}`);
+
+  useEffect(() => {
+    var index = 0;
+    steps.forEach((goal : Goal) => {
+      if(!goal.isComplete) {
+        return;
+      }
+      index++;
+    });
+    setActiveStep(index);
+  }, [steps, activeStep, setActiveStep]);
+
   const handleNext = async () => {
     const step = steps.at(activeStep);
     if(step) {
