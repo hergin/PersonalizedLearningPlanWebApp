@@ -16,7 +16,7 @@ const LoginScreen = () => {
   const [showPassword, setShowPassword] = useState(false);
   const handleClickShowPassword = () => setShowPassword(!showPassword);
 
-  async function handleLogin(email : string, password : string) {
+  async function handleLogin() {
     try {
       const response = await post("/auth/login", { email, password });
       addUser({
@@ -34,6 +34,13 @@ const LoginScreen = () => {
     }
   }
 
+  function handleKeyPress(event : any) {
+    console.log(`Key press detected: ${event.key}`);
+    if(event.key === 'Enter') {
+      handleLogin();
+    }
+  }
+
   return (
     <div className="flex flex-col flex-1 justify-center items-center h-[80vh] ">
       <div className="flex flex-nowrap flex-col justify-center h-[350px] w-[300px] py-2.5 border border-solid border-[#DBDBDB]">
@@ -46,12 +53,14 @@ const LoginScreen = () => {
             variant="outlined"
             type={"text"}
             value={email}
+            onKeyUp={handleKeyPress}
             onChange={(input) => setEmail(input.target.value)}
           />
           <TextField
             value={password}
             variant="outlined"
             type={showPassword ? "text" : "password"}
+            onKeyUp={handleKeyPress}
             onChange={(input) => setPassword(input.target.value)}
             InputProps={{
               endAdornment: (
@@ -69,9 +78,7 @@ const LoginScreen = () => {
           />
 
           <button
-            onClick={() => {
-              handleLogin(email, password);
-            }}
+            onClick={handleLogin}
             className="h-10 border-1 border-solid border-gray-300 rounded px-2 text-base bg-element-base text-text-color hover:bg-[#820000] hover:cursor-pointer disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-element-base"
             disabled={buttonDisabled}
           >
