@@ -34,10 +34,15 @@ router.post('/create', async(req : any, res : any) => {
 
 router.put('/edit/:id', tokenMethods.authenticateToken, async(req : any, res : any) => {
     console.log(`Data received in update profile: ${req.params.id}`);
-    const profileQuery = await profileAPI.updateProfile(
-        parseInt(req.params.id), req.body.username, req.body.firstName, req.body.lastName, req.body.profilePicture, 
-        req.body.jobTitle, req.body.bio
-    );
+    const profileQuery = await profileAPI.updateProfile({
+        id: parseInt(req.params.id), 
+        username: req.body.username, 
+        firstName: req.body.firstName, 
+        lastName: req.body.lastName, 
+        profilePicture: req.body.profilePicture, 
+        jobTitle: req.body.jobTitle, 
+        bio: req.body.bio
+    });
     if(profileQuery !== STATUS_CODES.OK) {
         console.error("There was a problem updating profile.");
         res.status(profileQuery).send(ERROR_MESSAGES.get(profileQuery));

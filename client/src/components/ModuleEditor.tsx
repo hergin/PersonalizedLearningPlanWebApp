@@ -13,6 +13,7 @@ import {
 } from "@mui/material";
 import { useUser } from "../hooks/useUser";
 import { ApiClient } from "../hooks/ApiClient";
+import { useHotKeys } from "../hooks/useHotKeys";
 import { LongMenuProps } from "../types";
 
 const  ModuleEditorButton = ({editObject, dataName, dataDescription, id, moduleCompletion, deleteObject}: LongMenuProps) => {
@@ -38,6 +39,7 @@ const  ModuleEditorButton = ({editObject, dataName, dataDescription, id, moduleC
   };
   const { user } = useUser();
   const { put, del } = ApiClient();
+  const { handleEnterPress } = useHotKeys();
 
   async function handleModuleEdit() {
     try {
@@ -106,12 +108,14 @@ const  ModuleEditorButton = ({editObject, dataName, dataDescription, id, moduleC
           <TextField
             value={dataNameLocal}
             onChange={(e) => setDataNameLocal(e.target.value)}
+            onKeyDown={(event) => {handleEnterPress(event, handleModuleEdit)}}
             fullWidth
             margin="normal"
           />
           <TextField
             value={dataDescriptionLocal}
             onChange={(e) => setDataDescriptionLocal(e.target.value)}
+            onKeyDown={(event) => {handleEnterPress(event, handleModuleEdit)}}
             fullWidth
             margin="normal"
           />

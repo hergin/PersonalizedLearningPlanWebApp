@@ -22,7 +22,13 @@ const GoalHeader = ({moduleID}: GoalHeaderProps) => {
         const result = await get(`/goal/get/module/${moduleID}`);
         let newGoals : Goal[] = [];
         for (let goal of result) {
-          newGoals.push(goal);
+          newGoals.push({
+            id: goal.goal_id,
+            name: goal.name,
+            description: goal.description,
+            isComplete: goal.is_complete,
+            moduleId: moduleID
+          });
         }
         setSteps(newGoals);
       } catch (error : any) {

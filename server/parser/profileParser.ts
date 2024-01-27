@@ -1,3 +1,5 @@
+import {Profile} from "../types";
+
 export {};
 
 const DatabaseParser = require('./databaseParser');
@@ -28,11 +30,11 @@ class ProfileParser extends DatabaseParser {
         console.log("Profile Created!");
     }
 
-    async updateProfile(id : number, username : string, firstName : string, lastName : string, profilePicture : string, jobTitle : string, bio : string) {
+    async updateProfile(profile: Profile) {
         console.log("Inserting new data into profile...");
         const query = {
             text: "UPDATE PROFILE SET username = $1, first_name = $2, last_name = $3, profile_picture = $4, job_title = $5, bio = $6 WHERE profile_id = $7",
-            values: [username, firstName, lastName, profilePicture, jobTitle, bio, id]
+            values: [profile.username, profile.firstName, profile.lastName, profile.profilePicture, profile.jobTitle, profile.bio, profile.id]
         };
         await this.updateDatabase(query);
         console.log("Profile data saved!");

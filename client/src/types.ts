@@ -1,3 +1,5 @@
+export type GoalType = "todo" | "daily";
+
 export interface Module {
   id: number,
   name: string,
@@ -5,12 +7,13 @@ export interface Module {
   completion: number,
 }
 
+// TODO: We need to add due date as an optional Date and goal type to determine the goal's type.
 export interface Goal {
-  id: number,
-  name: string,
-  description: string,
-  is_complete: boolean,
-  module_id: number
+    id: number,
+    name: string,
+    description: string,
+    isComplete: boolean,
+    moduleId: number
 }
 
 export interface User {

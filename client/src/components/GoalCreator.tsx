@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Modal from "@mui/material/Modal";
 import { ApiClient } from "../hooks/ApiClient";
+import { useHotKeys } from "../hooks/useHotKeys";
 import { Button } from "@mui/material";
 import { GoalCreatorProps } from "../types";
 
@@ -10,12 +11,15 @@ function GoalCreator({ moduleID, addGoal }: GoalCreatorProps) {
   const [open, setOpen] = useState(false);
   const submitDisabled = goalName === "" || description === "";
   const { post } = ApiClient();
+  const { handleEnterPress } = useHotKeys();
 
-  async function handleModuleCreation() {
+  async function handleGoalCreation() {
     try {
+      // TODO: We need a way for the user to pick goal type before this point.
       const response = await post("/goal/add", {
         name: goalName,
         description: description,
+        goal_type: "todo",
         is_complete: false,
         module_id: moduleID,
       });
@@ -24,8 +28,8 @@ function GoalCreator({ moduleID, addGoal }: GoalCreatorProps) {
         id: response[0].goal_id,
         name: goalName,
         description: description,
-        is_complete: false,
-        module_id: moduleID,
+        isComplete: false,
+        moduleId: moduleID,
       });
       setOpen(false);
     } catch (error: any) {
@@ -62,6 +66,7 @@ function GoalCreator({ moduleID, addGoal }: GoalCreatorProps) {
               onChange={(event) => {
                 setGoalName(event.target.value);
               }}
+              onKeyUp={(event) => {handleEnterPress(event, handleGoalCreation, submitDisabled)}}
               required
             />
             <input
@@ -73,10 +78,11 @@ function GoalCreator({ moduleID, addGoal }: GoalCreatorProps) {
               onChange={(event) => {
                 setDescription(event.target.value);
               }}
+              onKeyUp={(event) => {handleEnterPress(event, handleGoalCreation, submitDisabled)}}
               required
             />
             <button
-              onClick={handleModuleCreation}
+              onClick={handleGoalCreation}
               disabled={submitDisabled}
               className="w-6/12 h-10 border-1 border-solid border-gray-300 rounded px-2 text-base bg-element-base text-text-color hover:bg-[#820000] hover:cursor-pointer disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-element-base"
             >

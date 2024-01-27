@@ -35,17 +35,17 @@ CREATE TABLE MODULE(
         ON DELETE CASCADE ON UPDATE CASCADE
 );
 
--- Repeatable Goals should be possible
--- We need:
---  - Time of completion.
---  - An algorithm to determine when the completion expires.
 DROP TABLE IF EXISTS GOAL CASCADE;
+DROP TYPE IF EXISTS GOAL_TYPE;
+CREATE TYPE GOAL_TYPE AS ENUM ('todo', 'daily');
 CREATE TABLE GOAL(
     goal_id SERIAL PRIMARY KEY,
     name TEXT,
     description TEXT,
+    goal_type GOAL_TYPE NOT NULL,
     is_complete BOOLEAN,
     module_id SERIAL,
+    due_date TIMESTAMP,
     completion_time TIMESTAMP,
     expiration TIMESTAMP,
     parent_goal INT,
@@ -84,7 +84,7 @@ RETURNS GOAL AS $$
 $$ language sql security definer;
 
 CREATE OR REPLACE FUNCTION get_goals(id int)
-RETURNS GOAL AS $$
+RETURNS SETOF GOAL AS $$
     UPDATE GOAL g
     SET is_complete = CURRENT_TIMESTAMP < g.expiration
     WHERE g.expiration IS NOT NULL;
@@ -96,7 +96,7 @@ $$ language sql security definer;
 DROP TABLE IF EXISTS DASHBOARD CASCADE;
 CREATE TABLE DASHBOARD(
     dashboard_id SERIAL PRIMARY KEY,
-    profile_id INT,
+    profile_id SERIAL NOT NULL,
     FOREIGN KEY (profile_id) REFERENCES PROFILE(profile_id)
         ON DELETE CASCADE ON UPDATE CASCADE
 );
