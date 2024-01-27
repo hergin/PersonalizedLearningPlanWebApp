@@ -1,14 +1,17 @@
 import { ApiClient } from "../hooks/ApiClient";
 import { useUser } from "../hooks/useUser";
 
-const FetchProfile = async (email:string) => {
+export const ProfileApi = () => {
   const { user } = useUser();
   const { get } = ApiClient();
-  const { data, error } = await get(`profile/get/${email}`);
-  if (error) {
-    throw new Error(error.message);
+  async function FetchProfile() {
+    try {
+      const data = await get(`profile/get/${user.email}`);
+      return data;
+    } catch (error: any) {
+      console.error(error);
+      alert(error.message ? error.message : error);
+    }
   }
-  return data;
+  return { FetchProfile };
 };
-
-export { FetchProfile };

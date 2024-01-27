@@ -52,6 +52,10 @@ export const ApiClient = () => {
     const response = await api.get(path);
     return response.data;
   };
+  const getNew = async (path : string) => {
+    const response = await api.get(path);
+    return response;
+  };
 
   const post = async (path : string, data : object) => {
     const response = await api.post(path, data);
@@ -68,5 +72,5 @@ export const ApiClient = () => {
     return await api.delete(path);
   };
 
-  return { get, post, put, del };
+  return { get, post, put, del, getNew };
 };

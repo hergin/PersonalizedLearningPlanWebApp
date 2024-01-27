@@ -4,6 +4,7 @@ import { useUser } from "../../hooks/useUser";
 import { ApiClient } from "../../hooks/ApiClient";
 import profilePicture from "../../resources/Default_Profile_Picture.jpg";
 import "./profile.css";
+import useProfile from "../../hooks/useProfile";
 
 function Profile() {
   const [id, setID] = useState<number>();
@@ -17,6 +18,8 @@ function Profile() {
   const navigate = useNavigate();
   const { user, removeUser } = useUser();
   const { get, put, del } = ApiClient();
+  const { data: profileData, isLoading, error } = useProfile();
+  console.log(profileData);
 
   useEffect(() => {
     async function getProfile() {
@@ -67,7 +70,13 @@ function Profile() {
       alert(error.response ? error.response : error);
     }
   }
-
+  if (isLoading) {
+    return <div>This is loading...</div>
+  }
+  if (error) {
+    console.log(error)
+    return <div>This is an error</div>
+  }
   return (
     <div className="parent-div">
       <div className="profile-header">
