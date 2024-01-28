@@ -20,6 +20,15 @@ const Register = () => {
   const { handleEnterPress } = useHotKeys();
 
   async function handleRegistration() {
+    if(!email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
+      alert("Your email must be valid.");
+      return;
+    }
+    if(!password.match(/^(?=.*\d).+(?=.*[a-z]).+(?=.*[A-Z]).+$/)) {
+      alert("Your password must contain at least 1 number, 1 uppercase letter, and 1 lowercase letter.");
+      return;
+    }
+
     try {
       await post("/auth/register", { email, password });
       await post("/profile/create", { username, firstName, lastName, email });
