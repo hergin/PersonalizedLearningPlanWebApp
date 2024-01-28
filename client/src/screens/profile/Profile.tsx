@@ -18,31 +18,22 @@ function Profile() {
   const [editMode, setEditMode] = useState(false);
   const navigate = useNavigate();
   const { user, removeUser } = useUser();
-  const { get, put, del } = ApiClient();
+  const { put, del } = ApiClient();
   const { data: profileData, isLoading, error } = useProfile();
-  console.log(profileData);
-    const { handleEnterPress } = useHotKeys();
+  const { handleEnterPress } = useHotKeys();
 
   useEffect(() => {
-    async function getProfile() {
-      console.log(`User received in profile: ${user.email}`);
-      try {
-        const response = await get(`profile/get/${user.email}`);
-        console.log(response);
-        setID(response.profile_id);
-        setUsername(response.username);
-        setFirstName(response.first_name);
-        setLastName(response.last_name);
-        setJobTitle(response.job_title);
-        setBio(response.bio);
-      } catch (error: any) {
-        console.error(error);
-        alert(error.message ? error.message : error);
-      }
+    if(isLoading || error) {
+      return;
     }
-    getProfile();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+
+    setID(profileData.profile_id);
+    setUsername(profileData.username);
+    setFirstName(profileData.first_name);
+    setLastName(profileData.last_name);
+    setJobTitle(profileData.job_title);
+    setBio(profileData.bio);
+  }, [profileData, isLoading, error]);
 
   async function saveChanges() {
     try {
@@ -91,7 +82,7 @@ function Profile() {
             placeholder="username"
             value={username}
             defaultValue={username}
-                        onKeyUp={(event) => {handleEnterPress(event, saveChanges)}}
+            onKeyUp={(event) => {handleEnterPress(event, saveChanges)}}
             onChange={(event) => {
               setUsername(event.target.value);
             }}
@@ -111,7 +102,7 @@ function Profile() {
               placeholder="First Name"
               value={firstName}
               defaultValue={firstName}
-                            onKeyUp={(event) => {handleEnterPress(event, saveChanges)}}
+              onKeyUp={(event) => {handleEnterPress(event, saveChanges)}}
               onChange={(event) => {
                 setFirstName(event.target.value);
               }}
@@ -126,7 +117,7 @@ function Profile() {
               placeholder="Last Name"
               value={lastName}
               defaultValue={lastName}
-                            onKeyUp={(event) => {handleEnterPress(event, saveChanges)}}
+              onKeyUp={(event) => {handleEnterPress(event, saveChanges)}}
               onChange={(event) => {
                 setLastName(event.target.value);
               }}
@@ -141,7 +132,7 @@ function Profile() {
               placeholder="Job Title"
               value={jobTitle}
               defaultValue={jobTitle}
-                            onKeyUp={(event) => {handleEnterPress(event, saveChanges)}}
+              onKeyUp={(event) => {handleEnterPress(event, saveChanges)}}
               onChange={(event) => {
                 setJobTitle(event.target.value);
               }}
@@ -155,7 +146,7 @@ function Profile() {
             placeholder="bio"
             value={bio}
             defaultValue={bio}
-                        onKeyUp={(event) => {handleEnterPress(event, saveChanges)}}
+            onKeyUp={(event) => {handleEnterPress(event, saveChanges)}}
             onChange={(event) => {
               setBio(event.target.value);
             }}

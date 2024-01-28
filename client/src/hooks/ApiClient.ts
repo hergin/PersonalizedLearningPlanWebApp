@@ -4,7 +4,7 @@ import { useUser } from "./useUser";
 export const ApiClient = () => {
   const { user, replaceToken } = useUser();
   const api = axios.create({
-    baseURL: "http://localhost:4000/api",
+    baseURL: "http://localhost:4001/api",
     headers: {
       "Content-Type": "application/json",
       Accept: "application/json",
@@ -52,10 +52,6 @@ export const ApiClient = () => {
     const response = await api.get(path);
     return response.data;
   };
-  const getNew = async (path : string) => {
-    const response = await api.get(path);
-    return response;
-  };
 
   const post = async (path : string, data : object) => {
     const response = await api.post(path, data);
@@ -72,5 +68,5 @@ export const ApiClient = () => {
     return await api.delete(path);
   };
 
-  return { get, post, put, del, getNew };
+  return { get, post, put, del };
 };
