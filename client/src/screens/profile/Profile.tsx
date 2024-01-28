@@ -23,32 +23,42 @@ const PROFILE_VARIABLES = {
 }
 
 function updateProfile(profile : Profile, action : ProfileActionProps) {
+  const newProfile : Profile = {
+    id: profile.id,
+    username: profile.username, 
+    firstName: profile.firstName, 
+    lastName: profile.lastName,
+    profilePicture: profile.profilePicture, 
+    jobTitle: profile.jobTitle,
+    bio: profile.bio
+  };
+  
   if(typeof action.input === "number") {
-    profile.id = action.input;
-    return profile;
+    newProfile.id = action.input;
+    return newProfile;
   }
   
   switch(action.variable) {
     case PROFILE_VARIABLES.username:
-      profile.username = action.input;
+      newProfile.username = action.input;
       break;
     case PROFILE_VARIABLES.firstName:
-      profile.firstName = action.input;
+      newProfile.firstName = action.input;
       break;
     case PROFILE_VARIABLES.lastName:
-      profile.lastName = action.input;
+      newProfile.lastName = action.input;
       break;
     case PROFILE_VARIABLES.profilePicture:
-      profile.profilePicture = action.input;
+      newProfile.profilePicture = action.input;
       break;
     case PROFILE_VARIABLES.jobTitle:
-      profile.jobTitle = action.input;
+      newProfile.jobTitle = action.input;
       break;
     case PROFILE_VARIABLES.bio:
-      profile.bio = action.input;
+      newProfile.bio = action.input;
       break;
   }
-  return profile;
+  return newProfile;
 }
 
 function ProfileScreen() {
@@ -61,6 +71,7 @@ function ProfileScreen() {
   const { handleEnterPress } = useHotKeys();
 
   useEffect(() => {
+    console.log("re-rendered...");
     if(isLoading || error) {
       return;
     }
@@ -72,16 +83,16 @@ function ProfileScreen() {
       }  
       dispatch({variable: key, input: value});
     }
-  }, [profileData, isLoading, error]);
+  }, [isLoading, error]);
 
   async function saveChanges() {
     try {
       await put(`/profile/edit/${profileState.id}`, {
         username: profileState.username,
-        first_name: profileState.firstName,
-        last_name: profileState.lastName,
-        profile_picture: profileState.profilePicture,
-        job_title: profileState.jobTitle,
+        firstName: profileState.firstName,
+        lastName: profileState.lastName,
+        profilePicture: profileState.profilePicture,
+        jobTitle: profileState.jobTitle,
         bio: profileState.bio,
       });
       setEditMode(false);
