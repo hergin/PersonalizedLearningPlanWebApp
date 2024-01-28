@@ -83,7 +83,15 @@ describe('profile parser tests', () => {
     it('update profile', async () => {
         await client.query(CREATE_PROFILE_QUERY);
         const profileID = await getProfileID();
-        await parser.updateProfile(profileID, TEST_DATA.username, TEST_DATA.firstName, TEST_DATA.lastName, TEST_DATA.profilePicture, TEST_DATA.jobTitle, TEST_DATA.bio);
+        await parser.updateProfile({
+            id: profileID, 
+            username: TEST_DATA.username, 
+            firstName: TEST_DATA.firstName, 
+            lastName: TEST_DATA.lastName, 
+            profilePicture: TEST_DATA.profilePicture, 
+            jobTitle: TEST_DATA.jobTitle, 
+            bio: TEST_DATA.bio
+        });
         var actual = await client.query(
             "SELECT * FROM PROFILE WHERE profile_id = $1",
             [profileID]

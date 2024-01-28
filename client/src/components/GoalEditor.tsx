@@ -50,8 +50,8 @@ export default function GoalEditor({id, dataName, dataDescription, goalCompletio
         id: id,
         name: dataNameLocal,
         description: dataDescriptionLocal,
-        is_complete: goalCompletion,
-        module_id: moduleID
+        isComplete: goalCompletion,
+        moduleId: moduleID
       });
       handleCloseModal();
     } catch (error : any) {

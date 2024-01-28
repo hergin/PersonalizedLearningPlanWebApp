@@ -13,9 +13,11 @@ function GoalCreator({ moduleID, addGoal }: GoalCreatorProps) {
 
   async function handleModuleCreation() {
     try {
+      // TODO: We need a way for the user to pick goal type before this point.
       const response = await post("/goal/add", {
         name: goalName,
         description: description,
+        goal_type: "todo",
         is_complete: false,
         module_id: moduleID,
       });
@@ -24,8 +26,8 @@ function GoalCreator({ moduleID, addGoal }: GoalCreatorProps) {
         id: response[0].goal_id,
         name: goalName,
         description: description,
-        is_complete: false,
-        module_id: moduleID,
+        isComplete: false,
+        moduleId: moduleID,
       });
       setOpen(false);
     } catch (error: any) {
