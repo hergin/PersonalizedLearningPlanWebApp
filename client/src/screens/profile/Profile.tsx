@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useReducer } from "react";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../../hooks/useUser";
 import { ApiClient } from "../../hooks/ApiClient";
@@ -6,15 +6,53 @@ import profilePicture from "../../resources/Default_Profile_Picture.jpg";
 import "./profile.css";
 import useProfile from "../../hooks/useProfile";
 import { useHotKeys } from "../../hooks/useHotKeys";
+import { emptyProfile, Profile } from "../../types";
+
+interface ProfileActionProps {
+  variable: string,
+  input: string | number,
+}
+
+const PROFILE_VARIABLES = {
+  username: "username",
+  firstName: "first_name",
+  lastName: "last_name",
+  profilePicture: "profile_picture",
+  jobTitle: "job_title",
+  bio: "bio"
+}
+
+function updateProfile(profile : Profile, action : ProfileActionProps) {
+  if(typeof action.input === "number") {
+    profile.id = action.input;
+    return profile;
+  }
+  
+  switch(action.variable) {
+    case PROFILE_VARIABLES.username:
+      profile.username = action.input;
+      break;
+    case PROFILE_VARIABLES.firstName:
+      profile.firstName = action.input;
+      break;
+    case PROFILE_VARIABLES.lastName:
+      profile.lastName = action.input;
+      break;
+    case PROFILE_VARIABLES.profilePicture:
+      profile.profilePicture = action.input;
+      break;
+    case PROFILE_VARIABLES.jobTitle:
+      profile.jobTitle = action.input;
+      break;
+    case PROFILE_VARIABLES.bio:
+      profile.bio = action.input;
+      break;
+  }
+  return profile;
+}
 
 function ProfileScreen() {
-  const [id, setID] = useState<number>();
-  // TODO: Move into useReducer
-  const [username, setUsername] = useState("");
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [jobTitle, setJobTitle] = useState("");
-  const [bio, setBio] = useState("");
+  const [profileState, dispatch] = useReducer(updateProfile, emptyProfile);
   const [editMode, setEditMode] = useState(false);
   const navigate = useNavigate();
   const { user, removeUser } = useUser();
@@ -27,23 +65,24 @@ function ProfileScreen() {
       return;
     }
 
-    setID(profileData.profile_id);
-    setUsername(profileData.username);
-    setFirstName(profileData.first_name);
-    setLastName(profileData.last_name);
-    setJobTitle(profileData.job_title);
-    setBio(profileData.bio);
+    for(const [key, value] of Object.entries(profileData)) {
+      console.log(`Profile data: ${value}`);
+      if(typeof value !== "number" && typeof value !== "string") {
+        break;
+      }  
+      dispatch({variable: key, input: value});
+    }
   }, [profileData, isLoading, error]);
 
   async function saveChanges() {
     try {
-      await put(`/profile/edit/${id}`, {
-        username,
-        firstName,
-        lastName,
-        profilePicture: "",
-        jobTitle,
-        bio,
+      await put(`/profile/edit/${profileState.id}`, {
+        username: profileState.username,
+        first_name: profileState.firstName,
+        last_name: profileState.lastName,
+        profile_picture: profileState.profilePicture,
+        job_title: profileState.jobTitle,
+        bio: profileState.bio,
       });
       setEditMode(false);
     } catch (error: any) {
@@ -54,7 +93,7 @@ function ProfileScreen() {
 
   async function deleteAccount() {
     try {
-      await del(`/profile/delete/${id}`);
+      await del(`/profile/delete/${profileState.id}`);
       await del(`/auth/delete/${user.email}`);
       removeUser();
       navigate("/#");
@@ -80,15 +119,15 @@ function ProfileScreen() {
             name="profile"
             type="text"
             placeholder="username"
-            value={username}
-            defaultValue={username}
+            value={profileState.username}
+            defaultValue={profileState.username}
             onKeyUp={(event) => {handleEnterPress(event, saveChanges)}}
             onChange={(event) => {
-              setUsername(event.target.value);
+              dispatch({variable: PROFILE_VARIABLES.username, input: event.target.value});
             }}
           />
         ) : (
-          <p className="username-display">{username}</p>
+          <p className="username-display">{profileState.username}</p>
         )}
       </div>
       {editMode ? (
@@ -100,11 +139,11 @@ function ProfileScreen() {
               name="profile"
               type="text"
               placeholder="First Name"
-              value={firstName}
-              defaultValue={firstName}
+              value={profileState.firstName}
+              defaultValue={profileState.firstName}
               onKeyUp={(event) => {handleEnterPress(event, saveChanges)}}
               onChange={(event) => {
-                setFirstName(event.target.value);
+                dispatch({variable: PROFILE_VARIABLES.firstName, input: event.target.value});
               }}
             />
           </div>
@@ -115,11 +154,11 @@ function ProfileScreen() {
               name="profile"
               type="text"
               placeholder="Last Name"
-              value={lastName}
-              defaultValue={lastName}
+              value={profileState.lastName}
+              defaultValue={profileState.lastName}
               onKeyUp={(event) => {handleEnterPress(event, saveChanges)}}
               onChange={(event) => {
-                setLastName(event.target.value);
+                dispatch({variable: PROFILE_VARIABLES.lastName, input: event.target.value});
               }}
             />
           </div>
@@ -130,11 +169,11 @@ function ProfileScreen() {
               name="profile"
               type="text"
               placeholder="Job Title"
-              value={jobTitle}
-              defaultValue={jobTitle}
+              value={profileState.jobTitle}
+              defaultValue={profileState.jobTitle}
               onKeyUp={(event) => {handleEnterPress(event, saveChanges)}}
               onChange={(event) => {
-                setJobTitle(event.target.value);
+                dispatch({variable: PROFILE_VARIABLES.jobTitle, input: event.target.value});
               }}
             />
           </div>
@@ -144,24 +183,24 @@ function ProfileScreen() {
             name="profile"
             type="textarea"
             placeholder="bio"
-            value={bio}
-            defaultValue={bio}
+            value={profileState.bio}
+            defaultValue={profileState.bio}
             onKeyUp={(event) => {handleEnterPress(event, saveChanges)}}
             onChange={(event) => {
-              setBio(event.target.value);
+              dispatch({variable: PROFILE_VARIABLES.bio, input: event.target.value});
             }}
             className="bigTextBox"
           />
         </div>
       ) : (
         <div className="information-container">
-          <p>First name: {firstName ? firstName : ""}</p>
-          <p>Last name: {lastName ? lastName : ""}</p>
-          <p>Job title: {jobTitle ? jobTitle : ""}</p>
+          <p>First name: {profileState.firstName ? profileState.firstName : ""}</p>
+          <p>Last name: {profileState.lastName ? profileState.lastName : ""}</p>
+          <p>Job title: {profileState.jobTitle ? profileState.jobTitle : ""}</p>
           <p>About Me:</p>
           <br />
           <div className="about-me">
-            <p>{bio ? bio : ""}</p>
+            <p>{profileState.bio ? profileState.bio : ""}</p>
           </div>
         </div>
       )}
