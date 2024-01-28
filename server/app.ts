@@ -21,6 +21,6 @@ app.get('/api', (req : any, res : any) => {
     res.send('Okay');
 });
 
-app.listen(4000, () => {
+app.listen(4001, () => {
     console.log("Server running!");
 });

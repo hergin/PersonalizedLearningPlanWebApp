@@ -13,9 +13,10 @@ import {
 } from "@mui/material";
 import { useUser } from "../hooks/useUser";
 import { ApiClient } from "../hooks/ApiClient";
+import { useHotKeys } from "../hooks/useHotKeys";
 import { LongMenuProps } from "../types";
 
-export default function LongMenu({editObject, dataName, dataDescription, id, moduleCompletion, deleteObject}: LongMenuProps) {
+const  ModuleEditorButton = ({editObject, dataName, dataDescription, id, moduleCompletion, deleteObject}: LongMenuProps) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const [dataNameLocal, setDataNameLocal] = useState(dataName);
@@ -38,6 +39,7 @@ export default function LongMenu({editObject, dataName, dataDescription, id, mod
   };
   const { user } = useUser();
   const { put, del } = ApiClient();
+  const { handleEnterPress } = useHotKeys();
 
   async function handleModuleEdit() {
     try {
@@ -106,12 +108,14 @@ export default function LongMenu({editObject, dataName, dataDescription, id, mod
           <TextField
             value={dataNameLocal}
             onChange={(e) => setDataNameLocal(e.target.value)}
+            onKeyDown={(event) => {handleEnterPress(event, handleModuleEdit)}}
             fullWidth
             margin="normal"
           />
           <TextField
             value={dataDescriptionLocal}
             onChange={(e) => setDataDescriptionLocal(e.target.value)}
+            onKeyDown={(event) => {handleEnterPress(event, handleModuleEdit)}}
             fullWidth
             margin="normal"
           />
@@ -123,3 +127,5 @@ export default function LongMenu({editObject, dataName, dataDescription, id, mod
     </>
   );
 }
+
+export default ModuleEditorButton;

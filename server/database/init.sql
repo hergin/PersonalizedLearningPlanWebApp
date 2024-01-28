@@ -84,7 +84,7 @@ RETURNS GOAL AS $$
 $$ language sql security definer;
 
 CREATE OR REPLACE FUNCTION get_goals(id int)
-RETURNS GOAL AS $$
+RETURNS SETOF GOAL AS $$
     UPDATE GOAL g
     SET is_complete = CURRENT_TIMESTAMP < g.expiration
     WHERE g.expiration IS NOT NULL;
