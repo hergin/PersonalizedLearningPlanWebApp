@@ -22,43 +22,28 @@ const PROFILE_VARIABLES = {
   bio: "bio"
 }
 
-function updateProfile(profile : Profile, action : ProfileActionProps) {
-  const newProfile : Profile = {
-    id: profile.id,
-    username: profile.username, 
-    firstName: profile.firstName, 
-    lastName: profile.lastName,
-    profilePicture: profile.profilePicture, 
-    jobTitle: profile.jobTitle,
-    bio: profile.bio
-  };
-  
+const PROFILE_ACTIONS = new Map();
+PROFILE_ACTIONS.set(PROFILE_VARIABLES.username, (profile : Profile, input : string) => {return {...profile, username: input}});
+PROFILE_ACTIONS.set(PROFILE_VARIABLES.firstName, (profile : Profile, input : string) => {return {...profile, firstName: input}});
+PROFILE_ACTIONS.set(PROFILE_VARIABLES.lastName, (profile : Profile, input : string) => {return {...profile, lastName: input}});
+PROFILE_ACTIONS.set(PROFILE_VARIABLES.profilePicture, (profile: Profile, input : string) => {return {...profile, profilePicture: input}});
+PROFILE_ACTIONS.set(PROFILE_VARIABLES.jobTitle, (profile : Profile, input : string) => {return {...profile, jobTitle: input}});
+PROFILE_ACTIONS.set(PROFILE_VARIABLES.bio, (profile : Profile, input : string) => {return {...profile, bio: input}});
+
+
+function updateProfile(profile : Profile, action : ProfileActionProps): Profile {
   if(typeof action.input === "number") {
-    newProfile.id = action.input;
-    return newProfile;
+    return {
+      ...profile,
+      id: action.input
+    };
   }
   
-  switch(action.variable) {
-    case PROFILE_VARIABLES.username:
-      newProfile.username = action.input;
-      break;
-    case PROFILE_VARIABLES.firstName:
-      newProfile.firstName = action.input;
-      break;
-    case PROFILE_VARIABLES.lastName:
-      newProfile.lastName = action.input;
-      break;
-    case PROFILE_VARIABLES.profilePicture:
-      newProfile.profilePicture = action.input;
-      break;
-    case PROFILE_VARIABLES.jobTitle:
-      newProfile.jobTitle = action.input;
-      break;
-    case PROFILE_VARIABLES.bio:
-      newProfile.bio = action.input;
-      break;
+  const actionFunction = PROFILE_ACTIONS.get(action.variable);
+  if(typeof actionFunction === "function") {
+    return actionFunction(profile, action.input);
   }
-  return newProfile;
+  return profile;
 }
 
 function ProfileScreen() {

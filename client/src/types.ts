@@ -28,8 +28,8 @@ export type Profile = {
   firstName : string, 
   lastName : string, 
   profilePicture : string, 
-  jobTitle : string, 
-  bio : string
+  jobTitle? : string, 
+  bio? : string
 }
 
 export interface ModuleCreatorProps {
