@@ -1,10 +1,10 @@
 export type GoalType = "todo" | "daily";
 
 export interface Module {
-  id: number,
-  name: string,
+  module_id: number,
+  module_name: string,
   description: string,
-  completion: number,
+  completion_percent: number,
 }
 
 // TODO: We need to add due date as an optional Date and goal type to determine the goal's type.
@@ -33,7 +33,7 @@ export type Profile = {
 }
 
 export interface ModuleCreatorProps {
-  addModule: ({ id, name, description, completion }: Module) => void,
+  addModule: ({ module_id, module_name, description, completion_percent }: Module) => void,
   closeModal: () => void,
   modalTitle: string;
   open: boolean;
