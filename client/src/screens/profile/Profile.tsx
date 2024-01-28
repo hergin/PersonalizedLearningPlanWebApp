@@ -7,7 +7,7 @@ import "./profile.css";
 import useProfile from "../../hooks/useProfile";
 import { useHotKeys } from "../../hooks/useHotKeys";
 
-function Profile() {
+function ProfileScreen() {
   const [id, setID] = useState<number>();
   // TODO: Move into useReducer
   const [username, setUsername] = useState("");
@@ -188,4 +188,4 @@ function Profile() {
   );
 }
 
-export default Profile;
+export default ProfileScreen;

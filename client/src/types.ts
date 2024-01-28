@@ -22,6 +22,16 @@ export interface User {
   refreshToken: string,
 }
 
+export type Profile = {
+  id : number, 
+  username : string, 
+  firstName : string, 
+  lastName : string, 
+  profilePicture : string, 
+  jobTitle : string, 
+  bio : string
+}
+
 export interface ModuleCreatorProps {
   addModule: ({ id, name, description, completion }: Module) => void,
   closeModal: () => void,
@@ -69,3 +79,5 @@ export interface GoalCreatorProps {
 }
 
 export const emptyUser: User = { email: "", accessToken: "", refreshToken: "" };
+export const emptyProfile : Profile = { id: -1, username: "", firstName: "", lastName: "", profilePicture: "", jobTitle: "", bio: ""};
+
