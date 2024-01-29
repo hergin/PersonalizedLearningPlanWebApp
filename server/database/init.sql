@@ -57,23 +57,24 @@ CREATE TABLE GOAL(
 CREATE OR REPLACE FUNCTION update_goal_completion()
 RETURNS TRIGGER AS $$
     BEGIN
-        IF OLD.expiration IS NOT NULL THEN
-            NEW.is_complete = CURRENT_TIMESTAMP < OLD.expiration;
-            RETURN NEW;
-        ELSE
-            RETURN NULL;
+        IF NEW.expiration IS NOT NULL THEN
+            NEW.is_complete = CURRENT_TIMESTAMP < NEW.expiration;
         END IF;
+
+        RETURN NEW;
     END;
-$$ language 'plpgsql';
+$$ LANGUAGE 'plpgsql';
 
 -- This will trigger update goal completion after every update query.
-CREATE TRIGGER trigger_update_goal_completion
+CREATE OR REPLACE TRIGGER trigger_update_goal_completion
 AFTER INSERT OR UPDATE ON GOAL FOR EACH ROW
-EXECUTE PROCEDURE update_goal_completion();
+EXECUTE FUNCTION update_goal_completion();
+
+ALTER TABLE GOAL ENABLE TRIGGER trigger_update_goal_completion;
 
 -- Checks to see if the goal's completion has expired before returning the data.
 -- You must use this function to parse a goal otherwise it might be inaccurate.
-CREATE OR REPLACE FUNCTION get_goal(id int)
+CREATE OR REPLACE FUNCTION get_goal(id INT)
 RETURNS GOAL AS $$
     UPDATE GOAL g
     SET is_complete = CURRENT_TIMESTAMP < g.expiration
@@ -81,17 +82,31 @@ RETURNS GOAL AS $$
 
     SELECT * FROM GOAL g
     WHERE g.goal_id = get_goal.id;
-$$ language sql security definer;
+$$ LANGUAGE SQL SECURITY definer;
 
-CREATE OR REPLACE FUNCTION get_goals(id int)
+CREATE OR REPLACE FUNCTION get_goals(id INT)
 RETURNS SETOF GOAL AS $$
-    UPDATE GOAL g
-    SET is_complete = CURRENT_TIMESTAMP < g.expiration
-    WHERE g.expiration IS NOT NULL;
+    #print_strict_params ON
+    DECLARE num_of_goals DECIMAL;
+    DECLARE num_of_completed_goals DECIMAL;
+    
+    BEGIN
+        UPDATE GOAL g
+        SET is_complete = CURRENT_TIMESTAMP < g.expiration
+        WHERE g.expiration IS NOT NULL;
 
-    SELECT * FROM GOAL g
-    WHERE g.module_id = get_goals.id;
-$$ language sql security definer;
+        SELECT COUNT(*) FROM GOAL WHERE module_id = get_goals.id INTO STRICT num_of_goals;
+        SELECT COUNT(*) FROM GOAL WHERE module_id = get_goals.id AND is_complete IS TRUE INTO STRICT num_of_completed_goals;
+        
+        IF num_of_goals > 0 THEN
+            UPDATE MODULE m
+            SET completion_percent = num_of_completed_goals / num_of_goals * 100
+            WHERE m.module_id = get_goals.id;
+        END IF;
+
+        RETURN QUERY SELECT * FROM GOAL g WHERE g.module_id = get_goals.id;
+    END;
+$$ LANGUAGE 'plpgsql';
 
 DROP TABLE IF EXISTS DASHBOARD CASCADE;
 CREATE TABLE DASHBOARD(
