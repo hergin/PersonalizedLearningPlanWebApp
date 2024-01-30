@@ -11,11 +11,11 @@ interface ModuleProps {
 
 const ModuleItem = ({ module, editModule, deleteModule }: ModuleProps) => {
     return (
-      <div className="flex flex-col transition-transform rounded border border-solid border-black w-[300px] h-[500px] duration-300 shadow-md hover:scale-110 hover:shadow-lg">
+      <div className="flex flex-col transition-transform rounded border border-solid border-black w-[300px] h-[500px] duration-300 shadow-md hover:scale-110 hover:shadow-lg bg-white">
         <div className="flex">
-          <div className="flex items-center justify-between w-full">
+          <div className="flex items-center justify-between w-full bg-[#8C1515]">
             <div className="h-full w-[14%]"></div>
-            <h1 className="text-3xl font-extrabold">{module.name}</h1>
+            <h1 className="text-3xl text-white">{module.name}</h1>
             <LongMenu
               dataName={module.name}
               dataDescription={module.description}
@@ -23,6 +23,7 @@ const ModuleItem = ({ module, editModule, deleteModule }: ModuleProps) => {
               moduleCompletion={module.completion}
               editObject={editModule}
               deleteObject={deleteModule}
+              
             />
           </div>
         </div>

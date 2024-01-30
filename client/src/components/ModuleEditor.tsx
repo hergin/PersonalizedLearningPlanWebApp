@@ -83,6 +83,7 @@ const  ModuleEditorButton = ({editObject, dataName, dataDescription, id, moduleC
         aria-expanded={open ? "true" : undefined}
         aria-haspopup="true"
         onClick={handleClick}
+        sx={{ color: "white" }}
       >
         <MoreVertIcon />
       </IconButton>

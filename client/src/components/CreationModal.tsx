@@ -35,7 +35,7 @@ function CreationModal({ addModule, modalTitle, open, closeModal }: ModuleCreato
   }
 
   return (
-      <Modal className="absolute float-left flex items-center justify-center top-2/4 left-2/4" open={open} onClose={closeModal}>
+      <Modal className="absolute float-left flex items-center justify-center top-2/4 left-2/4 " open={open} onClose={closeModal}>
         <div className="bg-white w-2/4 flex flex-col items-center justify-start border border-black border-solid p-4 gap-5">
           <div className="w-full flex justify-center">
             <h1 className="font-headlineFont text-5xl">{modalTitle}</h1>

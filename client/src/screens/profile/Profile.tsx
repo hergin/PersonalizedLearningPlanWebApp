@@ -106,7 +106,7 @@ function ProfileScreen() {
     return <div>This is an error</div>
   }
   return (
-    <div className="parent-div">
+    <div className="parent-div bg-[#F1F1F1]">
       <div className="profile-header">
         <img src={profilePicture} alt="pfp here" />
         {editMode ? (

@@ -16,7 +16,7 @@ function LearningPlan() {
   
   return (
     <ModuleProvider>
-      <div className="p-[2%] h-screen">
+      <div className="p-[2%] h-screen bg-[#F1F1F1]">
         <ModuleComponent />
       </div>
     </ModuleProvider>

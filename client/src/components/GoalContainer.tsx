@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Box, CircularProgress, Typography } from "@mui/material";
-import GoalStepper from "./GoalStepper";
+import GoalStepper from "./GoalItem";
 import { ApiClient } from "../hooks/ApiClient";
 import { Goal, GoalHeaderProps } from "../types";
 
@@ -16,30 +16,30 @@ const GoalHeader = ({moduleID}: GoalHeaderProps) => {
   };
   const { get } = ApiClient();
 
-  useEffect(() => {
-    async function getGoals() {
-      try {
-        const result = await get(`/goal/get/module/${moduleID}`);
-        let newGoals : Goal[] = [];
-        for (let goal of result) {
-          newGoals.push({
-            id: goal.goal_id,
-            name: goal.name,
-            description: goal.description,
-            isComplete: goal.is_complete,
-            moduleId: moduleID
-          });
-        }
-        setSteps(newGoals);
-      } catch (error : any) {
-        console.error(error);
-        alert(error.response ? error.response.data : error);
-      }
-    }
+  // useEffect(() => {
+  //   async function getGoals() {
+  //     try {
+  //       const result = await get(`/goal/get/module/${moduleID}`);
+  //       let newGoals : Goal[] = [];
+  //       for (let goal of result) {
+  //         newGoals.push({
+  //           id: goal.goal_id,
+  //           name: goal.name,
+  //           description: goal.description,
+  //           isComplete: goal.is_complete,
+  //           moduleId: moduleID
+  //         });
+  //       }
+  //       setSteps(newGoals);
+  //     } catch (error : any) {
+  //       console.error(error);
+  //       alert(error.response ? error.response.data : error);
+  //     }
+  //   }
 
-    getGoals();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  //   getGoals();
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, []);
 
   const addGoal = (goal : Goal) => {
     if (steps.includes(goal)) {
@@ -97,15 +97,8 @@ const GoalHeader = ({moduleID}: GoalHeaderProps) => {
           </Typography>
         </Box>
 
-        <div className="flex overflow-hidden bg-white flex-col absolute h-auto w-3/5 rounded min-h-[80vh] top-1/2 left-[20%] gap-5 p-[3%] shadow-md">
+        <div className="flex overflow-hidden bg-white flex-col absolute h-auto w-3/5 rounded min-h-[80vh] top-1/2 left-[20%] p-[3%] shadow-md">
           <GoalStepper
-            addGoalProgress={addGoalProgress}
-            restGoalProgress={restGoalProgress}
-            moduleID={moduleID}
-            steps={steps}
-            addGoal={addGoal}
-            deleteGoal={deleteGoal}
-            editGoal={editGoal}
           />
         </div>
       </div>s

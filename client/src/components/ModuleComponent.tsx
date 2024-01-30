@@ -59,7 +59,7 @@ const ModuleComponent = () => {
           {" "}
           <button
             onClick={openModal}
-            className="bg-transparent block h-full w-full no-underline items-center justify-center"
+            className="bg-transparent block h-full w-full no-underline items-center justify-center bg-white"
           >
             <h1>+</h1>
           </button>
