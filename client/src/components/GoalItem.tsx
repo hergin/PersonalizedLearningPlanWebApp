@@ -52,7 +52,7 @@ export default function GoalStepper() {
           </button>
         </div>
       </div>
-      <SubGoalsCollapsable isExpanded={isExpanded} goalId={1} />
+      <SubGoalsCollapsable isExpanded={isExpanded} goalId={1} />1
     </>
   );
 }
