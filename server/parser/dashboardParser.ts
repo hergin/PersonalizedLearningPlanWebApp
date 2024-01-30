@@ -1,8 +1,6 @@
-export {};
+import { DatabaseParser } from "./databaseParser";
 
-const DatabaseParser = require("./databaseParser");
-
-class DashboardParser extends DatabaseParser {
+export class DashboardParser extends DatabaseParser {
     constructor() {
         super()
     }
@@ -45,5 +43,3 @@ class DashboardParser extends DatabaseParser {
         return await this.parseDatabase(query);
     }
 }
-
-module.exports = DashboardParser;

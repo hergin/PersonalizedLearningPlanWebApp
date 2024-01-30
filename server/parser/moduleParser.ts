@@ -1,6 +1,6 @@
-export {};
+export { ModuleParser };
 
-const DatabaseParser = require('./dashboardParser');
+import { DatabaseParser } from './databaseParser';
 
 class ModuleParser extends DatabaseParser {
     constructor() {
@@ -51,6 +51,14 @@ class ModuleParser extends DatabaseParser {
         await this.updateDatabase(query);
         console.log("Deleted Module!");
     }
-}
 
-module.exports = ModuleParser;
+    async getModuleVariable(module_id : number, variable : string) {
+        console.log("Getting module completion...");
+        const query = {
+            text: `SELECT ${variable} FROM MODULE WHERE module_id = $1`,
+            values: [module_id]
+        };
+        return this.parseDatabase(query);
+        
+    }
+}

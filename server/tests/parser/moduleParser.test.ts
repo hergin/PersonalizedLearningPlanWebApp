@@ -27,6 +27,7 @@ describe('module parser',() => {
 
     beforeEach(async () => {
         client = await parser.pool.connect();
+        await client.query(CREATE_ACCOUNT_QUERY);
     });
 
     afterEach(async () => {
@@ -34,6 +35,7 @@ describe('module parser',() => {
             "DELETE FROM ACCOUNT WHERE email = $1 AND account_password = $2",
             [TEST_DATA.email, TEST_DATA.password]
         );
+        await client.query("DELETE FROM GOAL");
         client.release();
     });
 
@@ -42,7 +44,6 @@ describe('module parser',() => {
     });
 
     it('store module', async () => {
-        await client.query(CREATE_ACCOUNT_QUERY);
         const result = await parser.storeModule(TEST_DATA.moduleName, TEST_DATA.moduleDescription, TEST_DATA.completion, TEST_DATA.email);
         expect(result).toEqual({module_id: expect.any(Number)});
         var actual = await client.query(
@@ -61,7 +62,6 @@ describe('module parser',() => {
     });
 
     it('parse module', async () => {
-        await client.query(CREATE_ACCOUNT_QUERY);
         await client.query(CREATE_MODULE_QUERY);
         var actual = await parser.parseModules(TEST_DATA.email);
         expect(actual).toEqual([
@@ -77,7 +77,6 @@ describe('module parser',() => {
 
     it('update module', async () => {
         const updatedDescription = "My name is jeff.";
-        await client.query(CREATE_ACCOUNT_QUERY);
         await client.query(CREATE_MODULE_QUERY);
         var moduleID = await getModuleID();
         await parser.updateModule(TEST_DATA.moduleName, updatedDescription, TEST_DATA.completion, TEST_DATA.email, moduleID);
@@ -97,7 +96,6 @@ describe('module parser',() => {
     });
 
     it('delete module', async () => {
-        await client.query(CREATE_ACCOUNT_QUERY);
         await client.query(CREATE_MODULE_QUERY);
         var moduleID = await getModuleID();
         await parser.deleteModule(moduleID);
@@ -106,6 +104,29 @@ describe('module parser',() => {
             [moduleID]
         );
         expect(actual.rows).toEqual([]);
+    });
+
+    it('get module variable (name case)', async() => {
+        await client.query(CREATE_MODULE_QUERY);
+        var moduleID = await getModuleID();
+        const result = await parser.getModuleVariable(moduleID, "module_name");
+        console.log(`Result from get module variable name case: ${JSON.stringify(result)}`);
+        expect(result).toEqual([
+            {
+                module_name: TEST_DATA.moduleName
+            }
+        ]);
+    });
+
+    it('get module variable (completion percent case)', async() => {
+        await client.query(CREATE_MODULE_QUERY);
+        var moduleID = await getModuleID();
+        const result = await parser.getModuleVariable(moduleID, "completion_percent");
+        expect(result).toEqual([
+            {
+                completion_percent: TEST_DATA.completion
+            }
+        ]);
     });
 
     async function getModuleID() {

@@ -1,17 +1,14 @@
-export {};
+import express from "express";
+import { authenticateToken } from "../utils/token";
+import { initializeErrorMap } from "../utils/errorMessages";
+import { ModuleAPI } from "../controller/moduleProcessor";
+import { STATUS_CODES } from "../utils/statusCodes";
 
-const express = require("express");
-const tokenMethods = require("../utils/token");
-const initializeErrorMap = require("../utils/errorMessages");
-const ModuleAPI = require("../controller/moduleProcessor");
-const STATUS_CODES = require("../utils/statusCodes");
-
-
-const router = express.Router();
+const moduleRoutes = express.Router();
 const ERROR_MESSAGES = initializeErrorMap();
 const moduleAPI = new ModuleAPI();
 
-router.get('/get/:id', tokenMethods.authenticateToken, async(req : any, res : any) => {
+moduleRoutes.get('/get/:id', authenticateToken, async(req : any, res : any) => {
     console.log(`Received: ${req.params.id}`);
     const moduleQuery = await moduleAPI.getModules(req.params.id);
     if(typeof moduleQuery !== "object") {
@@ -22,7 +19,7 @@ router.get('/get/:id', tokenMethods.authenticateToken, async(req : any, res : an
     res.status(STATUS_CODES.OK).json(moduleQuery);
 });
 
-router.post('/add', tokenMethods.authenticateToken, async(req : any, res : any) => {
+moduleRoutes.post('/add', authenticateToken, async(req : any, res : any) => {
     console.log(`Received: ${req.body.email}`);
     const moduleQuery = await moduleAPI.createModule(req.body.name, req.body.description, req.body.completion_percent, req.body.email);
     if(typeof moduleQuery !== "object") {
@@ -33,7 +30,7 @@ router.post('/add', tokenMethods.authenticateToken, async(req : any, res : any) 
     res.status(STATUS_CODES.OK).json(moduleQuery);
 });
 
-router.delete('/delete/:id', tokenMethods.authenticateToken, async (req : any, res : any) => {
+moduleRoutes.delete('/delete/:id', authenticateToken, async (req : any, res : any) => {
     console.log(`Received: ${req.params.id}`);
     const moduleQuery = await moduleAPI.deleteModule(parseInt(req.params.id));
     if(moduleQuery !== STATUS_CODES.OK) {
@@ -44,7 +41,7 @@ router.delete('/delete/:id', tokenMethods.authenticateToken, async (req : any, r
     res.sendStatus(STATUS_CODES.OK);
 });
 
-router.put('/edit/:id', tokenMethods.authenticateToken, async (req : any, res : any) => {
+moduleRoutes.put('/edit/:id', authenticateToken, async (req : any, res : any) => {
     console.log(`Received: ${req.params.id}`);
     const moduleQuery = await moduleAPI.updateModule(parseInt(req.params.id), req.body.name, req.body.description, req.body.completion, req.body.email);
     if(moduleQuery !== STATUS_CODES.OK) {
@@ -55,4 +52,15 @@ router.put('/edit/:id', tokenMethods.authenticateToken, async (req : any, res : 
     res.sendStatus(STATUS_CODES.OK);
 });
 
-module.exports = router;
+moduleRoutes.get('/get/:id/:variable', authenticateToken, async (req : any, res : any) => {
+    console.log(`Received in get module variable: ${req.params.id} ${req.params.variable}`);
+    const variableQuery = await moduleAPI.getModuleVariable(parseInt(req.params.id), req.params.variable);
+    if(typeof variableQuery !== "object") {
+        console.log("Something went wrong while receiving module variable.");
+        res.status(variableQuery).send(ERROR_MESSAGES.get(variableQuery));
+        return;
+    }
+    res.sendStatus(STATUS_CODES.OK).json(variableQuery);
+});
+
+export default moduleRoutes;

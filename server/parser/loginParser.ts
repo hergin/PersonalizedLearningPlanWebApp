@@ -1,8 +1,6 @@
-export {};
+import { DatabaseParser } from "./databaseParser";
 
-const DatabaseParser = require("./databaseParser");
-
-class LoginParser extends DatabaseParser {
+export class LoginParser extends DatabaseParser {
     constructor() {
         super();
     }
@@ -57,5 +55,3 @@ class LoginParser extends DatabaseParser {
         console.log("Account deleted!");
     }
 }
-
-module.exports = LoginParser;

@@ -1,17 +1,15 @@
-export {};
-
-const pg = require("pg");
-const path = require("path");
+import pg from "pg";
+import path from "path";
 require('dotenv').config({
     path: path.join(__dirname, ".env")
 });
 
 interface Query {
     text: string,
-    values: (string | number | boolean)[]
+    values: (string | number | boolean | Date)[]
 }
 
-class DatabaseParser {
+export class DatabaseParser {
     pool : any;
 
     constructor() {
@@ -35,5 +33,3 @@ class DatabaseParser {
         return result.rows;
     }
 }
-
-module.exports = DatabaseParser;

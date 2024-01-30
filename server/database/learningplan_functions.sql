@@ -3,7 +3,7 @@ AS $$
     BEGIN
         UPDATE GOAL g
         SET is_complete = CURRENT_TIMESTAMP < g.expiration
-        WHERE goal_id = update_is_complete.id AND g.expiration IS NOT NULL;
+        WHERE g.expiration IS NOT NULL;
     END;
 $$ LANGUAGE PLPGSQL;
 
@@ -39,7 +39,7 @@ $$ LANGUAGE PLPGSQL;
 -- You must use this function to parse a goal otherwise it might be inaccurate.
 CREATE OR REPLACE FUNCTION get_goal(id INT)
 RETURNS GOAL AS $$
-    CALL update_is_complete();
+    CALL update_is_complete(id);
 
     SELECT * FROM GOAL g
     WHERE g.goal_id = get_goal.id;
@@ -51,29 +51,11 @@ RETURNS SETOF GOAL AS $$
         UPDATE GOAL g
         SET is_complete = CURRENT_TIMESTAMP < g.expiration
         WHERE g.expiration IS NOT NULL;
-        CALL update_module_completion(get_goals.id);
+        CALL update_module_completion(get_goals.id, 'false', 'false');
 
         RETURN QUERY SELECT * FROM GOAL g WHERE g.module_id = get_goals.id;
     END;
 $$ LANGUAGE PLPGSQL;
-
--- This will update every goal's completion status.
-CREATE OR REPLACE FUNCTION update_goal_completion()
-RETURNS TRIGGER AS $$
-    BEGIN
-        IF NEW.is_complete <> OLD.is_complete THEN    
-            CALL update_is_complete(NEW.goal_id);
-        END IF;
-
-        RETURN NEW;
-    END;
-$$ LANGUAGE PLPGSQL;
-
--- This will trigger update goal completion after every update query.
-CREATE OR REPLACE TRIGGER trigger_update_goal_completion
-AFTER INSERT OR UPDATE ON GOAL 
-FOR EACH ROW
-EXECUTE FUNCTION update_goal_completion();
 
 CREATE OR REPLACE FUNCTION calc_completion_percent()
 RETURNS TRIGGER AS $$
@@ -93,11 +75,6 @@ RETURNS TRIGGER AS $$
 $$ LANGUAGE PLPGSQL;
 
 CREATE OR REPLACE TRIGGER trigger_calc_completion_percent
-AFTER INSERT OR UPDATE OF is_complete ON GOAL
-FOR EACH ROW
-EXECUTE FUNCTION calc_completion_percent();
-
-CREATE OR REPLACE TRIGGER trigger_calc_completion_percent_del
-BEFORE DELETE ON GOAL
+AFTER INSERT OR UPDATE OF is_complete OR DELETE ON GOAL
 FOR EACH ROW
 EXECUTE FUNCTION calc_completion_percent();

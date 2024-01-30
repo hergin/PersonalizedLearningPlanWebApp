@@ -4,7 +4,7 @@ import { useUser } from "./useUser";
 export const ApiClient = () => {
   const { user, replaceToken } = useUser();
   const api = axios.create({
-    baseURL: "http://localhost:4001/api",
+    baseURL: "http://localhost:4000/api",
     headers: {
       "Content-Type": "application/json",
       Accept: "application/json",

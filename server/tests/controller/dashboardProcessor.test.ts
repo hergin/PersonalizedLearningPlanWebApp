@@ -3,6 +3,7 @@ export {};
 const DashboardAPI = require("../../controller/dashboardProcessor");
 const DashboardParser = require("../../parser/dashboardParser");
 const STATUS_CODES = require("../../utils/statusCodes");
+import { FAKE_ERRORS } from "./fakeErrors";
 
 jest.mock("../../parser/dashboardParser", () => {
     const mockedParser = {
@@ -39,22 +40,22 @@ describe('Dashboard Functions', () => {
     });
 
     it('create dashboard (duplicate case)', async () => {
-        parser.storeDashboard.mockRejectedValue({code: '23505'});
+        parser.storeDashboard.mockRejectedValue(FAKE_ERRORS.primaryKeyViolation);
         expect(await dashboardAPI.createDashboard(testData.profile_id)).toEqual(STATUS_CODES.CONFLICT);
     });
 
     it('create dashboard (bad data case)', async () => {
-        parser.storeDashboard.mockRejectedValue({code: '23514'});
+        parser.storeDashboard.mockRejectedValue(FAKE_ERRORS.badRequest);
         expect(await dashboardAPI.createDashboard(testData.profile_id)).toEqual(STATUS_CODES.BAD_REQUEST);
     });
 
     it('create dashboard (connection lost case)', async () => {
-        parser.storeDashboard.mockRejectedValue({code: '08000'});
+        parser.storeDashboard.mockRejectedValue(FAKE_ERRORS.networkError);
         expect(await dashboardAPI.createDashboard(testData.profile_id)).toEqual(STATUS_CODES.CONNECTION_ERROR);
     });
 
     it('create dashboard (fatal error case)', async () => {
-        parser.storeDashboard.mockRejectedValue({code: 'adsfa'});
+        parser.storeDashboard.mockRejectedValue(FAKE_ERRORS.fatalServerError);
         expect(await dashboardAPI.createDashboard(testData.profile_id)).toEqual(STATUS_CODES.INTERNAL_SERVER_ERROR);
     });
 
@@ -73,12 +74,12 @@ describe('Dashboard Functions', () => {
     });
 
     it('get dashboard (connection lost case)', async () => {
-        parser.parseDashboard.mockRejectedValue({code: '08000'});
+        parser.parseDashboard.mockRejectedValue(FAKE_ERRORS.networkError);
         expect(await dashboardAPI.getDashboard(testData.profile_id)).toEqual(STATUS_CODES.CONNECTION_ERROR);
     });
 
     it('get dashboard (fatal error case)', async () => {
-        parser.parseDashboard.mockRejectedValue({code: 'adfads'});
+        parser.parseDashboard.mockRejectedValue(FAKE_ERRORS.fatalServerError);
         expect(await dashboardAPI.getDashboard(testData.profile_id)).toEqual(STATUS_CODES.INTERNAL_SERVER_ERROR);
     });
 
@@ -88,22 +89,22 @@ describe('Dashboard Functions', () => {
     });
 
     it('update dashboard (duplicate case)', async () => {
-        parser.updateDashboard.mockRejectedValue({code: '23505'});
+        parser.updateDashboard.mockRejectedValue(FAKE_ERRORS.primaryKeyViolation);
         expect(await dashboardAPI.updateDashboard(testData.profile_id, testData.dashboard_id)).toEqual(STATUS_CODES.CONFLICT);
     });
 
     it('update dashboard (bad data case)', async () => {
-        parser.updateDashboard.mockRejectedValue({code: '23514'});
+        parser.updateDashboard.mockRejectedValue(FAKE_ERRORS.badRequest);
         expect(await dashboardAPI.updateDashboard(testData.profile_id, testData.dashboard_id)).toEqual(STATUS_CODES.BAD_REQUEST);
     });
 
     it('update dashboard (connection lost case)', async () => {
-        parser.updateDashboard.mockRejectedValue({code: '08000'});
+        parser.updateDashboard.mockRejectedValue(FAKE_ERRORS.networkError);
         expect(await dashboardAPI.updateDashboard(testData.profile_id, testData.dashboard_id)).toEqual(STATUS_CODES.CONNECTION_ERROR);
     });
 
     it('update dashboard (fatal error case)', async () => {
-        parser.updateDashboard.mockRejectedValue({code: 'adsfa'});
+        parser.updateDashboard.mockRejectedValue(FAKE_ERRORS.fatalServerError);
         expect(await dashboardAPI.updateDashboard(testData.profile_id, testData.dashboard_id)).toEqual(STATUS_CODES.INTERNAL_SERVER_ERROR);
     });
 
@@ -113,22 +114,22 @@ describe('Dashboard Functions', () => {
     });
 
     it('delete dashboard (duplicate case)', async () => {
-        parser.deleteDashboard.mockRejectedValue({code: '23505'});
+        parser.deleteDashboard.mockRejectedValue(FAKE_ERRORS.primaryKeyViolation);
         expect(await dashboardAPI.deleteDashboard(testData.dashboard_id)).toEqual(STATUS_CODES.CONFLICT);
     });
 
     it('delete dashboard (bad data case)', async () => {
-        parser.deleteDashboard.mockRejectedValue({code: '23514'});
+        parser.deleteDashboard.mockRejectedValue(FAKE_ERRORS.badRequest);
         expect(await dashboardAPI.deleteDashboard(testData.dashboard_id)).toEqual(STATUS_CODES.BAD_REQUEST);
     });
 
     it('delete dashboard (connection lost case)', async () => {
-        parser.deleteDashboard.mockRejectedValue({code: '08000'});
+        parser.deleteDashboard.mockRejectedValue(FAKE_ERRORS.networkError);
         expect(await dashboardAPI.deleteDashboard(testData.dashboard_id)).toEqual(STATUS_CODES.CONNECTION_ERROR);
     });
 
     it('delete dashboard (fatal error case)', async () => {
-        parser.deleteDashboard.mockRejectedValue({code: 'adsfa'});
+        parser.deleteDashboard.mockRejectedValue(FAKE_ERRORS.fatalServerError);
         expect(await dashboardAPI.deleteDashboard(testData.dashboard_id)).toEqual(STATUS_CODES.INTERNAL_SERVER_ERROR);
     });
 });

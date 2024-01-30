@@ -1,8 +1,7 @@
-import {Profile} from "../types";
+export { ProfileParser };
 
-export {};
-
-const DatabaseParser = require('./databaseParser');
+import { DatabaseParser }  from './databaseParser';
+import { Profile } from "../types";
 
 class ProfileParser extends DatabaseParser {
     constructor() {
@@ -49,5 +48,3 @@ class ProfileParser extends DatabaseParser {
         await this.updateDatabase(query);
     }
 }
-
-module.exports = ProfileParser;
