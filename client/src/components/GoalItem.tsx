@@ -1,12 +1,14 @@
 import { GoalListHeader } from "./GoalListHeader";
-import React from "react";
+import React, { useState } from "react";
 import GoalCreator from "./GoalCreator";
 import GoalEditor from "./GoalEditor";
 import { GoalStepperProps, Goal } from "../types";
 import { ApiClient } from "../hooks/ApiClient";
+import { SubGoalsCollapsable } from "./SubGoalsCollapsable";
 
 export default function GoalStepper() {
   const { put } = ApiClient();
+  const [isExpanded, setIsExpanded] = useState(false);
 
   async function updateDatabase(goal: Goal) {
     try {
@@ -42,9 +44,15 @@ export default function GoalStepper() {
           <p className="text-black">0/1</p>
         </div>
         <div className="flex flex-col transition-transform w-[15%] h-full justify-center p-3 items-center">
-          <p className="text-black">+</p>
+          <button
+            onClick={() => setIsExpanded(!isExpanded)}
+            className="text-black"
+          >
+            +
+          </button>
         </div>
       </div>
+      <SubGoalsCollapsable isExpanded={isExpanded} goalId={1} />
     </>
   );
 }
