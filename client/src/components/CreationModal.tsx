@@ -18,15 +18,15 @@ function CreationModal({ addModule, modalTitle, open, closeModal }: ModuleCreato
       const response = await post("/module/add", {
         name: moduleName,
         description,
-        is_complete: 0,
+        completion_percent: 0,
         email: user.email,
       });
       console.log(response.module_id);
       addModule({
-        id: response.module_id,
-        name: moduleName,
+        module_id: response.module_id,
+        module_name: moduleName,
         description: description,
-        completion: 0,
+        completion_percent: 0,
       });
       closeModal();
     } catch (error: any) {
