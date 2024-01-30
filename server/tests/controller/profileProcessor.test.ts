@@ -1,19 +1,10 @@
 export {};
 
 import { ProfileAPI } from "../../controller/profileProcessor";
-import { ProfileParser } from "../../parser/profileParser";
+import ProfileParser from "../../parser/profileParser";
 import { STATUS_CODES } from "../../utils/statusCodes";
 import { FAKE_ERRORS } from "./fakeErrors";
-
-jest.mock("../../parser/profileParser", () => {
-    const testParser = {
-        storeProfile: jest.fn(),
-        parseProfile: jest.fn(),
-        updateProfile: jest.fn(),
-        deleteProfile: jest.fn(),
-    };
-    return jest.fn(() => testParser);
-});
+jest.mock("../../parser/profileParser");
 
 describe('profile processor', () => {
     const testData = {

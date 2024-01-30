@@ -1,21 +1,11 @@
 export {};
 
 import { GoalAPI } from "../../controller/goalProcessor";
-import { GoalParser } from "../../parser/goalParser";
+import GoalParser from "../../parser/goalParser";
 import { STATUS_CODES } from "../../utils/statusCodes";
 import { FAKE_ERRORS } from "./fakeErrors";
 import { GoalType } from "../../types";
-
-jest.mock("../../parser/goalParser", () => {
-    const testParser = {
-        storeGoal: jest.fn(),
-        parseGoals: jest.fn(),
-        updateGoal: jest.fn(),
-        deleteGoal: jest.fn(),
-        parseGoalVariable: jest.fn(),
-    };
-    return jest.fn(() => testParser);
-});
+jest.mock("../../parser/goalParser");
 
 const TEST_DATA = {
     name: "do Homework",

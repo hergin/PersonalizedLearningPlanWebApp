@@ -1,4 +1,4 @@
-import { ModuleParser } from "../parser/moduleParser";
+import ModuleParser from "../parser/moduleParser";
 import { STATUS_CODES } from "../utils/statusCodes";
 import { ErrorCodeInterpreter } from "./errorCodeInterpreter";
 

@@ -2,7 +2,7 @@
     "compilerOptions": {
         "outDir": "./dist/",
         "noImplicitAny": true,
-        "module": "commonJS",
+        "module": "es6",
         "target": "es2018",
         "jsx": "react",
         "allowJs": true,

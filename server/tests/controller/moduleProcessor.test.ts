@@ -1,20 +1,10 @@
 export {};
 
 import { ModuleAPI } from "../../controller/moduleProcessor";
-import { ModuleParser } from "../../parser/moduleParser";
+import ModuleParser from "../../parser/moduleParser";
 import { STATUS_CODES } from "../../utils/statusCodes";
 import { FAKE_ERRORS } from "./fakeErrors";
-
-jest.mock("../../parser/moduleParser", () => {
-    const testParser = {
-        storeModule: jest.fn(),
-        parseModules: jest.fn(),
-        updateModule: jest.fn(),
-        deleteModule: jest.fn(),
-        getModuleVariable: jest.fn(),
-    };
-    return jest.fn(() => testParser);
-});
+jest.mock("../../parser/moduleParser");
 
 const TEST_DATA = {
     module_id: 9,

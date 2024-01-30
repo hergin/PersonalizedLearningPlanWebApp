@@ -1,4 +1,4 @@
-import { DashboardParser } from "../parser/dashboardParser";
+import DashboardParser from "../parser/dashboardParser";
 import { STATUS_CODES } from "../utils/statusCodes";
 import { ErrorCodeInterpreter } from "./errorCodeInterpreter";
 

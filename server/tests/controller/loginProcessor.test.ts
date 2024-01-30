@@ -1,22 +1,11 @@
 export {};
-    
+
 import bcrypt from "bcryptjs";
 import { LoginAPI } from "../../controller/loginProcessor";
-import { LoginParser } from "../../parser/loginParser";
+import LoginParser from "../../parser/loginParser";
 import { STATUS_CODES } from "../../utils/statusCodes";
 import { FAKE_ERRORS } from "./fakeErrors";
-
-jest.mock("../../parser/loginParser", () => {
-    const testParser = {
-        retrieveLogin: jest.fn(),
-        storeLogin: jest.fn(),
-        storeToken: jest.fn(),
-        parseToken: jest.fn(),
-        deleteToken: jest.fn(),
-        deleteAccount: jest.fn(),
-    };
-    return jest.fn(() => testParser);
-});
+jest.mock("../../parser/loginParser");
 
 describe('Login Functions', () => {
     const testData = {

@@ -1,4 +1,4 @@
-import { GoalParser } from "../parser/goalParser";
+import GoalParser from "../parser/goalParser";
 import { STATUS_CODES } from "../utils/statusCodes";
 import { ErrorCodeInterpreter } from "./errorCodeInterpreter";
 import { Goal } from "../types";
@@ -34,7 +34,7 @@ export class GoalAPI {
         try {
             await this.parser.updateGoal(goalId, name, description, isComplete, dueDate);
             if(completionTime) {
-                await this.parser.updateGoalTimestamps(goalId, completionTime.toISOString(), expiration?.toISOString());
+                await this.parser.updateGoalTimestamps(goalId, completionTime, expiration);
             }
             return STATUS_CODES.OK;
         } catch(error) {

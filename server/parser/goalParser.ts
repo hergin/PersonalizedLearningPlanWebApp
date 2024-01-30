@@ -1,7 +1,7 @@
-import { DatabaseParser } from "./databaseParser";
+import DatabaseParser from "./databaseParser";
 import { Goal } from "../types";
 
-export class GoalParser extends DatabaseParser {
+export default class GoalParser extends DatabaseParser {
     constructor() {
         super();
     }
@@ -42,7 +42,7 @@ export class GoalParser extends DatabaseParser {
         console.log("Goal data updated!");
     }
 
-    async updateGoalTimestamps(goalID : number, completionTime : string, expiration? : string) {
+    async updateGoalTimestamps(goalID : number, completionTime : Date, expiration? : Date) {
         console.log("Inserting timestamp values into Goal...");
         const queryString = `UPDATE GOAL SET completion_time = $1${expiration ? ", expiration = $2" : ""} WHERE goal_id = ${expiration ? "$3" : "$2"}`;
         const query = {

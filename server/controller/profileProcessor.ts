@@ -1,4 +1,4 @@
-import { ProfileParser } from "../parser/profileParser";
+import ProfileParser from "../parser/profileParser";
 import { STATUS_CODES } from "../utils/statusCodes";
 import { ErrorCodeInterpreter } from "./errorCodeInterpreter";
 import { Profile } from "../types";

@@ -3,7 +3,7 @@ require('dotenv').config({
     path: path.join(__dirname, ".env")
 });
 import bcrypt from "bcryptjs";
-import { LoginParser } from "../parser/loginParser";
+import LoginParser from "../parser/loginParser";
 import { STATUS_CODES } from "../utils/statusCodes";
 import { ErrorCodeInterpreter } from "./errorCodeInterpreter";
 

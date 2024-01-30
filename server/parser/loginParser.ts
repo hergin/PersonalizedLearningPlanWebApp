@@ -1,6 +1,6 @@
-import { DatabaseParser } from "./databaseParser";
+import DatabaseParser from "./databaseParser";
 
-export class LoginParser extends DatabaseParser {
+export default class LoginParser extends DatabaseParser {
     constructor() {
         super();
     }

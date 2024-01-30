@@ -1,6 +1,7 @@
 export {};
 
-const GoalParser = require('../../parser/goalParser');
+import GoalParser from '../../parser/goalParser';
+import { GoalType } from '../../types';
 
 const TEST_DATA = {
     email: "testdummy@yahoo.com",
@@ -17,7 +18,7 @@ const TEST_DATA = {
     altGoalDescription: "Complete my homework today."
 }
 
-const goalTypes : string[] = ["todo", "daily"];
+const goalTypes : GoalType[] = ["todo", "daily"];
 
 describe('goal parser tests', () => {
     var parser = new GoalParser();

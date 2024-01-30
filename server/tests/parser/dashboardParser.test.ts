@@ -1,6 +1,6 @@
 export {};
 
-import { DashboardParser } from '../../parser/dashboardParser';
+import DashboardParser from '../../parser/dashboardParser';
 
 const TEST_DATA = {
     email: "testdummy@yahoo.com",

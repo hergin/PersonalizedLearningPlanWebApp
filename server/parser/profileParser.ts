@@ -1,9 +1,7 @@
-export { ProfileParser };
-
-import { DatabaseParser }  from './databaseParser';
+import DatabaseParser  from './databaseParser';
 import { Profile } from "../types";
 
-class ProfileParser extends DatabaseParser {
+export default class ProfileParser extends DatabaseParser {
     constructor() {
         super();
     }
