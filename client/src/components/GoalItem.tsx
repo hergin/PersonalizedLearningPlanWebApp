@@ -5,10 +5,12 @@ import GoalEditor from "./GoalEditor";
 import { GoalStepperProps, Goal } from "../types";
 import { ApiClient } from "../hooks/ApiClient";
 import { SubGoalsCollapsable } from "./SubGoalsCollapsable";
+import { useCollapse } from "react-collapsed";
+import { Checkbox } from "@mui/material";
 
 export default function GoalStepper() {
   const { put } = ApiClient();
-  const [isExpanded, setIsExpanded] = useState(false);
+  const { getCollapseProps, getToggleProps, isExpanded } = useCollapse();
 
   async function updateDatabase(goal: Goal) {
     try {
@@ -44,15 +46,14 @@ export default function GoalStepper() {
           <p className="text-black">0/1</p>
         </div>
         <div className="flex flex-col transition-transform w-[15%] h-full justify-center p-3 items-center">
-          <button
-            onClick={() => setIsExpanded(!isExpanded)}
-            className="text-black"
-          >
-            +
+          <button {...getToggleProps()} className="text-black">
+            {isExpanded ? "-" : "+"}
           </button>
         </div>
       </div>
-      <SubGoalsCollapsable isExpanded={isExpanded} goalId={1} />1
+     <SubGoalsCollapsable   getCollapseProps={getCollapseProps}  />
     </>
   );
 }
+    
+  
