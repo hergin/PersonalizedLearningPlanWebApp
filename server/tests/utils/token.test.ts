@@ -1,12 +1,12 @@
 export {};
 
-const path = require("path");
+import path from "path";
 require("dotenv").config({
     path: path.join("../../utils/", ".env"),
 });
-const tokenMethods = require('../../utils/token');
-const jwt = require("jsonwebtoken");
-const STATUS_CODES = require("../../utils/statusCodes");
+import { authenticateToken, generateAccessToken, generateRefreshToken } from '../../utils/token';
+import jwt from "jsonwebtoken";
+import { STATUS_CODES } from "../../utils/statusCodes";
 
 
 describe('authenticate token tests', () => {
@@ -29,7 +29,7 @@ describe('authenticate token tests', () => {
         const mockResponse = {
             sendStatus: sendStatus
         };
-        tokenMethods.authenticateToken(mockRequest, mockResponse, next);
+        authenticateToken(mockRequest, mockResponse, next);
         expect(next).toHaveBeenCalledTimes(1);
         expect(sendStatus).toHaveBeenCalledTimes(0);
     });
@@ -43,7 +43,7 @@ describe('authenticate token tests', () => {
         const mockResponse = {
             sendStatus: sendStatus
         };
-        tokenMethods.authenticateToken(mockRequest, mockResponse, next);
+        authenticateToken(mockRequest, mockResponse, next);
         expect(sendStatus).toHaveBeenCalledTimes(1);
         expect(sendStatus).toHaveBeenCalledWith(STATUS_CODES.UNAUTHORIZED);
     });
@@ -63,7 +63,7 @@ describe('authenticate token tests', () => {
         const mockResponse = {
             sendStatus: sendStatus
         };
-        tokenMethods.authenticateToken(mockRequest, mockResponse, next);
+        authenticateToken(mockRequest, mockResponse, next);
         expect(sendStatus).toHaveBeenCalledTimes(1);
         expect(sendStatus).toHaveBeenCalledWith(STATUS_CODES.FORBIDDEN);
         expect(next).toHaveBeenCalledTimes(0);
@@ -74,7 +74,7 @@ describe('authenticate token tests', () => {
         sign.mockImplementation((data: any, accessTokenSecret : any, options : any) => {
             return `${data.email}${accessTokenSecret}${options.expiresIn}`;
         });
-        const result = tokenMethods.generateAccessToken("example@gmail.com");
+        const result = generateAccessToken("example@gmail.com");
         expect(sign).toHaveBeenCalledTimes(1);
         expect(sign).toHaveBeenCalledWith({email: "example@gmail.com"}, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '24h'});
         expect(result).toEqual(`example@gmail.com${process.env.ACCESS_TOKEN_SECRET}24h`);
@@ -85,7 +85,7 @@ describe('authenticate token tests', () => {
         sign.mockImplementation((data: any, refreshTokenSecret : any) => {
             return `${data.email}${refreshTokenSecret}`;
         });
-        const result = tokenMethods.generateRefreshToken("example@gmail.com");
+        const result = generateRefreshToken("example@gmail.com");
         expect(sign).toHaveBeenCalledTimes(1);
         expect(sign).toHaveBeenCalledWith({email: "example@gmail.com"}, process.env.REFRESH_TOKEN_SECRET);
         expect(result).toEqual(`example@gmail.com${process.env.REFRESH_TOKEN_SECRET}`);

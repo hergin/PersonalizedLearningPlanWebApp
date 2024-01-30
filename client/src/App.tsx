@@ -10,7 +10,7 @@ import LoginScreen from "./screens/Login";
 import Register from "./screens/Register";
 import DefaultScreen from "./screens/DefaultContainer";
 import Goals from "./screens/Goals";
-import ProfileScreen from "./screens/profile/Profile";
+import ProfileScreen from "./screens/Profile";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { AuthProvider } from "./context/AuthContext";
 

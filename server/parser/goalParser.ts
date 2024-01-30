@@ -1,10 +1,7 @@
+import DatabaseParser from "./databaseParser";
 import { Goal } from "../types";
 
-export {};
-
-const DatabaseParser = require("./databaseParser");
-
-class GoalParser extends DatabaseParser {
+export default class GoalParser extends DatabaseParser {
     constructor() {
         super();
     }
@@ -45,7 +42,7 @@ class GoalParser extends DatabaseParser {
         console.log("Goal data updated!");
     }
 
-    async updateGoalTimestamps(goalID : number, completionTime : string, expiration? : string) {
+    async updateGoalTimestamps(goalID : number, completionTime : Date, expiration? : Date) {
         console.log("Inserting timestamp values into Goal...");
         const queryString = `UPDATE GOAL SET completion_time = $1${expiration ? ", expiration = $2" : ""} WHERE goal_id = ${expiration ? "$3" : "$2"}`;
         const query = {
@@ -66,10 +63,10 @@ class GoalParser extends DatabaseParser {
         console.log("Goal successfully deleted!");
     }
 
-    async getModuleID(goalID : number) {
-        console.log("Getting goal...");
+    async parseGoalVariable(goalID : number, variable : string) {
+        console.log(`Getting goal variable ${variable}...`);
         const query = {
-            text: "SELECT module_id FROM get_goal($1)",
+            text: `SELECT ${variable} FROM get_goal($1)`,
             values: [goalID]
         };
         return this.parseDatabase(query);
@@ -101,5 +98,3 @@ class GoalParser extends DatabaseParser {
         return this.parseDatabase(query);
     }
 }
-
-module.exports = GoalParser;

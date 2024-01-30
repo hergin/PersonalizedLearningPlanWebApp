@@ -1,12 +1,10 @@
-export {};
+import ModuleParser from "../parser/moduleParser";
+import { STATUS_CODES } from "../utils/statusCodes";
+import { ErrorCodeInterpreter } from "./errorCodeInterpreter";
 
-const ModuleParser = require("../parser/moduleParser");
-const STATUS_CODES = require("../utils/statusCodes");
-const ErrorCodeInterpreter = require("./errorCodeInterpreter");
-
-class ModuleAPI {
-    parser : typeof ModuleParser;
-    errorCodeInterpreter : typeof ErrorCodeInterpreter;
+export class ModuleAPI {
+    parser : ModuleParser;
+    errorCodeInterpreter : ErrorCodeInterpreter;
 
     constructor() {
         this.parser = new ModuleParser();
@@ -49,6 +47,13 @@ class ModuleAPI {
             return this.errorCodeInterpreter.getStatusCode(error);
         }
     }
-}
 
-module.exports = ModuleAPI;
+    async getModuleVariable(moduleID: number, variableName : string) {
+        try {
+            const result = await this.parser.getModuleVariable(moduleID, variableName);
+            return result;
+        } catch(error) {
+            return this.errorCodeInterpreter.getStatusCode(error);
+        }
+    }
+}

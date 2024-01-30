@@ -3,9 +3,12 @@ import { useModuleData } from "../context/ModuleContext";
 import { Module } from "../types";
 import CreationModal from "./CreationModal";
 import ModuleItem from "./ModuleItem";
+import {useModules} from "../hooks/useModules";
+import { useMutation } from "@tanstack/react-query";
 
 const ModuleComponent = () => {
-  const { modules, setModules } = useModuleData();
+  const { data: modules, isLoading, isError } = useModules();
+  console.log(modules);
   const [open, setOpen] = useState(false);
 
   function openModal(){
@@ -15,8 +18,15 @@ const ModuleComponent = () => {
   function closeModal(){
     setOpen(false)
   }
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
-  function addModule(module: Module) {
+  if (isError) {
+    return <div>Error</div>;
+  }
+
+/*   function addModule(module: Module) {
     if (modules.includes(module)) {
       return;
     }
@@ -43,16 +53,16 @@ const ModuleComponent = () => {
   const deleteModule = (id: number) => {
     const newModules = modules.filter((module: Module) => module.id !== id);
     setModules(newModules);
-  };
+  }; */
 
   return (
       <div className="flex flex-wrap w-full h-full justify-start gap-[5%]">
-        {modules.map((module: Module) => (
+        {modules?.map((module: any) => (
           <ModuleItem
-            key={`ID-${module.id}`}
+            key={module.module_id}
             module={module}
-            editModule={editModule}
-            deleteModule={deleteModule}
+            editModule={() => console.log("edit")}
+            deleteModule={() => console.log("delete")}
           />
         ))}
         <div className="flex flex-col transition-transform rounded border border-solid border-black w-[300px] h-[500px] duration-300 shadow-md hover:scale-110 hover:shadow-lg">
@@ -63,9 +73,9 @@ const ModuleComponent = () => {
           >
             <h1>+</h1>
           </button>
-          <CreationModal addModule={addModule} modalTitle="Create a new module" open={open} closeModal={closeModal}/>
+          <CreationModal addModule={() => console.log("add")} modalTitle="Create a new module" open={open} closeModal={closeModal}/>
         </div>
-      </div>
+    </div>
 
   );
 };

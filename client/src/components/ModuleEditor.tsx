@@ -50,10 +50,10 @@ const  ModuleEditorButton = ({editObject, dataName, dataDescription, id, moduleC
         email: user.email,
       });
       editObject({
-        name: dataNameLocal,
+        module_name: dataNameLocal,
         description: dataDescriptionLocal,
-        id: id,
-        completion: moduleCompletion
+        module_id: id,
+        completion_percent: moduleCompletion
       });
       handleCloseModal();
     } catch (error : any) {
