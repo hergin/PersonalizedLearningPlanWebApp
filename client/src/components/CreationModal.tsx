@@ -28,6 +28,7 @@ function CreationModal({ addModule, modalTitle, open, closeModal }: ModuleCreato
         description: description,
         completion: 0,
       });
+      closeModal();
     } catch (error: any) {
       console.error(error);
       alert(error.response ? error.response.data : error);
