@@ -9,11 +9,10 @@ interface Query {
     values: (string | number | boolean | Date)[]
 }
 
-export class DatabaseParser {
+export default class DatabaseParser {
     pool : any;
 
     constructor() {
-        console.log("Constructing...");
         this.pool = new pg.Pool({
             host: process.env.POSTGRES_HOST || 'db',
             user: process.env.POSTGRES_USER,
@@ -21,7 +20,6 @@ export class DatabaseParser {
             database: process.env.POSTGRES_DATABASE,
             port: process.env.POSTGRES_PORT ? parseInt(process.env.POSTGRES_PORT) : 0
         });
-        console.log("Constructing complete!");
     }
 
     async updateDatabase(query : Query) {
