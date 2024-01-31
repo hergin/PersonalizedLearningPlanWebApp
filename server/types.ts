@@ -10,11 +10,21 @@ export type Goal = {
 }
 
 export type Profile = {
-    id : number, 
-    username : string, 
-    firstName : string, 
-    lastName : string, 
-    profilePicture : string, 
-    jobTitle : string, 
-    bio : string
+    id: number,
+    username: string,
+    firstName: string,
+    lastName: string,
+    profilePicture: string,
+    jobTitle: string,
+    bio: string
+}
+export type CompleteGoal = {
+    goalID: number,
+    name: string,
+    description: string,
+    isComplete: boolean,
+    goalType: GoalType,
+    moduleId: number,
+    dueDate?: Date,
+    subGoals: any[]
 }

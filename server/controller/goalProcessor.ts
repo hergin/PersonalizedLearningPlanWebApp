@@ -1,7 +1,7 @@
 import GoalParser from "../parser/goalParser";
 import { STATUS_CODES } from "../utils/statusCodes";
 import { ErrorCodeInterpreter } from "./errorCodeInterpreter";
-import { Goal } from "../types";
+import { Goal, CompleteGoal } from "../types";
 
 export class GoalAPI {
     parser: GoalParser;
@@ -14,8 +14,21 @@ export class GoalAPI {
 
     async getGoals(moduleId: number) {
         try {
-            const goals = await this.parser.parseGoals(moduleId);
-            return goals;
+            const parentgoals = await this.parser.parseGoals(moduleId);
+            parentgoals.forEach((goal: CompleteGoal) => {
+                const subgoals = this.getSubGoals(goal.goalID);
+                goal.subGoals.push(subgoals);
+            })
+            return parentgoals;
+        } catch (error) {
+            return this.errorCodeInterpreter.getStatusCode(error);
+        }
+    }
+
+    async getSubGoals(goalID: number) {
+        try {
+            const subGoals = await this.parser.parseSubGoals(goalID);
+            return subGoals;
         } catch (error) {
             return this.errorCodeInterpreter.getStatusCode(error);
         }
