@@ -2,12 +2,16 @@ import React, { useState } from "react";
 import Modal from "@mui/material/Modal";
 import { ApiClient } from "../hooks/ApiClient";
 import { useHotKeys } from "../hooks/useHotKeys";
-import { Button } from "@mui/material";
 import { GoalCreatorProps } from "../types";
 
 function GoalCreator({ moduleID, addGoal }: GoalCreatorProps) {
   const [goalName, setGoalName] = useState("");
   const [description, setDescription] = useState("");
+  const GoalTypes = {
+    TODO: "todo",
+    DAILY: "daily",
+  };
+  const [goalType, setGoalType] = useState(GoalTypes.TODO);
   const [open, setOpen] = useState(false);
   const submitDisabled = goalName === "" || description === "";
   const { post } = ApiClient();
@@ -15,22 +19,16 @@ function GoalCreator({ moduleID, addGoal }: GoalCreatorProps) {
 
   async function handleGoalCreation() {
     try {
-      // TODO: We need a way for the user to pick goal type before this point.
       const response = await post("/goal/add", {
         name: goalName,
         description: description,
-        goal_type: "todo",
-        is_complete: false,
+        goal_type: goalType,
+        isComplete: false,
         module_id: moduleID,
+        dueDate: null,
       });
       console.log(response[0].goal_id);
-      addGoal({
-        id: response[0].goal_id,
-        name: goalName,
-        description: description,
-        isComplete: false,
-        moduleId: moduleID,
-      });
+      console.log("Goal creation is not implemented yet.");
       setOpen(false);
     } catch (error: any) {
       console.error(error);
@@ -40,19 +38,18 @@ function GoalCreator({ moduleID, addGoal }: GoalCreatorProps) {
 
   return (
     <div>
-      <Button
-        variant="contained"
+      <button
+        className="flex flex-row transition-transform rounded  w-full h-[100px] border-2 border-dashed border-[#F4F4F4] justify-center items-center hover:scale-105"
         onClick={() => setOpen(true)}
-        sx={{ mt: 1, mr: 1, fontSize: "1rem" }}
       >
-        Create a new Goal
-      </Button>
+        <h1 className="text-black font-headlineFont text-4xl">Add Goal</h1>
+      </button>
       <Modal
         className="absolute float-left flex items-center justify-center top-2/4 left-2/4 "
         open={open}
         onClose={() => setOpen(false)}
       >
-        <div className="bg-white w-2/5 flex flex-col items-center justify-start border border-black border-solid h-1/3 p-4">
+        <div className="bg-white w-2/4 flex flex-col items-center justify-start border border-black border-solid p-4 gap-5">
           <div className="w-full flex justify-center">
             <h1 className="font-headlineFont text-5xl">Create a new goal</h1>
           </div>
@@ -66,7 +63,9 @@ function GoalCreator({ moduleID, addGoal }: GoalCreatorProps) {
               onChange={(event) => {
                 setGoalName(event.target.value);
               }}
-              onKeyUp={(event) => {handleEnterPress(event, handleGoalCreation, submitDisabled)}}
+              onKeyUp={(event) => {
+                handleEnterPress(event, handleGoalCreation, submitDisabled);
+              }}
               required
             />
             <input
@@ -78,7 +77,9 @@ function GoalCreator({ moduleID, addGoal }: GoalCreatorProps) {
               onChange={(event) => {
                 setDescription(event.target.value);
               }}
-              onKeyUp={(event) => {handleEnterPress(event, handleGoalCreation, submitDisabled)}}
+              onKeyUp={(event) => {
+                handleEnterPress(event, handleGoalCreation, submitDisabled);
+              }}
               required
             />
             <button

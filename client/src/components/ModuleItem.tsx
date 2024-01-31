@@ -11,7 +11,7 @@ interface ModuleProps {
 
 const ModuleItem = ({ module, editModule, deleteModule }: ModuleProps) => {
     return (
-      <div className="flex flex-col transition-transform rounded border border-solid border-black w-[300px] h-[500px] duration-300 shadow-md hover:scale-110 hover:shadow-lg bg-white">
+      <div className="flex flex-col transition-transform rounded border border-solid border-black w-[300px] h-[500px] duration-300 shadow-md hover:scale-105 hover:shadow-lg bg-white">
         <div className="flex">
           <div className="flex items-center justify-between w-full bg-[#8C1515]">
             <div className="h-full w-[14%]"></div>

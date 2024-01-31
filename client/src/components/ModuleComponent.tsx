@@ -55,7 +55,7 @@ const ModuleComponent = () => {
             deleteModule={deleteModule}
           />
         ))}
-        <div className="flex flex-col transition-transform rounded border border-solid border-black w-[300px] h-[500px] duration-300 shadow-md hover:scale-110 hover:shadow-lg">
+        <div className="flex flex-col transition-transform rounded border border-solid border-black w-[300px] h-[500px] duration-300 shadow-md hover:scale-105 hover:shadow-lg">
           {" "}
           <button
             onClick={openModal}

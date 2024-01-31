@@ -12,8 +12,8 @@ export interface Goal {
     id: number,
     name: string,
     description: string,
-    isComplete: boolean,
-    moduleId: number
+    isComplete?: boolean,
+    moduleId?: number
 }
 
 export interface User {

@@ -4,6 +4,7 @@ import GoalStepper from "./GoalItem";
 import { ApiClient } from "../hooks/ApiClient";
 import { Goal, GoalHeaderProps } from "../types";
 import useGoals from "../hooks/useGoals";
+import GoalCreator from "./GoalCreator";
 
 const GoalHeader = ({ moduleID }: any) => {
   const [steps, setSteps] = useState<Goal[]>([]);
@@ -103,11 +104,10 @@ const GoalHeader = ({ moduleID }: any) => {
         <div className="flex overflow-hidden bg-white flex-col absolute h-auto w-3/5 rounded min-h-[80vh] top-1/2 left-[20%] p-[3%] shadow-md">
           console.log(data);
           {data?.map((goal: Goal) => (
-            <GoalStepper key={goal.id} goal={goal} />
+            <GoalStepper key={goal.id} name={goal.name} description={goal.description} id={goal.id} />
           ))}
-          <button className="flex flex-row transition-transform rounded  w-full h-[100px] border-2 border-dashed border-[#F4F4F4] justify-center items-center hover:scale-105">
-            <h1 className="text-black font-headlineFont text-4xl">Add Goal</h1>
-          </button>
+          <GoalCreator moduleID={moduleID} addGoal={() => console.log("Hi")}/>
+
         </div>
       </div>
     </div>
