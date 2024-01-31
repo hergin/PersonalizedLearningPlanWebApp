@@ -9,7 +9,7 @@ const Goals = () => {
   // Probably should come up with a more elegant solution for this later on.
   return (
     <div className="flex flex-col h-screen bg-[#F1F1F1]">
-      <GoalHeader moduleID={id ? parseInt(id) : -1} />
+      <GoalHeader moduleID={id} />
       <h1>{id}</h1>
     </div>
   );

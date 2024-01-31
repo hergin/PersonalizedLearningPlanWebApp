@@ -60,7 +60,7 @@ export interface GoalStepperProps {
 }
 
 export interface GoalHeaderProps {
-  moduleID: number
+  moduleID: string
 }
 
 export interface GoalEditorProps {
