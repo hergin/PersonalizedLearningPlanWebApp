@@ -6,10 +6,10 @@ export function GoalListHeader() {
         <p className="text-[#888888] text-lg font-headlineFont">Goal</p>
       </div>
       <div className="flex flex-col transition-transform w-[15%] h-full justify-center p-3 items-center">
-        <p className="text-[#888888] font-headlineFont">Start Date</p>
+        <p className="text-[#888888] font-headlineFont">Due Date</p>
       </div>
       <div className="flex flex-col transition-transform w-[15%] h-full justify-center p-3 items-center">
-        <p className="text-[#888888] headlineFont">End Date</p>
+        <p className="text-[#888888] headlineFont">Finish Date</p>
       </div>
       <div className="flex flex-col transition-transform w-[15%] h-full justify-center p-3 items-center">
         <p className="text-[#888888] headlineFont">Progress</p>

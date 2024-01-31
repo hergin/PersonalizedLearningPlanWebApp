@@ -3,6 +3,10 @@ import Modal from "@mui/material/Modal";
 import { ApiClient } from "../hooks/ApiClient";
 import { useHotKeys } from "../hooks/useHotKeys";
 import { GoalCreatorProps } from "../types";
+import { DatePicker } from "@mui/x-date-pickers";
+import { Checkbox } from "@mui/material";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
 function GoalCreator({ moduleID, addGoal }: GoalCreatorProps) {
   const [goalName, setGoalName] = useState("");
@@ -12,6 +16,7 @@ function GoalCreator({ moduleID, addGoal }: GoalCreatorProps) {
     DAILY: "daily",
   };
   const [goalType, setGoalType] = useState(GoalTypes.TODO);
+  const [dueDate, setDueDate] = useState<Date | null>(null);
   const [open, setOpen] = useState(false);
   const submitDisabled = goalName === "" || description === "";
   const { post } = ApiClient();
@@ -37,9 +42,10 @@ function GoalCreator({ moduleID, addGoal }: GoalCreatorProps) {
   }
 
   return (
+    <LocalizationProvider dateAdapter={AdapterDayjs}>
     <div>
       <button
-        className="flex flex-row transition-transform rounded  w-full h-[100px] border-2 border-dashed border-[#F4F4F4] justify-center items-center hover:scale-105"
+        className="flex flex-row transition-transform rounded  w-full h-[100px] border-2 border-solid border-black justify-center items-center hover:scale-105"
         onClick={() => setOpen(true)}
       >
         <h1 className="text-black font-headlineFont text-4xl">Add Goal</h1>
@@ -82,6 +88,12 @@ function GoalCreator({ moduleID, addGoal }: GoalCreatorProps) {
               }}
               required
             />
+            <div className="w-full flex justify-center items-center">
+              <p className="text-base font-headlineFont">Daily</p>
+              <Checkbox />
+              <p> Due Date</p>
+              <DatePicker/>
+            </div>
             <button
               onClick={handleGoalCreation}
               disabled={submitDisabled}
@@ -92,7 +104,8 @@ function GoalCreator({ moduleID, addGoal }: GoalCreatorProps) {
           </div>
         </div>
       </Modal>
-    </div>
+      </div>
+    </LocalizationProvider>
   );
 }
 

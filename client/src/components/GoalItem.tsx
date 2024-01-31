@@ -29,9 +29,9 @@ export default function GoalStepper( {name, description, id } : Goal) {
 
 
   return (
-    <>
+    <div>
       <GoalListHeader />
-      <div className="flex flex-row transition-transform rounded  w-full h-[100px] border-2 border-solid border-[#F4F4F4] divide-x">
+      <div className="flex flex-row transition-transform rounded  w-full h-[100px] border-2 border-solid border-black divide-x">
         <div className="flex flex-col w-2/5 h-full justify-center p-3 ">
           <p className="text-black text-lg font-bodyFont">{name}</p>
         </div>
@@ -51,6 +51,6 @@ export default function GoalStepper( {name, description, id } : Goal) {
         </div>
       </div>
       <SubGoalsCollapsable getCollapseProps={getCollapseProps} />
-    </>
+    </div>
   );
 }

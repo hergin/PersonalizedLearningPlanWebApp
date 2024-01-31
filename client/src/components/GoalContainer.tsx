@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Box, CircularProgress, Typography } from "@mui/material";
 import GoalStepper from "./GoalItem";
 import { ApiClient } from "../hooks/ApiClient";
-import { Goal, GoalHeaderProps } from "../types";
+import { Goal } from "../types";
 import useGoals from "../hooks/useGoals";
 import GoalCreator from "./GoalCreator";
 
@@ -10,13 +9,6 @@ const GoalHeader = ({ moduleID }: any) => {
   const [steps, setSteps] = useState<Goal[]>([]);
   const { data, isLoading, error } = useGoals(moduleID);
   console.log(steps.map((step: Goal) => step.name));
-  const [goalProgress, setGoalProgress] = useState(0);
-  const addGoalProgress = () => {
-    if (goalProgress < 100) setGoalProgress(goalProgress + 100 / steps.length);
-  };
-  const restGoalProgress = () => {
-    if (goalProgress > 0) setGoalProgress(goalProgress - 100 / steps.length);
-  };
   const { get } = ApiClient();
 
   // useEffect(() => {
@@ -75,39 +67,17 @@ const GoalHeader = ({ moduleID }: any) => {
   return (
     <div className="relative flex h-screen">
       <div className="flex w-full relative items-center bg-element-base text-text-color h-[300px] pl-[3%]">
-        {/* make component for this */}
-        <Box display="flex" justifyContent="center" alignItems="center">
-          <CircularProgress
-            variant={"determinate"}
-            value={100}
-            size={200}
-            style={{
-              color: "white",
-              outlineColor: "black",
-              position: "absolute",
-            }}
-          />
-          <CircularProgress
-            variant={"determinate"}
-            value={goalProgress}
-            size={200}
-            style={{ color: "#6FC3FF", outlineColor: "black" }}
-          />
-          <Typography
-            position="absolute"
-            sx={{ fontSize: "2rem", fontFamily: "var(--bodyFont)" }}
-          >
-            {Math.floor(goalProgress)}%
-          </Typography>
-        </Box>
-
-        <div className="flex overflow-hidden bg-white flex-col absolute h-auto w-3/5 rounded min-h-[80vh] top-1/2 left-[20%] p-[3%] shadow-md">
-          console.log(data);
+        <div className="flex overflow-hidden bg-white flex-col absolute h-auto w-3/5 rounded min-h-[80vh] top-1/2 left-[20%] p-[3%] shadow-md gap-5">
           {data?.map((goal: Goal) => (
-            <GoalStepper key={goal.id} name={goal.name} description={goal.description} id={goal.id} />
+            <GoalStepper
+              key={goal.id}
+              name={goal.name}
+              description={goal.description}
+              id={goal.id}
+            />
           ))}
-          <GoalCreator moduleID={moduleID} addGoal={() => console.log("Hi")}/>
-
+          
+          <GoalCreator moduleID={moduleID} addGoal={() => console.log("Hi")} />
         </div>
       </div>
     </div>
