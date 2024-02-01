@@ -71,10 +71,10 @@ goalRoutes.post('/add/:id', authenticateToken, async (req: any, res: any) => {
     const goalQuery = await goalAPI.addSubGoal(req.body.parent_goal_id, {
         name: req.body.name,
         description: req.body.description,
-        goalType: req.body.goal_type,
-        isComplete: req.body.is_complete,
-        moduleId: req.body.module_id,
-        dueDate: req.body.due_date
+        goalType: req.body.goalType,
+        isComplete: req.body.isComplete,
+        moduleId: req.body.moduleId,
+        dueDate: req.body.dueDate
     });
     if(typeof goalQuery !== "object") {
         res.status(goalQuery).send(ERROR_MESSAGES.get(goalQuery));
