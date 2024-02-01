@@ -22,9 +22,8 @@ export class GoalAPI {
                     subgoal.push(subgoals);
                     goal.subGoals = subgoal;
                 }
-
-                console.log(goal)
             }
+            console.log(parentgoals);
             return parentgoals;
         } catch (error) {
             return this.errorCodeInterpreter.getStatusCode(error);
