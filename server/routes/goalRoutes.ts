@@ -76,6 +76,11 @@ goalRoutes.post('/add/:id', authenticateToken, async (req: any, res: any) => {
         moduleId: req.body.module_id,
         dueDate: req.body.due_date
     });
-})
+    if(typeof goalQuery !== "object") {
+        res.status(goalQuery).send(ERROR_MESSAGES.get(goalQuery));
+        return;
+    }
+    res.sendStatus(STATUS_CODES.OK).json(goalQuery);
+});
 
 export default goalRoutes;

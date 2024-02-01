@@ -78,7 +78,8 @@ export class GoalAPI {
 
     async addSubGoal(parent_goal_id: number, goal: Goal) {
         try {
-            const result = await this.parser.storeSubGoal(parent_goal_id, goal)
+            const result = await this.parser.storeSubGoal(parent_goal_id, goal);
+            return result;
         } catch (error) {
             return this.errorCodeInterpreter.getStatusCode(error);
         }
