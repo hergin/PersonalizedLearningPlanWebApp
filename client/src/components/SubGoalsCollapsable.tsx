@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import SubGoalCreator from "./SubGoalCreator";
 import Goals from "../screens/Goals";
 import { Goal } from "../types";
+import dayjs from "dayjs";
 
 interface GoalCreatorProps {
   getCollapseProps: any;
@@ -31,7 +32,7 @@ export function SubGoalsCollapsable({
         </div>
         <div className="flex flex-col w-[15%] h-full justify-center p-3 items-center">
           <p className="text-black font-bodyFont">
-            {sub_goal.due_date?.toString()}
+            {sub_goal.due_date ? dayjs(sub_goal.due_date).format("MM/DD/YYYY") : ""}
           </p>
         </div>
         <div className="flex flex-col w-[15%] h-full justify-center p-3 items-center">
@@ -51,7 +52,7 @@ export function SubGoalsCollapsable({
           goalType={sub_goal.goal_type}
           dataName={sub_goal.name}
           dataDescription={sub_goal.description}
-          dueDate={sub_goal.due_date}
+          dueDate={typeof sub_goal.due_date === "string" ? new Date(sub_goal.due_date) : sub_goal.due_date}
         />
       </div>
     </>

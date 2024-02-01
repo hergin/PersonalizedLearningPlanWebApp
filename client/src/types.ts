@@ -10,7 +10,7 @@ export interface Module {
 export interface Goal {
   goal_id: number,
   name: string,
-  due_date?: Date,
+  due_date?: string,
   description: string,
   goal_type: GoalType,
   is_complete: boolean,
