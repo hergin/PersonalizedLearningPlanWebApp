@@ -16,11 +16,9 @@ export class GoalAPI {
         try {
             const parentgoals = await this.parser.parseGoals(moduleId);
             for (const goal of parentgoals) {
-                const subgoals = await this.getSubGoals(goal.goal_id);
-                const subgoal: any[] = [];
-                if (subgoals.length != 0) {
-                    subgoal.push(subgoals);
-                    goal.subGoals = subgoal;
+                const subgoals : Goal[] = await this.getSubGoals(goal.goal_id);
+                if (subgoals?.length !== undefined && subgoals?.length !== 0) {
+                    goal.sub_goals = subgoals;
                 }
             }
             console.log(parentgoals);
