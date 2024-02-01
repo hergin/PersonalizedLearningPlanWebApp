@@ -19,7 +19,7 @@ export type Profile = {
     bio: string
 }
 export type CompleteGoal = {
-    goalID: number,
+    goal_id: number,
     name: string,
     description: string,
     isComplete: boolean,

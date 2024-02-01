@@ -15,10 +15,17 @@ export class GoalAPI {
     async getGoals(moduleId: number) {
         try {
             const parentgoals = await this.parser.parseGoals(moduleId);
+            console.log(parentgoals);
+
             parentgoals.forEach((goal: CompleteGoal) => {
-                const subgoals = this.getSubGoals(goal.goalID);
-                goal.subGoals.push(subgoals);
-            })
+                const subgoals = this.parser.parseSubGoals(goal.goal_id);
+                const subgoal: any[] = [];
+                console.log(subgoals);
+                subgoal.push(subgoals);
+                console.log(subgoal);
+                goal.subGoals = subgoal;
+                console.log(goal)
+            });
             return parentgoals;
         } catch (error) {
             return this.errorCodeInterpreter.getStatusCode(error);
