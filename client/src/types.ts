@@ -9,9 +9,11 @@ export interface Module {
 
 // TODO: We need to add due date as an optional Date and goal type to determine the goal's type.
 export interface Goal {
-    id: number,
-    name: string,
-    description: string,
+    goal_id: number,
+  name: string,
+  due_date?: Date,
+  description: string,
+  goalType: GoalType,
     isComplete?: boolean,
     moduleId?: number
 }
@@ -67,10 +69,8 @@ export interface GoalEditorProps {
   id: number,
   dataName: string,
   dataDescription: string,
-  goalCompletion: boolean,
-  moduleID: number,
-  editObject: (goal: Goal) => void,
-  deleteObject: (id: number) => void
+  dueDate?: Date,
+  goalType: "todo" | "daily",
 }
 
 export interface GoalCreatorProps {

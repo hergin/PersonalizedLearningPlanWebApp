@@ -8,7 +8,7 @@ import GoalCreator from "./GoalCreator";
 const GoalHeader = ({ moduleID }: any) => {
   const [steps, setSteps] = useState<Goal[]>([]);
   const { data, isLoading, error } = useGoals(moduleID);
-  console.log(steps.map((step: Goal) => step.name));
+  console.log(data);
   const { get } = ApiClient();
 
   // useEffect(() => {
@@ -36,33 +36,32 @@ const GoalHeader = ({ moduleID }: any) => {
   //   // eslint-disable-next-line react-hooks/exhaustive-deps
   // }, []);
 
-  const addGoal = (goal: Goal) => {
-    if (steps.includes(goal)) {
-      return;
-    }
-    let newGoals: Goal[] = ([] as Goal[]).concat(steps);
-    newGoals.push(goal);
-    setSteps(newGoals);
-  };
+  // const addGoal = (goal: Goal) => {
+  //   if (steps.includes(goal)) {
+  //     return;
+  //   }
+  //   let newGoals: Goal[] = ([] as Goal[]).concat(steps);
+  //   newGoals.push(goal);
+  //   setSteps(newGoals);
+  // };
 
-  function editGoal(updatedGoal: Goal) {
-    const newGoal = steps.map((goal) => {
-      if (goal.id === updatedGoal.id) {
-        return {
-          ...goal,
-          name: updatedGoal.name,
-          description: updatedGoal.description,
-        };
-      }
-      return goal;
-    });
-    setSteps(newGoal);
-  }
+  // function editGoal(updatedGoal: Goal) {
+  //   const newGoal = steps.map((goal) => {
+  //     if (goal.id === updatedGoal.goal_id) {
+  //       return {
+  //         ...goal,
+  //         name: updatedGoal.name,
+  //       };
+  //     }
+  //     return goal;
+  //   });
+  //   setSteps(newGoal);
+  // }
 
-  const deleteGoal = (id: number) => {
-    const newGoals = steps.filter((goal) => goal.id !== id);
-    setSteps(newGoals);
-  };
+  // const deleteGoal = (id: number) => {
+  //   const newGoals = steps.filter((goal) => goal.id !== id);
+  //   setSteps(newGoals);
+  // };
 
   return (
     <div className="relative flex h-screen">
@@ -70,10 +69,12 @@ const GoalHeader = ({ moduleID }: any) => {
         <div className="flex overflow-hidden bg-white flex-col absolute h-auto w-3/5 rounded min-h-[80vh] top-1/2 left-[20%] p-[3%] shadow-md gap-5">
           {data?.map((goal: Goal) => (
             <GoalStepper
-              key={goal.id}
+              key={goal.goal_id}
               name={goal.name}
               description={goal.description}
-              id={goal.id}
+              due_date={goal.due_date}
+              goal_id={goal.goal_id}
+              goalType={goal.goalType}
             />
           ))}
           
