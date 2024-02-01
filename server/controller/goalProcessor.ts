@@ -19,6 +19,8 @@ export class GoalAPI {
                 const subgoals : Goal[] = await this.getSubGoals(goal.goal_id);
                 if (subgoals?.length !== undefined && subgoals?.length !== 0) {
                     goal.sub_goals = subgoals;
+                } else {
+                    goal.sub_goals = [];
                 }
             }
             console.log(parentgoals);

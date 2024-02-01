@@ -127,7 +127,8 @@ describe('goal processor unit tests', () => {
                 completion: false,
                 goal_type: TEST_DATA.goalType,
                 module_id: TEST_DATA.moduleID,
-                parent_goal: null
+                parent_goal: null,
+                sub_goals: []
             }
         ]);
     });
