@@ -6,6 +6,7 @@ import MenuItem from "@mui/material/MenuItem";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import {
   Button,
+  Checkbox,
   Dialog,
   DialogContent,
   DialogTitle,
@@ -14,15 +15,29 @@ import {
 import { ApiClient } from "../hooks/ApiClient";
 import { useHotKeys } from "../hooks/useHotKeys";
 import { GoalEditorProps } from "../types";
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
-export default function GoalEditor({id, dataName, dataDescription, goalCompletion, moduleID, editObject, deleteObject} : GoalEditorProps) {
+export default function GoalEditor({
+  id,
+  dataName,
+  dataDescription,
+  dueDate,
+  goalType,
+}: GoalEditorProps) {
   const [anchorElGoal, setAnchorElGoal] = React.useState(null);
   const open = Boolean(anchorElGoal);
   const [dataNameLocal, setDataNameLocal] = useState(dataName);
   const [dataDescriptionLocal, setDataDescriptionLocal] =
     useState(dataDescription);
   const [openModal, setOpenModal] = useState(false);
-  const handleClick = (event : any) => {
+  const GoalTypes = {
+    TODO: "todo",
+    DAILY: "daily",
+  };
+  const [goalTypeNew, setGoalType] = useState(goalType);
+  const [dueDateNew, setDueDateNew] = useState<Date | null>(null);
+  const handleClick = (event: any) => {
     setAnchorElGoal(event.currentTarget);
   };
   const handleOpenModal = () => {
@@ -41,22 +56,19 @@ export default function GoalEditor({id, dataName, dataDescription, goalCompletio
   const { handleEnterPress } = useHotKeys();
 
   async function handleGoalEdit() {
+    console.log(`ID in handleGoalEdit: ${id}`);
+    console.log(dueDateNew + "dueDateNew");
     try {
       console.log(`ID in handleGoalEdit: ${id}`);
       await put(`/goal/update/${id}`, {
         name: dataNameLocal,
         description: dataDescriptionLocal,
-        is_complete: goalCompletion,
-      });
-      editObject({
-        id: id,
-        name: dataNameLocal,
-        description: dataDescriptionLocal,
-        isComplete: goalCompletion,
-        moduleId: moduleID
+        is_complete: false,
+        due_date: dueDateNew,
+        goalType: goalTypeNew,
       });
       handleCloseModal();
-    } catch (error : any) {
+    } catch (error: any) {
       console.error(error);
       alert(error.response ? error.response.data : error);
     }
@@ -66,9 +78,8 @@ export default function GoalEditor({id, dataName, dataDescription, goalCompletio
     try {
       const result = await del(`/goal/delete/${id}`);
       console.log(result);
-      deleteObject(id);
       handleClose();
-    } catch (error : any) {
+    } catch (error: any) {
       console.error(error);
       alert(error.message ? error.message : error);
     }
@@ -102,28 +113,47 @@ export default function GoalEditor({id, dataName, dataDescription, goalCompletio
           Delete
         </MenuItem>
       </Menu>
-      <Dialog open={openModal} onClose={handleCloseModal}>
-        <DialogTitle>Edit Object</DialogTitle>
-        <DialogContent>
-          <TextField
-            value={dataNameLocal}
-            onChange={(e) => setDataNameLocal(e.target.value)}
-            onKeyDown={(event) => {handleEnterPress(event, handleGoalEdit)}}
-            fullWidth
-            margin="normal"
-          />
-          <TextField
-            value={dataDescriptionLocal}
-            onChange={(e) => setDataDescriptionLocal(e.target.value)}
-            onKeyDown={(event) => {handleEnterPress(event, handleGoalEdit)}}
-            fullWidth
-            margin="normal"
-          />
-          <Button variant="contained" onClick={handleGoalEdit}>
-            Save Changes
-          </Button>
-        </DialogContent>
-      </Dialog>
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <Dialog open={openModal} onClose={handleCloseModal}>
+          <DialogTitle>Edit Object</DialogTitle>
+          <DialogContent>
+            <TextField
+              value={dataNameLocal}
+              onChange={(e) => setDataNameLocal(e.target.value)}
+              onKeyDown={(event) => {
+                handleEnterPress(event, handleGoalEdit);
+              }}
+              fullWidth
+              margin="normal"
+            />
+            <TextField
+              value={dataDescriptionLocal}
+              onChange={(e) => setDataDescriptionLocal(e.target.value)}
+              onKeyDown={(event) => {
+                handleEnterPress(event, handleGoalEdit);
+              }}
+              fullWidth
+              margin="normal"
+            />
+            <div className="w-full flex justify-between items-center px-20 ">
+              <div className="flex flex-row justify-center items-center">
+                <p className="font-headlineFont text-xl">Daily</p>
+                <Checkbox
+                  onChange={(event) => console.log(event.target.checked)}
+                />
+              </div>
+              <DatePicker
+                label="Due Date"
+                value={dueDateNew}
+                onChange={(newDueDate) => setDueDateNew(newDueDate)}
+              />
+            </div>
+            <Button variant="contained" onClick={handleGoalEdit}>
+              Save Changes
+            </Button>
+          </DialogContent>
+        </Dialog>
+      </LocalizationProvider>
     </>
   );
 }

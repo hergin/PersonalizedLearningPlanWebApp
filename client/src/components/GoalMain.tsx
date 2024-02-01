@@ -9,7 +9,7 @@ const GoalParentContainer = () => {
   return (
     <div className="relative flex h-screen">
       <Goals id={id} >
-        <GoalItem />
+        <GoalItem id={id} />
       </Goals>
     </div>
   );
