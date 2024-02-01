@@ -59,7 +59,7 @@ const Register = () => {
     map.set(/^(?=.*\d).+$/, "1 number.");
     map.set(/^(?=.*[a-z]).+$/, "1 lowercase letter.");
     map.set(/^(?=.*[A-Z]).+$/, "1 uppercase letter.");
-    map.set(/^\w{8,}$/, "Must be 8 characters long.");
+    map.set(/^.{8,}$/, "Must be 8 characters long.");
     return map;
   }
 
