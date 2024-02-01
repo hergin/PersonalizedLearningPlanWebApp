@@ -14,7 +14,7 @@ export class ModuleAPI {
     async getModules(email : string) {
         try {
             const modules = await this.parser.parseModules(email);
-            console.log(`Parsed modules: \n${modules}`);
+            console.log(`Parsed modules: \n${JSON.stringify(modules)}`);
             return modules;
         } catch(error) {
             return this.errorCodeInterpreter.getStatusCode(error);
