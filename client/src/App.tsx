@@ -9,11 +9,10 @@ import LearningPlan from "./screens/LearningPlan";
 import LoginScreen from "./screens/Login";
 import Register from "./screens/Register";
 import DefaultScreen from "./screens/DefaultContainer";
-import ProfileScreen from "./screens/profile/Profile";
+import Goals from "./screens/Goals";
+import ProfileScreen from "./screens/Profile";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { AuthProvider } from "./context/AuthContext";
-import  GoalItem  from "./components/GoalItem";
-import Goals from "./screens/Goals";
 import GoalParentContainer from "./components/GoalMain";
 
 const queryClient = new QueryClient()

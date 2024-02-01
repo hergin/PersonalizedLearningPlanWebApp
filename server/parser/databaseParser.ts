@@ -1,21 +1,18 @@
-export {};
-
-const pg = require("pg");
-const path = require("path");
+import pg from "pg";
+import path from "path";
 require('dotenv').config({
     path: path.join(__dirname, ".env")
 });
 
 interface Query {
     text: string,
-    values: (string | number | boolean)[]
+    values: (string | number | boolean | Date)[]
 }
 
-class DatabaseParser {
+export default class DatabaseParser {
     pool : any;
 
     constructor() {
-        console.log("Constructing...");
         this.pool = new pg.Pool({
             host: process.env.POSTGRES_HOST || 'db',
             user: process.env.POSTGRES_USER,
@@ -23,7 +20,6 @@ class DatabaseParser {
             database: process.env.POSTGRES_DATABASE,
             port: process.env.POSTGRES_PORT ? parseInt(process.env.POSTGRES_PORT) : 0
         });
-        console.log("Constructing complete!");
     }
 
     async updateDatabase(query : Query) {
@@ -35,5 +31,3 @@ class DatabaseParser {
         return result.rows;
     }
 }
-
-module.exports = DatabaseParser;

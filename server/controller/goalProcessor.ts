@@ -1,25 +1,38 @@
-import { Goal } from "../types";
+import GoalParser from "../parser/goalParser";
+import { STATUS_CODES } from "../utils/statusCodes";
+import { ErrorCodeInterpreter } from "./errorCodeInterpreter";
+import { Goal, CompleteGoal } from "../types";
 
-export {};
+export class GoalAPI {
+    parser: GoalParser;
+    errorCodeInterpreter: ErrorCodeInterpreter;
 
-const GoalParser = require("../parser/goalParser");
-const STATUS_CODES = require("../utils/statusCodes");
-const ErrorCodeInterpreter = require("./errorCodeInterpreter");
-
-class GoalAPI {
-    parser : typeof GoalParser;
-    errorCodeInterpreter : typeof ErrorCodeInterpreter;
-    
     constructor() {
         this.parser = new GoalParser();
         this.errorCodeInterpreter = new ErrorCodeInterpreter();
     }
 
-    async getGoals(moduleId : number) {
+    async getGoals(moduleId: number) {
         try {
-            const goals = await this.parser.parseGoals(moduleId);
-            return goals;
-        } catch(error) {
+            const parentgoals = await this.parser.parseGoals(moduleId);
+            for (const goal of parentgoals) {
+                const subgoals : Goal[] = await this.getSubGoals(goal.goal_id);
+                if (subgoals?.length !== undefined && subgoals?.length !== 0) {
+                    goal.sub_goals = subgoals;
+                }
+            }
+            console.log(parentgoals);
+            return parentgoals;
+        } catch (error) {
+            return this.errorCodeInterpreter.getStatusCode(error);
+        }
+    }
+
+    async getSubGoals(goalID: number) {
+        try {
+            const subGoals = await this.parser.parseSubGoals(goalID);
+            return subGoals;
+        } catch (error) {
             return this.errorCodeInterpreter.getStatusCode(error);
         }
     }
@@ -28,39 +41,47 @@ class GoalAPI {
         try {
             const results = await this.parser.storeGoal(goal);
             return results;
-        } catch(error) {
+        } catch (error) {
             return this.errorCodeInterpreter.getStatusCode(error);
         }
     }
 
-    async updateGoal(goalId : number, name : string, description : string, isComplete : boolean, dueDate? : Date, completionTime? : Date, expiration? : Date) {
+    async updateGoal(goalId: number, name: string, description: string, isComplete: boolean, dueDate?: Date, completionTime?: Date, expiration?: Date) {
         try {
             await this.parser.updateGoal(goalId, name, description, isComplete, dueDate);
-            if(completionTime) {
+            if (completionTime) {
                 await this.parser.updateGoalTimestamps(goalId, completionTime, expiration);
             }
             return STATUS_CODES.OK;
-        } catch(error) {
+        } catch (error) {
             return this.errorCodeInterpreter.getStatusCode(error);
         }
     }
 
-    async deleteGoal(goalId : number) {
+    async deleteGoal(goalId: number) {
         try {
             await this.parser.deleteGoal(goalId);
             return STATUS_CODES.OK;
-        } catch(error) {
+        } catch (error) {
             return this.errorCodeInterpreter.getStatusCode(error);
         }
     }
 
-    async addSubGoal(parent_goal_id : number, name: string, description : string, is_complete : boolean) {
+    async getGoalVariable(goalId: number, variable: string) {
         try {
-            const parentGoal = await this.parser.getGoal(parent_goal_id);
-        } catch(error) {
+            const result = await this.parser.parseGoalVariable(goalId, variable);
+            return result;
+        } catch (error) {
+            return this.errorCodeInterpreter.getStatusCode(error);
+        }
+    }
+
+    async addSubGoal(parent_goal_id: number, goal: Goal) {
+        try {
+            const result = await this.parser.storeSubGoal(parent_goal_id, goal);
+            return result;
+        } catch (error) {
             return this.errorCodeInterpreter.getStatusCode(error);
         }
     }
 }
-
-module.exports = GoalAPI;

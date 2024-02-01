@@ -1,16 +1,14 @@
-export {};
+import express from 'express';
+import { STATUS_CODES } from '../utils/statusCodes';
+import { initializeErrorMap } from '../utils/errorMessages';
+import { authenticateToken } from '../utils/token';
+import { DashboardAPI } from '../controller/dashboardProcessor';
 
-const express = require('express');
-const STATUS_CODES = require('../utils/statusCodes');
-const initializeErrorMap = require('../utils/errorMessages');
-const tokenMethods = require('../utils/token');
-const DashboardAPI = require('../controller/dashboardProcessor');
-
-const router = express.Router();
+const dashboardRoutes = express.Router();
 const ERROR_MESSAGES = initializeErrorMap();
 const api = new DashboardAPI();
 
-router.get('/get/:id', tokenMethods.authenticateToken, async (req : any, res : any) => {
+dashboardRoutes.get('/get/:id', authenticateToken, async (req : any, res : any) => {
     console.log(`Received in get dashboard: ${req.params.id}`);
     const dashboardQuery = await api.getDashboard(parseInt(req.params.id));
     if(typeof dashboardQuery !== "object") {
@@ -20,7 +18,7 @@ router.get('/get/:id', tokenMethods.authenticateToken, async (req : any, res : a
     res.status(STATUS_CODES.OK).json(dashboardQuery);
 });
 
-router.post('/create', tokenMethods.authenticateToken, async (req : any, res : any) => {
+dashboardRoutes.post('/create', authenticateToken, async (req : any, res : any) => {
     console.log(`Received in create dashboard: ${req.body}`);
     const dashboardQuery = await api.createDashboard(req.body.profile_id);
     if(dashboardQuery !== STATUS_CODES.OK) {
@@ -30,7 +28,7 @@ router.post('/create', tokenMethods.authenticateToken, async (req : any, res : a
     res.sendStatus(STATUS_CODES.OK);
 });
 
-router.delete('/delete/:id', tokenMethods.authenticateToken, async (req : any, res : any) => {
+dashboardRoutes.delete('/delete/:id', authenticateToken, async (req : any, res : any) => {
     console.log(`Received in delete dashboard: ${req.params.id}`);
     const dashboardQuery = await api.deleteDashboard(parseInt(req.params.id));
     if(dashboardQuery !== STATUS_CODES.OK) {
@@ -40,4 +38,4 @@ router.delete('/delete/:id', tokenMethods.authenticateToken, async (req : any, r
     res.sendStatus(STATUS_CODES.OK);
 });
 
-module.exports = router;
+export default dashboardRoutes;

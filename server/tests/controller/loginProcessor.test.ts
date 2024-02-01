@@ -1,21 +1,11 @@
 export {};
 
-const bcrypt = require("bcryptjs");
-const LoginAPI = require("../../controller/loginProcessor");
-const LoginParser = require("../../parser/loginParser");
-const STATUS_CODES = require("../../utils/statusCodes");
-
-jest.mock("../../parser/loginParser", () => {
-    const testParser = {
-        retrieveLogin: jest.fn(),
-        storeLogin: jest.fn(),
-        storeToken: jest.fn(),
-        parseToken: jest.fn(),
-        deleteToken: jest.fn(),
-        deleteAccount: jest.fn(),
-    };
-    return jest.fn(() => testParser);
-});
+import bcrypt from "bcryptjs";
+import { LoginAPI } from "../../controller/loginProcessor";
+import LoginParser from "../../parser/loginParser";
+import { STATUS_CODES } from "../../utils/statusCodes";
+import { FAKE_ERRORS } from "./fakeErrors";
+jest.mock("../../parser/loginParser");
 
 describe('Login Functions', () => {
     const testData = {
@@ -24,7 +14,7 @@ describe('Login Functions', () => {
         refreshToken: "UTDefpAEyREXmgCkK04pL1SXK6jrB2tEc2ZyMbrFs61THq2y3bpRZOCj5RiPoZGa",
     };
     
-    let loginAPI : typeof LoginAPI;
+    let loginAPI : LoginAPI;
     let parser : any;
 
     beforeEach(() => {
@@ -67,26 +57,26 @@ describe('Login Functions', () => {
     it('create account (duplicate case)', async () => {
         jest.spyOn(bcrypt, 'genSalt').mockImplementationOnce((rounds, callback) => callback);
         jest.spyOn(bcrypt, 'hash').mockImplementationOnce((s, salt, callback) => callback);
-        parser.storeLogin.mockRejectedValue({code: '23505'});
+        parser.storeLogin.mockRejectedValue(FAKE_ERRORS.primaryKeyViolation);
         expect(await loginAPI.createAccount(testData.email, testData.password)).toEqual(STATUS_CODES.CONFLICT);
     });
 
     it('create account (connection lost case)', async () => {
         jest.spyOn(bcrypt, 'genSalt').mockImplementationOnce((rounds, callback) => callback);
         jest.spyOn(bcrypt, 'hash').mockImplementationOnce((s, salt, callback) => callback);
-        parser.storeLogin.mockRejectedValue({code: '08000'});
+        parser.storeLogin.mockRejectedValue(FAKE_ERRORS.networkError);
         expect(await loginAPI.createAccount(testData.email, testData.password)).toEqual(STATUS_CODES.CONNECTION_ERROR);
     });
 
     it('create account (bad data case)', async () => {
-        parser.storeLogin.mockRejectedValue({code: '23514'});
+        parser.storeLogin.mockRejectedValue(FAKE_ERRORS.badRequest);
         expect(await loginAPI.createAccount(testData.email, testData.password)).toEqual(STATUS_CODES.BAD_REQUEST);
     });
 
     it('create account (fatal error case)', async () => {
         jest.spyOn(bcrypt, 'genSalt').mockImplementationOnce((rounds, callback) => callback);
         jest.spyOn(bcrypt, 'hash').mockImplementationOnce((s, salt, callback) => callback);
-        parser.storeLogin.mockRejectedValue({code: '11111'});
+        parser.storeLogin.mockRejectedValue(FAKE_ERRORS.fatalServerError);
         expect(await loginAPI.createAccount(testData.email, testData.password)).toEqual(STATUS_CODES.INTERNAL_SERVER_ERROR);
     });
 
@@ -96,17 +86,17 @@ describe('Login Functions', () => {
     });
 
     it('set token (connection lost case)', async () => {
-        parser.storeToken.mockRejectedValue({code: '08000'});
+        parser.storeToken.mockRejectedValue(FAKE_ERRORS.networkError);
         expect(await loginAPI.setToken(testData.email, testData.refreshToken)).toEqual(STATUS_CODES.CONNECTION_ERROR);
     });
 
     it('set token (bad data case)', async () => {
-        parser.storeToken.mockRejectedValue({code: '23514'});
+        parser.storeToken.mockRejectedValue(FAKE_ERRORS.badRequest);
         expect(await loginAPI.setToken(testData.email, testData.refreshToken)).toEqual(STATUS_CODES.BAD_REQUEST);
     });
 
     it('set token (fatal error case)', async () => {
-        parser.storeToken.mockRejectedValue({code: 'aaaaah'});
+        parser.storeToken.mockRejectedValue(FAKE_ERRORS.fatalServerError);
         expect(await loginAPI.setToken(testData.email, testData.refreshToken)).toEqual(STATUS_CODES.INTERNAL_SERVER_ERROR);
     });
 
@@ -126,12 +116,12 @@ describe('Login Functions', () => {
     });
 
     it('verify token (bad data case)', async () => {
-        parser.parseToken.mockRejectedValue({code: '23514'});
+        parser.parseToken.mockRejectedValue(FAKE_ERRORS.badRequest);
         expect(await loginAPI.verifyToken(testData.email, testData.refreshToken)).toEqual(STATUS_CODES.BAD_REQUEST);
     });
 
     it('verify token (fatal error case)', async () => {
-        parser.parseToken.mockRejectedValue({code: 'Im in your walls'});
+        parser.parseToken.mockRejectedValue(FAKE_ERRORS.fatalServerError);
         expect(await loginAPI.verifyLogin(testData.email, testData.refreshToken)).toEqual(STATUS_CODES.INTERNAL_SERVER_ERROR);
     });
 
@@ -141,7 +131,7 @@ describe('Login Functions', () => {
     });
 
     it('logout (error case)', async () => {
-        parser.deleteToken.mockRejectedValue({code: '23514'});
+        parser.deleteToken.mockRejectedValue(FAKE_ERRORS.badRequest);
         expect(await loginAPI.logout(testData.email)).toEqual(STATUS_CODES.BAD_REQUEST);
     });
 
@@ -151,7 +141,7 @@ describe('Login Functions', () => {
     });
 
     it('delete account (error case)', async () => {
-        parser.deleteAccount.mockRejectedValue({code: '23514'});
+        parser.deleteAccount.mockRejectedValue(FAKE_ERRORS.badRequest);
         expect(await loginAPI.delete(testData.email)).toEqual(STATUS_CODES.BAD_REQUEST);
     });
 });

@@ -1,18 +1,15 @@
+import DatabaseParser from "./databaseParser";
 import { Goal } from "../types";
 
-export {};
-
-const DatabaseParser = require("./databaseParser");
-
-class GoalParser extends DatabaseParser {
+export default class GoalParser extends DatabaseParser {
     constructor() {
         super();
     }
 
-    async parseGoals(moduleId : number) {
+    async parseGoals(moduleId: number) {
         console.log("Getting Goals...");
         const query = {
-            text: "SELECT * FROM get_goals($1)",
+            text: "SELECT * FROM get_goals($1) where parent_goal is null",
             values: [moduleId]
         };
         return this.parseDatabase(query);
@@ -22,9 +19,9 @@ class GoalParser extends DatabaseParser {
         console.log("Storing Goal...");
         const query = {
             text: `INSERT INTO GOAL(name, description, goal_type, is_complete, module_id${goal.dueDate ? ", due_date" : ""}) VALUES($1, $2, $3, $4, $5${goal.dueDate ? ", $6" : ""})`,
-            values: goal.dueDate ? 
-            [goal.name, goal.description, goal.goalType, goal.isComplete, goal.moduleId, goal.dueDate] : 
-            [goal.name, goal.description, goal.goalType, goal.isComplete, goal.moduleId]
+            values: goal.dueDate ?
+                [goal.name, goal.description, goal.goalType, goal.isComplete, goal.moduleId, goal.dueDate] :
+                [goal.name, goal.description, goal.goalType, goal.isComplete, goal.moduleId]
         };
         await this.updateDatabase(query);
         console.log("Goal Stored! Now returning id...");
@@ -35,7 +32,7 @@ class GoalParser extends DatabaseParser {
         return this.parseDatabase(idQuery);
     }
 
-    async updateGoal(goalID : number, name : string, description : string, isComplete : boolean, dueDate? : Date) {
+    async updateGoal(goalID: number, name: string, description: string, isComplete: boolean, dueDate?: Date) {
         console.log("Inserting updated data into Goal...");
         const query = {
             text: `UPDATE GOAL SET name = $1, description = $2, is_complete = $3${dueDate ? ", due_date = $5" : ""} WHERE goal_id = $4`,
@@ -45,7 +42,7 @@ class GoalParser extends DatabaseParser {
         console.log("Goal data updated!");
     }
 
-    async updateGoalTimestamps(goalID : number, completionTime : string, expiration? : string) {
+    async updateGoalTimestamps(goalID: number, completionTime: Date, expiration?: Date) {
         console.log("Inserting timestamp values into Goal...");
         const queryString = `UPDATE GOAL SET completion_time = $1${expiration ? ", expiration = $2" : ""} WHERE goal_id = ${expiration ? "$3" : "$2"}`;
         const query = {
@@ -56,32 +53,37 @@ class GoalParser extends DatabaseParser {
         console.log("Timestamps updated!");
     }
 
-    async deleteGoal(goalID : number) {
+    async deleteGoal(goalID: number) {
         console.log("Deleting Goal...");
-        const query = {
+        const query1 = {
+            text: "DELETE FROM Goal WHERE  parent_goal = $1",
+            values: [goalID]
+        };
+        const query2 = {
             text: "DELETE FROM Goal WHERE goal_id = $1",
             values: [goalID]
         };
-        await this.updateDatabase(query);
+        await this.updateDatabase(query1);
+        await this.updateDatabase(query2);
         console.log("Goal successfully deleted!");
     }
 
-    async getModuleID(goalID : number) {
-        console.log("Getting goal...");
+    async parseGoalVariable(goalID: number, variable: string) {
+        console.log(`Getting goal variable ${variable}...`);
         const query = {
-            text: "SELECT module_id FROM get_goal($1)",
+            text: `SELECT ${variable} FROM get_goal($1)`,
             values: [goalID]
         };
         return this.parseDatabase(query);
     }
 
-    async storeSubGoal(parentGoalID : number, goal: Goal) {
+    async storeSubGoal(parentGoalID: number, goal: Goal) {
         console.log("Storing sub goal...");
         const text = `INSERT INTO goal(name, description, goal_type, is_complete, module_id, parent_goal${goal.dueDate ? ", due_date" : ""}) VALUES ($1, $2, $3, $4, $5, $6${goal.dueDate ? ", $7" : ""})`;
         const query = {
             text: text,
-            values: goal.dueDate ? [goal.name, goal.description, goal.goalType, goal.isComplete, goal.moduleId, parentGoalID, goal.dueDate] : 
-            [goal.name, goal.description, goal.goalType, goal.isComplete, goal.moduleId, parentGoalID]
+            values: goal.dueDate ? [goal.name, goal.description, goal.goalType, goal.isComplete, goal.moduleId, parentGoalID, goal.dueDate] :
+                [goal.name, goal.description, goal.goalType, goal.isComplete, goal.moduleId, parentGoalID]
         };
         await this.updateDatabase(query);
         console.log("Sub goal stored! Now returning id...");
@@ -92,7 +94,7 @@ class GoalParser extends DatabaseParser {
         return this.parseDatabase(idQuery);
     }
 
-    async parseSubGoals(goalID : number) {
+    async parseSubGoals(goalID: number) {
         console.log("Getting sub goals...");
         const query = {
             text: "SELECT * FROM GOAL WHERE parent_goal = $1",
@@ -101,5 +103,3 @@ class GoalParser extends DatabaseParser {
         return this.parseDatabase(query);
     }
 }
-
-module.exports = GoalParser;

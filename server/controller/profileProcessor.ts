@@ -1,14 +1,11 @@
+import ProfileParser from "../parser/profileParser";
+import { STATUS_CODES } from "../utils/statusCodes";
+import { ErrorCodeInterpreter } from "./errorCodeInterpreter";
 import { Profile } from "../types";
 
-export {};
-
-const ProfileParser = require("../parser/profileParser");
-const STATUS_CODES = require("../utils/statusCodes");
-const ErrorCodeInterpreter = require("./errorCodeInterpreter");
-
-class ProfileAPI {
-    parser : typeof ProfileParser;
-    errorCodeInterpreter : typeof ErrorCodeInterpreter;
+export class ProfileAPI {
+    parser : ProfileParser;
+    errorCodeInterpreter : ErrorCodeInterpreter;
 
     constructor() {
         this.parser = new ProfileParser();
@@ -52,4 +49,3 @@ class ProfileAPI {
     }
 }
 
-module.exports = ProfileAPI;

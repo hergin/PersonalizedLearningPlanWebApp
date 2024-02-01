@@ -1,12 +1,10 @@
-export {};
+import DashboardParser from "../parser/dashboardParser";
+import { STATUS_CODES } from "../utils/statusCodes";
+import { ErrorCodeInterpreter } from "./errorCodeInterpreter";
 
-const DashboardParser = require("../parser/dashboardParser");
-const STATUS_CODES = require("../utils/statusCodes");
-const ErrorCodeInterpreter = require("./errorCodeInterpreter");
-
-class DashboardAPI {
-    parser : typeof DashboardParser;
-    errorCodeInterpreter : typeof ErrorCodeInterpreter;
+export class DashboardAPI {
+    parser : DashboardParser;
+    errorCodeInterpreter : ErrorCodeInterpreter;
 
     constructor() {
         this.parser = new DashboardParser();
@@ -49,5 +47,3 @@ class DashboardAPI {
         }
     }
 }
-
-module.exports = DashboardAPI;

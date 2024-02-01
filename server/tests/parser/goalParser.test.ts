@@ -1,6 +1,7 @@
 export {};
 
-const GoalParser = require('../../parser/goalParser');
+import GoalParser from '../../parser/goalParser';
+import { GoalType } from '../../types';
 
 const TEST_DATA = {
     email: "testdummy@yahoo.com",
@@ -17,7 +18,7 @@ const TEST_DATA = {
     altGoalDescription: "Complete my homework today."
 }
 
-const goalTypes : string[] = ["todo", "daily"];
+const goalTypes : GoalType[] = ["todo", "daily"];
 
 describe('goal parser tests', () => {
     var parser = new GoalParser();
@@ -137,13 +138,13 @@ describe('goal parser tests', () => {
         ]);
     });
 
-    it('get module id', async () => {
+    it('parse goal variable (module_id case)', async () => {
         await client.query(
             "INSERT INTO GOAL(name, description, goal_type, is_complete, module_id) VALUES ($1, $2, $3, $4, $5)",
             [TEST_DATA.goalName, TEST_DATA.goalDescription, goalTypes[1], TEST_DATA.isComplete, moduleID]
         );
         var goalID = await getGoalID();
-        var result = await parser.getModuleID(goalID);
+        var result = await parser.parseGoalVariable(goalID, "module_id");
         expect(result).toEqual([
             {
                 module_id: moduleID

@@ -1,17 +1,30 @@
 import React, { useState, useEffect, useReducer } from "react";
 import { useNavigate } from "react-router-dom";
-import { useUser } from "../../hooks/useUser";
-import { ApiClient } from "../../hooks/ApiClient";
-import profilePicture from "../../resources/Default_Profile_Picture.jpg";
-import "./profile.css";
-import useProfile from "../../hooks/useProfile";
-import { useHotKeys } from "../../hooks/useHotKeys";
-import { emptyProfile, Profile } from "../../types";
+import { useUser } from "../hooks/useUser";
+import { ApiClient } from "../hooks/ApiClient";
+import profilePicture from "../resources/Default_Profile_Picture.jpg";
+import useProfile from "../hooks/useProfile";
+import { useHotKeys } from "../hooks/useHotKeys";
+import { emptyProfile, Profile } from "../types";
 
 interface ProfileActionProps {
   variable: string,
   input: string | number,
 }
+
+const STYLE = {
+  containerHeight: "h-[50vh]",
+  containerWidth: "w-[30vw]",
+  aboutMeSize: "h-[25vh] w-[28vw]",
+  borderValues: "border-[0.8px] border-solid border-[rgb(219, 219, 219)]",
+  defaultGap: "gap-[5px]",
+  flexColumn: "flex flex-col"
+}
+
+const INFORMATION_CONTAINER_STYLE = `${STYLE.containerHeight} ${STYLE.containerWidth} ${STYLE.borderValues} ${STYLE.flexColumn} justify-around content-normal p-[10px] mx-[40px] mt-[24px] ${STYLE.defaultGap} text-[24px]`;
+const TEXT_ENTRY_STYLE = `flex flex-row ${STYLE.defaultGap} justify-between`;
+const VARIABLE_DISPLAY_STYLE = `flex flex-row ${STYLE.defaultGap} justify-between text-start`;
+const BUTTON_STYLE = `h-[40px] ${STYLE.borderValues} rounded px-[8px] text-[16px] bg-[#8C1515] text-white`
 
 const PROFILE_VARIABLES = {
   username: "username",
@@ -29,7 +42,6 @@ PROFILE_ACTIONS.set(PROFILE_VARIABLES.lastName, (profile : Profile, input : stri
 PROFILE_ACTIONS.set(PROFILE_VARIABLES.profilePicture, (profile: Profile, input : string) => {return {...profile, profilePicture: input}});
 PROFILE_ACTIONS.set(PROFILE_VARIABLES.jobTitle, (profile : Profile, input : string) => {return {...profile, jobTitle: input}});
 PROFILE_ACTIONS.set(PROFILE_VARIABLES.bio, (profile : Profile, input : string) => {return {...profile, bio: input}});
-
 
 function updateProfile(profile : Profile, action : ProfileActionProps): Profile {
   if(typeof action.input === "number") {
@@ -68,7 +80,7 @@ function ProfileScreen() {
       }  
       dispatch({variable: key, input: value});
     }
-  }, [isLoading, error]);
+  }, [profileData, isLoading, error]);
 
   async function saveChanges() {
     try {
@@ -106,9 +118,9 @@ function ProfileScreen() {
     return <div>This is an error</div>
   }
   return (
-    <div className="parent-div bg-[#F1F1F1]">
-      <div className="profile-header">
-        <img src={profilePicture} alt="pfp here" />
+    <div className={`h-[90vh] ${STYLE.flexColumn} justify-center items-center py-[10px] my-[20px] mx-[10px] ${STYLE.defaultGap}`}>
+      <div className={`h-[calc(${STYLE.containerHeight} - 15)] ${STYLE.containerWidth} ${STYLE.borderValues} ${STYLE.flexColumn} items-center m-[10px] py-[25px] px-[10px] ${STYLE.defaultGap}`}>
+        <img src={profilePicture} alt="pfp here" className="h-[10vh] w-[5vw] rounded-full"/>
         {editMode ? (
           <input
             id="username"
@@ -123,14 +135,15 @@ function ProfileScreen() {
             }}
           />
         ) : (
-          <p className="username-display">{profileState.username}</p>
+          <p className="text-[30px] mb-[10px]">{profileState.username}</p>
         )}
       </div>
       {editMode ? (
-        <div className="information-container">
-          <div className="text-entry">
+        <div className={INFORMATION_CONTAINER_STYLE}>
+          <div className={TEXT_ENTRY_STYLE}>
             <label htmlFor="firstName">First name:</label>
             <input
+              className={`${STYLE.borderValues}`}
               id="firstName"
               name="profile"
               type="text"
@@ -143,9 +156,10 @@ function ProfileScreen() {
               }}
             />
           </div>
-          <div className="text-entry">
+          <div className={TEXT_ENTRY_STYLE}>
             <label htmlFor="lastName">Last name:</label>
             <input
+              className={`${STYLE.borderValues}`}
               id="lastName"
               name="profile"
               type="text"
@@ -158,9 +172,10 @@ function ProfileScreen() {
               }}
             />
           </div>
-          <div className="text-entry">
+          <div className={TEXT_ENTRY_STYLE}>
             <label htmlFor="jobTitle">Job title:</label>
             <input
+              className={`${STYLE.borderValues}`}
               id="jobTitle"
               name="profile"
               type="text"
@@ -185,29 +200,38 @@ function ProfileScreen() {
             onChange={(event) => {
               dispatch({variable: PROFILE_VARIABLES.bio, input: event.target.value});
             }}
-            className="bigTextBox"
+            className={`${STYLE.aboutMeSize} px-[8px] text-[16px] ${STYLE.borderValues}`}
           />
         </div>
       ) : (
-        <div className="information-container">
-          <p>First name: {profileState.firstName ? profileState.firstName : ""}</p>
-          <p>Last name: {profileState.lastName ? profileState.lastName : ""}</p>
-          <p>Job title: {profileState.jobTitle ? profileState.jobTitle : ""}</p>
+        <div className={INFORMATION_CONTAINER_STYLE}>
+          <div className={VARIABLE_DISPLAY_STYLE}>
+            <p>First name:</p> 
+            <p>{profileState.firstName ? profileState.firstName : ""}</p>
+          </div>  
+          <div className={VARIABLE_DISPLAY_STYLE}>
+            <p>Last name:</p>
+            <p>{profileState.lastName ? profileState.lastName : ""}</p>
+          </div>
+          <div className={VARIABLE_DISPLAY_STYLE}>
+            <p>Job title:</p> 
+            <p>{profileState.jobTitle ? profileState.jobTitle : ""}</p>
+          </div>
           <p>About Me:</p>
           <br />
-          <div className="about-me">
+          <div className={`${STYLE.aboutMeSize}`}>
             <p>{profileState.bio ? profileState.bio : ""}</p>
           </div>
         </div>
       )}
-      <div className="profile-footer">
+      <div className={`${STYLE.flexColumn} ${STYLE.defaultGap}`}>
         {editMode ? (
-          <button className="button" onClick={saveChanges}>
+          <button className={BUTTON_STYLE} onClick={saveChanges}>
             Confirm
           </button>
         ) : (
           <button
-            className="button"
+            className={BUTTON_STYLE}
             onClick={() => {
               setEditMode(true);
             }}
@@ -215,7 +239,7 @@ function ProfileScreen() {
             Edit Profile
           </button>
         )}
-        <button className="button" onClick={deleteAccount}>
+        <button className={BUTTON_STYLE} onClick={deleteAccount}>
           Delete Account
         </button>
       </div>
