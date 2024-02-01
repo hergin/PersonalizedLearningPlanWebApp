@@ -3,9 +3,7 @@ import GoalCreator from "../components/GoalCreator";
 import { useParams } from "react-router-dom";
 import GoalItem from "../components/GoalItem";
 
-const Goals = (id: any, props: any) => {
-  console.log(id + " is the moduleID");
-  console.log(props.children + " is the children");
+const Goals = ( {children, id}: any) => {
 
   // const addGoal = (goal: Goal) => {
   //   if (steps.includes(goal)) {
@@ -38,7 +36,7 @@ const Goals = (id: any, props: any) => {
   return (
     <div className="flex w-full relative items-center bg-element-base text-text-color h-[300px] pl-[3%]">
       <div className="flex overflow-hidden bg-white flex-col absolute h-auto w-3/5 rounded min-h-[80vh] top-1/2 left-[20%] p-[3%] shadow-md gap-5">
-        <GoalItem/>
+        {children}
         <GoalCreator
           moduleID={id as string}
           addGoal={() => console.log("Hi")}
