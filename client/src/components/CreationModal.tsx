@@ -25,12 +25,6 @@ function CreationModal({ addModule, modalTitle, open, closeModal }: ModuleCreato
       });
       console.log(response.module_id);
       queryClient.invalidateQueries({ queryKey: ['modules'] })
-      addModule({
-        module_id: response.module_id,
-        module_name: moduleName,
-        description: description,
-        completion_percent: 0,
-      });
       closeModal();
     } catch (error: any) {
       console.error(error);

@@ -17,6 +17,7 @@ import { useHotKeys } from "../hooks/useHotKeys";
 import { GoalEditorProps } from "../types";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function GoalEditor({
   id,
@@ -25,6 +26,7 @@ export default function GoalEditor({
   dueDate,
   goalType,
 }: GoalEditorProps) {
+  const queryClient = useQueryClient()
   const [anchorElGoal, setAnchorElGoal] = React.useState(null);
   const open = Boolean(anchorElGoal);
   const [dataNameLocal, setDataNameLocal] = useState(dataName);
@@ -67,6 +69,8 @@ export default function GoalEditor({
         due_date: dueDateNew,
         goalType: goalTypeNew,
       });
+      
+      queryClient.invalidateQueries({ queryKey: ['goals'] })
       handleCloseModal();
     } catch (error: any) {
       console.error(error);
@@ -78,6 +82,7 @@ export default function GoalEditor({
     try {
       const result = await del(`/goal/delete/${id}`);
       console.log(result);
+      queryClient.invalidateQueries({ queryKey: ['goals'] })
       handleClose();
     } catch (error: any) {
       console.error(error);

@@ -15,9 +15,12 @@ import { useUser } from "../hooks/useUser";
 import { ApiClient } from "../hooks/ApiClient";
 import { useHotKeys } from "../hooks/useHotKeys";
 import { LongMenuProps } from "../types";
+import { useQueryClient } from "@tanstack/react-query";
 
 const  ModuleEditorButton = ({editObject, dataName, dataDescription, id, moduleCompletion, deleteObject}: LongMenuProps) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const queryClient = useQueryClient()
+  
   const open = Boolean(anchorEl);
   const [dataNameLocal, setDataNameLocal] = useState(dataName);
   const [dataDescriptionLocal, setDataDescriptionLocal] = useState(dataDescription);
@@ -49,12 +52,7 @@ const  ModuleEditorButton = ({editObject, dataName, dataDescription, id, moduleC
         completion: moduleCompletion,
         email: user.email,
       });
-      editObject({
-        module_name: dataNameLocal,
-        description: dataDescriptionLocal,
-        module_id: id,
-        completion_percent: moduleCompletion
-      });
+      queryClient.invalidateQueries({ queryKey: ['modules'] })
       handleCloseModal();
     } catch (error : any) {
       console.error(error);
@@ -66,7 +64,7 @@ const  ModuleEditorButton = ({editObject, dataName, dataDescription, id, moduleC
     try {
       const result = await del(`/module/delete/${id}`);
       console.log(result);
-      deleteObject(id);
+      queryClient.invalidateQueries({ queryKey: ['modules'] })
       handleClose();
     } catch (error : any) {
       console.error(error);
