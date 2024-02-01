@@ -14,7 +14,7 @@ import {
 } from "@mui/material";
 import { ApiClient } from "../hooks/ApiClient";
 import { useHotKeys } from "../hooks/useHotKeys";
-import { GoalEditorProps } from "../types";
+import { GoalEditorProps, GoalType } from "../types";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { useQueryClient } from "@tanstack/react-query";
@@ -37,7 +37,7 @@ export default function GoalEditor({
     TODO: "todo",
     DAILY: "daily",
   };
-  const [goalTypeNew, setGoalType] = useState(goalType);
+  const [goalTypeNew, setGoalTypeNew] = useState(goalType as string);
   const [dueDateNew, setDueDateNew] = useState<Date | null>(null);
   const handleClick = (event: any) => {
     setAnchorElGoal(event.currentTarget);
@@ -75,6 +75,14 @@ export default function GoalEditor({
     } catch (error: any) {
       console.error(error);
       alert(error.response ? error.response.data : error);
+    }
+  }
+
+  function toggleGoalType(checked: boolean) {
+    if (checked) {
+      setGoalTypeNew(GoalTypes.DAILY);
+    } else {
+      setGoalTypeNew(GoalTypes.TODO);
     }
   }
 
@@ -144,7 +152,8 @@ export default function GoalEditor({
               <div className="flex flex-row justify-center items-center">
                 <p className="font-headlineFont text-xl">Daily</p>
                 <Checkbox
-                  onChange={(event) => console.log(event.target.checked)}
+                  checked={goalTypeNew === "daily"}
+                  onChange={(event) => toggleGoalType(event.target.checked)}
                 />
               </div>
               <DatePicker
@@ -153,9 +162,11 @@ export default function GoalEditor({
                 onChange={(newDueDate) => setDueDateNew(newDueDate)}
               />
             </div>
+            <div className="flex flex-row justify-center items-center pt-10">
             <Button variant="contained" onClick={handleGoalEdit}>
               Save Changes
-            </Button>
+              </Button>
+            </div>
           </DialogContent>
         </Dialog>
       </LocalizationProvider>

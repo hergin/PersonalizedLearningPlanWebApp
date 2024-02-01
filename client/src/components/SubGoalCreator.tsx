@@ -7,14 +7,14 @@ import { Checkbox } from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { useQueryClient } from "@tanstack/react-query";
+import { GoalType } from "../types";
 
 interface GoalCreatorProps {
   moduleID: string;
-  height?: string;  
-  goalID?: string;
+  parent_id?: string;
 }
 
-function GoalCreator({ moduleID, goalID, height }: GoalCreatorProps) {
+function SubGoalCreator({ moduleID, parent_id}: GoalCreatorProps) {
   const [goalName, setGoalName] = useState("");
   const [description, setDescription] = useState("");
   const GoalTypes = {
@@ -31,14 +31,14 @@ function GoalCreator({ moduleID, goalID, height }: GoalCreatorProps) {
 
   async function handleGoalCreation() {
     try {
-      const response = await post("/goal/add", {
+      console.log(parent_id + "parent_id is here");
+      const response = await post(`/goal/add/${parent_id}`, {
         name: goalName,
         description: description,
-        goalType: goalType,
+        goalType: goalType as GoalType,
         isComplete: false,
         moduleId: moduleID,
         dueDate: dueDate,
-        parentGoal: goalID,
       });
       queryClient.invalidateQueries({ queryKey: ['goals'] })
       console.log("Goal creation is not implemented yet.");
@@ -60,10 +60,10 @@ function GoalCreator({ moduleID, goalID, height }: GoalCreatorProps) {
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <div>
         <button
-          className="flex flex-row transition-transform rounded  w-full h-[100px] border-2 border-solid border-black justify-center items-center hover:scale-105"
+          className="flex flex-row transition-transform rounded  w-full h-[50px] border-2 border-solid border-[#F4F4F4] justify-center items-center hover:scale-105"
           onClick={() => setOpen(true)}
         >
-          <h1 className="text-black font-headlineFont text-4xl">Add Goal</h1>
+          <h1 className="text-black font-headlineFont text-lg">Add SubGoal</h1>
         </button>
         <Modal
           className="absolute float-left flex items-center justify-center top-2/4 left-2/4 "
@@ -131,4 +131,4 @@ function GoalCreator({ moduleID, goalID, height }: GoalCreatorProps) {
   );
 }
 
-export default GoalCreator;
+export default SubGoalCreator;

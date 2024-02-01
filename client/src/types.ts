@@ -13,8 +13,9 @@ export interface Goal {
   due_date?: Date,
   description: string,
   goalType: GoalType,
-  isComplete?: boolean,
+  is_complete: boolean,
   moduleId?: number
+  sub_goals?: Goal[]
 }
 
 export interface User {

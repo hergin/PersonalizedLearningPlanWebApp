@@ -39,7 +39,6 @@ const Goals = ( {children, id}: any) => {
         {children}
         <GoalCreator
           moduleID={id as string}
-          addGoal={() => console.log("Hi")}
         />
       </div>
     </div>
