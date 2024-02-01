@@ -5,8 +5,10 @@ export type Goal = {
     description: string,
     isComplete: boolean,
     goalType: GoalType,
-    moduleId: number,
+    moduleId?: number,
     dueDate?: Date,
+    completionTime?: Date,
+    expiration?: Date
 }
 
 export type Profile = {

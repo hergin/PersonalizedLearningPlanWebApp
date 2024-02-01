@@ -1,5 +1,5 @@
 import DatabaseParser from "./databaseParser";
-import { Goal } from "../types";
+import { Goal, GoalType } from "../types";
 
 export default class GoalParser extends DatabaseParser {
     constructor() {
@@ -32,11 +32,11 @@ export default class GoalParser extends DatabaseParser {
         return this.parseDatabase(idQuery);
     }
 
-    async updateGoal(goalID: number, name: string, description: string, isComplete: boolean, dueDate?: Date) {
+    async updateGoal(goalID: number, name: string, description: string, goalType: GoalType, isComplete: boolean, dueDate?: Date) {
         console.log("Inserting updated data into Goal...");
         const query = {
-            text: `UPDATE GOAL SET name = $1, description = $2, is_complete = $3${dueDate ? ", due_date = $5" : ""} WHERE goal_id = $4`,
-            values: dueDate ? [name, description, isComplete, goalID, dueDate] : [name, description, isComplete, goalID]
+            text: `UPDATE GOAL SET name = $1, description = $2, goal_type = $3, is_complete = $4${dueDate ? ", due_date = $6" : ""} WHERE goal_id = $5`,
+            values: dueDate ? [name, description, goalType, isComplete, goalID, dueDate] : [name, description, goalType, isComplete, goalID]
         };
         await this.updateDatabase(query);
         console.log("Goal data updated!");

@@ -38,7 +38,16 @@ goalRoutes.post('/add', authenticateToken, async (req: any, res: any) => {
 
 goalRoutes.put('/update/:id', authenticateToken, async (req: any, res: any) => {
     console.log(`Received in update goal: ${req.params.id}`);
-    const goalQuery = await goalAPI.updateGoal(parseInt(req.params.id), req.body.name, req.body.description, req.body.is_complete, req.body.due_due, req.body.completion_time, req.body.expiration);
+    const goalQuery = await goalAPI.updateGoal(
+        parseInt(req.params.id), {
+            name: req.body.name, 
+            description: req.body.description,
+            goalType: req.body.goalType, 
+            isComplete: req.body.isComplete,
+            dueDate: req.body.due_due, 
+            completionTime: req.body.completion_time, 
+            expiration: req.body.expiration
+    });
     if (typeof goalQuery !== "object") {
         res.status(goalQuery).send(ERROR_MESSAGES.get(goalQuery));
         return;

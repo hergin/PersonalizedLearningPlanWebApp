@@ -48,11 +48,11 @@ export class GoalAPI {
         }
     }
 
-    async updateGoal(goalId: number, name: string, description: string, isComplete: boolean, dueDate?: Date, completionTime?: Date, expiration?: Date) {
+    async updateGoal(goalId: number, goal : Goal) {
         try {
-            await this.parser.updateGoal(goalId, name, description, isComplete, dueDate);
-            if (completionTime) {
-                await this.parser.updateGoalTimestamps(goalId, completionTime, expiration);
+            await this.parser.updateGoal(goalId, goal.name, goal.description, goal.goalType, goal.isComplete, goal.dueDate);
+            if (goal.completionTime) {
+                await this.parser.updateGoalTimestamps(goalId, goal.completionTime, goal.expiration);
             }
             return STATUS_CODES.OK;
         } catch (error) {

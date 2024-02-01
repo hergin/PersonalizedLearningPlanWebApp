@@ -6,7 +6,7 @@ require('dotenv').config({
 
 interface Query {
     text: string,
-    values: (string | number | boolean | Date)[]
+    values: (string | number | boolean | Date | undefined)[]
 }
 
 export default class DatabaseParser {

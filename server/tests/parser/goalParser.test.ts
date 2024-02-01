@@ -158,7 +158,7 @@ describe('goal parser tests', () => {
             [TEST_DATA.goalName, TEST_DATA.goalDescription, goalTypes[0], TEST_DATA.isComplete, moduleID]
         );
         var goalID = await getGoalID();
-        await parser.updateGoal(goalID, TEST_DATA.altGoalName, TEST_DATA.altGoalDescription, false);
+        await parser.updateGoal(goalID, TEST_DATA.altGoalName, TEST_DATA.altGoalDescription, goalTypes[0], false);
         var actual = await client.query(
             "SELECT * FROM get_goal($1)",
             [goalID]
@@ -185,7 +185,7 @@ describe('goal parser tests', () => {
             [TEST_DATA.goalName, TEST_DATA.goalDescription, goalTypes[0], TEST_DATA.isComplete, moduleID]
         );
         var goalID = await getGoalID();
-        await parser.updateGoal(goalID, TEST_DATA.altGoalName, TEST_DATA.altGoalDescription, false, TEST_DATA.dueDate);
+        await parser.updateGoal(goalID, TEST_DATA.altGoalName, TEST_DATA.altGoalDescription, goalTypes[0], false, TEST_DATA.dueDate);
         var actual = await client.query(
             "SELECT * FROM get_goal($1)",
             [goalID]

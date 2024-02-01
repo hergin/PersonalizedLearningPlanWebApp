@@ -193,27 +193,52 @@ describe('goal processor unit tests', () => {
 
     it('update goal (pass case)', async () => {
         parser.updateGoal.mockResolvedValueOnce();
-        expect(await goalAPI.updateGoal(TEST_DATA.goalID, TEST_DATA.firstName, TEST_DATA.firstDescription, TEST_DATA.isComplete)).toEqual(STATUS_CODES.OK);
+        expect(await goalAPI.updateGoal(TEST_DATA.goalID, {
+            name: TEST_DATA.firstName, 
+            description: TEST_DATA.firstDescription, 
+            goalType: TEST_DATA.goalType, 
+            isComplete: TEST_DATA.isComplete
+        })).toEqual(STATUS_CODES.OK);
     });
 
     it('update goal (duplicate case)', async () => {
         parser.updateGoal.mockRejectedValue(FAKE_ERRORS.primaryKeyViolation);
-        expect(await goalAPI.updateGoal(TEST_DATA.goalID, TEST_DATA.firstName, TEST_DATA.firstDescription, TEST_DATA.isComplete)).toEqual(STATUS_CODES.CONFLICT);
+        expect(await goalAPI.updateGoal(TEST_DATA.goalID, {
+            name: TEST_DATA.firstName, 
+            description: TEST_DATA.firstDescription, 
+            goalType: TEST_DATA.goalType, 
+            isComplete: TEST_DATA.isComplete
+        })).toEqual(STATUS_CODES.CONFLICT);
     });
 
     it('update goal (bad data case)', async () => {
         parser.updateGoal.mockRejectedValue(FAKE_ERRORS.badRequest);
-        expect(await goalAPI.updateGoal(TEST_DATA.goalID, TEST_DATA.firstName, TEST_DATA.firstDescription, TEST_DATA.isComplete)).toEqual(STATUS_CODES.BAD_REQUEST);
+        expect(await goalAPI.updateGoal(TEST_DATA.goalID, {
+            name: TEST_DATA.firstName, 
+            description: TEST_DATA.firstDescription, 
+            goalType: TEST_DATA.goalType, 
+            isComplete: TEST_DATA.isComplete
+        })).toEqual(STATUS_CODES.BAD_REQUEST);
     });
 
     it('update goal (connection lost case)', async () => {
         parser.updateGoal.mockRejectedValue(FAKE_ERRORS.networkError);
-        expect(await goalAPI.updateGoal(TEST_DATA.goalID, TEST_DATA.firstName, TEST_DATA.firstDescription, TEST_DATA.isComplete)).toEqual(STATUS_CODES.CONNECTION_ERROR);
+        expect(await goalAPI.updateGoal(TEST_DATA.goalID, {
+            name: TEST_DATA.firstName, 
+            description: TEST_DATA.firstDescription, 
+            goalType: TEST_DATA.goalType, 
+            isComplete: TEST_DATA.isComplete
+        })).toEqual(STATUS_CODES.CONNECTION_ERROR);
     });
 
     it('update goal (fatal error case)', async () => {
         parser.updateGoal.mockRejectedValue(FAKE_ERRORS.fatalServerError);
-        expect(await goalAPI.updateGoal(TEST_DATA.goalID, TEST_DATA.firstName, TEST_DATA.firstDescription, TEST_DATA.isComplete)).toEqual(STATUS_CODES.INTERNAL_SERVER_ERROR);
+        expect(await goalAPI.updateGoal(TEST_DATA.goalID, {
+            name: TEST_DATA.firstName, 
+            description: TEST_DATA.firstDescription, 
+            goalType: TEST_DATA.goalType, 
+            isComplete: TEST_DATA.isComplete
+        })).toEqual(STATUS_CODES.INTERNAL_SERVER_ERROR);
     });
 
     it('delete goal (pass case)', async () => {
