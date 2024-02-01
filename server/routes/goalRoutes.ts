@@ -23,10 +23,10 @@ goalRoutes.post('/add', authenticateToken, async (req: any, res: any) => {
     const goalQuery = await goalAPI.createGoal({
         name: req.body.name,
         description: req.body.description,
-        goalType: req.body.goal_type,
-        isComplete: req.body.is_complete,
-        moduleId: req.body.module_id,
-        dueDate: req.body.due_date
+        goalType: req.body.goalType,
+        isComplete: req.body.isComplete,
+        moduleId: req.body.moduleId,
+        dueDate: req.body.dueDate
     });
     if (typeof goalQuery !== "object") {
         console.log("Something went wrong while creating module.");
