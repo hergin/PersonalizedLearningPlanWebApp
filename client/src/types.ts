@@ -74,7 +74,7 @@ export interface GoalEditorProps {
 }
 
 export interface GoalCreatorProps {
-  moduleID: number;
+  moduleID: string;
   addGoal: (goal: Goal) => void;
 }
 

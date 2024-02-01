@@ -7,25 +7,27 @@ import { ApiClient } from "../hooks/ApiClient";
 import { SubGoalsCollapsable } from "./SubGoalsCollapsable";
 import { useCollapse } from "react-collapsed";
 import { Checkbox } from "@mui/material";
+import useGoals from "../hooks/useGoals";
 
-export default function GoalStepper( {name, description, id } : Goal) {
+export default function GoalItem(id: any) {
   const { put } = ApiClient();
   const { getCollapseProps, getToggleProps, isExpanded } = useCollapse();
+  const { data } = useGoals(id);
 
-  async function updateDatabase(goal: Goal) {
-    try {
-      console.log(`${goal.id}`);
-      await put(`/goal/update/${goal.id}`, {
-        name: goal.name,
-        description: goal.description,
-        is_complete: goal.isComplete,
-        moduleId: goal.moduleId,
-      });
-    } catch (error: any) {
-      console.error(error);
-      alert(error.response ? error.response.data : error);
-    }
-  }
+  // async function updateDatabase(goal: Goal) {
+  //   try {
+  //     console.log(`${goal.id}`);
+  //     await put(`/goal/update/${goal.id}`, {
+  //       name: goal.name,
+  //       description: goal.description,
+  //       is_complete: goal.isComplete,
+  //       moduleId: goal.moduleId,
+  //     });
+  //   } catch (error: any) {
+  //     console.error(error);
+  //     alert(error.response ? error.response.data : error);
+  //   }
+  // }
 
 
   return (
@@ -33,10 +35,10 @@ export default function GoalStepper( {name, description, id } : Goal) {
       <GoalListHeader />
       <div className="flex flex-row transition-transform rounded  w-full h-[100px] border-2 border-solid border-black divide-x">
         <div className="flex flex-col w-2/5 h-full justify-center p-3 ">
-          <p className="text-black text-lg font-bodyFont">{name}</p>
+          <p className="text-black text-lg font-bodyFont"></p>
         </div>
         <div className="flex flex-col transition-transform w-[15%] h-full justify-center p-3 items-center">
-          <p className="text-black font-bodyFont">{description}</p>
+          <p className="text-black font-bodyFont"></p>
         </div>
         <div className="flex flex-col transition-transform w-[15%] h-full justify-center p-3 items-center">
           <p className="text-black">{id}</p>

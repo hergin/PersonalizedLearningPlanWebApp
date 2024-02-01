@@ -9,10 +9,12 @@ import LearningPlan from "./screens/LearningPlan";
 import LoginScreen from "./screens/Login";
 import Register from "./screens/Register";
 import DefaultScreen from "./screens/DefaultContainer";
-import Goals from "./screens/Goals";
 import ProfileScreen from "./screens/profile/Profile";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { AuthProvider } from "./context/AuthContext";
+import  GoalItem  from "./components/GoalItem";
+import Goals from "./screens/Goals";
+import GoalParentContainer from "./components/GoalMain";
 
 const queryClient = new QueryClient()
 
@@ -26,7 +28,7 @@ function App() {
               <Route element={<ProtectedRoute />}>
                 <Route path="/LearningPlan" element={<LearningPlan />} />
                 <Route path="/profile" element={<ProfileScreen />} />
-                <Route path="/goals/:id" element={<Goals />} />
+                <Route path="/goals/:id" element={<GoalParentContainer/>} />
               </Route>
               <Route path="/login" element={<LoginScreen />} />
               <Route path="/register" element={<Register />} />
