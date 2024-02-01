@@ -15,7 +15,6 @@ moduleRoutes.get('/get/:id', authenticateToken, async(req : any, res : any) => {
         res.status(moduleQuery).send(ERROR_MESSAGES.get(moduleQuery));
         return;
     }
-    console.log(`Result: ${moduleQuery}`);
     res.status(STATUS_CODES.OK).json(moduleQuery);
 });
 
