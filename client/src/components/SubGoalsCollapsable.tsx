@@ -1,6 +1,6 @@
 import { Checkbox } from "@mui/material";
 import GoalEditor from "./GoalEditor";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import SubGoalCreator from "./SubGoalCreator";
 import Goals from "../screens/Goals";
 import { Goal } from "../types";
@@ -8,7 +8,7 @@ import { Goal } from "../types";
 interface GoalCreatorProps {
   getCollapseProps: any;
   sub_goal: Goal;
-  updateGoal: (goal: Goal) => void;
+  updateGoal: (goal: Goal, checked: boolean) => void;
 }
 export function SubGoalsCollapsable({
   getCollapseProps,
@@ -16,10 +16,23 @@ export function SubGoalsCollapsable({
   updateGoal,
 }: GoalCreatorProps) {
   const [isComplete, setIsComplete] = useState(sub_goal.is_complete);
+  const [progress, setProgress] = useState(0);
   function handleToggle(checked: boolean) {
     setIsComplete(checked);
-    updateGoal(sub_goal);
+    updateGoal(sub_goal, checked);
   }
+  useEffect(() => {
+    // action on update of movies
+    if (isComplete) {
+      console.log(isComplete);
+      setProgress(1);
+      console.log(progress + "Is this");
+    } else {
+      console.log(isComplete);
+      setProgress(0);
+      console.log(progress + "Is this");
+    }
+  }, [isComplete, progress]);
   return (
     <>
       <div
@@ -38,13 +51,13 @@ export function SubGoalsCollapsable({
           <p className="text-black">-</p>
         </div>
         <div className="flex flex-col w-[15%] h-full justify-center p-3 items-center">
-          <p className="text-black">0/1</p>
+          <p className="text-black">{progress + "/ 1"}</p>
         </div>
         <div className="flex flex-col w-[15%] h-full justify-center p-3 items-center">
-        <Checkbox
-                checked={isComplete}
-                onChange={(checked) => handleToggle(checked.target.checked)}
-              />
+          <Checkbox
+            checked={isComplete}
+            onChange={(checked) => handleToggle(checked.target.checked)}
+          />
         </div>
         <GoalEditor
           id={sub_goal.goal_id}

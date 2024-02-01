@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import GoalEditor from "./GoalEditor";
 import { Goal } from "../types";
 import { SubGoalsCollapsable } from "./SubGoalsCollapsable";
@@ -17,25 +17,38 @@ interface GoalItemProps {
 export default function GoalItem({ id, goal }: GoalItemProps) {
   const { getCollapseProps, getToggleProps, isExpanded } = useCollapse();
   const queryClient = useQueryClient();
+  const [progress, setProgress] = useState(0);
   const [isComplete, setIsComplete] = useState(goal.is_complete);
-  console.log(isComplete + "isComplete");
+  console.log(isComplete + " isComplete");
   console.log(id + "id");
   console.log(goal.sub_goals?.length);
   const { put } = ApiClient();
 
   function handleToggle(checked: boolean) {
     setIsComplete(checked);
-    updateDatabase(goal);
+    updateDatabase(goal, checked);
   }
+  useEffect(() => {
+    // action on update of movies
+    if (isComplete) {
+      console.log(isComplete)
+      setProgress(1);
+      console.log(progress+"Is this")
+    } else {
+      console.log(isComplete)
+      setProgress(0);
+      console.log(progress+"Is this")
+    }
+  }, [isComplete, progress]);
 
-  async function updateDatabase(goal: Goal) {
+  async function updateDatabase(goal: Goal, checked: boolean) {
     try {
       console.log(`${goal.goal_id}`);
       await put(`/goal/update/${goal.goal_id}`, {
         name: goal.name,
         description: goal.description,
         goalType: goal.goal_type,
-        isComplete: isComplete,
+        isComplete: checked,
         moduleId: goal.moduleId,
       });
       queryClient.invalidateQueries({ queryKey: ["goals"] });
@@ -70,7 +83,7 @@ export default function GoalItem({ id, goal }: GoalItemProps) {
             <p className="text-black"></p>
           </div>
           <div className="flex flex-col transition-transform w-[15%] h-full justify-center p-3 items-center">
-            <p className="text-black">0/1</p>
+            <p className="text-black">{progress + "/ 1"}</p>
           </div>
           <div className="flex flex-col transition-transform w-[15%] h-full justify-center p-3 items-center">
             {goal.sub_goals?.length !== 0 ? (

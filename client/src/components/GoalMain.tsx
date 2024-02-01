@@ -23,7 +23,7 @@ const GoalParentContainer = () => {
       <Goals id={id} >
       <GoalListHeader />
       {data?.map((goal: Goal) => (
-        <GoalItem id={id as string} goal={goal} />
+        <GoalItem key={goal.goal_id} id={id as string} goal={goal} />
       ))}
       </Goals>
     </div>
