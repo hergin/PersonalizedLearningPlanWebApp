@@ -85,6 +85,7 @@ export default class GoalParser extends DatabaseParser {
             values: goal.dueDate ? [goal.name, goal.description, goal.goalType, goal.isComplete, goal.moduleId, parentGoalID, goal.dueDate] :
                 [goal.name, goal.description, goal.goalType, goal.isComplete, goal.moduleId, parentGoalID]
         };
+        console.log(JSON.stringify(query));
         await this.updateDatabase(query);
         console.log("Sub goal stored! Now returning id...");
         const idQuery = {

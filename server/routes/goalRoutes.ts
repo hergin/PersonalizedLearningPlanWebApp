@@ -68,7 +68,7 @@ goalRoutes.get('/get/:id/:variable', authenticateToken, async (req: any, res: an
 
 goalRoutes.post('/add/:id', authenticateToken, async (req: any, res: any) => {
     console.log(`Received in add sub goal: ${req.params.id}`);
-    const goalQuery = await goalAPI.addSubGoal(req.body.parent_goal_id, {
+    const goalQuery = await goalAPI.addSubGoal(req.params.id, {
         name: req.body.name,
         description: req.body.description,
         goalType: req.body.goalType,
@@ -80,7 +80,7 @@ goalRoutes.post('/add/:id', authenticateToken, async (req: any, res: any) => {
         res.status(goalQuery).send(ERROR_MESSAGES.get(goalQuery));
         return;
     }
-    res.sendStatus(STATUS_CODES.OK).json(goalQuery);
+    res.status(STATUS_CODES.OK).json(goalQuery);
 });
 
 export default goalRoutes;

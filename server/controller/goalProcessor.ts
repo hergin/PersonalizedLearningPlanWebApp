@@ -80,6 +80,7 @@ export class GoalAPI {
 
     async addSubGoal(parent_goal_id: number, goal: Goal) {
         try {
+            console.log(`In addSubGoal: ${JSON.stringify(goal)}`);
             const result = await this.parser.storeSubGoal(parent_goal_id, goal);
             return result;
         } catch (error) {
