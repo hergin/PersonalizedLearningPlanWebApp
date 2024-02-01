@@ -32,7 +32,7 @@ export default class GoalParser extends DatabaseParser {
         return this.parseDatabase(idQuery);
     }
 
-    async updateGoal(goalID: number, name: string, description: string, goalType: GoalType, isComplete: boolean, dueDate?: Date) {
+    async updateGoal(goalID: number, name: string, description: string, goalType: GoalType, isComplete: boolean, dueDate?: string) {
         console.log("Inserting updated data into Goal...");
         const query = {
             text: `UPDATE GOAL SET name = $1, description = $2, goal_type = $3, is_complete = $4${dueDate ? ", due_date = $6" : ""} WHERE goal_id = $5`,

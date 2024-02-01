@@ -18,6 +18,7 @@ import { GoalEditorProps, GoalType } from "../types";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { useQueryClient } from "@tanstack/react-query";
+import dayjs from "dayjs";
 
 export default function GoalEditor({
   id,
@@ -38,7 +39,7 @@ export default function GoalEditor({
     DAILY: "daily",
   };
   const [goalTypeNew, setGoalTypeNew] = useState(goalType as string);
-  const [dueDateNew, setDueDateNew] = useState<Date | null>(null);
+  const [dueDateNew, setDueDateNew] = useState<string | undefined>(dayjs(dueDate).format("MM/DD/YYYY"));
   const handleClick = (event: any) => {
     setAnchorElGoal(event.currentTarget);
   };
@@ -65,12 +66,11 @@ export default function GoalEditor({
       await put(`/goal/update/${id}`, {
         name: dataNameLocal,
         description: dataDescriptionLocal,
-        is_complete: false,
-        due_date: dueDateNew,
+        isComplete: false,
+        dueDate: dueDateNew,
         goalType: goalTypeNew,
       });
-      
-      queryClient.invalidateQueries({ queryKey: ['goals'] })
+      queryClient.invalidateQueries({ queryKey: ['goals'] });
       handleCloseModal();
     } catch (error: any) {
       console.error(error);
@@ -158,13 +158,13 @@ export default function GoalEditor({
               </div>
               <DatePicker
                 label="Due Date"
-                value={dueDateNew}
-                onChange={(newDueDate) => setDueDateNew(newDueDate)}
+                value={dayjs(dueDateNew)}
+                onChange={(newDueDate) => setDueDateNew(dayjs(newDueDate).format("MM/DD/YYYY"))}
               />
             </div>
             <div className="flex flex-row justify-center items-center pt-10">
-            <Button variant="contained" onClick={handleGoalEdit}>
-              Save Changes
+              <Button variant="contained" onClick={handleGoalEdit}>
+                Save Changes
               </Button>
             </div>
           </DialogContent>

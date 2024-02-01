@@ -41,7 +41,7 @@ CREATE TABLE GOAL(
     goal_type GOAL_TYPE NOT NULL,
     is_complete BOOLEAN,
     module_id SERIAL,
-    due_date TIMESTAMP,
+    due_date TEXT,
     completion_time TIMESTAMP,
     expiration TIMESTAMP,
     parent_goal INT,

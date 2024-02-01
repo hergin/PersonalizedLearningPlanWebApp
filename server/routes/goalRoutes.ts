@@ -44,8 +44,8 @@ goalRoutes.put('/update/:id', authenticateToken, async (req: any, res: any) => {
             description: req.body.description,
             goalType: req.body.goalType, 
             isComplete: req.body.isComplete,
-            dueDate: req.body.due_due, 
-            completionTime: req.body.completion_time, 
+            dueDate: req.body.dueDate, 
+            completionTime: req.body.completionTime, 
             expiration: req.body.expiration
     });
     if (typeof goalQuery !== "object") {
