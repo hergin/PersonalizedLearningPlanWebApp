@@ -7,6 +7,7 @@ import { DatePicker } from "@mui/x-date-pickers";
 import { Checkbox } from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { useQueryClient } from "@tanstack/react-query";
 
 function GoalCreator({ moduleID, addGoal }: GoalCreatorProps) {
   const [goalName, setGoalName] = useState("");
@@ -16,6 +17,7 @@ function GoalCreator({ moduleID, addGoal }: GoalCreatorProps) {
     DAILY: "daily",
   };
   const [goalType, setGoalType] = useState(GoalTypes.TODO);
+  const queryClient = useQueryClient()
   const [dueDate, setDueDate] = useState<Date | null>(null);
   const [open, setOpen] = useState(false);
   const submitDisabled = goalName === "" || description === "";
@@ -32,6 +34,7 @@ function GoalCreator({ moduleID, addGoal }: GoalCreatorProps) {
         module_id: moduleID,
         due_date: dueDate,
       });
+      queryClient.invalidateQueries({ queryKey: ['goals'] })
       console.log(response[0].goal_id);
       console.log("Goal creation is not implemented yet.");
       setOpen(false);

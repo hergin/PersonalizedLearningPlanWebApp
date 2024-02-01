@@ -4,6 +4,7 @@ import { useUser } from "../hooks/useUser";
 import { ApiClient } from "../hooks/ApiClient";
 import { useHotKeys } from "../hooks/useHotKeys";
 import { ModuleCreatorProps } from "../types";
+import { useQueryClient } from "@tanstack/react-query";
 
 function CreationModal({ addModule, modalTitle, open, closeModal }: ModuleCreatorProps) {
   const [moduleName, setModuleName] = useState("");
@@ -12,6 +13,7 @@ function CreationModal({ addModule, modalTitle, open, closeModal }: ModuleCreato
   const { user } = useUser();
   const { post } = ApiClient();
   const { handleEnterPress } = useHotKeys();
+  const queryClient = useQueryClient()
 
   async function handleModuleCreation() {
     try {
@@ -22,6 +24,7 @@ function CreationModal({ addModule, modalTitle, open, closeModal }: ModuleCreato
         email: user.email,
       });
       console.log(response.module_id);
+      queryClient.invalidateQueries({ queryKey: ['modules'] })
       addModule({
         module_id: response.module_id,
         module_name: moduleName,
