@@ -38,6 +38,7 @@ export default class GoalParser extends DatabaseParser {
             text: `UPDATE GOAL SET name = $1, description = $2, goal_type = $3, is_complete = $4${dueDate ? ", due_date = $6" : ""} WHERE goal_id = $5`,
             values: dueDate ? [name, description, goalType, isComplete, goalID, dueDate] : [name, description, goalType, isComplete, goalID]
         };
+        console.log(JSON.stringify(query));
         await this.updateDatabase(query);
         console.log("Goal data updated!");
     }

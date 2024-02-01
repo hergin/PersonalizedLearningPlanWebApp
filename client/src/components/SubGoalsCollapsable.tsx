@@ -48,7 +48,7 @@ export function SubGoalsCollapsable({
         </div>
         <GoalEditor
           id={sub_goal.goal_id}
-          goalType={sub_goal.goalType}
+          goalType={sub_goal.goal_type}
           dataName={sub_goal.name}
           dataDescription={sub_goal.description}
           dueDate={sub_goal.due_date}

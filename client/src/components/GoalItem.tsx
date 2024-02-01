@@ -34,10 +34,9 @@ export default function GoalItem({ id, goal }: GoalItemProps) {
       await put(`/goal/update/${goal.goal_id}`, {
         name: goal.name,
         description: goal.description,
-        goalType: goal.goalType,
+        goalType: goal.goal_type,
         isComplete: isComplete,
         moduleId: goal.moduleId,
-
       });
       queryClient.invalidateQueries({ queryKey: ["goals"] });
       console.log("Database updated");
@@ -87,7 +86,7 @@ export default function GoalItem({ id, goal }: GoalItemProps) {
           </div>
           <GoalEditor
             id={goal.goal_id}
-            goalType={goal.goalType}
+            goalType={goal.goal_type}
             dataName={goal.name}
             dataDescription={goal.description}
             dueDate={goal.due_date}

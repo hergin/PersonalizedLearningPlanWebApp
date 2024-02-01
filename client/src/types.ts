@@ -12,7 +12,7 @@ export interface Goal {
   name: string,
   due_date?: Date,
   description: string,
-  goalType: GoalType,
+  goal_type: GoalType,
   is_complete: boolean,
   moduleId?: number
   sub_goals?: Goal[]

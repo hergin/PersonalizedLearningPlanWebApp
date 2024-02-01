@@ -31,7 +31,7 @@ function GoalCreator({ moduleID, goalID, height }: GoalCreatorProps) {
 
   async function handleGoalCreation() {
     try {
-      const response = await post("/goal/add", {
+      await post("/goal/add", {
         name: goalName,
         description: description,
         goalType: goalType,
