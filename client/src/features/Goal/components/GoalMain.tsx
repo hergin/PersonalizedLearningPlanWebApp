@@ -1,9 +1,9 @@
 import React from "react";
 import { useParams } from "react-router-dom";
-import Goals from "../screens/Goals";
+import Goals from "./Goals";
 import GoalItem from "./GoalItem";
 import useGoals from "../hooks/useGoals";
-import { Goal } from "../types";
+import { Goal } from "../../../types";
 import { GoalListHeader } from "./GoalListHeader";
 
 const GoalParentContainer = () => {
@@ -20,11 +20,11 @@ const GoalParentContainer = () => {
   }
   return (
     <div className="relative flex h-screen">
-      <Goals id={id} >
-      <GoalListHeader />
-      {data?.map((goal: Goal) => (
-        <GoalItem key={goal.goal_id} id={id as string} goal={goal} />
-      ))}
+      <Goals id={id}>
+        <GoalListHeader />
+        {data?.map((goal: Goal) => (
+          <GoalItem key={goal.goal_id} id={id as string} goal={goal} />
+        ))}
       </Goals>
     </div>
   );

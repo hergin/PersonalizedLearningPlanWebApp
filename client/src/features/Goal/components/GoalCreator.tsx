@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Modal from "@mui/material/Modal";
-import { ApiClient } from "../hooks/ApiClient";
-import { useHotKeys } from "../hooks/useHotKeys";
+import { ApiClient } from "../../../hooks/ApiClient";
+import { useHotKeys } from "../../../hooks/useHotKeys";
 import { DatePicker } from "@mui/x-date-pickers";
 import { Checkbox } from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers";
@@ -10,7 +10,7 @@ import { useQueryClient } from "@tanstack/react-query";
 
 interface GoalCreatorProps {
   moduleID: string;
-  height?: string;  
+  height?: string;
   goalID?: string;
 }
 
@@ -22,7 +22,7 @@ function GoalCreator({ moduleID, goalID, height }: GoalCreatorProps) {
     DAILY: "daily",
   };
   const [goalType, setGoalType] = useState(GoalTypes.TODO);
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
   const [dueDate, setDueDate] = useState<Date | null>(null);
   const [open, setOpen] = useState(false);
   const submitDisabled = goalName === "" || description === "";
@@ -40,7 +40,7 @@ function GoalCreator({ moduleID, goalID, height }: GoalCreatorProps) {
         dueDate: dueDate,
         parentGoal: goalID,
       });
-      queryClient.invalidateQueries({ queryKey: ['goals'] })
+      queryClient.invalidateQueries({ queryKey: ["goals"] });
       console.log("Goal creation is not implemented yet.");
       setOpen(false);
     } catch (error: any) {

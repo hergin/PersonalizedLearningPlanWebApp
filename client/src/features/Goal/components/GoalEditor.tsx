@@ -12,9 +12,9 @@ import {
   DialogTitle,
   TextField,
 } from "@mui/material";
-import { ApiClient } from "../hooks/ApiClient";
-import { useHotKeys } from "../hooks/useHotKeys";
-import { GoalEditorProps, GoalType } from "../types";
+import { ApiClient } from "../../../hooks/ApiClient";
+import { useHotKeys } from "../../../hooks/useHotKeys";
+import { GoalEditorProps, GoalType } from "../../../types";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { useQueryClient } from "@tanstack/react-query";
@@ -27,7 +27,7 @@ export default function GoalEditor({
   dueDate,
   goalType,
 }: GoalEditorProps) {
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
   const [anchorElGoal, setAnchorElGoal] = React.useState(null);
   const open = Boolean(anchorElGoal);
   const [dataNameLocal, setDataNameLocal] = useState(dataName);
@@ -39,7 +39,9 @@ export default function GoalEditor({
     DAILY: "daily",
   };
   const [goalTypeNew, setGoalTypeNew] = useState(goalType as string);
-  const [dueDateNew, setDueDateNew] = useState<string | undefined>(dayjs(dueDate).format("MM/DD/YYYY"));
+  const [dueDateNew, setDueDateNew] = useState<string | undefined>(
+    dayjs(dueDate).format("MM/DD/YYYY")
+  );
   const handleClick = (event: any) => {
     setAnchorElGoal(event.currentTarget);
   };
@@ -70,7 +72,7 @@ export default function GoalEditor({
         dueDate: dueDateNew,
         goalType: goalTypeNew,
       });
-      queryClient.invalidateQueries({ queryKey: ['goals'] });
+      queryClient.invalidateQueries({ queryKey: ["goals"] });
       handleCloseModal();
     } catch (error: any) {
       console.error(error);
@@ -90,7 +92,7 @@ export default function GoalEditor({
     try {
       const result = await del(`/goal/delete/${id}`);
       console.log(result);
-      queryClient.invalidateQueries({ queryKey: ['goals'] })
+      queryClient.invalidateQueries({ queryKey: ["goals"] });
       handleClose();
     } catch (error: any) {
       console.error(error);
@@ -160,7 +162,9 @@ export default function GoalEditor({
               <DatePicker
                 label="Due Date"
                 value={dayjs(dueDateNew)}
-                onChange={(newDueDate) => setDueDateNew(dayjs(newDueDate).format("MM/DD/YYYY"))}
+                onChange={(newDueDate) =>
+                  setDueDateNew(dayjs(newDueDate).format("MM/DD/YYYY"))
+                }
               />
             </div>
             <div className="flex flex-row justify-center items-center pt-10">

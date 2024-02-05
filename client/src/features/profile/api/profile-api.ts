@@ -1,5 +1,5 @@
-import { ApiClient } from "../hooks/ApiClient";
-import { useUser } from "../hooks/useUser";
+import { ApiClient } from "../../../hooks/ApiClient";
+import { useUser } from "../../../hooks/useUser";
 
 export const ProfileApi = () => {
   const { user } = useUser();

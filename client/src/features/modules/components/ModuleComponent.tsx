@@ -1,11 +1,7 @@
 import React, { useState } from "react";
-import { useModuleData } from "../context/ModuleContext";
-import { Module } from "../types";
 import CreationModal from "./CreationModal";
 import ModuleItem from "./ModuleItem";
 import { useModules } from "../hooks/useModules";
-import { useMutation } from "@tanstack/react-query";
-import { GoalListHeader } from "./GoalListHeader";
 
 const ModuleComponent = () => {
   const { data: modules, isLoading, isError } = useModules();
