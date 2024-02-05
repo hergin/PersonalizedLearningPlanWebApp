@@ -146,6 +146,7 @@ export default function GoalEditor({
                 handleEnterPress(event, handleGoalEdit);
               }}
               fullWidth
+              multiline={true}
               margin="normal"
             />
             <div className="w-full flex justify-between items-center px-20 ">

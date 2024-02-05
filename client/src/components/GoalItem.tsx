@@ -8,6 +8,8 @@ import { Checkbox } from "@mui/material";
 import { ApiClient } from "../hooks/ApiClient";
 import { useQueryClient } from "@tanstack/react-query";
 import SubGoalCreator from "./SubGoalCreator";
+import GoalDescriptionModal from "./GoalDescriptionModal";
+import { Link } from "react-router-dom";
 
 interface GoalItemProps {
   id: string;
@@ -19,6 +21,7 @@ export default function GoalItem({ id, goal }: GoalItemProps) {
   const queryClient = useQueryClient();
   const [progress, setProgress] = useState(0);
   const [isComplete, setIsComplete] = useState(goal.is_complete);
+  const [openDescription, setOpenDescription] = useState(false);
   console.log(isComplete + " isComplete");
   console.log(id + "id");
   console.log(goal.sub_goals?.length);
@@ -68,7 +71,7 @@ export default function GoalItem({ id, goal }: GoalItemProps) {
           className="flex flex-row transition-transform rounded  w-full h-[100px] border-2 border-solid border-black divide-x"
         >
           <div className="flex flex-col w-2/5 h-full justify-center p-3 ">
-            <p className="text-black text-lg font-bodyFont">{goal.name}</p>
+            <button onClick={() => setOpenDescription(true)} className="text-black text-lg font-bodyFont">{goal.name}</button>
           </div>
           <div className="flex flex-col transition-transform w-[15%] h-full justify-center p-3 items-center">
             {goal.due_date ? (
@@ -114,6 +117,7 @@ export default function GoalItem({ id, goal }: GoalItemProps) {
           />
         ))}
         <SubGoalCreator moduleID={id} parent_id={goal.goal_id.toString()} />
+        <GoalDescriptionModal goal={goal} open={openDescription} onClose={() => setOpenDescription(false)} />
       </>
     </div>
   );

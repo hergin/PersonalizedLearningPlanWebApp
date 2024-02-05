@@ -90,7 +90,7 @@ function SubGoalCreator({ moduleID, parent_id}: GoalCreatorProps) {
                 required
               />
               <input
-                className="h-10 rounded text-base w-full border border-solid border-gray-300 px-2 "
+                className="h-40 rounded text-base w-full border border-solid border-gray-300 px-2 "
                 name="module"
                 type="text"
                 placeholder="Goal Description"
