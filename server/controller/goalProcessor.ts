@@ -53,11 +53,8 @@ export class GoalAPI {
         }
     }
 
-    #convertToPostgresTimestamp(time : Date | string | undefined): string | undefined {
-        if(typeof time === "string") {
-            return time.replace('T', ' ').replace('Z', ' ');
-        }
-        return time?.toISOString().replace('T', ' ').replace('Z', ' ');
+    #convertToPostgresTimestamp(time : string | undefined): string | undefined {
+        return time?.replace('T', ' ').replace('Z', ' ');
     }
 
     async updateGoal(goalId: number, goal : Goal) {
