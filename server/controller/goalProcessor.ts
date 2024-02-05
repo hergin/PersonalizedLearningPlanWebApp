@@ -40,8 +40,13 @@ export class GoalAPI {
     }
 
     async createGoal(goal: Goal) {
+        const dueDate = this.#convertToPostgresTimestamp(goal.dueDate);
+
         try {
-            const results = await this.parser.storeGoal(goal);
+            const results = await this.parser.storeGoal({
+                ...goal,
+                dueDate: dueDate
+            });
             return results;
         } catch (error) {
             return this.errorCodeInterpreter.getStatusCode(error);
@@ -49,15 +54,26 @@ export class GoalAPI {
     }
 
     async updateGoal(goalId: number, goal : Goal) {
+        const dueDate : string | undefined = this.#convertToPostgresTimestamp(goal.dueDate);
+        const completionTime : string | undefined = this.#convertToPostgresTimestamp(goal.completionTime);
+        const expiration : string | undefined = this.#convertToPostgresTimestamp(goal.expiration);
+
         try {
-            await this.parser.updateGoal(goalId, goal.name, goal.description, goal.goalType, goal.isComplete, goal.dueDate);
-            if (goal.completionTime) {
-                await this.parser.updateGoalTimestamps(goalId, goal.completionTime, goal.expiration);
+            await this.parser.updateGoal(goalId, goal.name, goal.description, goal.goalType, goal.isComplete, dueDate);
+            if (completionTime) {
+                await this.parser.updateGoalTimestamps(goalId, completionTime, expiration);
             }
             return STATUS_CODES.OK;
         } catch (error) {
             return this.errorCodeInterpreter.getStatusCode(error);
         }
+    }
+
+    #convertToPostgresTimestamp(time : Date | string | undefined): string | undefined {
+        if(typeof time === "string") {
+            return time.replace('T', ' ').replace('Z', ' ');
+        }
+        return time?.toISOString().replace('T', ' ').replace('Z', ' ');
     }
 
     async deleteGoal(goalId: number) {

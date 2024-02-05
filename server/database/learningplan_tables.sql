@@ -41,9 +41,9 @@ CREATE TABLE GOAL(
     goal_type GOAL_TYPE NOT NULL,
     is_complete BOOLEAN,
     module_id SERIAL,
-    due_date TEXT,
-    completion_time TIMESTAMP,
-    expiration TIMESTAMP,
+    due_date TIMESTAMP WITH TIME ZONE,
+    completion_time TIMESTAMP WITH TIME ZONE,
+    expiration TIMESTAMP WITH TIME ZONE,
     parent_goal INT,
     FOREIGN KEY (module_id) REFERENCES MODULE(module_id)
         ON DELETE CASCADE ON UPDATE CASCADE

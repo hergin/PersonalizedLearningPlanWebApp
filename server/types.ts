@@ -6,9 +6,9 @@ export type Goal = {
     isComplete: boolean,
     goalType: GoalType,
     moduleId?: number,
-    dueDate?: string,
-    completionTime?: Date,
-    expiration?: Date
+    dueDate?: Date | string,
+    completionTime?: Date | string,
+    expiration?: Date | string
 }
 
 export type Profile = {

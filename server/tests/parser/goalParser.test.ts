@@ -9,13 +9,35 @@ const TEST_DATA = {
     goalName: "Complete this quiz",
     goalDescription: "This is a quiz that I need to complete.",
     isComplete: false,
-    dueDate: new Date("2025-01-01 23:59:59-05"),
-    completionTime: new Date("2024-01-23 14:19:19-05"),
-    expiration: new Date("2030-01-23 14:15:00-05"),
+    dueDate: `2025-01-01T23:59:59.000Z`,
+    completionTime: `2024-01-23T14:19:19.000Z`,
+    expiration: `2030-01-23T14:15:00.000Z`,
     subGoalName: "sub-goal",
     subGoalDescription: "This is a sub goal",
     altGoalName: "Homework",
     altGoalDescription: "Complete my homework today."
+}
+
+function convertToPostgresTimestamp(input: string): string {
+    return input.replace('T', ' ').replace('Z', '');
+}
+
+const QUERY_VARIABLES = {
+    module: "module_id",
+    goal: "goal_id",
+    parent: "parent_goal"
+}
+
+function selectQuery(id: number, variable: string) {
+    const utcToEstConversionQuery = "AT TIME ZONE 'UTC' AT TIME ZONE 'EST'";
+    const dueDateString = `due_date::timestamp ${utcToEstConversionQuery} AS due_date`;
+    const completionTimeString = `completion_time::timestamp ${utcToEstConversionQuery} AS completion_time`;
+    const expirationString = `expiration::timestamp ${utcToEstConversionQuery} AS expiration`;
+    
+    return {
+        text: `SELECT goal_id, name, description, goal_type, is_complete, module_id, ${dueDateString}, ${completionTimeString}, ${expirationString}, parent_goal FROM GOAL WHERE ${variable} = $1`,
+        values: [id]
+    }
 }
 
 const goalTypes : GoalType[] = ["todo", "daily"];
@@ -68,10 +90,7 @@ describe('goal parser tests', () => {
                 goal_id: expect.any(Number)
             }
         ]);
-        var actual = await client.query(
-            "SELECT * FROM get_goals($1)",
-            [moduleID]
-        );
+        var actual = await client.query(selectQuery(moduleID, QUERY_VARIABLES.module));
         expect(actual.rows).toEqual([
             {
                 goal_id: expect.any(Number),
@@ -91,16 +110,13 @@ describe('goal parser tests', () => {
     it('store goal (with due date)', async () => {
         const goalID = await parser.storeGoal({
             name: TEST_DATA.goalName, description: TEST_DATA.goalDescription, goalType: goalTypes[1], 
-            isComplete: TEST_DATA.isComplete, moduleId: moduleID, dueDate: TEST_DATA.dueDate});
+            isComplete: TEST_DATA.isComplete, moduleId: moduleID, dueDate: convertToPostgresTimestamp(TEST_DATA.dueDate)});
         expect(goalID).toEqual([
             {
                 goal_id: expect.any(Number)
             }
         ]);
-        var actual = await client.query(
-            "SELECT * FROM get_goals($1)",
-            [moduleID]
-        );
+        var actual = await client.query(selectQuery(moduleID, QUERY_VARIABLES.module));
         expect(actual.rows).toEqual([
             {
                 goal_id: expect.any(Number),
@@ -109,13 +125,13 @@ describe('goal parser tests', () => {
                 goal_type: goalTypes[1],
                 is_complete: TEST_DATA.isComplete,
                 module_id: moduleID,
-                due_date: TEST_DATA.dueDate,
+                due_date: new Date(TEST_DATA.dueDate),
                 completion_time: null,
                 expiration: null,
                 parent_goal: null
             }
         ]);
-    })
+    });
 
     it('parse goals', async () => {
         await client.query(
@@ -159,10 +175,7 @@ describe('goal parser tests', () => {
         );
         var goalID = await getGoalID();
         await parser.updateGoal(goalID, TEST_DATA.altGoalName, TEST_DATA.altGoalDescription, goalTypes[0], false);
-        var actual = await client.query(
-            "SELECT * FROM get_goal($1)",
-            [goalID]
-        );
+        var actual = await client.query(selectQuery(goalID, QUERY_VARIABLES.goal));
         expect(actual.rows).toEqual([
             {
                 goal_id: goalID,
@@ -185,11 +198,9 @@ describe('goal parser tests', () => {
             [TEST_DATA.goalName, TEST_DATA.goalDescription, goalTypes[0], TEST_DATA.isComplete, moduleID]
         );
         var goalID = await getGoalID();
-        await parser.updateGoal(goalID, TEST_DATA.altGoalName, TEST_DATA.altGoalDescription, goalTypes[0], false, TEST_DATA.dueDate);
-        var actual = await client.query(
-            "SELECT * FROM get_goal($1)",
-            [goalID]
-        );
+        await parser.updateGoal(goalID, TEST_DATA.altGoalName, TEST_DATA.altGoalDescription, goalTypes[0], 
+            false, convertToPostgresTimestamp(TEST_DATA.dueDate));
+        var actual = await client.query(selectQuery(goalID, QUERY_VARIABLES.goal));
         expect(actual.rows).toEqual([
             {
                 goal_id: goalID,
@@ -198,7 +209,7 @@ describe('goal parser tests', () => {
                 goal_type: goalTypes[0],
                 is_complete: false,
                 module_id: moduleID,
-                due_date: TEST_DATA.dueDate,
+                due_date: new Date(TEST_DATA.dueDate),
                 completion_time: null,
                 expiration: null,
                 parent_goal: null
@@ -212,11 +223,8 @@ describe('goal parser tests', () => {
             [TEST_DATA.goalName, TEST_DATA.goalDescription, goalTypes[1], true, moduleID]
         );
         var goalID = await getGoalID();
-        await parser.updateGoalTimestamps(goalID, TEST_DATA.completionTime);
-        var actual = await client.query(
-            "SELECT * FROM get_goal($1)",
-            [goalID]
-        );
+        await parser.updateGoalTimestamps(goalID, convertToPostgresTimestamp(TEST_DATA.completionTime));
+        var actual = await client.query(selectQuery(goalID, QUERY_VARIABLES.goal));
         expect(actual.rows).toEqual([
             {
                 goal_id: goalID,
@@ -226,7 +234,7 @@ describe('goal parser tests', () => {
                 is_complete: true,
                 module_id: moduleID,
                 due_date: null,
-                completion_time: TEST_DATA.completionTime,
+                completion_time: new Date(TEST_DATA.completionTime),
                 expiration: null,
                 parent_goal: null
             }
@@ -239,11 +247,10 @@ describe('goal parser tests', () => {
             [TEST_DATA.goalName, TEST_DATA.goalDescription, goalTypes[0], true, moduleID]
         );
         var goalID = await getGoalID();
-        await parser.updateGoalTimestamps(goalID, TEST_DATA.completionTime, TEST_DATA.expiration);
-        var actual = await client.query(
-            "SELECT * FROM get_goal($1)",
-            [goalID]
-        );
+        await parser.updateGoalTimestamps(goalID, 
+            convertToPostgresTimestamp(TEST_DATA.completionTime), 
+            convertToPostgresTimestamp(TEST_DATA.expiration));
+        var actual = await client.query(selectQuery(goalID, QUERY_VARIABLES.goal));
         expect(actual.rows).toEqual([
             {
                 goal_id: goalID,
@@ -253,8 +260,8 @@ describe('goal parser tests', () => {
                 is_complete: true,
                 module_id: moduleID,
                 due_date: null,
-                completion_time: TEST_DATA.completionTime,
-                expiration: TEST_DATA.expiration,
+                completion_time: new Date(TEST_DATA.completionTime),
+                expiration: new Date(TEST_DATA.expiration),
                 parent_goal: null
             }
         ]);
@@ -267,10 +274,7 @@ describe('goal parser tests', () => {
         );
         var goalID = await getGoalID();
         await parser.deleteGoal(goalID);
-        var actual = await client.query(
-            "SELECT * FROM GOAL WHERE goal_id = $1",
-            [goalID]
-        );
+        var actual = await client.query(selectQuery(goalID, QUERY_VARIABLES.goal));
         expect(actual.rows).toEqual([]);
     });
 
@@ -288,10 +292,7 @@ describe('goal parser tests', () => {
                 goal_id: expect.any(Number)
             }
         ]);
-        var actual = await client.query(
-            "SELECT * FROM GOAL WHERE parent_goal = $1",
-            [goalID]
-        );
+        var actual = await client.query(selectQuery(goalID, QUERY_VARIABLES.parent));
         expect(actual.rows).toEqual([
             {
                 goal_id: expect.any(Number),
@@ -311,21 +312,19 @@ describe('goal parser tests', () => {
     it('store sub goal (with due date)', async () => {
         await client.query(
             "INSERT INTO GOAL(name, description, goal_type, is_complete, module_id, due_date) VALUES ($1, $2, $3, $4, $5, $6)",
-            [TEST_DATA.goalName, TEST_DATA.goalDescription, goalTypes[1], TEST_DATA.isComplete, moduleID, TEST_DATA.dueDate]
+            [TEST_DATA.goalName, TEST_DATA.goalDescription, goalTypes[1], TEST_DATA.isComplete, moduleID, 
+            convertToPostgresTimestamp(TEST_DATA.dueDate)]
         );
         var goalID = await getGoalID();
         var subGoalID = await parser.storeSubGoal(goalID, 
             {name: TEST_DATA.subGoalName, description: TEST_DATA.subGoalDescription, goalType: goalTypes[0], 
-                isComplete: false, moduleId: moduleID, dueDate: TEST_DATA.dueDate});
+                isComplete: false, moduleId: moduleID, dueDate: convertToPostgresTimestamp(TEST_DATA.dueDate)});
         expect(subGoalID).toEqual([
             {
                 goal_id: expect.any(Number)
             }
         ]);
-        var actual = await client.query(
-            "SELECT * FROM GOAL WHERE parent_goal = $1",
-            [goalID]
-        );
+        var actual = await client.query(selectQuery(goalID, QUERY_VARIABLES.parent));
         expect(actual.rows).toEqual([
             {
                 goal_id: expect.any(Number),
@@ -334,7 +333,7 @@ describe('goal parser tests', () => {
                 goal_type: goalTypes[0],
                 is_complete: false,
                 module_id: moduleID,
-                due_date: TEST_DATA.dueDate,
+                due_date: new Date(TEST_DATA.dueDate),
                 completion_time: null,
                 expiration: null,
                 parent_goal: goalID

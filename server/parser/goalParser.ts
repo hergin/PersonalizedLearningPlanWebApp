@@ -1,6 +1,8 @@
 import DatabaseParser from "./databaseParser";
 import { Goal, GoalType } from "../types";
 
+const TIMESTAMP_FORMAT : string = "YYYY-MM-DD HH24:MI:SS"
+
 export default class GoalParser extends DatabaseParser {
     constructor() {
         super();
@@ -35,7 +37,7 @@ export default class GoalParser extends DatabaseParser {
     async updateGoal(goalID: number, name: string, description: string, goalType: GoalType, isComplete: boolean, dueDate?: string) {
         console.log("Inserting updated data into Goal...");
         const query = {
-            text: `UPDATE GOAL SET name = $1, description = $2, goal_type = $3, is_complete = $4${dueDate ? ", due_date = $6" : ""} WHERE goal_id = $5`,
+            text: `UPDATE GOAL SET name = $1, description = $2, goal_type = $3, is_complete = $4${dueDate ? `, due_date = $6` : ""} WHERE goal_id = $5`,
             values: dueDate ? [name, description, goalType, isComplete, goalID, dueDate] : [name, description, goalType, isComplete, goalID]
         };
         console.log(JSON.stringify(query));
@@ -43,12 +45,12 @@ export default class GoalParser extends DatabaseParser {
         console.log("Goal data updated!");
     }
 
-    async updateGoalTimestamps(goalID: number, completionTime: Date, expiration?: Date) {
+    async updateGoalTimestamps(goalID: number, completionTime: string, expiration?: string) {
         console.log("Inserting timestamp values into Goal...");
-        const queryString = `UPDATE GOAL SET completion_time = $1${expiration ? ", expiration = $2" : ""} WHERE goal_id = ${expiration ? "$3" : "$2"}`;
+        const queryString = `UPDATE GOAL SET completion_time = $1${expiration ? `, expiration = $3` : ""} WHERE goal_id = $2`;
         const query = {
             text: queryString,
-            values: expiration ? [completionTime, expiration, goalID] : [completionTime, goalID]
+            values: expiration ? [completionTime, goalID, expiration] : [completionTime, goalID]
         };
         await this.updateDatabase(query);
         console.log("Timestamps updated!");
@@ -57,7 +59,7 @@ export default class GoalParser extends DatabaseParser {
     async deleteGoal(goalID: number) {
         console.log("Deleting Goal...");
         const query1 = {
-            text: "DELETE FROM Goal WHERE  parent_goal = $1",
+            text: "DELETE FROM Goal WHERE parent_goal = $1",
             values: [goalID]
         };
         const query2 = {
@@ -80,7 +82,7 @@ export default class GoalParser extends DatabaseParser {
 
     async storeSubGoal(parentGoalID: number, goal: Goal) {
         console.log("Storing sub goal...");
-        const text = `INSERT INTO goal(name, description, goal_type, is_complete, module_id, parent_goal${goal.dueDate ? ", due_date" : ""}) VALUES ($1, $2, $3, $4, $5, $6${goal.dueDate ? ", $7" : ""})`;
+        const text = `INSERT INTO goal(name, description, goal_type, is_complete, module_id, parent_goal${goal.dueDate ? ", due_date" : ""}) VALUES ($1, $2, $3, $4, $5, $6${goal.dueDate ? `, $7` : ""})`;
         const query = {
             text: text,
             values: goal.dueDate ? [goal.name, goal.description, goal.goalType, goal.isComplete, goal.moduleId, parentGoalID, goal.dueDate] :
