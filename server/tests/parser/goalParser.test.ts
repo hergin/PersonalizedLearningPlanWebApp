@@ -135,17 +135,19 @@ describe('goal parser tests', () => {
 
     it('parse goals', async () => {
         await client.query(
-            "INSERT INTO GOAL(name, description, goal_type, is_complete, module_id) VALUES ($1, $2, $3, $4, $5)",
-            [TEST_DATA.goalName, TEST_DATA.goalDescription, goalTypes[0], TEST_DATA.isComplete, moduleID]
+            "INSERT INTO GOAL(name, description, goal_type, is_complete, module_id, due_date) VALUES ($1, $2, $3, $4, $5, $6)",
+            [TEST_DATA.goalName, TEST_DATA.goalDescription, goalTypes[0], TEST_DATA.isComplete, moduleID, TEST_DATA.dueDate]
         );
-        expect(await parser.parseGoals(moduleID)).toEqual([
+        const result = await parser.parseParentGoals(moduleID);
+        console.log(`Parsed from goals: ${JSON.stringify(result)}`);
+        expect(result).toEqual([
             {
                 goal_id: expect.any(Number),
                 name: TEST_DATA.goalName,
                 description: TEST_DATA.goalDescription,
                 goal_type: goalTypes[0],
                 is_complete: TEST_DATA.isComplete,
-                due_date: null,
+                due_date: new Date(TEST_DATA.dueDate),
                 module_id: moduleID,
                 completion_time: null,
                 expiration: null,

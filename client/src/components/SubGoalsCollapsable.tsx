@@ -65,7 +65,7 @@ export function SubGoalsCollapsable({
           goalType={sub_goal.goal_type}
           dataName={sub_goal.name}
           dataDescription={sub_goal.description}
-          dueDate={typeof sub_goal.due_date === "string" ? new Date(sub_goal.due_date) : sub_goal.due_date}
+          dueDate={sub_goal.due_date}
         />
       </div>
     </>

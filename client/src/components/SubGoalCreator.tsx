@@ -32,7 +32,7 @@ function SubGoalCreator({ moduleID, parent_id}: GoalCreatorProps) {
   async function handleGoalCreation() {
     try {
       console.log(parent_id + "parent_id is here");
-      const response = await post(`/goal/add/${parent_id}`, {
+      await post(`/goal/add/${parent_id}`, {
         name: goalName,
         description: description,
         goalType: goalType as GoalType,

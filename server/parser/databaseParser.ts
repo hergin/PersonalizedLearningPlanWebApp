@@ -23,8 +23,7 @@ export default class DatabaseParser {
     }
 
     async updateDatabase(query : Query) {
-       const queryResult = await this.pool.query(query);
-       console.log(`Results in: ${JSON.stringify(queryResult)}`);
+       await this.pool.query(query);
     }
 
     async parseDatabase(query : Query) {

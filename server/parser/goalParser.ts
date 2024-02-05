@@ -8,7 +8,7 @@ export default class GoalParser extends DatabaseParser {
         super();
     }
 
-    async parseGoals(moduleId: number) {
+    async parseParentGoals(moduleId: number) {
         console.log("Getting Goals...");
         const query = {
             text: "SELECT * FROM get_goals($1) where parent_goal is null",

@@ -69,7 +69,7 @@ export interface GoalEditorProps {
   id: number,
   dataName: string,
   dataDescription: string,
-  dueDate?: Date,
+  dueDate?: string,
   goalType: "todo" | "daily",
 }
 

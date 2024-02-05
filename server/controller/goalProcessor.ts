@@ -1,7 +1,7 @@
 import GoalParser from "../parser/goalParser";
 import { STATUS_CODES } from "../utils/statusCodes";
 import { ErrorCodeInterpreter } from "./errorCodeInterpreter";
-import { Goal, CompleteGoal } from "../types";
+import { Goal } from "../types";
 
 export class GoalAPI {
     parser: GoalParser;
@@ -14,7 +14,7 @@ export class GoalAPI {
 
     async getGoals(moduleId: number) {
         try {
-            const parentgoals = await this.parser.parseGoals(moduleId);
+            const parentgoals = await this.parser.parseParentGoals(moduleId);
             for (const goal of parentgoals) {
                 const subgoals : Goal[] = await this.getSubGoals(goal.goal_id);
                 if (subgoals?.length !== undefined && subgoals?.length !== 0) {
@@ -40,7 +40,7 @@ export class GoalAPI {
     }
 
     async createGoal(goal: Goal) {
-        const dueDate = this.#convertToPostgresTimestamp(goal.dueDate);
+        const dueDate : string | undefined = this.#convertToPostgresTimestamp(goal.dueDate);
 
         try {
             const results = await this.parser.storeGoal({
@@ -51,6 +51,13 @@ export class GoalAPI {
         } catch (error) {
             return this.errorCodeInterpreter.getStatusCode(error);
         }
+    }
+
+    #convertToPostgresTimestamp(time : Date | string | undefined): string | undefined {
+        if(typeof time === "string") {
+            return time.replace('T', ' ').replace('Z', ' ');
+        }
+        return time?.toISOString().replace('T', ' ').replace('Z', ' ');
     }
 
     async updateGoal(goalId: number, goal : Goal) {
@@ -67,13 +74,6 @@ export class GoalAPI {
         } catch (error) {
             return this.errorCodeInterpreter.getStatusCode(error);
         }
-    }
-
-    #convertToPostgresTimestamp(time : Date | string | undefined): string | undefined {
-        if(typeof time === "string") {
-            return time.replace('T', ' ').replace('Z', ' ');
-        }
-        return time?.toISOString().replace('T', ' ').replace('Z', ' ');
     }
 
     async deleteGoal(goalId: number) {

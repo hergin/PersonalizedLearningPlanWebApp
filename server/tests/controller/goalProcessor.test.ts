@@ -15,7 +15,8 @@ const TEST_DATA = {
     isComplete: false,
     goalID: 5,
     moduleID: 9,
-    goalType: "todo" as GoalType
+    goalType: "todo" as GoalType,
+    dueDate: "2025-01-01T23:59:59.000Z"
 }
 
 describe('goal processor unit tests', () => {
@@ -32,7 +33,7 @@ describe('goal processor unit tests', () => {
     });
     
     it('get goals (normal case)', async () => {
-        parser.parseGoals.mockResolvedValueOnce([
+        parser.parseParentGoals.mockResolvedValueOnce([
             {
                 goal_id: TEST_DATA.goalID, name: TEST_DATA.firstName, description: TEST_DATA.firstDescription, goal_type: TEST_DATA.goalType, 
                 completion: TEST_DATA.isComplete, module_id: TEST_DATA.moduleID, parent_goal: null
@@ -134,16 +135,16 @@ describe('goal processor unit tests', () => {
     });
 
     it('get goals (network error case)', async () => {
-        parser.parseGoals.mockRejectedValue(FAKE_ERRORS.networkError);
+        parser.parseParentGoals.mockRejectedValue(FAKE_ERRORS.networkError);
         expect(await goalAPI.getGoals(TEST_DATA.moduleID)).toEqual(STATUS_CODES.CONNECTION_ERROR);
     });
 
     it('get goals (fatal server error case)', async () => {
-        parser.parseGoals.mockRejectedValue(FAKE_ERRORS.fatalServerError);
+        parser.parseParentGoals.mockRejectedValue(FAKE_ERRORS.fatalServerError);
         expect(await goalAPI.getGoals(TEST_DATA.moduleID)).toEqual(STATUS_CODES.INTERNAL_SERVER_ERROR);
     });
 
-    it('create goal (correct case)', async () => {
+    it('create goal (correct case without due date)', async () => {
         parser.storeGoal.mockResolvedValueOnce({goal_id: TEST_DATA.goalID});
         var actual = await goalAPI.createGoal({
             name: TEST_DATA.firstName, 
@@ -152,6 +153,25 @@ describe('goal processor unit tests', () => {
             isComplete: TEST_DATA.isComplete, 
             moduleId: TEST_DATA.moduleID}
         );
+        expect(actual).toEqual({goal_id: TEST_DATA.goalID});
+    });
+
+    it('create goal (correct case with due date)', async () => {
+        const testObject = {
+            name: TEST_DATA.firstName,
+            description: TEST_DATA.firstDescription,
+            goalType: TEST_DATA.goalType,
+            isComplete: TEST_DATA.isComplete,
+            moduleId: TEST_DATA.moduleID,
+            dueDate: TEST_DATA.dueDate
+        }
+        parser.storeGoal.mockResolvedValueOnce({goal_id: TEST_DATA.goalID});
+        var actual = await goalAPI.createGoal(testObject);
+        expect(parser.storeGoal).toHaveBeenCalledTimes(1);
+        expect(parser.storeGoal).toHaveBeenCalledWith({
+            ...testObject,
+            dueDate: "2025-01-01 23:59:59.000 "
+        });
         expect(actual).toEqual({goal_id: TEST_DATA.goalID});
     });
 
