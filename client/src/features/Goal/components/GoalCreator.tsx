@@ -1,20 +1,20 @@
 import React, { useState } from "react";
 import Modal from "@mui/material/Modal";
-import { ApiClient } from "../hooks/ApiClient";
-import { useHotKeys } from "../hooks/useHotKeys";
+import { ApiClient } from "../../../hooks/ApiClient";
+import { useHotKeys } from "../../../hooks/useHotKeys";
 import { DatePicker } from "@mui/x-date-pickers";
 import { Checkbox } from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { useQueryClient } from "@tanstack/react-query";
-import { GoalType } from "../types";
 
 interface GoalCreatorProps {
   moduleID: string;
-  parent_id?: string;
+  height?: string;
+  goalID?: string;
 }
 
-function SubGoalCreator({ moduleID, parent_id}: GoalCreatorProps) {
+function GoalCreator({ moduleID, goalID, height }: GoalCreatorProps) {
   const [goalName, setGoalName] = useState("");
   const [description, setDescription] = useState("");
   const GoalTypes = {
@@ -22,7 +22,7 @@ function SubGoalCreator({ moduleID, parent_id}: GoalCreatorProps) {
     DAILY: "daily",
   };
   const [goalType, setGoalType] = useState(GoalTypes.TODO);
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
   const [dueDate, setDueDate] = useState<Date | null>(null);
   const [open, setOpen] = useState(false);
   const submitDisabled = goalName === "" || description === "";
@@ -31,16 +31,16 @@ function SubGoalCreator({ moduleID, parent_id}: GoalCreatorProps) {
 
   async function handleGoalCreation() {
     try {
-      console.log(parent_id + "parent_id is here");
-      await post(`/goal/add/${parent_id}`, {
+      await post("/goal/add", {
         name: goalName,
         description: description,
-        goalType: goalType as GoalType,
+        goalType: goalType,
         isComplete: false,
         moduleId: moduleID,
         dueDate: dueDate,
+        parentGoal: goalID,
       });
-      queryClient.invalidateQueries({ queryKey: ['goals'] })
+      queryClient.invalidateQueries({ queryKey: ["goals"] });
       console.log("Goal creation is not implemented yet.");
       setOpen(false);
     } catch (error: any) {
@@ -60,10 +60,10 @@ function SubGoalCreator({ moduleID, parent_id}: GoalCreatorProps) {
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <div>
         <button
-          className="flex flex-row transition-transform rounded  w-full h-[50px] border-2 border-solid border-[#F4F4F4] justify-center items-center hover:scale-105"
+          className="flex flex-row transition-transform rounded  w-full h-[100px] border-2 border-solid border-black justify-center items-center hover:scale-105"
           onClick={() => setOpen(true)}
         >
-          <h1 className="text-black font-headlineFont text-lg">Add SubGoal</h1>
+          <h1 className="text-black font-headlineFont text-4xl">Add Goal</h1>
         </button>
         <Modal
           className="absolute float-left flex items-center justify-center top-2/4 left-2/4 "
@@ -90,7 +90,7 @@ function SubGoalCreator({ moduleID, parent_id}: GoalCreatorProps) {
                 required
               />
               <input
-                className="h-10 rounded text-base w-full border border-solid border-gray-300 px-2 "
+                className="h-40 rounded text-base w-full border border-solid border-gray-300 px-2 "
                 name="module"
                 type="text"
                 placeholder="Goal Description"
@@ -131,4 +131,4 @@ function SubGoalCreator({ moduleID, parent_id}: GoalCreatorProps) {
   );
 }
 
-export default SubGoalCreator;
+export default GoalCreator;

@@ -1,6 +1,5 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { ModuleApi } from "../api/module-api";
-import { Module } from "webpack";
 
 export function useModules() {
   const { fetchModules } = ModuleApi();

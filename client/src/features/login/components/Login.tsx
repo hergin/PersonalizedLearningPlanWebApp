@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { ApiClient } from "../hooks/ApiClient";
-import { useUser } from "../hooks/useUser";
-import { useHotKeys } from "../hooks/useHotKeys";
+import { ApiClient } from "../../../hooks/ApiClient";
+import { useUser } from "../../../hooks/useUser";
+import { useHotKeys } from "../../../hooks/useHotKeys";
 import { IconButton, InputAdornment, TextField } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 
@@ -30,7 +30,7 @@ const LoginScreen = () => {
       location.state?.from
         ? navigate(location.state.from)
         : navigate("/LearningPlan");
-    } catch (error : any) {
+    } catch (error: any) {
       console.error(error);
       alert(error.response ? error.response.data : error);
     }
@@ -48,14 +48,18 @@ const LoginScreen = () => {
             variant="outlined"
             type={"text"}
             value={email}
-            onKeyUp={(event) => {handleEnterPress(event, handleLogin, buttonDisabled)}}
+            onKeyUp={(event) => {
+              handleEnterPress(event, handleLogin, buttonDisabled);
+            }}
             onChange={(input) => setEmail(input.target.value)}
           />
           <TextField
             value={password}
             variant="outlined"
             type={showPassword ? "text" : "password"}
-            onKeyUp={(event) => {handleEnterPress(event, handleLogin, buttonDisabled)}}
+            onKeyUp={(event) => {
+              handleEnterPress(event, handleLogin, buttonDisabled);
+            }}
             onChange={(input) => setPassword(input.target.value)}
             InputProps={{
               endAdornment: (
@@ -83,7 +87,10 @@ const LoginScreen = () => {
       </div>
       <div className="flex mt-2 flex-col justify-center items-center h-24 w-[300px] border border-solid border-[#DBDBDB]">
         <p>Don't have an account?</p>
-        <Link to="/register" className="no-underline text-blue-700 text-base mb-2">
+        <Link
+          to="/register"
+          className="no-underline text-blue-700 text-base mb-2"
+        >
           <p>Register here</p>
         </Link>
       </div>

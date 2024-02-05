@@ -11,21 +11,29 @@ import {
   DialogTitle,
   TextField,
 } from "@mui/material";
-import { useUser } from "../hooks/useUser";
-import { ApiClient } from "../hooks/ApiClient";
-import { useHotKeys } from "../hooks/useHotKeys";
-import { LongMenuProps } from "../types";
+import { useUser } from "../../../hooks/useUser";
+import { ApiClient } from "../../../hooks/ApiClient";
+import { useHotKeys } from "../../../hooks/useHotKeys";
+import { LongMenuProps } from "../../../types";
 import { useQueryClient } from "@tanstack/react-query";
 
-const  ModuleEditorButton = ({editObject, dataName, dataDescription, id, moduleCompletion, deleteObject}: LongMenuProps) => {
+const ModuleEditorButton = ({
+  editObject,
+  dataName,
+  dataDescription,
+  id,
+  moduleCompletion,
+  deleteObject,
+}: LongMenuProps) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
-  const queryClient = useQueryClient()
-  
+  const queryClient = useQueryClient();
+
   const open = Boolean(anchorEl);
   const [dataNameLocal, setDataNameLocal] = useState(dataName);
-  const [dataDescriptionLocal, setDataDescriptionLocal] = useState(dataDescription);
+  const [dataDescriptionLocal, setDataDescriptionLocal] =
+    useState(dataDescription);
   const [openModal, setOpenModal] = useState(false);
-  const handleClick = (event : any) => {
+  const handleClick = (event: any) => {
     setAnchorEl(event.currentTarget);
   };
   const handleOpenModal = () => {
@@ -52,9 +60,9 @@ const  ModuleEditorButton = ({editObject, dataName, dataDescription, id, moduleC
         completion: moduleCompletion,
         email: user.email,
       });
-      queryClient.invalidateQueries({ queryKey: ['modules'] })
+      queryClient.invalidateQueries({ queryKey: ["modules"] });
       handleCloseModal();
-    } catch (error : any) {
+    } catch (error: any) {
       console.error(error);
       alert(error.response ? error.response.data : error);
     }
@@ -64,9 +72,9 @@ const  ModuleEditorButton = ({editObject, dataName, dataDescription, id, moduleC
     try {
       const result = await del(`/module/delete/${id}`);
       console.log(result);
-      queryClient.invalidateQueries({ queryKey: ['modules'] })
+      queryClient.invalidateQueries({ queryKey: ["modules"] });
       handleClose();
-    } catch (error : any) {
+    } catch (error: any) {
       console.error(error);
       alert(error.message ? error.message : error);
     }
@@ -107,14 +115,18 @@ const  ModuleEditorButton = ({editObject, dataName, dataDescription, id, moduleC
           <TextField
             value={dataNameLocal}
             onChange={(e) => setDataNameLocal(e.target.value)}
-            onKeyDown={(event) => {handleEnterPress(event, handleModuleEdit)}}
+            onKeyDown={(event) => {
+              handleEnterPress(event, handleModuleEdit);
+            }}
             fullWidth
             margin="normal"
           />
           <TextField
             value={dataDescriptionLocal}
             onChange={(e) => setDataDescriptionLocal(e.target.value)}
-            onKeyDown={(event) => {handleEnterPress(event, handleModuleEdit)}}
+            onKeyDown={(event) => {
+              handleEnterPress(event, handleModuleEdit);
+            }}
             fullWidth
             margin="normal"
           />
@@ -125,6 +137,6 @@ const  ModuleEditorButton = ({editObject, dataName, dataDescription, id, moduleC
       </Dialog>
     </>
   );
-}
+};
 
 export default ModuleEditorButton;

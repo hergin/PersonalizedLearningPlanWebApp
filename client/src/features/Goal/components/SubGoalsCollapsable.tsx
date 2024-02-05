@@ -1,9 +1,7 @@
 import { Checkbox } from "@mui/material";
 import GoalEditor from "./GoalEditor";
 import React, { useEffect, useState } from "react";
-import SubGoalCreator from "./SubGoalCreator";
-import Goals from "../screens/Goals";
-import { Goal } from "../types";
+import { Goal } from "../../../types";
 import dayjs from "dayjs";
 
 interface GoalCreatorProps {
@@ -45,7 +43,9 @@ export function SubGoalsCollapsable({
         </div>
         <div className="flex flex-col w-[15%] h-full justify-center p-3 items-center">
           <p className="text-black font-bodyFont">
-            {sub_goal.due_date ? dayjs(sub_goal.due_date).format("MM/DD/YYYY") : ""}
+            {sub_goal.due_date
+              ? dayjs(sub_goal.due_date).format("MM/DD/YYYY")
+              : ""}
           </p>
         </div>
         <div className="flex flex-col w-[15%] h-full justify-center p-3 items-center">
