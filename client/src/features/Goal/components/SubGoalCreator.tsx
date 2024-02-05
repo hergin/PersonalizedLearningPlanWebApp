@@ -40,7 +40,6 @@ function SubGoalCreator({ moduleID, parent_id }: GoalCreatorProps) {
         moduleId: moduleID,
         dueDate: dueDate,
       });
-      console.log(response);
       queryClient.invalidateQueries({ queryKey: ["goals"] });
       console.log("Goal creation is not implemented yet.");
       setOpen(false);

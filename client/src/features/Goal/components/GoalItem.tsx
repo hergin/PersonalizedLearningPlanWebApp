@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import GoalEditor from "./GoalEditor";
-import { Goal } from "../../types";
+import { Goal } from "../../../types";
 import { SubGoalsCollapsable } from "./SubGoalsCollapsable";
 import { useCollapse } from "react-collapsed";
 import dayjs from "dayjs";
@@ -109,11 +109,7 @@ export default function GoalItem({ id, goal }: GoalItemProps) {
             goalType={goal.goal_type}
             dataName={goal.name}
             dataDescription={goal.description}
-            dueDate={
-              typeof goal.due_date === "string"
-                ? new Date(goal.due_date)
-                : goal.due_date
-            }
+            dueDate={goal.due_date}
           />
         </div>
         {goal.sub_goals?.map((subGoal: Goal) => (

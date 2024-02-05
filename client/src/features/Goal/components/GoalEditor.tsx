@@ -14,7 +14,7 @@ import {
 } from "@mui/material";
 import { ApiClient } from "../../../hooks/ApiClient";
 import { useHotKeys } from "../../../hooks/useHotKeys";
-import { GoalEditorProps, GoalType } from "../../../types";
+import { GoalEditorProps } from "../../../types";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { useQueryClient } from "@tanstack/react-query";
