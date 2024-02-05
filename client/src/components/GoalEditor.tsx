@@ -67,7 +67,7 @@ export default function GoalEditor({
         name: dataNameLocal,
         description: dataDescriptionLocal,
         isComplete: false,
-        dueDate: dayjs(dueDateNew).toDate(),
+        dueDate: dayjs(dueDateNew).toDate().toISOString(),
         goalType: goalTypeNew,
       });
       queryClient.invalidateQueries({ queryKey: ['goals'] });
