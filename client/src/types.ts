@@ -1,4 +1,7 @@
-export type GoalType = "todo" | "daily";
+export enum GoalType {
+  TASK = "todo",
+  REPEATABLE = "daily",
+}
 
 export interface Module {
   module_id: number,

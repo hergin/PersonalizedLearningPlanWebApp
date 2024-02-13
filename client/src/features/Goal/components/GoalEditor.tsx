@@ -14,7 +14,7 @@ import {
 } from "@mui/material";
 import { ApiClient } from "../../../hooks/ApiClient";
 import { useHotKeys } from "../../../hooks/useHotKeys";
-import { GoalEditorProps } from "../../../types";
+import { GoalEditorProps, GoalType } from "../../../types";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { useQueryClient } from "@tanstack/react-query";
@@ -34,11 +34,7 @@ export default function GoalEditor({
   const [dataDescriptionLocal, setDataDescriptionLocal] =
     useState(dataDescription);
   const [openModal, setOpenModal] = useState(false);
-  const GoalTypes = {
-    TODO: "todo",
-    DAILY: "daily",
-  };
-  const [goalTypeNew, setGoalTypeNew] = useState(goalType as string);
+  const [goalTypeNew, setGoalTypeNew] = useState(goalType);
   const [dueDateNew, setDueDateNew] = useState<string | undefined>(
     dayjs(dueDate).format("MM/DD/YYYY")
   );
@@ -82,9 +78,9 @@ export default function GoalEditor({
 
   function toggleGoalType(checked: boolean) {
     if (checked) {
-      setGoalTypeNew(GoalTypes.DAILY);
+      setGoalTypeNew(GoalType.REPEATABLE);
     } else {
-      setGoalTypeNew(GoalTypes.TODO);
+      setGoalTypeNew(GoalType.TASK);
     }
   }
 
@@ -155,7 +151,7 @@ export default function GoalEditor({
               <div className="flex flex-row justify-center items-center">
                 <p className="font-headlineFont text-xl">Daily</p>
                 <Checkbox
-                  checked={goalTypeNew === "daily"}
+                  checked={goalTypeNew === GoalType.REPEATABLE}
                   onChange={(event) => toggleGoalType(event.target.checked)}
                 />
               </div>

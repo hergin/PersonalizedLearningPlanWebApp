@@ -9,7 +9,7 @@ const loginAPI = new LoginAPI();
 const ERROR_MESSAGES = initializeErrorMap();
 
 loginRoutes.post('/login', async (req : any, res : any) => {
-    console.log(`Received: ${req.body}`);
+    console.log(`Received in login: ${JSON.stringify(req.body)}`);
     const loginQuery = await loginAPI.verifyLogin(req.body.email, req.body.password);
     if(typeof loginQuery === typeof StatusCode) {
         console.log("Login verification failed.");
@@ -28,19 +28,19 @@ loginRoutes.post('/login', async (req : any, res : any) => {
 });
 
 loginRoutes.post('/token', async (req : any, res : any) => {
-    console.log(`Received: ${req.body.refreshToken}`);
+    console.log(`Received in token: ${JSON.stringify(req.body)}`);
     const tokenQuery = await loginAPI.verifyToken(req.body.id, req.body.refreshToken);
     if(tokenQuery !== StatusCode.OK) {
         console.log("Token verification failed.");
         res.status(tokenQuery).send(ERROR_MESSAGES.get(tokenQuery));
         return;
     }
-    const accessToken = generateAccessToken(req.body.email);
+    const accessToken = generateAccessToken(req.body.id);
     res.status(StatusCode.OK).json({accessToken});
 });
 
 loginRoutes.post('/register', async(req : any, res : any) => {
-    console.log(req.body);
+    console.log(`Received in register: ${JSON.stringify(req.body)}`);
     const accountStatusCode = await loginAPI.createAccount(req.body.email, req.body.password);
     if(accountStatusCode !== StatusCode.OK) {
         res.status(accountStatusCode).send(ERROR_MESSAGES.get(accountStatusCode));
@@ -50,7 +50,7 @@ loginRoutes.post('/register', async(req : any, res : any) => {
 });
 
 loginRoutes.post('/logout', async(req : any, res : any) => {
-    console.log(`Received in logout: ${req.body}`);
+    console.log(`Received in logout: ${JSON.stringify(req.body)}`);
     const logoutQuery = await loginAPI.logout(req.body.id);
     if(logoutQuery !== StatusCode.OK) {
         res.status(logoutQuery).send(ERROR_MESSAGES.get(logoutQuery));
