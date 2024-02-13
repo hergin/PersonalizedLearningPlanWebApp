@@ -2,7 +2,7 @@ import express from "express";
 import { authenticateToken } from "../utils/token";
 import { initializeErrorMap } from "../utils/errorMessages";
 import { GoalAPI } from "../controller/goalProcessor";
-import { STATUS_CODES } from "../utils/statusCodes";
+import { StatusCode } from "../types";
 
 const goalRoutes = express.Router();
 const ERROR_MESSAGES = initializeErrorMap();
@@ -15,7 +15,7 @@ goalRoutes.get('/get/module/:id', authenticateToken, async (req: any, res: any) 
         res.status(goalQuery).send(ERROR_MESSAGES.get(goalQuery));
         return;
     }
-    res.json(goalQuery);
+    res.status(StatusCode.OK).json(goalQuery);
 });
 
 goalRoutes.post('/add', authenticateToken, async (req: any, res: any) => {
@@ -33,7 +33,7 @@ goalRoutes.post('/add', authenticateToken, async (req: any, res: any) => {
         res.status(goalQuery).send(ERROR_MESSAGES.get(goalQuery));
         return;
     }
-    res.status(STATUS_CODES.OK).json(goalQuery);
+    res.status(StatusCode.OK).json(goalQuery);
 });
 
 goalRoutes.put('/update/:id', authenticateToken, async (req: any, res: any) => {
@@ -52,17 +52,17 @@ goalRoutes.put('/update/:id', authenticateToken, async (req: any, res: any) => {
         res.status(goalQuery).send(ERROR_MESSAGES.get(goalQuery));
         return;
     }
-    res.json(goalQuery);
+    res.status(StatusCode.OK).json(goalQuery);
 });
 
 goalRoutes.delete('/delete/:id', authenticateToken, async (req: any, res: any) => {
     console.log(`Received in delete goal: ${req.params.id}`);
     const goalQuery = await goalAPI.deleteGoal(parseInt(req.params.id));
-    if (goalQuery !== STATUS_CODES.OK) {
+    if (goalQuery !== StatusCode.OK) {
         res.status(goalQuery).send(ERROR_MESSAGES.get(goalQuery));
         return;
     }
-    res.sendStatus(STATUS_CODES.OK);
+    res.sendStatus(StatusCode.OK);
 });
 
 goalRoutes.get('/get/:id/:variable', authenticateToken, async (req: any, res: any) => {
@@ -72,7 +72,7 @@ goalRoutes.get('/get/:id/:variable', authenticateToken, async (req: any, res: an
         res.status(variableQuery).send(ERROR_MESSAGES.get(variableQuery));
         return;
     }
-    res.sendStatus(STATUS_CODES.OK).json(variableQuery);
+    res.status(StatusCode.OK).json(variableQuery);
 });
 
 goalRoutes.post('/add/:id', authenticateToken, async (req: any, res: any) => {
@@ -89,7 +89,7 @@ goalRoutes.post('/add/:id', authenticateToken, async (req: any, res: any) => {
         res.status(goalQuery).send(ERROR_MESSAGES.get(goalQuery));
         return;
     }
-    res.status(STATUS_CODES.OK).json(goalQuery);
+    res.status(StatusCode.OK).json(goalQuery);
 });
 
 export default goalRoutes;

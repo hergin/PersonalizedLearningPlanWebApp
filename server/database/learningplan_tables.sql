@@ -1,8 +1,10 @@
 DROP TABLE IF EXISTS ACCOUNT CASCADE;
 CREATE TABLE ACCOUNT(
-    email TEXT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
+    email TEXT UNIQUE NOT NULL,
     account_password TEXT NOT NULL,
     refresh_token TEXT,
+    receives_emails BOOLEAN DEFAULT TRUE,
     CONSTRAINT valid_email CHECK (email ~* '^[A-Za-z0-9._%-]+@[A-Za-z0-9.-]+[.][A-Za-z]+$')
 );
 
@@ -15,8 +17,8 @@ CREATE TABLE PROFILE(
     profile_picture TEXT,
     job_title TEXT,
     bio TEXT,
-    email TEXT NOT NULL,
-    FOREIGN KEY (email) REFERENCES ACCOUNT(email)
+    account_id SERIAL NOT NULL,
+    FOREIGN KEY (account_id) REFERENCES ACCOUNT(id)
         ON DELETE CASCADE ON UPDATE CASCADE
 );
 
@@ -26,8 +28,8 @@ CREATE TABLE MODULE(
     module_name TEXT,
     description TEXT,
     completion_percent INT,
-    email TEXT,
-    FOREIGN KEY (email) REFERENCES ACCOUNT(email)
+    account_id SERIAL,
+    FOREIGN KEY (account_id) REFERENCES ACCOUNT(id)
         ON DELETE CASCADE ON UPDATE CASCADE
 );
 

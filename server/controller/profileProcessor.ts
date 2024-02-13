@@ -1,7 +1,6 @@
 import ProfileParser from "../parser/profileParser";
-import { STATUS_CODES } from "../utils/statusCodes";
 import { ErrorCodeInterpreter } from "./errorCodeInterpreter";
-import { Profile } from "../types";
+import { Profile, StatusCode } from "../types";
 
 export class ProfileAPI {
     parser : ProfileParser;
@@ -12,19 +11,19 @@ export class ProfileAPI {
         this.errorCodeInterpreter = new ErrorCodeInterpreter();
     }
 
-    async createProfile(username : string, firstName : string, lastName : string, email : string) {
+    async createProfile(username : string, firstName : string, lastName : string, accountId : number) {
         try {
-            await this.parser.storeProfile(username, firstName, lastName, email);
-            return STATUS_CODES.OK;
+            await this.parser.storeProfile(username, firstName, lastName, accountId);
+            return StatusCode.OK;
         } catch(error) {
             return this.errorCodeInterpreter.getStatusCode(error);
         }
     }
 
-    async getProfile(email : string) {
+    async getProfile(accountId : number) {
         try {
-            const profile = await this.parser.parseProfile(email);
-            return (profile) ? profile : STATUS_CODES.UNAUTHORIZED;
+            const profile = await this.parser.parseProfile(accountId);
+            return profile ? profile : StatusCode.UNAUTHORIZED;
         } catch(error) {
             return this.errorCodeInterpreter.getStatusCode(error);
         }
@@ -33,16 +32,16 @@ export class ProfileAPI {
     async updateProfile(profile: Profile) {
         try {
             await this.parser.updateProfile(profile);
-            return STATUS_CODES.OK;
+            return StatusCode.OK;
         } catch(error) {
             return this.errorCodeInterpreter.getStatusCode(error);
         }
     }
 
-    async deleteProfile(profile_id : number) {
+    async deleteProfile(profileId : number) {
         try {
-            await this.parser.deleteProfile(profile_id);
-            return STATUS_CODES.OK;
+            await this.parser.deleteProfile(profileId);
+            return StatusCode.OK;
         } catch(error) {
             return this.errorCodeInterpreter.getStatusCode(error);
         }

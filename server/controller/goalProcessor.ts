@@ -1,5 +1,5 @@
 import GoalParser from "../parser/goalParser";
-import { STATUS_CODES } from "../utils/statusCodes";
+import { StatusCode } from "../types";
 import { ErrorCodeInterpreter } from "./errorCodeInterpreter";
 import { Goal } from "../types";
 
@@ -67,7 +67,7 @@ export class GoalAPI {
             if (completionTime) {
                 await this.parser.updateGoalTimestamps(goalId, completionTime, expiration);
             }
-            return STATUS_CODES.OK;
+            return StatusCode.OK;
         } catch (error) {
             return this.errorCodeInterpreter.getStatusCode(error);
         }
@@ -76,7 +76,7 @@ export class GoalAPI {
     async deleteGoal(goalId: number) {
         try {
             await this.parser.deleteGoal(goalId);
-            return STATUS_CODES.OK;
+            return StatusCode.OK;
         } catch (error) {
             return this.errorCodeInterpreter.getStatusCode(error);
         }

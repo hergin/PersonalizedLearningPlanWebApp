@@ -2,7 +2,7 @@ import express from "express";
 import { authenticateToken } from "../utils/token";
 import { initializeErrorMap } from "../utils/errorMessages";
 import { ProfileAPI } from "../controller/profileProcessor";
-import { STATUS_CODES } from "../utils/statusCodes";
+import { StatusCode } from "../types";
 
 const profileRoutes = express.Router();
 const ERROR_MESSAGES = initializeErrorMap();
@@ -16,18 +16,18 @@ profileRoutes.get('/get/:id', authenticateToken, async(req : any, res : any) => 
         res.status(profileQuery).send(ERROR_MESSAGES.get(profileQuery));
         return;
     }
-    res.status(STATUS_CODES.OK).json(profileQuery);
+    res.status(StatusCode.OK).json(profileQuery);
 });
 
 profileRoutes.post('/create', async(req : any, res : any) => {
-    console.log(`Data received in create profile: ${req.body.email}`);
-    const profileQuery = await profileAPI.createProfile(req.body.username, req.body.firstName, req.body.lastName, req.body.email);
-    if(profileQuery !== STATUS_CODES.OK) {
+    console.log(`Data received in create profile: ${req.body.account_id}`);
+    const profileQuery = await profileAPI.createProfile(req.body.username, req.body.firstName, req.body.lastName, req.body.account_id);
+    if(profileQuery !== StatusCode.OK) {
         console.error("There was a problem creating profile.");
         res.status(profileQuery).send(ERROR_MESSAGES.get(profileQuery));
         return;
     }
-    res.sendStatus(STATUS_CODES.OK);
+    res.sendStatus(StatusCode.OK);
 });
 
 profileRoutes.put('/edit/:id', authenticateToken, async(req : any, res : any) => {
@@ -41,12 +41,12 @@ profileRoutes.put('/edit/:id', authenticateToken, async(req : any, res : any) =>
         jobTitle: req.body.jobTitle, 
         bio: req.body.bio
     });
-    if(profileQuery !== STATUS_CODES.OK) {
+    if(profileQuery !== StatusCode.OK) {
         console.error("There was a problem updating profile.");
         res.status(profileQuery).send(ERROR_MESSAGES.get(profileQuery));
         return;
     }
-    res.sendStatus(STATUS_CODES.OK);
+    res.sendStatus(StatusCode.OK);
 });
 
 profileRoutes.delete('/delete/:id', authenticateToken, async(req : any, res : any) => {
@@ -57,7 +57,7 @@ profileRoutes.delete('/delete/:id', authenticateToken, async(req : any, res : an
         res.status(profileQuery).send(ERROR_MESSAGES.get(profileQuery));
         return;
     }
-    res.sendStatus(STATUS_CODES.OK);
+    res.sendStatus(StatusCode.OK);
 });
 
 export default profileRoutes;

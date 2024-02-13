@@ -22,7 +22,7 @@ const LoginScreen = () => {
     try {
       const response = await post("/auth/login", { email, password });
       addUser({
-        email,
+        id: response.id,
         accessToken: response.accessToken,
         refreshToken: response.refreshToken,
       });

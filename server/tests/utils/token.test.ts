@@ -6,7 +6,7 @@ require("dotenv").config({
 });
 import { authenticateToken, generateAccessToken, generateRefreshToken } from '../../utils/token';
 import jwt from "jsonwebtoken";
-import { STATUS_CODES } from "../../utils/statusCodes";
+import { StatusCode } from "../../types";
 
 
 describe('authenticate token tests', () => {
@@ -45,7 +45,7 @@ describe('authenticate token tests', () => {
         };
         authenticateToken(mockRequest, mockResponse, next);
         expect(sendStatus).toHaveBeenCalledTimes(1);
-        expect(sendStatus).toHaveBeenCalledWith(STATUS_CODES.UNAUTHORIZED);
+        expect(sendStatus).toHaveBeenCalledWith(StatusCode.UNAUTHORIZED);
     });
 
     it('authenticateToken wrong token case', () => {
@@ -65,7 +65,7 @@ describe('authenticate token tests', () => {
         };
         authenticateToken(mockRequest, mockResponse, next);
         expect(sendStatus).toHaveBeenCalledTimes(1);
-        expect(sendStatus).toHaveBeenCalledWith(STATUS_CODES.FORBIDDEN);
+        expect(sendStatus).toHaveBeenCalledWith(StatusCode.FORBIDDEN);
         expect(next).toHaveBeenCalledTimes(0);
     });
 

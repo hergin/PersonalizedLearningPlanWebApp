@@ -132,7 +132,7 @@ function ProfileScreen() {
   async function deleteAccount() {
     try {
       await del(`/profile/delete/${profileState.id}`);
-      await del(`/auth/delete/${user.email}`);
+      await del(`/auth/delete/${user.id}`);
       removeUser();
       navigate("/#");
     } catch (error: any) {

@@ -2,6 +2,7 @@ import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useUser } from "../hooks/useUser";
 import { ApiClient } from "../hooks/ApiClient";
+import { emptyUser } from "../types";
 
 const AccountButton = () => {
     const { user, removeUser } = useUser();
@@ -10,7 +11,7 @@ const AccountButton = () => {
   
     async function handleLogout() {
       try {
-        await post("/auth/logout", {email: user.email});
+        await post("/auth/logout", {id: user.id});
         removeUser();
         navigate("/#");
       } catch (error : any) {
@@ -19,7 +20,7 @@ const AccountButton = () => {
       }
     }
   
-    if(user.email !== "") {
+    if(user.id !== emptyUser.id) {
       return (
         <div>
           <button className="flex flex-col justify-center items-center w-full no-underline text-2xl h-12 bg-transparent cursor-pointer font-headlineFont border-none duration-500 hover:bg-[#820000] px-4" onClick={handleLogout}>Log out</button>

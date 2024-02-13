@@ -2,7 +2,7 @@ export {};
 
 import { GoalAPI } from "../../controller/goalProcessor";
 import GoalParser from "../../parser/goalParser";
-import { STATUS_CODES } from "../../utils/statusCodes";
+import { StatusCode } from "../../types";
 import { FAKE_ERRORS } from "./fakeErrors";
 import { GoalType } from "../../types";
 jest.mock("../../parser/goalParser");
@@ -15,7 +15,7 @@ const TEST_DATA = {
     isComplete: false,
     goalID: 5,
     moduleID: 9,
-    goalType: "todo" as GoalType,
+    goalType: GoalType.TASK,
     dueDate: "2025-01-01T23:59:59.000Z"
 }
 
@@ -136,12 +136,12 @@ describe('goal processor unit tests', () => {
 
     it('get goals (network error case)', async () => {
         parser.parseParentGoals.mockRejectedValue(FAKE_ERRORS.networkError);
-        expect(await goalAPI.getGoals(TEST_DATA.moduleID)).toEqual(STATUS_CODES.CONNECTION_ERROR);
+        expect(await goalAPI.getGoals(TEST_DATA.moduleID)).toEqual(StatusCode.CONNECTION_ERROR);
     });
 
     it('get goals (fatal server error case)', async () => {
         parser.parseParentGoals.mockRejectedValue(FAKE_ERRORS.fatalServerError);
-        expect(await goalAPI.getGoals(TEST_DATA.moduleID)).toEqual(STATUS_CODES.INTERNAL_SERVER_ERROR);
+        expect(await goalAPI.getGoals(TEST_DATA.moduleID)).toEqual(StatusCode.INTERNAL_SERVER_ERROR);
     });
 
     it('create goal (correct case without due date)', async () => {
@@ -184,7 +184,7 @@ describe('goal processor unit tests', () => {
             isComplete: TEST_DATA.isComplete, 
             moduleId: TEST_DATA.moduleID
         });
-        expect(actual).toEqual(STATUS_CODES.CONFLICT);
+        expect(actual).toEqual(StatusCode.CONFLICT);
     });
 
     it('create goal (network error case)', async () => {
@@ -196,7 +196,7 @@ describe('goal processor unit tests', () => {
             isComplete: TEST_DATA.isComplete, 
             moduleId: TEST_DATA.moduleID
         });
-        expect(actual).toEqual(STATUS_CODES.CONNECTION_ERROR);
+        expect(actual).toEqual(StatusCode.CONNECTION_ERROR);
     });
 
     it('create goal (server error case)', async () => {
@@ -206,9 +206,9 @@ describe('goal processor unit tests', () => {
             description: TEST_DATA.firstDescription, 
             isComplete: TEST_DATA.isComplete, 
             moduleId: TEST_DATA.moduleID,
-            goalType: 'todo'
+            goalType: GoalType.REPEATABLE
         });
-        expect(actual).toEqual(STATUS_CODES.INTERNAL_SERVER_ERROR);
+        expect(actual).toEqual(StatusCode.INTERNAL_SERVER_ERROR);
     });
 
     it('update goal (pass case)', async () => {
@@ -218,7 +218,7 @@ describe('goal processor unit tests', () => {
             description: TEST_DATA.firstDescription, 
             goalType: TEST_DATA.goalType, 
             isComplete: TEST_DATA.isComplete
-        })).toEqual(STATUS_CODES.OK);
+        })).toEqual(StatusCode.OK);
     });
 
     it('update goal (duplicate case)', async () => {
@@ -228,7 +228,7 @@ describe('goal processor unit tests', () => {
             description: TEST_DATA.firstDescription, 
             goalType: TEST_DATA.goalType, 
             isComplete: TEST_DATA.isComplete
-        })).toEqual(STATUS_CODES.CONFLICT);
+        })).toEqual(StatusCode.CONFLICT);
     });
 
     it('update goal (bad data case)', async () => {
@@ -238,7 +238,7 @@ describe('goal processor unit tests', () => {
             description: TEST_DATA.firstDescription, 
             goalType: TEST_DATA.goalType, 
             isComplete: TEST_DATA.isComplete
-        })).toEqual(STATUS_CODES.BAD_REQUEST);
+        })).toEqual(StatusCode.BAD_REQUEST);
     });
 
     it('update goal (connection lost case)', async () => {
@@ -248,7 +248,7 @@ describe('goal processor unit tests', () => {
             description: TEST_DATA.firstDescription, 
             goalType: TEST_DATA.goalType, 
             isComplete: TEST_DATA.isComplete
-        })).toEqual(STATUS_CODES.CONNECTION_ERROR);
+        })).toEqual(StatusCode.CONNECTION_ERROR);
     });
 
     it('update goal (fatal error case)', async () => {
@@ -258,32 +258,32 @@ describe('goal processor unit tests', () => {
             description: TEST_DATA.firstDescription, 
             goalType: TEST_DATA.goalType, 
             isComplete: TEST_DATA.isComplete
-        })).toEqual(STATUS_CODES.INTERNAL_SERVER_ERROR);
+        })).toEqual(StatusCode.INTERNAL_SERVER_ERROR);
     });
 
     it('delete goal (pass case)', async () => {
         parser.deleteGoal.mockResolvedValueOnce();
-        expect(await goalAPI.deleteGoal(TEST_DATA.goalID)).toEqual(STATUS_CODES.OK);
+        expect(await goalAPI.deleteGoal(TEST_DATA.goalID)).toEqual(StatusCode.OK);
     });
 
     it('delete goal (duplicate case)', async () => {
         parser.deleteGoal.mockRejectedValue(FAKE_ERRORS.primaryKeyViolation);
-        expect(await goalAPI.deleteGoal(TEST_DATA.goalID)).toEqual(STATUS_CODES.CONFLICT);
+        expect(await goalAPI.deleteGoal(TEST_DATA.goalID)).toEqual(StatusCode.CONFLICT);
     });
 
     it('delete goal (bad data case)', async () => {
         parser.deleteGoal.mockRejectedValue(FAKE_ERRORS.badRequest);
-        expect(await goalAPI.deleteGoal(TEST_DATA.goalID)).toEqual(STATUS_CODES.BAD_REQUEST);
+        expect(await goalAPI.deleteGoal(TEST_DATA.goalID)).toEqual(StatusCode.BAD_REQUEST);
     });
 
     it('delete goal (connection lost case)', async () => {
         parser.deleteGoal.mockRejectedValue(FAKE_ERRORS.networkError);
-        expect(await goalAPI.deleteGoal(TEST_DATA.goalID)).toEqual(STATUS_CODES.CONNECTION_ERROR);
+        expect(await goalAPI.deleteGoal(TEST_DATA.goalID)).toEqual(StatusCode.CONNECTION_ERROR);
     });
 
     it('delete goal (fatal error case)', async () => {
         parser.deleteGoal.mockRejectedValue(FAKE_ERRORS.fatalServerError);
-        expect(await goalAPI.deleteGoal(TEST_DATA.goalID)).toEqual(STATUS_CODES.INTERNAL_SERVER_ERROR);
+        expect(await goalAPI.deleteGoal(TEST_DATA.goalID)).toEqual(StatusCode.INTERNAL_SERVER_ERROR);
     });
 
     it('parse goal attribute (name case)', async () => {
@@ -298,16 +298,16 @@ describe('goal processor unit tests', () => {
 
     it('parse goal attribute (bad request)', async () => {
         parser.parseGoalVariable.mockRejectedValue(FAKE_ERRORS.badRequest);
-        expect(await goalAPI.getGoalVariable(TEST_DATA.goalID, "name")).toEqual(STATUS_CODES.BAD_REQUEST);
+        expect(await goalAPI.getGoalVariable(TEST_DATA.goalID, "name")).toEqual(StatusCode.BAD_REQUEST);
     });
 
     it('parse goal attribute (network error case)', async () => {
         parser.parseGoalVariable.mockRejectedValue(FAKE_ERRORS.networkError);
-        expect(await goalAPI.getGoalVariable(TEST_DATA.goalID, "name")).toEqual(STATUS_CODES.CONNECTION_ERROR);
+        expect(await goalAPI.getGoalVariable(TEST_DATA.goalID, "name")).toEqual(StatusCode.CONNECTION_ERROR);
     });
 
     it('parse goal attribute (fatal server error case)', async () => {
         parser.parseGoalVariable.mockRejectedValue(FAKE_ERRORS.fatalServerError);
-        expect(await goalAPI.getGoalVariable(TEST_DATA.goalID, "name")).toEqual(STATUS_CODES.INTERNAL_SERVER_ERROR);
+        expect(await goalAPI.getGoalVariable(TEST_DATA.goalID, "name")).toEqual(StatusCode.INTERNAL_SERVER_ERROR);
     });
 });
