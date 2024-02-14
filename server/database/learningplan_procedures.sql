@@ -1,9 +1,9 @@
-CREATE OR REPLACE PROCEDURE update_is_complete(id INT)
+CREATE OR REPLACE PROCEDURE update_is_complete()
 AS $$
     BEGIN
-        UPDATE GOAL g
-        SET is_complete = CURRENT_TIMESTAMP < g.expiration
-        WHERE g.expiration IS NOT NULL;
+        UPDATE GOAL
+        SET is_complete = (CURRENT_TIMESTAMP < expiration)
+        WHERE expiration IS NOT NULL;
     END;
 $$ LANGUAGE PLPGSQL;
 

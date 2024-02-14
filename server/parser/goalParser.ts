@@ -117,4 +117,9 @@ export default class GoalParser extends DatabaseParser {
         }
         return this.parseDatabase(query);
     }
+
+    async runMaintenanceProcedures() {
+        console.log("Running goal's maintenance procedures...");
+        await this.updateDatabase("CALL update_is_complete()");
+    }
 }

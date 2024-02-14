@@ -433,11 +433,38 @@ describe('goal parser tests', () => {
         ]);
     });
 
+    it('run maintenance procedures (expired goal case)', async () => {
+        createTestParentGoal();
+        const goalId = await getGoalID();
+        await client.query({
+            text: "UPDATE GOAL SET is_complete = 'true', expiration = $1 WHERE goal_id = $2",
+            values: [new Date(TEST_DATA.pastDueDate), goalId]
+        });
+        const test = await client.query("SELECT * FROM GOAL WHERE goal_id = $1", [goalId]);
+        console.log(JSON.stringify(test.rows));
+        await parser.runMaintenanceProcedures();
+        const results = await client.query("SELECT * FROM GOAL WHERE goal_id = $1", [goalId]);
+        expect(results.rows).toEqual([
+            {
+                goal_id: goalId,
+                name: TEST_DATA.goalNames[0],
+                description: TEST_DATA.goalDescriptions[0],
+                goal_type: GoalType.TASK,
+                is_complete: false,
+                module_id: moduleID,
+                due_date: null,
+                completion_time: null,
+                expiration: new Date(TEST_DATA.pastDueDate),
+                parent_goal: null
+            }
+        ]);
+    });
+
     async function createTestParentGoal() {
-        await client.query(
-            "INSERT INTO GOAL(name, description, goal_type, is_complete, module_id) VALUES ($1, $2, $3, $4, $5)",
-            [TEST_DATA.goalNames[0], TEST_DATA.goalDescriptions[0], GoalType.TASK, TEST_DATA.isComplete, moduleID]
-        );
+        await client.query({
+            text: "INSERT INTO GOAL(name, description, goal_type, is_complete, module_id) VALUES ($1, $2, $3, $4, $5)",
+            values: [TEST_DATA.goalNames[0], TEST_DATA.goalDescriptions[0], GoalType.TASK, TEST_DATA.isComplete, moduleID]
+        });
     }
     
     function getExceptedSubGoals(subGoalProps: ExpectedSubGoalResultProps) {
