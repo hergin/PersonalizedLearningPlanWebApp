@@ -1,8 +1,6 @@
 import DatabaseParser from "./databaseParser";
 import { Goal, GoalType } from "../types";
 
-const TIMESTAMP_FORMAT : string = "YYYY-MM-DD HH24:MI:SS"
-
 export default class GoalParser extends DatabaseParser {
     constructor() {
         super();
@@ -107,13 +105,16 @@ export default class GoalParser extends DatabaseParser {
         return this.parseDatabase(query);
     }
 
-    async parseAllSubGoals() {
-        console.log("Getting every sub goal...");
-        return this.parseDatabase("SELECT * FROM GOAL WHERE parent_goal IS NOT NULL");
-    }
-
-    async parseAllParentGoals() {
-        console.log("Getting all parent goals...");
-        return this.parseDatabase("SELECT * FROM GOAL WHERE parent_goal IS NULL");
+    async parseAccountsWithUpcomingDueDates() {
+        console.log("Getting associated account...");
+        const query = {
+            text: `
+                SELECT g.name as goal, p.username as username, a.email as email, g.due_date as due_date 
+                FROM GOAL g JOIN MODULE m USING (module_id) JOIN ACCOUNT a ON a.id = m.account_id JOIN PROFILE p on a.id = p.account_id 
+                WHERE g.due_date IS NOT NULL AND g.is_complete IS FALSE AND a.receives_emails IS TRUE AND g.due_date <= (CURRENT_TIMESTAMP + INTERVAL '24 hours');
+            `,
+            values: []
+        }
+        return this.parseDatabase(query);
     }
 }

@@ -260,8 +260,8 @@ describe('goal parser tests', () => {
             }
         ]);
         var actual = await client.query(selectQuery(goalID, QUERY_VARIABLES.parent));
-        expect(actual.rows).toEqual([getExceptedSubGoals(
-            {parentGoalId: goalID, goalType: GoalType.TASK})[0]
+        expect(actual.rows).toEqual([
+            getExceptedSubGoals({parentGoalId: goalID, goalType: GoalType.TASK})[0]
         ]);
     });
 
@@ -294,16 +294,11 @@ describe('goal parser tests', () => {
         expect(result).toEqual(getExceptedSubGoals({goalType: GoalType.REPEATABLE, parentGoalId: goalID}));
     });
 
-    it('get all sub goals', async () => {
+    it('parse accounts with upcoming due dates (null case)', async () => {
         createTestParentGoal();
-        var goalID = await getGoalID();
-        var altGoalID = goalID + 1;
-        createTestSubGoals(goalID);
-        createTestSubGoals(altGoalID);
-        const result = await parser.parseAllSubGoals();
-        expect(result).toEqual(getExceptedSubGoals({parentGoalId: goalID, goalType: GoalType.REPEATABLE}));
+        const result = await parser.parseAccountsWithUpcomingDueDates();
+        expect(result).toEqual([]);
     });
-
 
     async function createTestParentGoal() {
         await client.query(

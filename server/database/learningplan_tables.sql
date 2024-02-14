@@ -17,7 +17,7 @@ CREATE TABLE PROFILE(
     profile_picture TEXT,
     job_title TEXT,
     bio TEXT,
-    account_id SERIAL NOT NULL,
+    account_id INT NOT NULL,
     FOREIGN KEY (account_id) REFERENCES ACCOUNT(id)
         ON DELETE CASCADE ON UPDATE CASCADE
 );
@@ -28,7 +28,7 @@ CREATE TABLE MODULE(
     module_name TEXT,
     description TEXT,
     completion_percent INT,
-    account_id SERIAL,
+    account_id INT,
     FOREIGN KEY (account_id) REFERENCES ACCOUNT(id)
         ON DELETE CASCADE ON UPDATE CASCADE
 );
@@ -42,7 +42,7 @@ CREATE TABLE GOAL(
     description TEXT,
     goal_type GOAL_TYPE NOT NULL,
     is_complete BOOLEAN,
-    module_id SERIAL,
+    module_id INT,
     due_date TIMESTAMP WITH TIME ZONE,
     completion_time TIMESTAMP WITH TIME ZONE,
     expiration TIMESTAMP WITH TIME ZONE,
@@ -54,7 +54,7 @@ CREATE TABLE GOAL(
 DROP TABLE IF EXISTS DASHBOARD CASCADE;
 CREATE TABLE DASHBOARD(
     dashboard_id SERIAL PRIMARY KEY,
-    profile_id SERIAL NOT NULL,
+    profile_id INT NOT NULL,
     FOREIGN KEY (profile_id) REFERENCES PROFILE(profile_id)
         ON DELETE CASCADE ON UPDATE CASCADE
 );

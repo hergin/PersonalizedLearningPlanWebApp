@@ -1,8 +1,8 @@
-import path from "path";
+import { join } from "path";
 require("dotenv").config({
-    path: path.join(__dirname, ".env"),
+    path: join("../", ".env")
 });
-import jwt from "jsonwebtoken";
+import { verify, sign } from "jsonwebtoken";
 import { StatusCode } from "../types";
 
 export function authenticateToken(req : any, res : any, next : any) {
@@ -12,7 +12,7 @@ export function authenticateToken(req : any, res : any, next : any) {
         console.log("Token was null!");
         return res.sendStatus(StatusCode.UNAUTHORIZED);
     }    
-    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET!, (err : any, user : any) => {
+    verify(token, process.env.ACCESS_TOKEN_SECRET!, (err : any, user : any) => {
         if(err) {
             console.error("An error has occurred authenticating token!", err);    
             return res.sendStatus(StatusCode.FORBIDDEN);
@@ -23,9 +23,9 @@ export function authenticateToken(req : any, res : any, next : any) {
 }
 
 export const generateAccessToken = function(email : string) {
-    return jwt.sign({email}, process.env.ACCESS_TOKEN_SECRET!, {expiresIn: '24h'});
+    return sign({email}, process.env.ACCESS_TOKEN_SECRET!, {expiresIn: '24h'});
 }
 
 export const generateRefreshToken = function(email : string) {
-    return jwt.sign({email}, process.env.REFRESH_TOKEN_SECRET!);
+    return sign({email}, process.env.REFRESH_TOKEN_SECRET!);
 }
