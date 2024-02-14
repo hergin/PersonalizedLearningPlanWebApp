@@ -18,6 +18,22 @@ const TEST_DATA = {
     altGoalDescription: "Complete my homework today."
 }
 
+interface ExpectedParentGoalResultProps {
+    goalType: GoalType, 
+    goalId?: number, 
+    dueDateExists?: boolean, 
+    completionTimeExists?: boolean, 
+    expirationExists?: boolean
+}
+
+interface ExpectedSubGoalResultProps {
+    parentGoalId: number,
+    goalType: GoalType,
+    dueDateExists?: boolean, 
+    completionTimeExists?: boolean, 
+    expirationExists?: boolean
+}
+
 function convertToPostgresTimestamp(input: string): string {
     return input.replace('T', ' ').replace('Z', '');
 }
@@ -99,21 +115,25 @@ describe('goal parser tests', () => {
             }
         ]);
         var actual = await client.query(selectQuery(moduleID, QUERY_VARIABLES.module));
-        expect(actual.rows).toEqual([
+        expect(actual.rows).toEqual(getExpectedParentGoal({goalType: GoalType.TASK}));
+    });
+
+    function getExpectedParentGoal(resultProps: ExpectedParentGoalResultProps): any[] {
+        return [
             {
-                goal_id: expect.any(Number),
+                goal_id: resultProps.goalId ? resultProps.goalId : expect.any(Number),
                 name: TEST_DATA.goalName,
                 description: TEST_DATA.goalDescription,
-                goal_type: GoalType.TASK,
+                goal_type: resultProps.goalType,
                 is_complete: TEST_DATA.isComplete,
+                due_date: resultProps.dueDateExists ? new Date(TEST_DATA.dueDate) : null,
                 module_id: moduleID,
-                due_date: null,
-                completion_time: null,
-                expiration: null,
+                completion_time: resultProps.completionTimeExists ? new Date(TEST_DATA.completionTime) : null,
+                expiration: resultProps.expirationExists ? new Date(TEST_DATA.expiration) : null,
                 parent_goal: null
             }
-        ]);
-    });
+        ]
+    }
 
     it('store goal (with due date)', async () => {
         const goalID = await parser.storeGoal({
@@ -125,43 +145,17 @@ describe('goal parser tests', () => {
             }
         ]);
         var actual = await client.query(selectQuery(moduleID, QUERY_VARIABLES.module));
-        expect(actual.rows).toEqual([
-            {
-                goal_id: expect.any(Number),
-                name: TEST_DATA.goalName,
-                description: TEST_DATA.goalDescription,
-                goal_type: GoalType.REPEATABLE,
-                is_complete: TEST_DATA.isComplete,
-                module_id: moduleID,
-                due_date: new Date(TEST_DATA.dueDate),
-                completion_time: null,
-                expiration: null,
-                parent_goal: null
-            }
-        ]);
+        expect(actual.rows).toEqual(getExpectedParentGoal({goalType: GoalType.REPEATABLE, dueDateExists: true}));
     });
 
-    it('parse goals', async () => {
+    it('parse parent goals', async () => {
         await client.query(
             "INSERT INTO GOAL(name, description, goal_type, is_complete, module_id, due_date) VALUES ($1, $2, $3, $4, $5, $6)",
             [TEST_DATA.goalName, TEST_DATA.goalDescription, GoalType.TASK, TEST_DATA.isComplete, moduleID, TEST_DATA.dueDate]
         );
         const result = await parser.parseParentGoals(moduleID);
         console.log(`Parsed from goals: ${JSON.stringify(result)}`);
-        expect(result).toEqual([
-            {
-                goal_id: expect.any(Number),
-                name: TEST_DATA.goalName,
-                description: TEST_DATA.goalDescription,
-                goal_type: GoalType.TASK,
-                is_complete: TEST_DATA.isComplete,
-                due_date: new Date(TEST_DATA.dueDate),
-                module_id: moduleID,
-                completion_time: null,
-                expiration: null,
-                parent_goal: null
-            }
-        ]);
+        expect(result).toEqual(getExpectedParentGoal({goalType: GoalType.TASK, dueDateExists: true}));
     });
 
     it('parse goal variable (module_id case)', async () => {
@@ -186,18 +180,12 @@ describe('goal parser tests', () => {
         var goalID = await getGoalID();
         await parser.updateGoal(goalID, TEST_DATA.altGoalName, TEST_DATA.altGoalDescription, GoalType.TASK, false);
         var actual = await client.query(selectQuery(goalID, QUERY_VARIABLES.goal));
+        var defaultExpected = getExpectedParentGoal({goalType: GoalType.TASK, goalId: goalID});
         expect(actual.rows).toEqual([
             {
-                goal_id: goalID,
+                ...defaultExpected[0],
                 name: TEST_DATA.altGoalName,
                 description: TEST_DATA.altGoalDescription,
-                goal_type: GoalType.TASK,
-                is_complete: false,
-                module_id: moduleID,
-                due_date: null,
-                completion_time: null,
-                expiration: null,
-                parent_goal: null
             }
         ]);
     });
@@ -211,18 +199,12 @@ describe('goal parser tests', () => {
         await parser.updateGoal(goalID, TEST_DATA.altGoalName, TEST_DATA.altGoalDescription, GoalType.TASK, 
             false, convertToPostgresTimestamp(TEST_DATA.dueDate));
         var actual = await client.query(selectQuery(goalID, QUERY_VARIABLES.goal));
+        var defaultExpected = getExpectedParentGoal({goalType: GoalType.TASK, goalId: goalID, dueDateExists: true});
         expect(actual.rows).toEqual([
             {
-                goal_id: goalID,
+                ...defaultExpected[0],
                 name: TEST_DATA.altGoalName,
                 description: TEST_DATA.altGoalDescription,
-                goal_type: GoalType.TASK,
-                is_complete: false,
-                module_id: moduleID,
-                due_date: new Date(TEST_DATA.dueDate),
-                completion_time: null,
-                expiration: null,
-                parent_goal: null
             }
         ]);
     });
@@ -230,51 +212,26 @@ describe('goal parser tests', () => {
     it('update goal timestamps (no expiration)', async () => {
         await client.query(
             "INSERT INTO GOAL(name, description, goal_type, is_complete, module_id) VALUES ($1, $2, $3, $4, $5)",
-            [TEST_DATA.goalName, TEST_DATA.goalDescription, GoalType.REPEATABLE, true, moduleID]
+            [TEST_DATA.goalName, TEST_DATA.goalDescription, GoalType.REPEATABLE, TEST_DATA.isComplete, moduleID]
         );
         var goalID = await getGoalID();
         await parser.updateGoalTimestamps(goalID, convertToPostgresTimestamp(TEST_DATA.completionTime));
         var actual = await client.query(selectQuery(goalID, QUERY_VARIABLES.goal));
-        expect(actual.rows).toEqual([
-            {
-                goal_id: goalID,
-                name: TEST_DATA.goalName,
-                description: TEST_DATA.goalDescription,
-                goal_type: GoalType.REPEATABLE,
-                is_complete: true,
-                module_id: moduleID,
-                due_date: null,
-                completion_time: new Date(TEST_DATA.completionTime),
-                expiration: null,
-                parent_goal: null
-            }
-        ]);
+        expect(actual.rows).toEqual(getExpectedParentGoal({goalId: goalID, goalType: GoalType.REPEATABLE, completionTimeExists: true}));
     });
 
     it('update goal timestamp (with expiration)', async () => {
         await client.query(
             "INSERT INTO GOAL(name, description, goal_type, is_complete, module_id) VALUES ($1, $2, $3, $4, $5)",
-            [TEST_DATA.goalName, TEST_DATA.goalDescription, GoalType.TASK, true, moduleID]
+            [TEST_DATA.goalName, TEST_DATA.goalDescription, GoalType.TASK, TEST_DATA.isComplete, moduleID]
         );
         var goalID = await getGoalID();
         await parser.updateGoalTimestamps(goalID, 
             convertToPostgresTimestamp(TEST_DATA.completionTime), 
             convertToPostgresTimestamp(TEST_DATA.expiration));
         var actual = await client.query(selectQuery(goalID, QUERY_VARIABLES.goal));
-        expect(actual.rows).toEqual([
-            {
-                goal_id: goalID,
-                name: TEST_DATA.goalName,
-                description: TEST_DATA.goalDescription,
-                goal_type: GoalType.TASK,
-                is_complete: true,
-                module_id: moduleID,
-                due_date: null,
-                completion_time: new Date(TEST_DATA.completionTime),
-                expiration: new Date(TEST_DATA.expiration),
-                parent_goal: null
-            }
-        ]);
+        expect(actual.rows).toEqual(getExpectedParentGoal({
+            goalId: goalID, goalType: GoalType.TASK, completionTimeExists: true, expirationExists: true}));
     });
 
     it('delete goal', async () => {
@@ -303,19 +260,8 @@ describe('goal parser tests', () => {
             }
         ]);
         var actual = await client.query(selectQuery(goalID, QUERY_VARIABLES.parent));
-        expect(actual.rows).toEqual([
-            {
-                goal_id: expect.any(Number),
-                name: TEST_DATA.subGoalName,
-                description: TEST_DATA.subGoalDescription,
-                goal_type: GoalType.TASK,
-                is_complete: false,
-                module_id: moduleID,
-                due_date: null,
-                completion_time: null,
-                expiration: null,
-                parent_goal: goalID
-            }
+        expect(actual.rows).toEqual([getExceptedSubGoals(
+            {parentGoalId: goalID, goalType: GoalType.TASK})[0]
         ]);
     });
 
@@ -336,59 +282,71 @@ describe('goal parser tests', () => {
         ]);
         var actual = await client.query(selectQuery(goalID, QUERY_VARIABLES.parent));
         expect(actual.rows).toEqual([
-            {
-                goal_id: expect.any(Number),
-                name: TEST_DATA.subGoalName,
-                description: TEST_DATA.subGoalDescription,
-                goal_type: GoalType.TASK,
-                is_complete: false,
-                module_id: moduleID,
-                due_date: new Date(TEST_DATA.dueDate),
-                completion_time: null,
-                expiration: null,
-                parent_goal: goalID
-            }
+            getExceptedSubGoals({parentGoalId: goalID, goalType: GoalType.TASK, dueDateExists: true})[0]
         ]);
     });
 
     it('parse sub goals', async () => {
+        createTestParentGoal();
+        var goalID = await getGoalID();
+        createTestSubGoals(goalID);
+        const result = await parser.parseSubGoals(goalID);
+        expect(result).toEqual(getExceptedSubGoals({goalType: GoalType.REPEATABLE, parentGoalId: goalID}));
+    });
+
+    it('get all sub goals', async () => {
+        createTestParentGoal();
+        var goalID = await getGoalID();
+        var altGoalID = goalID + 1;
+        createTestSubGoals(goalID);
+        createTestSubGoals(altGoalID);
+        const result = await parser.parseAllSubGoals();
+        expect(result).toEqual(getExceptedSubGoals({parentGoalId: goalID, goalType: GoalType.REPEATABLE}));
+    });
+
+
+    async function createTestParentGoal() {
         await client.query(
             "INSERT INTO GOAL(name, description, goal_type, is_complete, module_id) VALUES ($1, $2, $3, $4, $5)",
             [TEST_DATA.goalName, TEST_DATA.goalDescription, GoalType.TASK, TEST_DATA.isComplete, moduleID]
         );
-        var goalID = await getGoalID();
-        await client.query(
-            "INSERT INTO GOAL(name, description, goal_type, is_complete, module_id, parent_goal) VALUES ($3, $4, $5, $6, $1, $2), ($7, $8, $5, $6, $1, $2)",
-            [moduleID, goalID, TEST_DATA.subGoalName, TEST_DATA.subGoalDescription, GoalType.REPEATABLE, TEST_DATA.isComplete, TEST_DATA.altGoalName, TEST_DATA.altGoalDescription]
-        );
-        const result = await parser.parseSubGoals(goalID);
-        expect(result).toEqual([
+    }
+    
+    function getExceptedSubGoals(subGoalProps: ExpectedSubGoalResultProps) {
+        return [
             {
                 goal_id: expect.any(Number),
                 name: TEST_DATA.subGoalName,
                 description: TEST_DATA.subGoalDescription,
-                goal_type: GoalType.REPEATABLE,
+                goal_type: subGoalProps.goalType,
                 is_complete: TEST_DATA.isComplete,
                 module_id: moduleID,
-                due_date: null,
-                completion_time: null,
-                expiration: null,
-                parent_goal: goalID
+                due_date: subGoalProps.dueDateExists ? new Date(TEST_DATA.dueDate) : null,
+                completion_time: subGoalProps.completionTimeExists ? new Date(TEST_DATA.completionTime) : null,
+                expiration: subGoalProps.expirationExists ? new Date(TEST_DATA.expiration) : null,
+                parent_goal: subGoalProps.parentGoalId
             },
             {
                 goal_id: expect.any(Number),
                 name: TEST_DATA.altGoalName,
                 description: TEST_DATA.altGoalDescription,
-                goal_type: GoalType.REPEATABLE,
+                goal_type: subGoalProps.goalType,
                 is_complete: TEST_DATA.isComplete,
                 module_id: moduleID,
-                due_date: null,
-                completion_time: null,
-                expiration: null,
-                parent_goal: goalID
+                due_date: subGoalProps.dueDateExists ? new Date(TEST_DATA.dueDate) : null,
+                completion_time: subGoalProps.completionTimeExists ? new Date(TEST_DATA.completionTime) : null,
+                expiration: subGoalProps.expirationExists ? new Date(TEST_DATA.expiration) : null,
+                parent_goal: subGoalProps.parentGoalId
             }
-        ]);
-    })
+        ]
+    }
+
+    async function createTestSubGoals(goalID : number) {
+        await client.query(
+            "INSERT INTO GOAL(name, description, goal_type, is_complete, module_id, parent_goal) VALUES ($3, $4, $5, $6, $1, $2), ($7, $8, $5, $6, $1, $2)",
+            [moduleID, goalID, TEST_DATA.subGoalName, TEST_DATA.subGoalDescription, GoalType.REPEATABLE, TEST_DATA.isComplete, TEST_DATA.altGoalName, TEST_DATA.altGoalDescription]
+        );
+    }
 
     async function getGoalID() {
         const goalIDQuery = await client.query(

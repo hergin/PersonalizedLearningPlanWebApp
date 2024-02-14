@@ -106,4 +106,14 @@ export default class GoalParser extends DatabaseParser {
         };
         return this.parseDatabase(query);
     }
+
+    async parseAllSubGoals() {
+        console.log("Getting every sub goal...");
+        return this.parseDatabase("SELECT * FROM GOAL WHERE parent_goal IS NOT NULL");
+    }
+
+    async parseAllParentGoals() {
+        console.log("Getting all parent goals...");
+        return this.parseDatabase("SELECT * FROM GOAL WHERE parent_goal IS NULL");
+    }
 }

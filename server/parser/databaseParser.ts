@@ -22,11 +22,11 @@ export default class DatabaseParser {
         });
     }
 
-    async updateDatabase(query : Query) {
+    async updateDatabase(query : Query | string) {
        await this.pool.query(query);
     }
 
-    async parseDatabase(query : Query) {
+    async parseDatabase(query : Query | string) {
         const result = await this.pool.query(query);
         return result.rows;
     }
