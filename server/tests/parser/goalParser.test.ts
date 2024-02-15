@@ -15,6 +15,7 @@ const TEST_DATA = {
     pastDueDate: "1990-01-23T14:19:19.000Z",
     completionTime: `2024-01-23T14:19:19.000Z`,
     expiration: `2030-01-23T14:15:00.000Z`,
+    feedback: "Good job!",
 }
 
 interface ExpectedParentGoalResultProps {
@@ -22,7 +23,8 @@ interface ExpectedParentGoalResultProps {
     goalId?: number, 
     dueDateExists?: boolean, 
     completionTimeExists?: boolean, 
-    expirationExists?: boolean
+    expirationExists?: boolean,
+    feedbackExists?: boolean
 }
 
 interface ExpectedSubGoalResultProps {
@@ -50,7 +52,7 @@ function selectQuery(id: number, variable: string) {
     const expirationString = `expiration::timestamp ${utcToEstConversionQuery} AS expiration`;
     
     return {
-        text: `SELECT goal_id, name, description, goal_type, is_complete, module_id, ${dueDateString}, ${completionTimeString}, ${expirationString}, parent_goal FROM GOAL WHERE ${variable} = $1`,
+        text: `SELECT goal_id, name, description, goal_type, is_complete, module_id, ${dueDateString}, ${completionTimeString}, ${expirationString}, parent_goal, feedback FROM GOAL WHERE ${variable} = $1`,
         values: [id]
     }
 }
@@ -129,7 +131,8 @@ describe('goal parser tests', () => {
                 module_id: moduleID,
                 completion_time: resultProps.completionTimeExists ? new Date(TEST_DATA.completionTime) : null,
                 expiration: resultProps.expirationExists ? new Date(TEST_DATA.expiration) : null,
-                parent_goal: null
+                parent_goal: null,
+                feedback: resultProps.feedbackExists ? TEST_DATA.feedback : null
             }
         ]
     }
@@ -455,7 +458,8 @@ describe('goal parser tests', () => {
                 due_date: null,
                 completion_time: null,
                 expiration: new Date(TEST_DATA.pastDueDate),
-                parent_goal: null
+                parent_goal: null,
+                feedback: null
             }
         ]);
     });
@@ -479,7 +483,8 @@ describe('goal parser tests', () => {
                 due_date: subGoalProps.dueDateExists ? new Date(TEST_DATA.dueDate) : null,
                 completion_time: subGoalProps.completionTimeExists ? new Date(TEST_DATA.completionTime) : null,
                 expiration: subGoalProps.expirationExists ? new Date(TEST_DATA.expiration) : null,
-                parent_goal: subGoalProps.parentGoalId
+                parent_goal: subGoalProps.parentGoalId,
+                feedback: null
             },
             {
                 goal_id: expect.any(Number),
@@ -491,7 +496,8 @@ describe('goal parser tests', () => {
                 due_date: subGoalProps.dueDateExists ? new Date(TEST_DATA.dueDate) : null,
                 completion_time: subGoalProps.completionTimeExists ? new Date(TEST_DATA.completionTime) : null,
                 expiration: subGoalProps.expirationExists ? new Date(TEST_DATA.expiration) : null,
-                parent_goal: subGoalProps.parentGoalId
+                parent_goal: subGoalProps.parentGoalId,
+                feedback: null
             }
         ]
     }

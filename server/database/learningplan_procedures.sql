@@ -7,31 +7,27 @@ AS $$
     END;
 $$ LANGUAGE PLPGSQL;
 
-CREATE OR REPLACE PROCEDURE update_module_completion(id INT, deletion BOOLEAN, goal_is_complete BOOLEAN)
+CREATE OR REPLACE PROCEDURE update_module_completion()
 AS $$
+    DECLARE row RECORD;
     DECLARE num_of_goals DECIMAL;
     DECLARE num_of_completed_goals DECIMAL;
 
     BEGIN
-        SELECT COUNT(*) FROM GOAL WHERE module_id = update_module_completion.id INTO num_of_goals;
-        SELECT COUNT(*) FROM GOAL WHERE module_id = update_module_completion.id AND is_complete IS TRUE INTO num_of_completed_goals;
-        
-        IF(deletion) THEN
-            num_of_goals := num_of_goals - 1;
-            IF(goal_is_complete) THEN
-                num_of_completed_goals := num_of_completed_goals - 1;
-            END IF;
-        END IF;
+        FOR row IN SELECT * FROM MODULE LOOP
+            SELECT COUNT(*) FROM GOAL INTO num_of_goals WHERE module_id = row.module_id;
+            SELECT COUNT(*) FROM GOAL INTO num_of_completed_goals WHERE module_id = row.module_id AND is_complete IS TRUE;
 
-        IF num_of_goals > 0 THEN
-            UPDATE MODULE m
-            SET completion_percent = num_of_completed_goals / num_of_goals * 100
-            WHERE m.module_id = update_module_completion.id;
-        ELSE
-            UPDATE MODULE m
-            SET completion_percent = 100
-            WHERE m.module_id = update_module_completion.id;
-        END IF;
+            IF num_of_goals > 0 THEN
+                UPDATE MODULE m
+                SET completion_percent = num_of_completed_goals / num_of_goals * 100
+                WHERE m.module_id = row.module_id;
+            ELSE
+                UPDATE MODULE m
+                SET completion_percent = 100
+                WHERE m.module_id = row.id;
+            END IF;
+        END LOOP;
     END;
 $$ LANGUAGE PLPGSQL;
 

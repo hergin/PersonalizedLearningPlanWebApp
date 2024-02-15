@@ -1,6 +1,6 @@
 import { schedule } from "node-cron";
-import EmailService from "@server/service/emailService";
-import GoalParser from "@server/parser/goalParser";
+import EmailService from "../service/emailService";
+import GoalParser from "../parser/goalParser";
 
 const EVERYDAY_AT_MIDNIGHT : string = "0 0 * * *";
 const parser = new GoalParser();
@@ -23,3 +23,5 @@ function generateEmailBody(goalName: string, username: string, dueDate: Date):st
 }
 
 const updateCompletionStatus = schedule(EVERYDAY_AT_MIDNIGHT, parser.runMaintenanceProcedures);
+
+export {notifyOfCloseDueDates, updateCompletionStatus};

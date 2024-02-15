@@ -57,6 +57,10 @@ export default class ModuleParser extends DatabaseParser {
             values: [module_id]
         };
         return this.parseDatabase(query);
-        
+    }
+
+    async runMaintenanceProcedures() {
+        console.log("Executing module's maintenance procedures...");
+        return this.parseDatabase("CALL update_module_completion()");
     }
 }

@@ -47,6 +47,7 @@ CREATE TABLE GOAL(
     completion_time TIMESTAMP WITH TIME ZONE,
     expiration TIMESTAMP WITH TIME ZONE,
     parent_goal INT,
+    feedback TEXT,
     FOREIGN KEY (module_id) REFERENCES MODULE(module_id)
         ON DELETE CASCADE ON UPDATE CASCADE
 );

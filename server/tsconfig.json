@@ -12,10 +12,7 @@
         "forceConsistentCasingInFileNames": true,
         "allowSyntheticDefaultImports": true,
         "esModuleInterop": true,
-        "lib": ["es5", "es6", "dom"],
-        "paths": {
-            "@server/*": ["./*"]
-        }
+        "lib": ["es5", "es6", "dom"]
     },
     "typeRoots": [
         "custom_typing",
