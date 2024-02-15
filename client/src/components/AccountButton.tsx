@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useUser } from "../hooks/useUser";
 import { ApiClient } from "../hooks/ApiClient";
 import { emptyUser } from "../types";
+import profilePicture from "../assets/Default_Profile_Picture.jpg";
 
 const AccountButton = () => {
     const { user, removeUser } = useUser();
@@ -22,8 +23,12 @@ const AccountButton = () => {
   
     if(user.id !== emptyUser.id) {
       return (
-        <div>
-          <button className="flex flex-col justify-center items-center w-full no-underline text-2xl h-12 bg-transparent cursor-pointer font-headlineFont border-none duration-500 hover:bg-[#820000] px-4" onClick={handleLogout}>Log out</button>
+        <div className="flex flex-row cursor-pointer hover:bg-[#820000] py-[5px] px-[8px]" onClick={handleLogout}>
+            <img
+              src={profilePicture}
+              alt="pfp here"
+              className="h-[8vh] w-[4vw] rounded-full"
+            />
         </div>
       );
     } else {

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useReducer } from "react";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../../../hooks/useUser";
 import { ApiClient } from "../../../hooks/ApiClient";
-import profilePicture from "../assets/Default_Profile_Picture.jpg";
+import profilePicture from "../../../assets/Default_Profile_Picture.jpg";
 import useProfile from "../hooks/useProfile";
 import { useHotKeys } from "../../../hooks/useHotKeys";
 import { emptyProfile, Profile } from "../../../types";
