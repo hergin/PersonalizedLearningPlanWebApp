@@ -4,6 +4,6 @@ import ModuleParser from "../parser/moduleParser";
 const EVERYDAY_AT_MIDNIGHT = "0 0 * * *";
 const parser = new ModuleParser();
 
-const updateCompletionPercent = schedule(EVERYDAY_AT_MIDNIGHT, () => {
-    
-});
+const updateCompletionPercent = schedule(EVERYDAY_AT_MIDNIGHT, parser.runMaintenanceProcedures);
+
+export {updateCompletionPercent};

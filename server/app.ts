@@ -7,6 +7,7 @@ import profileRoutes from "./routes/profileRoutes";
 import goalRoutes from "./routes/goalRoutes";
 import dashboardRoutes from './routes/dashboardRoutes';
 import { notifyOfCloseDueDates, updateCompletionStatus } from "./cron_jobs/goalJobs";
+import { updateCompletionPercent } from "./cron_jobs/moduleJobs";
 
 const app = express();
 app.use(cors());
@@ -26,4 +27,5 @@ app.listen(4000, () => {
     console.log("Server running!");
     notifyOfCloseDueDates.start();
     updateCompletionStatus.start();
+    updateCompletionPercent.start();
 });

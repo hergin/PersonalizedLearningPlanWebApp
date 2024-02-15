@@ -1,6 +1,6 @@
 import { join } from "path";
 require("dotenv").config({
-    path: join("../", ".env")
+    path: join(__dirname, ".env")
 });
 import { verify, sign } from "jsonwebtoken";
 import { StatusCode } from "../types";
