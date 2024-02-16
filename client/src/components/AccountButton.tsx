@@ -49,7 +49,7 @@ const AccountButton = () => {
     }
 
     function ProfilePicture(props: any) {
-      const [open, setOpen] = useState<Boolean>(false);
+      const [open, setOpen] = useState<boolean>(false);
       
       return (
         <div>  

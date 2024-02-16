@@ -42,5 +42,5 @@ export type CompleteGoal = {
     goalType: GoalType,
     moduleId: number,
     dueDate?: Date,
-    subGoals: any[]
+    subGoals: Goal[]
 }

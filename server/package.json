@@ -15,7 +15,8 @@
     },
     "scripts": {
         "dev": "nodemon app.ts",
-        "test": "jest --testPathPattern=tests --detectOpenHandles --coverage"
+        "test": "jest --testPathPattern=tests --detectOpenHandles --coverage",
+        "lint": "eslint . --fix"
     },
     "eslintConfig": {
         "extends": [

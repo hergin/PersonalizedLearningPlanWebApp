@@ -34,7 +34,8 @@
         "build": "react-app-rewired build",
         "test": "react-app-rewired test",
         "eject": "react-app-rewired eject",
-        "dev": "webpack serve"
+        "dev": "webpack serve",
+        "lint": "eslint . --fix"
     },
     "eslintConfig": {
         "extends": [

@@ -1,6 +1,7 @@
 import DashboardParser from "../parser/dashboardParser";
 import { StatusCode } from "../types";
 import { ErrorCodeInterpreter } from "./errorCodeInterpreter";
+import { DatabaseError } from "pg";
 
 export class DashboardAPI {
     parser : DashboardParser;
@@ -15,8 +16,8 @@ export class DashboardAPI {
         try {
             await this.parser.storeDashboard(profile_id);
             return StatusCode.OK;
-        } catch(error) {
-            return this.errorCodeInterpreter.getStatusCode(error);
+        } catch (error: unknown) {
+            return this.errorCodeInterpreter.getStatusCode(error as DatabaseError);
         }
     }
 
@@ -24,8 +25,8 @@ export class DashboardAPI {
         try {
             const dashboard = await this.parser.parseDashboard(profile_id);
             return (dashboard.length === 0) ? StatusCode.UNAUTHORIZED : dashboard[0];
-        } catch(error) {
-            return this.errorCodeInterpreter.getStatusCode(error);
+        } catch (error: unknown) {
+            return this.errorCodeInterpreter.getStatusCode(error as DatabaseError);
         }
     }
 
@@ -33,8 +34,8 @@ export class DashboardAPI {
         try {
             await this.parser.updateDashboard(profile_id, dashboard_id);
             return StatusCode.OK;
-        } catch(error) {
-            return this.errorCodeInterpreter.getStatusCode(error);
+        } catch (error: unknown) {
+            return this.errorCodeInterpreter.getStatusCode(error as DatabaseError);
         }
     }
 
@@ -42,8 +43,8 @@ export class DashboardAPI {
         try {
             await this.parser.deleteDashboard(dashboard_id);
             return StatusCode.OK;
-        } catch(error) {
-            return this.errorCodeInterpreter.getStatusCode(error);
+        } catch (error: unknown) {
+            return this.errorCodeInterpreter.getStatusCode(error as DatabaseError);
         }
     }
 }

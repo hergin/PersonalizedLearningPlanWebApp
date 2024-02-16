@@ -1,9 +1,11 @@
 import { join } from "path";
-require("dotenv").config({
-    path: join(__dirname, ".env"),
-});
+import dotenv from "dotenv";
 import { createTransport, Transporter } from 'nodemailer';
 import SMTPTransport from "nodemailer/lib/smtp-transport";
+
+dotenv.config({
+    path: join(__dirname, ".env")
+});
 
 export default class EmailService {
     transporter : Transporter;

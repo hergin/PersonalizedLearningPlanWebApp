@@ -1,4 +1,4 @@
-import express from "express";
+import express, { Request, Response } from "express";
 import cors from 'cors';
 
 import loginRoutes from "./routes/loginRoutes";
@@ -18,7 +18,7 @@ app.use("/api/profile", profileRoutes);
 app.use("/api/goal", goalRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 
-app.get('/api', (req : any, res : any) => {
+app.get('/api', (req : Request, res : Response) => {
     console.log(req.body);
     res.send('Okay');
 });

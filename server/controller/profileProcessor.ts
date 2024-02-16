@@ -1,6 +1,7 @@
 import ProfileParser from "../parser/profileParser";
 import { ErrorCodeInterpreter } from "./errorCodeInterpreter";
 import { Profile, StatusCode } from "../types";
+import { DatabaseError } from "pg";
 
 export class ProfileAPI {
     parser : ProfileParser;
@@ -15,8 +16,8 @@ export class ProfileAPI {
         try {
             await this.parser.storeProfile(username, firstName, lastName, accountId);
             return StatusCode.OK;
-        } catch(error) {
-            return this.errorCodeInterpreter.getStatusCode(error);
+        } catch (error: unknown) {
+            return this.errorCodeInterpreter.getStatusCode(error as DatabaseError);
         }
     }
 
@@ -24,8 +25,8 @@ export class ProfileAPI {
         try {
             const profile = await this.parser.parseProfile(accountId);
             return profile ? profile : StatusCode.UNAUTHORIZED;
-        } catch(error) {
-            return this.errorCodeInterpreter.getStatusCode(error);
+        } catch (error: unknown) {
+            return this.errorCodeInterpreter.getStatusCode(error as DatabaseError);
         }
     }
 
@@ -33,8 +34,8 @@ export class ProfileAPI {
         try {
             await this.parser.updateProfile(profile);
             return StatusCode.OK;
-        } catch(error) {
-            return this.errorCodeInterpreter.getStatusCode(error);
+        } catch (error: unknown) {
+            return this.errorCodeInterpreter.getStatusCode(error as DatabaseError);
         }
     }
 
@@ -42,8 +43,8 @@ export class ProfileAPI {
         try {
             await this.parser.deleteProfile(profileId);
             return StatusCode.OK;
-        } catch(error) {
-            return this.errorCodeInterpreter.getStatusCode(error);
+        } catch (error: unknown) {
+            return this.errorCodeInterpreter.getStatusCode(error as DatabaseError);
         }
     }
 }

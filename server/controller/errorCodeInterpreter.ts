@@ -1,7 +1,8 @@
+import { DatabaseError } from "pg";
 import { StatusCode } from "../types";
 
 export class ErrorCodeInterpreter {
-    getStatusCode(error : any) {
+    getStatusCode(error : DatabaseError) {
         switch (error.code) {
             case '23505':
                 console.log("Duplicate data.");

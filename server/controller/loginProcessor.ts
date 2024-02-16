@@ -1,11 +1,8 @@
-import path from "path";
-require('dotenv').config({
-    path: path.join(__dirname, ".env")
-});
 import bcrypt from "bcryptjs";
 import LoginParser from "../parser/loginParser";
 import { StatusCode } from "../types";
 import { ErrorCodeInterpreter } from "./errorCodeInterpreter";
+import { DatabaseError } from "pg";
 
 export class LoginAPI {
     parser : LoginParser;
@@ -21,8 +18,8 @@ export class LoginAPI {
             const login = await this.parser.retrieveLogin(email);
             if(login.length === 0) return StatusCode.GONE;
             return await bcrypt.compare(password, login[0].account_password) ? login[0].id : StatusCode.UNAUTHORIZED;
-        } catch(error) {
-            return this.errorCodeInterpreter.getStatusCode(error);
+        } catch (error: unknown) {
+            return this.errorCodeInterpreter.getStatusCode(error as DatabaseError);
         }
     }
     
@@ -33,8 +30,8 @@ export class LoginAPI {
             console.log(hash);
             await this.parser.storeLogin(email, hash);
             return StatusCode.OK;
-        } catch(error) {
-            return this.errorCodeInterpreter.getStatusCode(error);
+        } catch (error: unknown) {
+            return this.errorCodeInterpreter.getStatusCode(error as DatabaseError);
         }
     }
 
@@ -42,8 +39,8 @@ export class LoginAPI {
         try {
             await this.parser.storeToken(accountId, refreshToken);
             return StatusCode.OK;
-        } catch(error) {
-            return this.errorCodeInterpreter.getStatusCode(error);
+        } catch (error: unknown) {
+            return this.errorCodeInterpreter.getStatusCode(error as DatabaseError);
         }
     }
 
@@ -52,8 +49,8 @@ export class LoginAPI {
             const result = await this.parser.parseToken(accountId);
             if(result.length === 0) return StatusCode.GONE;
             return (result[0].refresh_token === refreshToken) ? StatusCode.OK : StatusCode.UNAUTHORIZED;
-        } catch(error) {
-            return this.errorCodeInterpreter.getStatusCode(error);
+        } catch (error: unknown) {
+            return this.errorCodeInterpreter.getStatusCode(error as DatabaseError);
         }
     }
 
@@ -61,8 +58,8 @@ export class LoginAPI {
         try {
             await this.parser.deleteToken(accountId);
             return StatusCode.OK;
-        } catch(error) {
-            return this.errorCodeInterpreter.getStatusCode(error);
+        } catch (error: unknown) {
+            return this.errorCodeInterpreter.getStatusCode(error as DatabaseError);
         }
     }
 
@@ -70,8 +67,8 @@ export class LoginAPI {
         try {
             await this.parser.deleteAccount(accountId);
             return StatusCode.OK;
-        } catch(error) {
-            return this.errorCodeInterpreter.getStatusCode(error);
+        } catch (error: unknown) {
+            return this.errorCodeInterpreter.getStatusCode(error as DatabaseError);
         }
     }
 
