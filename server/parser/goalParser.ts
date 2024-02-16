@@ -15,6 +15,15 @@ export default class GoalParser extends DatabaseParser {
         return this.parseDatabase(query);
     }
 
+    async parseSubGoals(goalID: number) {
+        console.log("Getting sub goals...");
+        const query = {
+            text: "SELECT * FROM GOAL WHERE parent_goal = $1",
+            values: [goalID]
+        };
+        return this.parseDatabase(query);
+    }
+
     async storeGoal(goal: Goal) {
         console.log("Storing Goal...");
         const query = {
@@ -96,25 +105,13 @@ export default class GoalParser extends DatabaseParser {
         return this.parseDatabase(idQuery);
     }
 
-    async parseSubGoals(goalID: number) {
-        console.log("Getting sub goals...");
-        const query = {
-            text: "SELECT * FROM GOAL WHERE parent_goal = $1",
-            values: [goalID]
-        };
-        return this.parseDatabase(query);
-    }
-
     async parseAccountsWithUpcomingDueDates() {
-        console.log("Getting associated account...");
-        const query = {
-            text: `
-                SELECT g.name as goal, p.username as username, a.email as email, g.due_date as due_date 
-                FROM GOAL g JOIN MODULE m USING (module_id) JOIN ACCOUNT a ON a.id = m.account_id JOIN PROFILE p on a.id = p.account_id 
-                WHERE g.due_date IS NOT NULL AND g.is_complete IS FALSE AND a.receives_emails IS TRUE AND g.due_date <= (CURRENT_TIMESTAMP + INTERVAL '24 hours');
-            `,
-            values: []
-        }
+        console.log("Getting information about upcoming due dates...");
+        const query = `
+            SELECT g.name as goal, p.username as username, a.email as email, g.due_date as due_date 
+            FROM GOAL g JOIN MODULE m USING (module_id) JOIN ACCOUNT a ON a.id = m.account_id JOIN PROFILE p ON a.id = p.account_id JOIN ACCOUNT_SETTINGS s ON s.account_id = a.id
+            WHERE g.due_date IS NOT NULL AND g.is_complete IS FALSE AND s.receive_emails IS TRUE AND g.due_date <= (CURRENT_TIMESTAMP + INTERVAL '24 hours') AND g.due_date > CURRENT_TIMESTAMP;
+        `;
         return this.parseDatabase(query);
     }
 

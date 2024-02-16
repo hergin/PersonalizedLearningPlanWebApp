@@ -15,6 +15,7 @@ export enum GoalType {
 }
 
 export type Goal = {
+    id?: number,
     name: string,
     description: string,
     isComplete: boolean,
@@ -22,7 +23,9 @@ export type Goal = {
     moduleId?: number,
     dueDate?: string,
     completionTime?: string,
-    expiration?: string
+    expiration?: string,
+    feedback?: string,
+    subGoals?: Goal[]
 }
 
 export type Profile = {
@@ -30,17 +33,7 @@ export type Profile = {
     username: string,
     firstName: string,
     lastName: string,
-    profilePicture: string,
-    jobTitle: string,
-    bio: string
-}
-export type CompleteGoal = {
-    goal_id: number,
-    name: string,
-    description: string,
-    isComplete: boolean,
-    goalType: GoalType,
-    moduleId: number,
-    dueDate?: Date,
-    subGoals: Goal[]
+    profilePicture?: string,
+    jobTitle?: string,
+    bio?: string
 }

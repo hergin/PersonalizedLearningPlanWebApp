@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, PropsWithChildren, ReactElement } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useUser } from "../hooks/useUser";
 import { ApiClient } from "../hooks/ApiClient";
@@ -25,7 +25,7 @@ const AccountButton = () => {
         await post("/auth/logout", {id: user.id});
         removeUser();
         navigate("/#");
-      } catch (error : any) {
+      } catch (error: any) {
         console.error(error);
         alert(error.response ? error.response.data : error);
       }
@@ -48,7 +48,7 @@ const AccountButton = () => {
       );
     }
 
-    function ProfilePicture(props: any) {
+    function ProfilePicture(props: PropsWithChildren) {
       const [open, setOpen] = useState<boolean>(false);
       
       return (
@@ -65,8 +65,14 @@ const AccountButton = () => {
       );
     }
 
+    interface DropDownItemProps extends PropsWithChildren {
+      onClick?(): void,
+      leftIcon?: ReactElement,
+      rightIcon?: ReactElement
+    }
+
     function DropDownMenu() {
-      function DropDownItem(props: any) {
+      function DropDownItem(props: DropDownItemProps) {
         return(
           <div onClick={props.onClick} className={`h-[50px] p-[0.5rem] flex items-center ${STYLE.clickableElement}`}>
             {props.leftIcon && <span className="icon-button">{props.leftIcon}</span>}

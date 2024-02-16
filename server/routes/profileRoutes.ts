@@ -1,10 +1,10 @@
-import express, { Request, Response } from "express";
+import { Router, Request, Response } from "express";
 import { authenticateToken } from "../utils/token";
 import { initializeErrorMap } from "../utils/errorMessages";
 import { ProfileAPI } from "../controller/profileProcessor";
 import { StatusCode } from "../types";
 
-const profileRoutes = express.Router();
+const profileRoutes = Router();
 const ERROR_MESSAGES = initializeErrorMap();
 const profileAPI = new ProfileAPI();
 

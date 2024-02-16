@@ -1,10 +1,10 @@
-import express, { Request, Response } from "express";
+import { Router, Request, Response } from "express";
 import { authenticateToken } from "../utils/token";
 import { initializeErrorMap } from "../utils/errorMessages";
 import { ModuleAPI } from "../controller/moduleProcessor";
 import { StatusCode } from "../types";
 
-const moduleRoutes = express.Router();
+const moduleRoutes = Router();
 const ERROR_MESSAGES = initializeErrorMap();
 const moduleAPI = new ModuleAPI();
 

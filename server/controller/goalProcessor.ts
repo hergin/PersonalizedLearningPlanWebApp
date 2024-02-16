@@ -15,8 +15,8 @@ export class GoalAPI {
 
     async getGoals(moduleId: number) {
         try {
-            const parentgoals = await this.parser.parseParentGoals(moduleId);
-            for (const goal of parentgoals) {
+            const parentGoals = await this.parser.parseParentGoals(moduleId);
+            for (const goal of parentGoals) {
                 const subGoals : Goal[] = await this.getSubGoals(goal.goal_id);
                 if (subGoals?.length !== undefined && subGoals?.length !== 0) {
                     goal.sub_goals = subGoals;
@@ -24,15 +24,16 @@ export class GoalAPI {
                     goal.sub_goals = [];
                 }
             }
-            console.log(parentgoals);
-            return parentgoals;
+            console.log(parentGoals);
+            return parentGoals;
         } catch (error: unknown) {
             return this.errorCodeInterpreter.getStatusCode(error as DatabaseError);
         }
     }
 
-    async getSubGoals(goalID: number): Promise<Goal[]> {
-        return this.parser.parseSubGoals(goalID);
+    async getSubGoals(goalID: number) {
+        const subGoals = await this.parser.parseSubGoals(goalID);
+        return subGoals;
     }
 
     async createGoal(goal: Goal) {
@@ -45,7 +46,7 @@ export class GoalAPI {
             });
             return results;
         } catch (error: unknown) {
-            return this.errorCodeInterpreter.getStatusCode(error as DatabaseError);
+            return this.errorCodeInterpreter.getStatusCode(error as DatabaseError)
         }
     }
 
@@ -65,7 +66,7 @@ export class GoalAPI {
             }
             return StatusCode.OK;
         } catch (error: unknown) {
-            return this.errorCodeInterpreter.getStatusCode(error as DatabaseError);
+            return this.errorCodeInterpreter.getStatusCode(error as DatabaseError)
         }
     }
 
@@ -74,7 +75,7 @@ export class GoalAPI {
             await this.parser.deleteGoal(goalId);
             return StatusCode.OK;
         } catch (error: unknown) {
-            return this.errorCodeInterpreter.getStatusCode(error as DatabaseError);
+            return this.errorCodeInterpreter.getStatusCode(error as DatabaseError)
         }
     }
 
@@ -83,7 +84,7 @@ export class GoalAPI {
             const result = await this.parser.parseGoalVariable(goalId, variable);
             return result;
         } catch (error: unknown) {
-            return this.errorCodeInterpreter.getStatusCode(error as DatabaseError);
+            return this.errorCodeInterpreter.getStatusCode(error as DatabaseError)
         }
     }
 
@@ -93,7 +94,7 @@ export class GoalAPI {
             const result = await this.parser.storeSubGoal(parent_goal_id, goal);
             return result;
         } catch (error: unknown) {
-            return this.errorCodeInterpreter.getStatusCode(error as DatabaseError);
+            return this.errorCodeInterpreter.getStatusCode(error as DatabaseError)
         }
     }
 }

@@ -7,11 +7,13 @@ const TEST_DATA = {
     emails: ["testdummy@yahoo.com", "example@outlook.com"],
     password: "01010101010",
     usernames: ["testdummy", "horseEnjoyer4000"],
+    firstNames: ["Jim", "Karl"],
+    lastNames: ["Brown", "Jobst"],
     goalNames: ["Complete this quiz", "Homework", "sub-goal"],
     goalDescriptions: ["This is a quiz that I need to complete.", "Complete my homework today.", "This is a sub goal"],
     isComplete: false,
     dueDate: `2025-01-01T23:59:59.000Z`,
-    upcomingDueDate: new Date((new Date().getTime() / 1000) + (24 * 3600)),
+    upcomingDueDate: new Date(Date.now() + (24 * 3600)),
     pastDueDate: "1990-01-23T14:19:19.000Z",
     completionTime: `2024-01-23T14:19:19.000Z`,
     expiration: `2030-01-23T14:15:00.000Z`,
@@ -64,18 +66,22 @@ describe('goal parser tests', () => {
     var moduleID : number;
     
     beforeEach(async () => {
+        console.log(new Date(Date.now() + (24 * 3600)).toISOString());
         client = await parser.pool.connect();
-        await client.query({
-            text: "INSERT INTO ACCOUNT(email, account_password) VALUES($1, $2)",
-            values: [TEST_DATA.emails[0], TEST_DATA.password]
-        });
+        createTestAccount(TEST_DATA.emails[0]);
         accountId = await getAccountID(TEST_DATA.emails[0]);
-        await client.query({
-            text: "INSERT INTO MODULE(account_id) VALUES($1)",
-            values: [accountId]
-        });
+        createAccountSettings(accountId);
+        createTestProfile(TEST_DATA.usernames[0], TEST_DATA.firstNames[0], TEST_DATA.lastNames[0], accountId);
+        createTestModule(accountId);
         moduleID = await getModuleID(accountId);
     });
+
+    async function createTestAccount(email: string) {
+        await client.query({
+            text: "INSERT INTO ACCOUNT(email, account_password) VALUES($1, $2)",
+            values: [email, TEST_DATA.password]
+        });
+    }
 
     async function getAccountID(email: string): Promise<number> {
         const queryResult = await client.query({
@@ -83,6 +89,27 @@ describe('goal parser tests', () => {
             values: [email, TEST_DATA.password]
         });
         return queryResult.rows[0].id;
+    }
+
+    async function createAccountSettings(id: number) {
+        await client.query({
+            text: "INSERT INTO ACCOUNT_SETTINGS(account_id) VALUES ($1)",
+            values: [id]
+        });
+    }
+
+    async function createTestProfile(username: string, firstName: string, lastName: string, id: number) {
+        await client.query(
+            "INSERT INTO PROFILE(username, first_name, last_name, account_id) VALUES ($1, $2, $3, $4)",
+            [username, firstName, lastName, id]
+        );
+    }
+
+    async function createTestModule(id: number) {
+        await client.query({
+            text: "INSERT INTO MODULE(account_id) VALUES($1)",
+            values: [id]
+        });
     }
 
     async function getModuleID(id: number): Promise<number> {
@@ -182,10 +209,10 @@ describe('goal parser tests', () => {
         var goalID = await getGoalID();
         await parser.updateGoal(goalID, TEST_DATA.goalNames[1], TEST_DATA.goalDescriptions[1], GoalType.TASK, false);
         var actual = await client.query(selectQuery(goalID, QUERY_VARIABLES.goal));
-        var defaultExpected = getExpectedParentGoal({goalType: GoalType.TASK, goalId: goalID});
+        var defaultExpected = getExpectedParentGoal({goalType: GoalType.TASK, goalId: goalID})[0];
         expect(actual.rows).toEqual([
             {
-                ...defaultExpected[0],
+                ...defaultExpected,
                 name: TEST_DATA.goalNames[1],
                 description: TEST_DATA.goalDescriptions[1],
             }
@@ -201,10 +228,10 @@ describe('goal parser tests', () => {
         await parser.updateGoal(goalID, TEST_DATA.goalNames[1], TEST_DATA.goalDescriptions[1], GoalType.TASK, 
             false, convertToPostgresTimestamp(TEST_DATA.dueDate));
         var actual = await client.query(selectQuery(goalID, QUERY_VARIABLES.goal));
-        var defaultExpected = getExpectedParentGoal({goalType: GoalType.TASK, goalId: goalID, dueDateExists: true});
+        var defaultExpected = getExpectedParentGoal({goalType: GoalType.TASK, goalId: goalID, dueDateExists: true})[0];
         expect(actual.rows).toEqual([
             {
-                ...defaultExpected[0],
+                ...defaultExpected,
                 name: TEST_DATA.goalNames[1],
                 description: TEST_DATA.goalDescriptions[1],
             }
@@ -308,7 +335,7 @@ describe('goal parser tests', () => {
             [TEST_DATA.goalNames[0], TEST_DATA.goalDescriptions[0], GoalType.TASK, TEST_DATA.isComplete, moduleID, TEST_DATA.dueDate]
         );
         await client.query({
-            text: "UPDATE ACCOUNT SET receives_emails = $1 WHERE id = $2",
+            text: "UPDATE ACCOUNT_SETTINGS SET receive_emails = $1 WHERE account_id = $2",
             values: [false, accountId]
         });
         const result = await parser.parseAccountsWithUpcomingDueDates();
@@ -316,10 +343,6 @@ describe('goal parser tests', () => {
     });
 
     it('parse accounts with upcoming due dates (correct case)', async () => {
-        await client.query(
-            "INSERT INTO PROFILE(username, first_name, last_name, account_id) VALUES ($1, $2, $3, $4)",
-            [TEST_DATA.usernames[0], 'test', 'dummy', accountId]
-        );
         await client.query(
             "INSERT INTO GOAL(name, description, goal_type, is_complete, module_id, due_date) VALUES ($1, $2, $3, $4, $5, $6)",
             [TEST_DATA.goalNames[0], TEST_DATA.goalDescriptions[0], GoalType.TASK, TEST_DATA.isComplete, moduleID, TEST_DATA.upcomingDueDate]
@@ -363,21 +386,8 @@ describe('goal parser tests', () => {
     });
 
     it('parse accounts with upcoming due dates (two accounts case, both true)', async() => {
-        await client.query(
-            "INSERT INTO ACCOUNT(email, account_password) VALUES ($1, $2)",
-            [TEST_DATA.emails[1], TEST_DATA.password]
-        );
-        const altAccountId = await getAccountID(TEST_DATA.emails[1]);
-        console.log(`Account ids: ${accountId} ${altAccountId}`);
-        console.log(`Usernames: ${TEST_DATA.usernames[0]} ${TEST_DATA.usernames[1]}`)
-        await client.query({
-            text: "INSERT INTO PROFILE(username, first_name, last_name, account_id) VALUES ($1, 'Jim', 'Brown', $2), ($3, 'Chuck', 'Norris', $4)",
-            values: [TEST_DATA.usernames[0], accountId, TEST_DATA.usernames[1], altAccountId]
-        });
-        await client.query(
-            "INSERT INTO MODULE(account_id) VALUES ($1)",
-            [altAccountId]
-        );
+        const altAccountId = await createSecondAccount();
+        createTestModule(altAccountId);
         const altModuleId = await getModuleID(altAccountId);
         await client.query(
             "INSERT INTO GOAL(name, description, goal_type, is_complete, module_id, due_date) VALUES ($1, $2, $3, $4, $5, $6), ($7, $8, $3, $4, $9, $6)",
@@ -400,29 +410,24 @@ describe('goal parser tests', () => {
         ]);
     });
 
-    it('parse accounts with upcoming due dates (two accounts case, 1 true)', async() => {
-        await client.query(
-            "INSERT INTO ACCOUNT(email, account_password) VALUES ($1, $2)",
-            [TEST_DATA.emails[1], TEST_DATA.password]
-        );
+    async function createSecondAccount() {
+        createTestAccount(TEST_DATA.emails[1]);
         const altAccountId = await getAccountID(TEST_DATA.emails[1]);
-        console.log(`Account ids: ${accountId} ${altAccountId}`);
-        console.log(`Usernames: ${TEST_DATA.usernames[0]} ${TEST_DATA.usernames[1]}`)
-        await client.query({
-            text: "INSERT INTO PROFILE(username, first_name, last_name, account_id) VALUES ($1, 'Jim', 'Brown', $2), ($3, 'Chuck', 'Norris', $4)",
-            values: [TEST_DATA.usernames[0], accountId, TEST_DATA.usernames[1], altAccountId]
-        });
-        await client.query(
-            "INSERT INTO MODULE(account_id) VALUES ($1)",
-            [altAccountId]
-        );
+        createAccountSettings(altAccountId);
+        createTestProfile(TEST_DATA.usernames[1], TEST_DATA.firstNames[1], TEST_DATA.lastNames[1], altAccountId);
+        return altAccountId;
+    }
+
+    it('parse accounts with upcoming due dates (two accounts case, 1 true)', async() => {
+        const altAccountId = await createSecondAccount();
+        createTestModule(altAccountId);
         const altModuleId = await getModuleID(altAccountId);
         await client.query(
             "INSERT INTO GOAL(name, description, goal_type, is_complete, module_id, due_date) VALUES ($1, $2, $3, $4, $5, $6), ($7, $8, $3, $4, $9, $6)",
             [TEST_DATA.goalNames[0], TEST_DATA.goalDescriptions[0], GoalType.TASK, TEST_DATA.isComplete, moduleID, TEST_DATA.upcomingDueDate, TEST_DATA.goalNames[1], TEST_DATA.goalDescriptions[1], altModuleId]
         );
         await client.query(
-            "UPDATE ACCOUNT SET receives_emails = $1 WHERE id = $2",
+            "UPDATE ACCOUNT_SETTINGS SET receive_emails = $1 WHERE account_id = $2",
             [false, accountId]
         );
         const result = await parser.parseAccountsWithUpcomingDueDates();

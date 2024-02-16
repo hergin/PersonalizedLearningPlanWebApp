@@ -1,10 +1,10 @@
-import express, { Request, Response } from "express";
+import { Router, Request, Response } from "express";
 import { authenticateToken } from "../utils/token";
 import { initializeErrorMap } from "../utils/errorMessages";
 import { GoalAPI } from "../controller/goalProcessor";
 import { StatusCode } from "../types";
 
-const goalRoutes = express.Router();
+const goalRoutes = Router();
 const ERROR_MESSAGES = initializeErrorMap();
 const goalAPI = new GoalAPI();
 

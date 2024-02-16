@@ -1,13 +1,12 @@
 export {};
-
 import path from "path";
 require("dotenv").config({
     path: path.join("../../utils/", ".env"),
 });
 import { authenticateToken, generateAccessToken, generateRefreshToken } from '../../utils/token';
-import jwt from "jsonwebtoken";
+import jwt, { VerifyErrors, Jwt, JwtPayload, JsonWebTokenError } from "jsonwebtoken";
 import { StatusCode } from "../../types";
-
+import { Request, Response } from "express";
 
 describe('authenticate token tests', () => {
     afterEach(() => {
@@ -16,8 +15,8 @@ describe('authenticate token tests', () => {
 
     test('authenticateToken pass case', () => {
         const verify = jest.spyOn(jwt, 'verify');
-        verify.mockImplementation((token, secretOrPublicKey, callback) => {
-            return (callback as (any : any, result : object) => void)(null, {verified: 'true'});
+        verify.mockImplementation((token, secretOrPublicKey, options, callback) => {
+            return (callback as (any : VerifyErrors | null, result : Jwt | JwtPayload | string | null) => void)(null, {verified: 'true'});
         });
         const next = jest.fn();
         const sendStatus = jest.fn();
@@ -25,10 +24,10 @@ describe('authenticate token tests', () => {
             headers: {
                 'authorization': 'Bearer 4206966'
             }
-        };
+        } as any as Request;
         const mockResponse = {
             sendStatus: sendStatus
-        };
+        } as any as Response;
         authenticateToken(mockRequest, mockResponse, next);
         expect(next).toHaveBeenCalledTimes(1);
         expect(sendStatus).toHaveBeenCalledTimes(0);
@@ -39,10 +38,10 @@ describe('authenticate token tests', () => {
         const sendStatus = jest.fn();
         const mockRequest = {
             headers: {}
-        };
+        } as any as Request;
         const mockResponse = {
             sendStatus: sendStatus
-        };
+        } as any as Response;
         authenticateToken(mockRequest, mockResponse, next);
         expect(sendStatus).toHaveBeenCalledTimes(1);
         expect(sendStatus).toHaveBeenCalledWith(StatusCode.UNAUTHORIZED);
@@ -50,8 +49,8 @@ describe('authenticate token tests', () => {
 
     it('authenticateToken wrong token case', () => {
         const verify = jest.spyOn(jwt, 'verify');
-        verify.mockImplementation((token, secretOrPublicKey, callback ) => {
-            return (callback as (error: Error, any : any) => void)(new Error("Wrong Token."), null);
+        verify.mockImplementation((token, secretOrPublicKey, options, callback) => {
+            return (callback as (any : VerifyErrors | null, result : Jwt | JwtPayload | string | null) => void)(new JsonWebTokenError("Wrong token..."), null);
         });
         const sendStatus = jest.fn();
         const next = jest.fn();
@@ -59,10 +58,10 @@ describe('authenticate token tests', () => {
             headers: {
                 'authorization': 'Bearer this is a wrong token'
             }
-        };
+        } as any as Request;
         const mockResponse = {
             sendStatus: sendStatus
-        };
+        } as any as Response;
         authenticateToken(mockRequest, mockResponse, next);
         expect(sendStatus).toHaveBeenCalledTimes(1);
         expect(sendStatus).toHaveBeenCalledWith(StatusCode.FORBIDDEN);

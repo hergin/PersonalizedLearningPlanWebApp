@@ -52,8 +52,7 @@ describe('login parser tests', () => {
                 id: expect.any(Number),
                 email: TEST_DATA.email, 
                 account_password: TEST_DATA.password, 
-                refresh_token: null,
-                receives_emails: true
+                refresh_token: null
             }
         ]);
     });
@@ -66,8 +65,7 @@ describe('login parser tests', () => {
                 id: expect.any(Number),
                 email: TEST_DATA.email, 
                 account_password: TEST_DATA.password, 
-                refresh_token: null,
-                receives_emails: true
+                refresh_token: null
             }
         ]);
     });

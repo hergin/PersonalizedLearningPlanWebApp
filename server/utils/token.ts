@@ -21,7 +21,7 @@ export function authenticateToken(req : Request, res : Response, next : NextFunc
             console.error("An error has occurred authenticating token!", err);    
             return res.sendStatus(StatusCode.FORBIDDEN);
         }
-        req.body.decoded = decoded;
+        console.log(`${decoded}`);
         next();
     });
 }
