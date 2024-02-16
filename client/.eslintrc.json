@@ -17,7 +17,9 @@
   ],
   "plugins": ["react", "react-hooks", "@typescript-eslint"],
   "ignorePatterns": [
-    "node_modules"
+    "node_modules",
+    "**.config.*",
+    "config-overrides.js"
   ],
   "settings": {
     "react": {
