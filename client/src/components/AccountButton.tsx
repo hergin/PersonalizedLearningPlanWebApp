@@ -4,7 +4,6 @@ import { useUser } from "../hooks/useUser";
 import { ApiClient } from "../hooks/ApiClient";
 import { emptyUser } from "../types";
 import profilePicture from "../assets/Default_Profile_Picture.jpg";
-import { ReactComponent as CaretIcon } from "../assets/caret.svg";
 import DropDownMenu from "./dropDown/DropDownMenu";
 import DropDownItem from "./dropDown/DropDownItem";
 import DropDownCheckbox from "./dropDown/DropDownCheckbox";
