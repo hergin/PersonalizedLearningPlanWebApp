@@ -35,7 +35,7 @@ $$ LANGUAGE PLPGSQL;
 -- You must use this function to parse a goal otherwise it might be inaccurate.
 CREATE OR REPLACE FUNCTION get_goal(id INT)
 RETURNS GOAL AS $$
-    CALL update_is_complete(id);
+    CALL update_is_complete();
 
     SELECT * FROM GOAL g
     WHERE g.goal_id = get_goal.id;
@@ -47,7 +47,7 @@ RETURNS SETOF GOAL AS $$
         UPDATE GOAL g
         SET is_complete = CURRENT_TIMESTAMP < g.expiration
         WHERE g.expiration IS NOT NULL;
-        CALL update_module_completion(get_goals.id, 'false', 'false');
+        CALL update_module_completion();
 
         RETURN QUERY SELECT * FROM GOAL g WHERE g.module_id = get_goals.id;
     END;
