@@ -11,11 +11,6 @@ const errorMessageMap = initializeErrorMap();
 settingsRoute.get("/get/:id", authenticateToken, async (req: Request, res: Response) => {
     console.log(`Id received in get account settings: ${req.params.id}`);
     const settingQuery = await settingsApi.getSettings(Number(req.params.id));
-    if(typeof settingQuery === typeof StatusCode) {
-        console.log(`Something went wrong while parsing settings for account ${req.params.id}`);
-        res.status(settingQuery as StatusCode).json(errorMessageMap.get(settingQuery));
-        return;
-    }
     res.status(StatusCode.OK).json(settingQuery);
 });
 

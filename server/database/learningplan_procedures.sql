@@ -25,7 +25,7 @@ AS $$
             ELSE
                 UPDATE MODULE m
                 SET completion_percent = 100
-                WHERE m.module_id = row.id;
+                WHERE m.module_id = row.module_id;
             END IF;
         END LOOP;
     END;

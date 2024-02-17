@@ -26,6 +26,7 @@ export default class SettingsApi {
     }
 
     async #onApiError(error: unknown) {
+        console.error(error);
         return this.errorCodeInterpreter.getStatusCode(error as DatabaseError);
     }
 }

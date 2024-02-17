@@ -6,6 +6,7 @@ import moduleRoutes from "./routes/moduleRoutes";
 import profileRoutes from "./routes/profileRoutes";
 import goalRoutes from "./routes/goalRoutes";
 import dashboardRoutes from './routes/dashboardRoutes';
+import settingsRoute from "./routes/settingRoutes";
 import { notifyOfCloseDueDates, updateCompletionStatus } from "./cron_jobs/goalJobs";
 import { updateCompletionPercent } from "./cron_jobs/moduleJobs";
 
@@ -17,6 +18,7 @@ app.use("/api/module", moduleRoutes);
 app.use("/api/profile", profileRoutes);
 app.use("/api/goal", goalRoutes);
 app.use('/api/dashboard', dashboardRoutes);
+app.use('/api/settings', settingsRoute);
 
 app.get('/api', (req : Request, res : Response) => {
     console.log(req.body);
