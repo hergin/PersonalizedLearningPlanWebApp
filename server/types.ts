@@ -37,3 +37,9 @@ export type Profile = {
     jobTitle?: string,
     bio?: string
 }
+
+export type AccountSettings = {
+    id?: number,
+    receiveEmails: boolean,
+    accountId?: number
+}

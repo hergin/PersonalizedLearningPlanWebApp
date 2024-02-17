@@ -53,24 +53,17 @@ RETURNS SETOF GOAL AS $$
     END;
 $$ LANGUAGE PLPGSQL;
 
-CREATE OR REPLACE FUNCTION calc_completion_percent()
+CREATE OR REPLACE FUNCTION create_new_user()
 RETURNS TRIGGER AS $$
-    DECLARE id INT;
-    
     BEGIN
-        IF (TG_OP = 'DELETE') THEN
-            id := OLD.module_id;
-            CALL update_module_completion(id, 'true', OLD.is_complete);
-        ELSE
-            id := NEW.module_id;
-            CALL update_module_completion(id, 'false', 'false');
-        END IF;
-        
+        INSERT INTO ACCOUNT_SETTINGS(account_id) 
+        VALUES (NEW.id);
+
         RETURN NEW;
     END;
 $$ LANGUAGE PLPGSQL;
 
-CREATE OR REPLACE TRIGGER trigger_calc_completion_percent
-AFTER INSERT OR UPDATE OF is_complete OR DELETE ON GOAL
-FOR EACH ROW
-EXECUTE FUNCTION calc_completion_percent();
+-- Automatically create the account settings row when an account is created.
+CREATE OR REPLACE TRIGGER trigger_create_new_user
+AFTER INSERT ON ACCOUNT FOR EACH ROW
+EXECUTE FUNCTION create_new_user();
