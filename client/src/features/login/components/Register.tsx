@@ -2,10 +2,11 @@ import React, { useState, ReactElement } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ApiClient } from "../../../hooks/ApiClient";
 import { useHotKeys } from "../../../hooks/useHotKeys";
+import { useUser } from "../../../hooks/useUser";
 
-const TEXT_INPUT_STYLE_NORMAL: string =
+const TEXT_INPUT_STYLE_NORMAL =
   "h-10 rounded text-base w-full border border-solid border-gray-300 px-2 ";
-const TEXT_INPUT_STYLE_ERROR: string =
+const TEXT_INPUT_STYLE_ERROR =
   "h-10 rounded text-base w-full border border-solid border-red-700 px-2";
 
 const Register = () => {
@@ -17,6 +18,7 @@ const Register = () => {
   const navigate = useNavigate();
   const { post } = ApiClient();
   const { handleEnterPress } = useHotKeys();
+  const { addUser } = useUser();
   const [passwordErrors, setPasswordErrors] = useState<ReactElement[]>([]);
   const submitDisabled =
     firstName === "" ||
@@ -34,17 +36,23 @@ const Register = () => {
 
     try {
       await post("/auth/register", { email, password });
-      await post("/profile/create", { username, firstName, lastName, email });
-      // Redirects back to login page after creating an account
-      navigate("/login");
+      const response = await post("/auth/login", {email, password});
+      addUser({
+        id: response.id,
+        accessToken: response.accessToken,
+        refreshToken: response.refreshToken,
+      });
+      await post("/profile/create", { username, firstName, lastName, account_id: response.id});
+      // Redirects back to home page after creating an account
+      navigate("/");
     } catch (error: any) {
       console.error(error);
       alert(error.response ? error.response.data : error);
     }
   }
 
-  function validatePassword(input: String) {
-    var errorsFound: ReactElement[] = [];
+  function validatePassword(input: string) {
+    const errorsFound: ReactElement[] = [];
     const expressionMap = initializeExpressionMap();
     for (const [expression, message] of expressionMap) {
       if (!input.match(expression)) {
@@ -58,8 +66,8 @@ const Register = () => {
     setPasswordErrors(errorsFound);
   }
 
-  function initializeExpressionMap(): Map<RegExp, String> {
-    const map = new Map<RegExp, String>();
+  function initializeExpressionMap(): Map<RegExp, string> {
+    const map = new Map<RegExp, string>();
     map.set(/^(?=.*\d).+$/, "1 number.");
     map.set(/^(?=.*[a-z]).+$/, "1 lowercase letter.");
     map.set(/^(?=.*[A-Z]).+$/, "1 uppercase letter.");

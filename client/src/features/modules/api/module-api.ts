@@ -7,7 +7,7 @@ export const ModuleApi = () => {
 
   async function fetchModules() {
     try {
-      const data = await get(`/module/get/${user.email}`);
+      const data = await get(`/module/get/${user.id}`);
       return data;
     } catch (error: any) {
       console.error(error);
@@ -21,7 +21,7 @@ export const ModuleApi = () => {
         module_name: module_name,
         description,
         completion_percent: 10,
-        email: user.email,
+        account_id: user.id,
       });
       return response;
     } catch (error: any) {

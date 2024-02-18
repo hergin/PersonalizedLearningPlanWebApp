@@ -1,20 +1,21 @@
-import { STATUS_CODES } from "../utils/statusCodes";
+import { DatabaseError } from "pg";
+import { StatusCode } from "../types";
 
 export class ErrorCodeInterpreter {
-    getStatusCode(error : any) {
+    getStatusCode(error : DatabaseError) {
         switch (error.code) {
             case '23505':
                 console.log("Duplicate data.");
-                return STATUS_CODES.CONFLICT;
+                return StatusCode.CONFLICT;
             case '08000': case '08003': case '08007':
                 console.log("Connection error");
-                return STATUS_CODES.CONNECTION_ERROR;
+                return StatusCode.CONNECTION_ERROR;
             case '23514':
                 console.log("Bad data.");
-                return STATUS_CODES.BAD_REQUEST;
+                return StatusCode.BAD_REQUEST;
             default:
                 console.error("Fatal server error.", error);
-                return STATUS_CODES.INTERNAL_SERVER_ERROR;
+                return StatusCode.INTERNAL_SERVER_ERROR;
         }
     }
 }

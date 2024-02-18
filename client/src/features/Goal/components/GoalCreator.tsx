@@ -7,6 +7,7 @@ import { Checkbox } from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { useQueryClient } from "@tanstack/react-query";
+import { GoalType } from "../../../types";
 
 interface GoalCreatorProps {
   moduleID: string;
@@ -17,11 +18,7 @@ interface GoalCreatorProps {
 function GoalCreator({ moduleID, goalID, height }: GoalCreatorProps) {
   const [goalName, setGoalName] = useState("");
   const [description, setDescription] = useState("");
-  const GoalTypes = {
-    TODO: "todo",
-    DAILY: "daily",
-  };
-  const [goalType, setGoalType] = useState(GoalTypes.TODO);
+  const [goalType, setGoalType] = useState(GoalType.TASK);
   const queryClient = useQueryClient();
   const [dueDate, setDueDate] = useState<Date | null>(null);
   const [open, setOpen] = useState(false);
@@ -50,9 +47,9 @@ function GoalCreator({ moduleID, goalID, height }: GoalCreatorProps) {
   }
   function changeType(checked: boolean) {
     if (checked) {
-      setGoalType(GoalTypes.DAILY);
+      setGoalType(GoalType.REPEATABLE);
     } else {
-      setGoalType(GoalTypes.TODO);
+      setGoalType(GoalType.TASK);
     }
   }
 

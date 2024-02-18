@@ -58,7 +58,7 @@ const ModuleEditorButton = ({
         name: dataNameLocal,
         description: dataDescriptionLocal,
         completion: moduleCompletion,
-        email: user.email,
+        account_id: user.id,
       });
       queryClient.invalidateQueries({ queryKey: ["modules"] });
       handleCloseModal();

@@ -1,7 +1,7 @@
 import ProfileParser from "../parser/profileParser";
-import { STATUS_CODES } from "../utils/statusCodes";
 import { ErrorCodeInterpreter } from "./errorCodeInterpreter";
-import { Profile } from "../types";
+import { Profile, StatusCode } from "../types";
+import { DatabaseError } from "pg";
 
 export class ProfileAPI {
     parser : ProfileParser;
@@ -12,39 +12,39 @@ export class ProfileAPI {
         this.errorCodeInterpreter = new ErrorCodeInterpreter();
     }
 
-    async createProfile(username : string, firstName : string, lastName : string, email : string) {
+    async createProfile(username : string, firstName : string, lastName : string, accountId : number) {
         try {
-            await this.parser.storeProfile(username, firstName, lastName, email);
-            return STATUS_CODES.OK;
-        } catch(error) {
-            return this.errorCodeInterpreter.getStatusCode(error);
+            await this.parser.storeProfile(username, firstName, lastName, accountId);
+            return StatusCode.OK;
+        } catch (error: unknown) {
+            return this.errorCodeInterpreter.getStatusCode(error as DatabaseError);
         }
     }
 
-    async getProfile(email : string) {
+    async getProfile(accountId : number) {
         try {
-            const profile = await this.parser.parseProfile(email);
-            return (profile) ? profile : STATUS_CODES.UNAUTHORIZED;
-        } catch(error) {
-            return this.errorCodeInterpreter.getStatusCode(error);
+            const profile = await this.parser.parseProfile(accountId);
+            return profile ? profile : StatusCode.UNAUTHORIZED;
+        } catch (error: unknown) {
+            return this.errorCodeInterpreter.getStatusCode(error as DatabaseError);
         }
     }
 
     async updateProfile(profile: Profile) {
         try {
             await this.parser.updateProfile(profile);
-            return STATUS_CODES.OK;
-        } catch(error) {
-            return this.errorCodeInterpreter.getStatusCode(error);
+            return StatusCode.OK;
+        } catch (error: unknown) {
+            return this.errorCodeInterpreter.getStatusCode(error as DatabaseError);
         }
     }
 
-    async deleteProfile(profile_id : number) {
+    async deleteProfile(profileId : number) {
         try {
-            await this.parser.deleteProfile(profile_id);
-            return STATUS_CODES.OK;
-        } catch(error) {
-            return this.errorCodeInterpreter.getStatusCode(error);
+            await this.parser.deleteProfile(profileId);
+            return StatusCode.OK;
+        } catch (error: unknown) {
+            return this.errorCodeInterpreter.getStatusCode(error as DatabaseError);
         }
     }
 }

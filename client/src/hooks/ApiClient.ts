@@ -31,7 +31,7 @@ export const ApiClient = () => {
         error.response &&
         error.response.status === 401
       ) {
-        let data = JSON.stringify({ refreshToken: user.refreshToken });
+        const data = JSON.stringify({ id: user.id, refreshToken: user.refreshToken });
         try {
           const result = await api.post("/token", data);
           originalRequest.headers.Authorization = `Bearer ${result.data}`;
