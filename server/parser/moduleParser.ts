@@ -5,11 +5,11 @@ export default class ModuleParser extends DatabaseParser {
         super();
     }
 
-    async storeModule(name: string, description: string, completion_percent: number, email: string) {
+    async storeModule(name: string, description: string, completion_percent: number, email: string, coach_id?: string) {
         console.log("Storing Module...");
         const storingQuery = {
-            text: "INSERT INTO Module(module_name, description, completion_percent, email) VALUES($1, $2, $3, $4)",
-            values: [name, description, completion_percent, email]
+            text: `INSERT INTO Module(module_name, description, completion_percent, email ${coach_id ? `, coach_id` : ""}) VALUES($1, $2, $3, $4${coach_id ? `, $5` : ""})`,
+            values: coach_id ? [name, description, completion_percent, email, coach_id] : [name, description, completion_percent, email]
         };
         await this.updateDatabase(storingQuery);
         console.log("Module Stored!");
