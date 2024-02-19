@@ -1,4 +1,4 @@
-export {};
+export { };
 
 import ModuleParser from '../../parser/moduleParser';
 
@@ -9,6 +9,7 @@ const TEST_DATA = {
     moduleName: "School",
     moduleDescription: "My school goals :3",
     completion: 0,
+    coach_id: null,
 }
 
 const CREATE_ACCOUNT_QUERY = {
@@ -21,9 +22,9 @@ const CREATE_MODULE_QUERY = {
     values: [TEST_DATA.moduleName, TEST_DATA.moduleDescription, TEST_DATA.completion, TEST_DATA.email]
 }
 
-describe('module parser',() => {
+describe('module parser', () => {
     const parser = new ModuleParser();
-    var client : any;
+    var client: any;
 
     beforeEach(async () => {
         client = await parser.pool.connect();
@@ -45,7 +46,7 @@ describe('module parser',() => {
 
     it('store module', async () => {
         const result = await parser.storeModule(TEST_DATA.moduleName, TEST_DATA.moduleDescription, TEST_DATA.completion, TEST_DATA.email);
-        expect(result).toEqual({module_id: expect.any(Number)});
+        expect(result).toEqual({ module_id: expect.any(Number) });
         var actual = await client.query(
             "SELECT * FROM MODULE WHERE email = $1",
             [TEST_DATA.email]
@@ -56,7 +57,8 @@ describe('module parser',() => {
                 module_name: TEST_DATA.moduleName,
                 description: TEST_DATA.moduleDescription,
                 completion_percent: TEST_DATA.completion,
-                email: TEST_DATA.email 
+                email: TEST_DATA.email,
+                coach_id: TEST_DATA.coach_id,
             }
         ]);
     });
@@ -70,7 +72,8 @@ describe('module parser',() => {
                 module_name: TEST_DATA.moduleName,
                 description: TEST_DATA.moduleDescription,
                 completion_percent: TEST_DATA.completion,
-                email: TEST_DATA.email
+                email: TEST_DATA.email,
+                coach_id: TEST_DATA.coach_id,
             }
         ]);
     });
@@ -90,7 +93,8 @@ describe('module parser',() => {
                 module_name: TEST_DATA.moduleName,
                 description: updatedDescription,
                 completion_percent: TEST_DATA.completion,
-                email: TEST_DATA.email
+                email: TEST_DATA.email,
+                coach_id: TEST_DATA.coach_id,
             }
         ]);
     });
@@ -106,7 +110,7 @@ describe('module parser',() => {
         expect(actual.rows).toEqual([]);
     });
 
-    it('get module variable (name case)', async() => {
+    it('get module variable (name case)', async () => {
         await client.query(CREATE_MODULE_QUERY);
         var moduleID = await getModuleID();
         const result = await parser.getModuleVariable(moduleID, "module_name");
@@ -118,7 +122,7 @@ describe('module parser',() => {
         ]);
     });
 
-    it('get module variable (completion percent case)', async() => {
+    it('get module variable (completion percent case)', async () => {
         await client.query(CREATE_MODULE_QUERY);
         var moduleID = await getModuleID();
         const result = await parser.getModuleVariable(moduleID, "completion_percent");

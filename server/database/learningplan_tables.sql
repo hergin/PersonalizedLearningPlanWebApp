@@ -27,6 +27,7 @@ CREATE TABLE MODULE(
     description TEXT,
     completion_percent INT,
     email TEXT,
+    coach_id TEXT,
     FOREIGN KEY (email) REFERENCES ACCOUNT(email)
         ON DELETE CASCADE ON UPDATE CASCADE
 );
