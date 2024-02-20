@@ -263,6 +263,23 @@ describe('goal parser tests', () => {
             goalId: goalID, goalType: GoalType.TASK, completionTimeExists: true, expirationExists: true}));
     });
 
+    it('update goal feedback', async () => {
+        await client.query(
+            "INSERT INTO GOAL(name, description, goal_type, is_complete, module_id) VALUES ($1, $2, $3, $4, $5)",
+            [TEST_DATA.goalNames[0], TEST_DATA.goalDescriptions[0], GoalType.TASK, TEST_DATA.isComplete, moduleID]
+        );
+        var goalID = await getGoalID();
+        await parser.updateGoalFeedback(goalID, "this is feedback!");
+        var actual = await client.query(selectQuery(goalID, QUERY_VARIABLES.goal));
+        var defaultExpected = getExpectedParentGoal({goalId: goalID, goalType: GoalType.TASK})[0];
+        expect(actual.rows).toEqual([
+            {
+                ...defaultExpected,
+                feedback: "this is feedback!"
+            }
+        ]);
+    });
+
     it('delete goal', async () => {
         await client.query(
             "INSERT INTO GOAL(name, description, goal_type, is_complete, module_id) VALUES ($1, $2, $3, $4, $5)",
