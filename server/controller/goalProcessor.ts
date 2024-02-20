@@ -1,7 +1,8 @@
 import GoalParser from "../parser/goalParser";
-import { STATUS_CODES } from "../utils/statusCodes";
+import { StatusCode } from "../types";
 import { ErrorCodeInterpreter } from "./errorCodeInterpreter";
 import { Goal } from "../types";
+import { DatabaseError } from "pg";
 
 export class GoalAPI {
     parser: GoalParser;
@@ -14,29 +15,25 @@ export class GoalAPI {
 
     async getGoals(moduleId: number) {
         try {
-            const parentgoals = await this.parser.parseParentGoals(moduleId);
-            for (const goal of parentgoals) {
-                const subgoals : Goal[] = await this.getSubGoals(goal.goal_id);
-                if (subgoals?.length !== undefined && subgoals?.length !== 0) {
-                    goal.sub_goals = subgoals;
+            const parentGoals = await this.parser.parseParentGoals(moduleId);
+            for (const goal of parentGoals) {
+                const subGoals : Goal[] = await this.getSubGoals(goal.goal_id);
+                if (subGoals?.length !== undefined && subGoals?.length !== 0) {
+                    goal.sub_goals = subGoals;
                 } else {
                     goal.sub_goals = [];
                 }
             }
-            console.log(parentgoals);
-            return parentgoals;
-        } catch (error) {
-            return this.errorCodeInterpreter.getStatusCode(error);
+            console.log(parentGoals);
+            return parentGoals;
+        } catch (error: unknown) {
+            return this.errorCodeInterpreter.getStatusCode(error as DatabaseError);
         }
     }
 
     async getSubGoals(goalID: number) {
-        try {
-            const subGoals = await this.parser.parseSubGoals(goalID);
-            return subGoals;
-        } catch (error) {
-            return this.errorCodeInterpreter.getStatusCode(error);
-        }
+        const subGoals = await this.parser.parseSubGoals(goalID);
+        return subGoals;
     }
 
     async createGoal(goal: Goal) {
@@ -48,8 +45,8 @@ export class GoalAPI {
                 dueDate: dueDate
             });
             return results;
-        } catch (error) {
-            return this.errorCodeInterpreter.getStatusCode(error);
+        } catch (error: unknown) {
+            return this.errorCodeInterpreter.getStatusCode(error as DatabaseError)
         }
     }
 
@@ -67,18 +64,27 @@ export class GoalAPI {
             if (completionTime) {
                 await this.parser.updateGoalTimestamps(goalId, completionTime, expiration);
             }
-            return STATUS_CODES.OK;
-        } catch (error) {
-            return this.errorCodeInterpreter.getStatusCode(error);
+            return StatusCode.OK;
+        } catch (error: unknown) {
+            return this.errorCodeInterpreter.getStatusCode(error as DatabaseError);
+        }
+    }
+
+    async updateGoalFeedback(goalId: number, feedback: string) {
+        try {
+            await this.parser.updateGoalFeedback(goalId, feedback);
+            return StatusCode.OK;
+        } catch(error: unknown) {
+            return this.errorCodeInterpreter.getStatusCode(error as DatabaseError);
         }
     }
 
     async deleteGoal(goalId: number) {
         try {
             await this.parser.deleteGoal(goalId);
-            return STATUS_CODES.OK;
-        } catch (error) {
-            return this.errorCodeInterpreter.getStatusCode(error);
+            return StatusCode.OK;
+        } catch (error: unknown) {
+            return this.errorCodeInterpreter.getStatusCode(error as DatabaseError)
         }
     }
 
@@ -86,8 +92,8 @@ export class GoalAPI {
         try {
             const result = await this.parser.parseGoalVariable(goalId, variable);
             return result;
-        } catch (error) {
-            return this.errorCodeInterpreter.getStatusCode(error);
+        } catch (error: unknown) {
+            return this.errorCodeInterpreter.getStatusCode(error as DatabaseError)
         }
     }
 
@@ -96,8 +102,8 @@ export class GoalAPI {
             console.log(`In addSubGoal: ${JSON.stringify(goal)}`);
             const result = await this.parser.storeSubGoal(parent_goal_id, goal);
             return result;
-        } catch (error) {
-            return this.errorCodeInterpreter.getStatusCode(error);
+        } catch (error: unknown) {
+            return this.errorCodeInterpreter.getStatusCode(error as DatabaseError)
         }
     }
 }

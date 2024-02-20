@@ -1,11 +1,11 @@
 import { useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
-import { useLocalStorage } from "./useLocalStorage";
-import { User } from "../types";
+import { useSessionStorage } from "./useSessionStorage";
+import { emptyUser, User } from "../types";
 
 export const useUser = () => {
     const { user, setUser } = useAuth();
-    const { setItem, getItem, removeItem } = useLocalStorage();
+    const { setItem, getItem, removeItem } = useSessionStorage();
 
     useEffect(() => {
         const currentUser = getItem("user");
@@ -24,14 +24,14 @@ export const useUser = () => {
     }
 
     const replaceToken = (accessToken : string) => {
-        setUser({email: user.email, accessToken, refreshToken: user.refreshToken});
+        setUser({id: user.id, accessToken, refreshToken: user.refreshToken});
         setItem("user", JSON.stringify(user));
         console.log(`Local storage: ${user}`);
     }
 
     const removeUser = () => {
         console.log("Removing user from local storage...");
-        setUser({email: "", accessToken: "", refreshToken: ""});
+        setUser(emptyUser);
         removeItem("user");
     }
 

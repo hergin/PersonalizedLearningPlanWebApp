@@ -6,7 +6,7 @@ interface AuthContextProps {
     setUser: (user: User) => void
 }
 
-const AuthContext = createContext<AuthContextProps>({user: emptyUser, setUser: () => {}});
+const AuthContext = createContext<AuthContextProps>({user: emptyUser, setUser: (user: User) => {console.log(user)}});
 
 export function useAuth() {
     return useContext(AuthContext);

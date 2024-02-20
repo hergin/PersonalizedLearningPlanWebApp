@@ -1,31 +1,35 @@
-import path from "path";
-require("dotenv").config({
-    path: path.join(__dirname, ".env"),
-});
-import jwt from "jsonwebtoken";
-import { STATUS_CODES } from "./statusCodes";
+import { Request, Response, NextFunction } from "express";
+import { join } from "path";
+import dotenv from "dotenv";
+import { verify, sign, VerifyErrors, Jwt, JwtPayload } from "jsonwebtoken";
+import { StatusCode } from "../types";
 
-export function authenticateToken(req : any, res : any, next : any) {
+dotenv.config({
+    path: join(__dirname, ".env")
+});
+
+export function authenticateToken(req : Request, res : Response, next : NextFunction) {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
     if(token == null) {
         console.log("Token was null!");
-        return res.sendStatus(STATUS_CODES.UNAUTHORIZED);
+        return res.sendStatus(StatusCode.UNAUTHORIZED);
     }    
-    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET!, (err : any, user : any) => {
+    verify(token, process.env.ACCESS_TOKEN_SECRET!, undefined, 
+        <T = Jwt | JwtPayload | string>(err : VerifyErrors | null, decoded : T | undefined) => {
         if(err) {
             console.error("An error has occurred authenticating token!", err);    
-            return res.sendStatus(STATUS_CODES.FORBIDDEN);
+            return res.sendStatus(StatusCode.FORBIDDEN);
         }
-        req.user = user;
+        console.log(`${decoded}`);
         next();
     });
 }
 
 export const generateAccessToken = function(email : string) {
-    return jwt.sign({email}, process.env.ACCESS_TOKEN_SECRET!, {expiresIn: '24h'});
+    return sign({email}, process.env.ACCESS_TOKEN_SECRET!, {expiresIn: '24h'});
 }
 
 export const generateRefreshToken = function(email : string) {
-    return jwt.sign({email}, process.env.REFRESH_TOKEN_SECRET!);
+    return sign({email}, process.env.REFRESH_TOKEN_SECRET!);
 }

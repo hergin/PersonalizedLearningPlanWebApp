@@ -22,7 +22,7 @@ const LoginScreen = () => {
     try {
       const response = await post("/auth/login", { email, password });
       addUser({
-        email,
+        id: response.id,
         accessToken: response.accessToken,
         refreshToken: response.refreshToken,
       });
@@ -86,7 +86,7 @@ const LoginScreen = () => {
         </div>
       </div>
       <div className="flex mt-2 flex-col justify-center items-center h-24 w-[300px] border border-solid border-[#DBDBDB]">
-        <p>Don't have an account?</p>
+        <p>Don&apos;t have an account?</p>
         <Link
           to="/register"
           className="no-underline text-blue-700 text-base mb-2"

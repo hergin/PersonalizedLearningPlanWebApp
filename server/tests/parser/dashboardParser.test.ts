@@ -13,27 +13,47 @@ const TEST_DATA = {
     profilePicture: ""
 }
 
-const CREATE_ACCOUNT_QUERY = {
-    text: "INSERT INTO ACCOUNT(email, account_password) VALUES($1, $2)",
-    values: [TEST_DATA.email, TEST_DATA.password]
-}
-
-const CREATE_PROFILE_QUERY = {
-    text: "INSERT INTO PROFILE(username, first_name, last_name, email) VALUES($1, $2, $3, $4)",
-    values: [TEST_DATA.username, TEST_DATA.firstName, TEST_DATA.lastName, TEST_DATA.email]
-}
-
 describe('dashboard parser', () => {
     var parser = new DashboardParser();
     var client : any;
+    var profileId : number;
 
     beforeEach(async () => {
         console.log("Connecting...");
         client = await parser.pool.connect();
         console.log("Connected!");
-        await client.query(CREATE_ACCOUNT_QUERY);
-        await client.query(CREATE_PROFILE_QUERY);
+        await client.query({
+            text: "INSERT INTO ACCOUNT(email, account_password) VALUES($1, $2)",
+            values: [TEST_DATA.email, TEST_DATA.password]
+        });
+        const accountId = await getAccountID();
+        await createTestProfile(accountId);
+        profileId = await getProfileID(accountId);
     });
+
+    async function getAccountID(): Promise<number> {
+        const queryResult = await client.query({
+            text: "SELECT id FROM ACCOUNT WHERE email = $1 AND account_password = $2",
+            values: [TEST_DATA.email, TEST_DATA.password]
+        });
+        return queryResult.rows[0].id;
+    }
+
+    async function createTestProfile(accountId : number): Promise<void> {
+        await client.query({
+            text: "INSERT INTO PROFILE(username, first_name, last_name, account_id) VALUES($1, $2, $3, $4)",
+            values: [TEST_DATA.username, TEST_DATA.firstName, TEST_DATA.lastName, accountId]
+        });
+    }
+
+    async function getProfileID(accountId : number) {
+        const query = {
+            text: "SELECT profile_id FROM PROFILE WHERE account_id = $1",
+            values: [accountId]
+        };
+        const result = await client.query(query);
+        return result.rows[0].profile_id;
+    }
 
     afterEach(async () => {
         await client.query(
@@ -48,42 +68,39 @@ describe('dashboard parser', () => {
     });
 
     it('create dashboard', async () => {
-        const profileID = await getProfileID();
-        await parser.storeDashboard(profileID);
+        await parser.storeDashboard(profileId);
         const actual = await client.query(
             'SELECT * FROM DASHBOARD WHERE profile_id = $1',
-            [profileID]
+            [profileId]
         );
         expect(actual.rows).toEqual([
             {
                 dashboard_id: expect.any(Number),
-                profile_id: profileID
+                profile_id: profileId
             }
         ]);
     });
 
     it('parse dashboard', async () => {
-        const profileID = await getProfileID();
         await client.query(
             'INSERT INTO DASHBOARD(profile_id) VALUES($1)',
-            [profileID]
+            [profileId]
         );
-        const actual = await parser.parseDashboard(profileID);
+        const actual = await parser.parseDashboard(profileId);
         expect(actual).toEqual([
             {
                 dashboard_id: expect.any(Number),
-                profile_id: profileID
+                profile_id: profileId
             }
         ]);
     });
 
     it('delete dashboard', async () => {
-        const profileID = await getProfileID();
         await client.query(
             'INSERT INTO DASHBOARD(profile_id) VALUES($1)',
-            [profileID]
+            [profileId]
         );
-        const dashboardID = await getDashboardID(profileID);
+        const dashboardID = await getDashboardID(profileId);
         await parser.deleteDashboard(dashboardID);
         const actual = await client.query(
             'SELECT * FROM DASHBOARD WHERE dashboard_id = $1',
@@ -91,15 +108,6 @@ describe('dashboard parser', () => {
         );
         expect(actual.rows).toEqual([]);
     });
-
-    async function getProfileID() {
-        const query = {
-            text: "SELECT profile_id FROM PROFILE WHERE email = $1",
-            values: [TEST_DATA.email]
-        };
-        const result = await client.query(query);
-        return result.rows[0].profile_id;
-    }
 
     async function getDashboardID(profileID : number) {
         const query = {

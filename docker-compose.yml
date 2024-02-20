@@ -25,7 +25,12 @@ services:
       - POSTGRES_PORT=5432                
       - POSTGRES_HOST=database
       - ACCESS_TOKEN_SECRET=UXhkvb0EqCi5uFgjefiOBUwySWSbWOf07ERoVdispXVla4RXQLWDBigLt99mSvI3
-      - REFRESH_TOKEN_SECRET=UTDefpAEyREXmgCkK04pL1SXK6jrB2tEc2ZyMbrFs61THq2y3bpRZOCj5RiPoZGa              
+      - REFRESH_TOKEN_SECRET=UTDefpAEyREXmgCkK04pL1SXK6jrB2tEc2ZyMbrFs61THq2y3bpRZOCj5RiPoZGa
+      - SERVICE="Outlook"
+      - HOST="smtp.office365.com"
+      - EMAIL_PORT=587
+      - ACCOUNT_EMAIL="Dummy2377@outlook.com"
+      - ACCOUNT_PASSWORD="ptic43vr"
     depends_on:
       - database
 
