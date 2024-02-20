@@ -119,6 +119,7 @@ export default function GoalItem({ id, goal }: GoalItemProps) {
         <FeedbackCollapsable
               getCollapsableProps={getFeedbackCollapsable}
               feedback={goal.feedback}
+              id={goal.goal_id}
             />
         {goal.sub_goals?.map((subGoal: Goal) => (
           <SubGoalsCollapsable

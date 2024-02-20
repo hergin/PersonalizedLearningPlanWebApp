@@ -4,15 +4,21 @@ import { ApiClient } from "../../../hooks/ApiClient";
 interface FeedbackCollapsableProps{
     getCollapsableProps: any;
     feedback?: string;
+    id: number;
 }
 
-export default function FeedbackCollapsable({getCollapsableProps, feedback}: FeedbackCollapsableProps){
+export default function FeedbackCollapsable({getCollapsableProps, feedback, id}: FeedbackCollapsableProps){
     const [newFeedback, setFeedback] = useState <string>(feedback ? feedback : "");
     const {put} = ApiClient();
 
 
-    function HandleSubmit(){
-
+    async function HandleSubmit(){
+        try{
+            await put(`/goal/update/feedback/${id}`, {feedback})
+        }catch(error: any){
+            console.error(error);
+            alert(error.message ? error.message : error);
+        }
     }
     
     return (
