@@ -11,10 +11,10 @@ export default function FeedbackCollapsable({getCollapsableProps, feedback, id}:
     const [newFeedback, setFeedback] = useState <string>(feedback ? feedback : "");
     const {put} = ApiClient();
 
-
     async function HandleSubmit(){
         try{
-            await put(`/goal/update/feedback/${id}`, {feedback})
+            await put(`/goal/update/feedback/${id}`, {feedback: newFeedback})
+            setFeedback(newFeedback);
         }catch(error: any){
             console.error(error);
             alert(error.message ? error.message : error);
@@ -23,7 +23,7 @@ export default function FeedbackCollapsable({getCollapsableProps, feedback, id}:
     
     return (
         <div {...getCollapsableProps()}>
-            <textarea className="text-black" value={newFeedback} onChange={(input) => setFeedback(input.target.value)}>
+            <textarea title="feedback" className="text-black" value={newFeedback} onChange={(input) => setFeedback(input.target.value)}>
 
             </textarea>
             <button onClick={HandleSubmit} className="text-black">

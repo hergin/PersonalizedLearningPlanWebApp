@@ -56,7 +56,7 @@ goalRoutes.put('/update/:id', authenticateToken, async (req: Request, res: Respo
 });
 
 goalRoutes.put('/update/feedback/:id', authenticateToken, async (req: Request, res: Response) => {
-    console.log(`Received in update goal feedback: ${req.params.id}`);
+    console.log(`Received in update goal feedback: ${req.params.id} ${req.body.feedback}`);
     const goalQuery = await goalAPI.updateGoalFeedback(Number(req.params.id), req.body.feedback);
     if (goalQuery !== StatusCode.OK) {
         res.status(goalQuery).send(ERROR_MESSAGES.get(goalQuery));
