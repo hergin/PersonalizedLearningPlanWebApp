@@ -1,11 +1,11 @@
 import { useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
-import { useLocalStorage } from "./useLocalStorage";
+import { useSessionStorage } from "./useSessionStorage";
 import { emptyUser, User } from "../types";
 
 export const useUser = () => {
     const { user, setUser } = useAuth();
-    const { setItem, getItem, removeItem } = useLocalStorage();
+    const { setItem, getItem, removeItem } = useSessionStorage();
 
     useEffect(() => {
         const currentUser = getItem("user");
