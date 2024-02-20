@@ -52,6 +52,15 @@ export default class GoalParser extends DatabaseParser {
         console.log("Goal data updated!");
     }
 
+    async updateGoalFeedback(goalID: number, feedback: string) {
+        console.log(`Updating feedback on goal ${goalID}`);
+        const query = {
+            text: `UPDATE GOAL SET feedback = $1 WHERE goal_id = $2`,
+            values: [feedback, goalID]
+        };
+        await this.updateDatabase(query);
+    }
+
     async updateGoalTimestamps(goalID: number, completionTime: string, expiration?: string) {
         console.log("Inserting timestamp values into Goal...");
         const queryString = `UPDATE GOAL SET completion_time = $1${expiration ? `, expiration = $3` : ""} WHERE goal_id = $2`;

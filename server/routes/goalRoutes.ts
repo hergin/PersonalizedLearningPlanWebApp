@@ -55,6 +55,16 @@ goalRoutes.put('/update/:id', authenticateToken, async (req: Request, res: Respo
     res.status(StatusCode.OK).json(goalQuery);
 });
 
+goalRoutes.put('/update/feedback/:id', authenticateToken, async (req: Request, res: Response) => {
+    console.log(`Received in update goal feedback: ${req.params.id}`);
+    const goalQuery = await goalAPI.updateGoalFeedback(Number(req.params.id), req.body.feedback);
+    if (goalQuery !== StatusCode.OK) {
+        res.status(goalQuery).send(ERROR_MESSAGES.get(goalQuery));
+        return;
+    }
+    res.sendStatus(StatusCode.OK);
+});
+
 goalRoutes.delete('/delete/:id', authenticateToken, async (req: Request, res: Response) => {
     console.log(`Received in delete goal: ${req.params.id}`);
     const goalQuery = await goalAPI.deleteGoal(parseInt(req.params.id));

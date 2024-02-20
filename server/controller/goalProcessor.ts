@@ -66,7 +66,16 @@ export class GoalAPI {
             }
             return StatusCode.OK;
         } catch (error: unknown) {
-            return this.errorCodeInterpreter.getStatusCode(error as DatabaseError)
+            return this.errorCodeInterpreter.getStatusCode(error as DatabaseError);
+        }
+    }
+
+    async updateGoalFeedback(goalId: number, feedback: string) {
+        try {
+            await this.parser.updateGoalFeedback(goalId, feedback);
+            return StatusCode.OK;
+        } catch(error: unknown) {
+            return this.errorCodeInterpreter.getStatusCode(error as DatabaseError);
         }
     }
 
