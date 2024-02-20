@@ -16,6 +16,7 @@ export interface Goal {
   is_complete: boolean,
   moduleId?: number
   sub_goals?: Goal[]
+  feedback?: string
 }
 
 export interface User {
