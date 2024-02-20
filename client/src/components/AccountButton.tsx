@@ -53,9 +53,9 @@ const AccountButton = () => {
               <DropDownCheckbox handleCheckToggle={handleCheckChange} checked={data[0].receive_emails}>
                 Receives Email
               </DropDownCheckbox>
-              <DropDownItem onClick={handleLogout}>Logout</DropDownItem>
             </div>
           }
+          <DropDownItem onClick={handleLogout}>Logout</DropDownItem>
         </DropDownMenu>
       </ProfilePicture>
     );
