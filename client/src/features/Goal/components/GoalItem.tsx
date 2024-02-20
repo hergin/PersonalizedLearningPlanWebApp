@@ -90,7 +90,9 @@ export default function GoalItem({ id, goal }: GoalItemProps) {
             <p className="text-black"></p>
           </div>
           <div className="flex flex-col transition-transform w-[15%] h-full justify-center p-3 items-center">
-            <p className="text-black">{progress + "/ 1"}</p>
+            <button {...getToggleProps} className="text-black">
+              {isExpanded ? "-" : "+"}
+            </button>
           </div>
           <div className="flex flex-col transition-transform w-[15%] h-full justify-center p-3 items-center">
             {goal.sub_goals?.length !== 0 ? (
