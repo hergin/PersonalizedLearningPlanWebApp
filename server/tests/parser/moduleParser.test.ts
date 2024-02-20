@@ -134,6 +134,21 @@ describe('module parser', () => {
         ]);
     });
 
+    it('parse module by coach', async () => {
+        await client.query(CREATE_MODULE2_QUERY);
+        var actual = await parser.parseModules(TEST_DATA2.coach_id);
+        expect(actual).toEqual([
+            {
+                module_id: expect.any(Number),
+                module_name: TEST_DATA2.moduleName,
+                description: TEST_DATA2.moduleDescription,
+                completion_percent: TEST_DATA2.completion,
+                email: TEST_DATA2.email,
+                coach_id: TEST_DATA2.coach_id,
+            }
+        ]);
+    });
+
     it('update module', async () => {
         const updatedDescription = "My name is jeff.";
         await client.query(CREATE_MODULE_QUERY);
