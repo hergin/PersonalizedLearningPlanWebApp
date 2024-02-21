@@ -4,8 +4,8 @@ import { ErrorCodeInterpreter } from "./errorCodeInterpreter";
 import { DatabaseError } from "pg";
 
 export class ModuleAPI {
-    parser : ModuleParser;
-    errorCodeInterpreter : ErrorCodeInterpreter;
+    parser: ModuleParser;
+    errorCodeInterpreter: ErrorCodeInterpreter;
 
     constructor() {
         this.parser = new ModuleParser();
@@ -22,25 +22,25 @@ export class ModuleAPI {
         }
     }
 
-    async createModule(name : string, description : string, completion_percent : number, accountId : number) {
+    async createModule(name: string, description: string, completion_percent: number, accountId: number, coachId?: number) {
         try {
-            const result = await this.parser.storeModule(name, description, completion_percent, accountId);
+            const result = await this.parser.storeModule(name, description, completion_percent, accountId, coachId);
             return result;
         } catch (error: unknown) {
             return this.errorCodeInterpreter.getStatusCode(error as DatabaseError);
         }
     }
 
-    async updateModule(module_id : number, name : string, description : string, completion_percent : number, accountId : number) {
+    async updateModule(module_id: number, name: string, description: string, completion_percent: number, accountId: number, coachId?: number) {
         try {
-            await this.parser.updateModule(name, description, completion_percent, accountId, module_id);
+            await this.parser.updateModule(name, description, completion_percent, accountId, module_id, coachId);
             return StatusCode.OK;
         } catch (error: unknown) {
             return this.errorCodeInterpreter.getStatusCode(error as DatabaseError);
         }
     }
 
-    async deleteModule(moduleID : number) {
+    async deleteModule(moduleID: number) {
         try {
             await this.parser.deleteModule(moduleID);
             return StatusCode.OK;
@@ -49,7 +49,7 @@ export class ModuleAPI {
         }
     }
 
-    async getModuleVariable(moduleID: number, variableName : string) {
+    async getModuleVariable(moduleID: number, variableName: string) {
         try {
             const result = await this.parser.getModuleVariable(moduleID, variableName);
             return result;

@@ -28,12 +28,13 @@ goalRoutes.post(
   async (req: Request, res: Response) => {
     console.log(req.body);
     const goalQuery = await goalAPI.createGoal({
-      name: req.body.name,
-      description: req.body.description,
-      goalType: req.body.goalType,
-      isComplete: req.body.isComplete,
-      moduleId: req.body.moduleId,
-      dueDate: req.body.dueDate,
+        name: req.body.name,
+        description: req.body.description,
+        goalType: req.body.goalType,
+        isComplete: req.body.isComplete,
+        moduleId: req.body.moduleId,
+        tagId: req.body.tagId,
+        dueDate: req.body.dueDate
     });
     if (typeof goalQuery !== "object") {
       console.log("Something went wrong while creating module.");
@@ -49,22 +50,33 @@ goalRoutes.put(
   authenticateToken,
   async (req: Request, res: Response) => {
     console.log(`Received in update goal: ${req.params.id}`);
-    const goalQuery = await goalAPI.updateGoal(parseInt(req.params.id), {
-      name: req.body.name,
-      description: req.body.description,
-      goalType: req.body.goalType,
-      isComplete: req.body.isComplete,
-      dueDate: req.body.dueDate,
-      completionTime: req.body.completionTime,
-      expiration: req.body.expiration,
+    const goalQuery = await goalAPI.updateGoal({
+            id: Number(req.params.id),
+            name: req.body.name, 
+            description: req.body.description,
+            goalType: req.body.goalType, 
+            isComplete: req.body.isComplete,
+            dueDate: req.body.dueDate,
+            tagId: req.body.tagId, 
+            completionTime: req.body.completionTime, 
+            expiration: req.body.expiration
     });
     if (typeof goalQuery !== "object") {
       res.status(goalQuery).send(ERROR_MESSAGES.get(goalQuery));
       return;
     }
     res.status(StatusCode.OK).json(goalQuery);
-  }
-);
+});
+
+goalRoutes.put('/update/feedback/:id', authenticateToken, async (req: Request, res: Response) => {
+    console.log(`Received in update goal feedback: ${req.params.id}`);
+    const goalQuery = await goalAPI.updateGoalFeedback(Number(req.params.id), req.body.feedback);
+    if (goalQuery !== StatusCode.OK) {
+        res.status(goalQuery).send(ERROR_MESSAGES.get(goalQuery));
+        return;
+    }
+    res.sendStatus(StatusCode.OK);
+});
 
 goalRoutes.delete(
   "/delete/:id",
@@ -105,12 +117,13 @@ goalRoutes.post(
   async (req: Request, res: Response) => {
     console.log(`Received in add sub goal: ${req.params.id}`);
     const goalQuery = await goalAPI.addSubGoal(Number(req.params.id), {
-      name: req.body.name,
-      description: req.body.description,
-      goalType: req.body.goalType,
-      isComplete: req.body.isComplete,
-      moduleId: req.body.moduleId,
-      dueDate: req.body.dueDate,
+        name: req.body.name,
+        description: req.body.description,
+        goalType: req.body.goalType,
+        isComplete: req.body.isComplete,
+        moduleId: req.body.moduleId,
+        tagId: req.body.tagId,
+        dueDate: req.body.dueDate
     });
     if (typeof goalQuery !== "object") {
       res.status(goalQuery).send(ERROR_MESSAGES.get(goalQuery));

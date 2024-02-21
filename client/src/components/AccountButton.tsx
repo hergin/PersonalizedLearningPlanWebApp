@@ -9,6 +9,7 @@ import DropDownItem from "./dropDown/DropDownItem";
 import DropDownCheckbox from "./dropDown/DropDownCheckbox";
 import useSettings from "../hooks/useSettings";
 import { useQueryClient } from "@tanstack/react-query";
+import { AxiosError } from "axios";
 
 const CLICKABLE_ELEMENT_STYLE = "hover:bg-[#820000] cursor-pointer duration-500";
 
@@ -19,15 +20,22 @@ const AccountButton = () => {
   const navigate = useNavigate();
   const {data, isLoading, error} = useSettings(user.id);
   const queryClient = useQueryClient();
+  const [receivesEmail, setReceivesEmail] = useState<boolean>(() => {
+    if(isLoading || error || !data) {
+      return true;
+    }
+    return data[0].receive_emails;
+  });
 
   async function handleLogout() {
     try {
       await post("/auth/logout", {id: user.id});
       removeUser();
       navigate("/#");
-    } catch (error: any) {
-      console.error(error);
-      alert(error.response ? error.response.data : error);
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError;
+      console.error(axiosError);
+      alert(axiosError.response ? axiosError.response.data : error);
     }
   }
 
@@ -35,9 +43,11 @@ const AccountButton = () => {
       try {
           await put(`settings/update/${user.id}`, {receiveEmails: checked});
           queryClient.invalidateQueries({queryKey: ["settings"]});
-      } catch (error: any) {
-          console.error(error);
-          alert(error.response ? error.response.data : error);
+          setReceivesEmail(checked);
+      } catch (error: unknown) {
+        const axiosError = error as AxiosError;
+        console.error(error);
+        alert(axiosError.response ? axiosError.response.data : error);
       }
   }
   
@@ -46,16 +56,10 @@ const AccountButton = () => {
     return (
       <ProfilePicture>
         <DropDownMenu absolutePosition="absolute top-[58px] w-[200px] translate-x-[-45%] translate-y-[20px]">
-          {isLoading && <p>Loading, please wait...</p>}
-          {error && <p>An error has occurred!</p>}
-          {!isLoading && !error && 
-            <div>
-              <DropDownCheckbox handleCheckToggle={handleCheckChange} checked={data[0].receive_emails}>
-                Receives Email
-              </DropDownCheckbox>
-              <DropDownItem onClick={handleLogout}>Logout</DropDownItem>
-            </div>
-          }
+          <DropDownCheckbox handleCheckToggle={handleCheckChange} checked={receivesEmail}>
+            Receives Email
+          </DropDownCheckbox>
+          <DropDownItem onClick={handleLogout}>Logout</DropDownItem>
         </DropDownMenu>
       </ProfilePicture>
     );
