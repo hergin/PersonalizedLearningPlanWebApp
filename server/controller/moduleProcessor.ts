@@ -22,19 +22,19 @@ export class ModuleAPI {
         }
     }
 
-    async createModule(name: string, description: string, completion_percent: number, email: string, coach_id?: string) {
+    async createModule(name: string, description: string, completion_percent: number, accountId: number, coachId?: number) {
         try {
-            const result = await this.parser.storeModule(name, description, completion_percent, email, coach_id);
+            const result = await this.parser.storeModule(name, description, completion_percent, accountId, coachId);
             return result;
         } catch (error: unknown) {
             return this.errorCodeInterpreter.getStatusCode(error as DatabaseError);
         }
     }
 
-    async updateModule(module_id: number, name: string, description: string, completion_percent: number, email: string, coach_id?: string) {
+    async updateModule(module_id: number, name: string, description: string, completion_percent: number, accountId: number, coachId?: number) {
         try {
-            await this.parser.updateModule(name, description, completion_percent, email, module_id, coach_id);
-            return STATUS_CODES.OK;
+            await this.parser.updateModule(name, description, completion_percent, accountId, module_id, coachId);
+            return StatusCode.OK;
         } catch (error: unknown) {
             return this.errorCodeInterpreter.getStatusCode(error as DatabaseError);
         }

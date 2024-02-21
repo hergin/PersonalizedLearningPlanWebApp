@@ -35,7 +35,7 @@ describe('module processor unit tests', () => {
         ]);
         expect(await moduleAPI.getModules(TEST_DATA.account_id)).toEqual([
             {module_id: TEST_DATA.module_id, module_name: TEST_DATA.module_name, description: TEST_DATA.description, 
-                completion_percent: TEST_DATA.completion_percent, account_id: TEST_DATA.account_id} }
+                completion_percent: TEST_DATA.completion_percent, account_id: TEST_DATA.account_id}
         ]);
     });
 
@@ -116,7 +116,7 @@ describe('module processor unit tests', () => {
 
     it('update module with coach (pass case)', async () => {
         parser.updateModule.mockResolvedValueOnce();
-        expect(await moduleAPI.updateModule(TEST_DATA.module_id, TEST_DATA.module_name, TEST_DATA.description, TEST_DATA.completion_percent, TEST_DATA.account_id, TEST_DATA.coach_id)).toEqual(STATUS_CODES.OK);
+        expect(await moduleAPI.updateModule(TEST_DATA.module_id, TEST_DATA.module_name, TEST_DATA.description, TEST_DATA.completion_percent, TEST_DATA.account_id, TEST_DATA.coach_id)).toEqual(StatusCode.OK);
     });
 
     it('update module (duplicate case)', async () => {

@@ -73,7 +73,7 @@ describe('module parser',() => {
                 module_name: TEST_DATA.moduleNames[0],
                 description: TEST_DATA.moduleDescriptions[0],
                 completion_percent: TEST_DATA.completion,
-                email: TEST_DATA.email,
+                account_id: accountId,
                 coach_id: null,
             }
         ]);
@@ -122,7 +122,7 @@ describe('module parser',() => {
                 module_name: TEST_DATA.moduleNames[2],
                 description: TEST_DATA.moduleDescriptions[2],
                 completion_percent: TEST_DATA.completion,
-                account_id: account_id,
+                account_id: accountId,
                 coach_id: TEST_DATA.coach_id[0],
             }
         ]);
@@ -144,7 +144,7 @@ describe('module parser',() => {
     });
 
     it('update module', async () => {
-        await createTestModule();
+        await createTestModule(TEST_DATA.moduleNames[0], TEST_DATA.moduleDescriptions[0], accountId);
         const moduleID = await getModuleID(TEST_DATA.moduleNames[0], TEST_DATA.moduleDescriptions[0]);
         await parser.updateModule(TEST_DATA.moduleNames[0], TEST_DATA.moduleDescriptions[1], TEST_DATA.completion, accountId, moduleID);
         var actual = await client.query(
@@ -166,7 +166,7 @@ describe('module parser',() => {
     it('update module with coach', async () => {
         await createTestModule(TEST_DATA.moduleNames[2], TEST_DATA.moduleDescriptions[2], altAccountId);
         const moduleID = await getModuleID(TEST_DATA.moduleNames[2], TEST_DATA.moduleDescriptions[2]);
-        await parser.updateModule(TEST_DATA.moduleName[2], TEST_DATA.moduleDescription[2], TEST_DATA.completion, altAccountId, moduleID, TEST_DATA.coach_id[1]);
+        await parser.updateModule(TEST_DATA.moduleNames[2], TEST_DATA.moduleDescriptions[2], TEST_DATA.completion, altAccountId, moduleID, TEST_DATA.coach_id[1]);
         var actual = await client.query(
             "SELECT * FROM MODULE WHERE module_id = $1",
             [moduleID]
@@ -184,7 +184,7 @@ describe('module parser',() => {
     });
 
     it('delete module', async () => {
-        await createTestModule();
+        await createTestModule(TEST_DATA.moduleNames[0], TEST_DATA.moduleDescriptions[0], accountId);
         const moduleID = await getModuleID(TEST_DATA.moduleNames[0], TEST_DATA.moduleDescriptions[0]);
         await parser.deleteModule(moduleID);
         var actual = await client.query(
@@ -195,7 +195,7 @@ describe('module parser',() => {
     });
 
     it('get module variable (name case)', async() => {
-        await createTestModule();
+        await createTestModule(TEST_DATA.moduleNames[0], TEST_DATA.moduleDescriptions[0], accountId);
         const moduleID = await getModuleID(TEST_DATA.moduleNames[0], TEST_DATA.moduleDescriptions[0]);
         const result = await parser.getModuleVariable(moduleID, "module_name");
         console.log(`Result from get module variable name case: ${JSON.stringify(result)}`);
@@ -207,7 +207,7 @@ describe('module parser',() => {
     });
 
     it('get module variable (completion percent case)', async() => {
-        await createTestModule();
+        await createTestModule(TEST_DATA.moduleNames[0], TEST_DATA.moduleDescriptions[0], accountId);
         const moduleID = await getModuleID(TEST_DATA.moduleNames[0], TEST_DATA.moduleDescriptions[0]);
         const result = await parser.getModuleVariable(moduleID, "completion_percent");
         expect(result).toEqual([
@@ -218,7 +218,7 @@ describe('module parser',() => {
     });
 
     it('module maintenance (no changes case)', async() => {
-        await createTestModule();
+        await createTestModule(TEST_DATA.moduleNames[0], TEST_DATA.moduleDescriptions[0], accountId);
         const moduleID = await getModuleID(TEST_DATA.moduleNames[0], TEST_DATA.moduleDescriptions[0]);
         parser.runMaintenanceProcedures();
         const result = await client.query("SELECT * FROM MODULE WHERE module_id = $1", [moduleID]);
@@ -228,13 +228,14 @@ describe('module parser',() => {
                 module_name: TEST_DATA.moduleNames[0],
                 description: TEST_DATA.moduleDescriptions[0],
                 completion_percent: TEST_DATA.completion,
-                account_id: accountId
+                account_id: accountId,
+                coach_id: null
             }
         ]);
     });
 
     it('module maintenance (goal update case)', async() => {
-        await createTestModule();
+        await createTestModule(TEST_DATA.moduleNames[0], TEST_DATA.moduleDescriptions[0], accountId);
         const moduleID = await getModuleID(TEST_DATA.moduleNames[0], TEST_DATA.moduleDescriptions[0]);
         await client.query({
             text: "INSERT INTO GOAL(goal_type, is_complete, module_id) VALUES ($1, $2, $3)",
@@ -251,13 +252,14 @@ describe('module parser',() => {
                 module_name: TEST_DATA.moduleNames[0],
                 description: TEST_DATA.moduleDescriptions[0],
                 completion_percent: 100,
-                account_id: accountId
+                account_id: accountId,
+                coach_id: null
             }
         ]);
     });
 
     it('module maintenance (3 new goals case)', async () => {
-        await createTestModule();
+        await createTestModule(TEST_DATA.moduleNames[0], TEST_DATA.moduleDescriptions[0], accountId);
         const moduleID = await getModuleID(TEST_DATA.moduleNames[0], TEST_DATA.moduleDescriptions[0]);
         await client.query({
             text: "INSERT INTO GOAL(goal_type, is_complete, module_id) VALUES ($1, $4, $3), ($1, $2, $3), ($1, $4, $3)",
@@ -271,13 +273,14 @@ describe('module parser',() => {
                 module_name: TEST_DATA.moduleNames[0],
                 description: TEST_DATA.moduleDescriptions[0],
                 completion_percent: 33,
-                account_id: accountId
+                account_id: accountId,
+                coach_id: null
             }
         ]);
     });
 
     it('module maintenance (more than 1 module, same account case)', async() => {
-        await createTestModule();
+        await createTestModule(TEST_DATA.moduleNames[0], TEST_DATA.moduleDescriptions[0], accountId);
         const moduleID = await getModuleID(TEST_DATA.moduleNames[0], TEST_DATA.moduleDescriptions[0]);
         await client.query({
             text: "INSERT INTO MODULE(module_name, description, completion_percent, account_id) VALUES ($1, $2, $3, $4)",
@@ -299,20 +302,22 @@ describe('module parser',() => {
                 module_name: TEST_DATA.moduleNames[1],
                 description: TEST_DATA.moduleDescriptions[1],
                 completion_percent: 100,
-                account_id: accountId
+                account_id: accountId,
+                coach_id: null
             },
             {
                 module_id: moduleID,
                 module_name: TEST_DATA.moduleNames[0],
                 description: TEST_DATA.moduleDescriptions[0],
                 completion_percent: 50,
-                account_id: accountId
+                account_id: accountId,
+                coach_id: null
             },
         ]);
     });
 
     it('module maintenance (more than 1 module, different accounts case)', async() => {
-        await createTestModule();
+        await createTestModule(TEST_DATA.moduleNames[0], TEST_DATA.moduleDescriptions[0], accountId);
         const moduleID = await getModuleID(TEST_DATA.moduleNames[0], TEST_DATA.moduleDescriptions[0]);
         await client.query({
             text: "INSERT INTO ACCOUNT(email, account_password) VALUES ($1, $2)",
@@ -339,14 +344,16 @@ describe('module parser',() => {
                 module_name: TEST_DATA.moduleNames[1],
                 description: TEST_DATA.moduleDescriptions[1],
                 completion_percent: 0,
-                account_id: altAccountID
+                account_id: altAccountID,
+                coach_id: null
             },
             {
                 module_id: moduleID,
                 module_name: TEST_DATA.moduleNames[0],
                 description: TEST_DATA.moduleDescriptions[0],
                 completion_percent: 100,
-                account_id: accountId
+                account_id: accountId,
+                coach_id: null
             },
         ]);
     });
