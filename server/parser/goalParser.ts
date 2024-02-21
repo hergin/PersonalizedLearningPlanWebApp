@@ -1,5 +1,5 @@
 import DatabaseParser from "./databaseParser";
-import { Goal, GoalType } from "../types";
+import { Goal } from "../types";
 
 export default class GoalParser extends DatabaseParser {
     constructor() {
@@ -27,10 +27,10 @@ export default class GoalParser extends DatabaseParser {
     async storeGoal(goal: Goal) {
         console.log("Storing Goal...");
         const query = {
-            text: `INSERT INTO GOAL(name, description, goal_type, is_complete, module_id${goal.dueDate ? ", due_date" : ""}) VALUES($1, $2, $3, $4, $5${goal.dueDate ? ", $6" : ""})`,
+            text: `INSERT INTO GOAL(name, description, goal_type, is_complete, module_id, tag_id${goal.dueDate ? ", due_date" : ""}) VALUES($1, $2, $3, $4, $5, $6${goal.dueDate ? ", $7" : ""})`,
             values: goal.dueDate ?
-                [goal.name, goal.description, goal.goalType, goal.isComplete, goal.moduleId, goal.dueDate] :
-                [goal.name, goal.description, goal.goalType, goal.isComplete, goal.moduleId]
+                [goal.name, goal.description, goal.goalType, goal.isComplete, goal.moduleId, goal.tagId, goal.dueDate] :
+                [goal.name, goal.description, goal.goalType, goal.isComplete, goal.moduleId, goal.tagId]
         };
         await this.updateDatabase(query);
         console.log("Goal Stored! Now returning id...");
@@ -41,11 +41,12 @@ export default class GoalParser extends DatabaseParser {
         return this.parseDatabase(idQuery);
     }
 
-    async updateGoal(goalID: number, name: string, description: string, goalType: GoalType, isComplete: boolean, dueDate?: string) {
+    async updateGoal(goal: Goal) {
         console.log("Inserting updated data into Goal...");
         const query = {
-            text: `UPDATE GOAL SET name = $1, description = $2, goal_type = $3, is_complete = $4${dueDate ? `, due_date = $6` : ""} WHERE goal_id = $5`,
-            values: dueDate ? [name, description, goalType, isComplete, goalID, dueDate] : [name, description, goalType, isComplete, goalID]
+            text: `UPDATE GOAL SET name = $1, description = $2, goal_type = $3, is_complete = $4, tag_id = $5${goal.dueDate ? `, due_date = $7` : ""} WHERE goal_id = $6`,
+            values: goal.dueDate ? [goal.name, goal.description, goal.goalType, goal.isComplete, goal.tagId, goal.id, goal.dueDate] : 
+            [goal.name, goal.description, goal.goalType, goal.isComplete, goal.tagId, goal.id]
         };
         console.log(JSON.stringify(query));
         await this.updateDatabase(query);
@@ -98,11 +99,11 @@ export default class GoalParser extends DatabaseParser {
 
     async storeSubGoal(parentGoalID: number, goal: Goal) {
         console.log("Storing sub goal...");
-        const text = `INSERT INTO goal(name, description, goal_type, is_complete, module_id, parent_goal${goal.dueDate ? ", due_date" : ""}) VALUES ($1, $2, $3, $4, $5, $6${goal.dueDate ? `, $7` : ""})`;
+        const text = `INSERT INTO goal(name, description, goal_type, is_complete, module_id, tag_id, parent_goal${goal.dueDate ? ", due_date" : ""}) VALUES ($1, $2, $3, $4, $5, $6, $7${goal.dueDate ? `, $8` : ""})`;
         const query = {
             text: text,
-            values: goal.dueDate ? [goal.name, goal.description, goal.goalType, goal.isComplete, goal.moduleId, parentGoalID, goal.dueDate] :
-                [goal.name, goal.description, goal.goalType, goal.isComplete, goal.moduleId, parentGoalID]
+            values: goal.dueDate ? [goal.name, goal.description, goal.goalType, goal.isComplete, goal.moduleId, goal.tagId, parentGoalID, goal.dueDate] :
+                [goal.name, goal.description, goal.goalType, goal.isComplete, goal.moduleId, goal.tagId, parentGoalID]
         };
         console.log(JSON.stringify(query));
         await this.updateDatabase(query);
@@ -121,7 +122,12 @@ export default class GoalParser extends DatabaseParser {
             FROM GOAL g JOIN MODULE m USING (module_id) JOIN ACCOUNT a ON a.id = m.account_id JOIN PROFILE p ON a.id = p.account_id JOIN ACCOUNT_SETTINGS s ON s.account_id = a.id
             WHERE g.due_date IS NOT NULL AND g.is_complete IS FALSE AND s.receive_emails IS TRUE AND g.due_date <= (CURRENT_TIMESTAMP + INTERVAL '24 hours') AND g.due_date > CURRENT_TIMESTAMP;
         `;
-        return this.parseDatabase(query);
+        const result = await this.parseDatabase(query);
+        console.log("Parsed Accounts with upcoming due dates:");
+        for(const object of result) {
+            console.log(`${JSON.stringify(object)}`);
+        }
+        return result;
     }
 
     async runMaintenanceProcedures() {

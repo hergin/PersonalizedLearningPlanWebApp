@@ -21,6 +21,7 @@ export type Goal = {
     isComplete: boolean,
     goalType: GoalType,
     moduleId?: number,
+    tagId?: number,
     dueDate?: string,
     completionTime?: string,
     expiration?: string,
