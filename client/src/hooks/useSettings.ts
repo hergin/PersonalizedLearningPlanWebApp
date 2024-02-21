@@ -2,9 +2,9 @@ import { useQuery } from "@tanstack/react-query";
 import { SettingsApi } from "../api/settings-api";
 
 export default function useSettings(accountId: number) {
-  const { FetchSettings } = SettingsApi();
+  const { FetchSettings } = SettingsApi(accountId);
   return useQuery({
-    queryFn: () => FetchSettings(accountId.toString()),
+    queryFn: () => FetchSettings(),
     queryKey: ["settings"],
     refetchOnWindowFocus: false,
     refetchOnReconnect: true,

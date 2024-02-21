@@ -14,7 +14,7 @@ export function useAuth() {
 
 export function AuthProvider({children}: PropsWithChildren) {
     const [user, setUser] = useState<User>(() => {
-        const savedUser = localStorage.getItem("user");
+        const savedUser = sessionStorage.getItem("user");
         return savedUser ? JSON.parse(savedUser) : emptyUser;
     });
 

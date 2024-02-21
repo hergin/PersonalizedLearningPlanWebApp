@@ -118,16 +118,23 @@ export default class GoalParser extends DatabaseParser {
     async parseAccountsWithUpcomingDueDates() {
         console.log("Getting information about upcoming due dates...");
         const query = `
-            SELECT g.name as goal, p.username as username, a.email as email, g.due_date as due_date 
+            SELECT g.goal_id as id, g.name as goal, p.username as username, a.email as email, g.due_date as due_date 
             FROM GOAL g JOIN MODULE m USING (module_id) JOIN ACCOUNT a ON a.id = m.account_id JOIN PROFILE p ON a.id = p.account_id JOIN ACCOUNT_SETTINGS s ON s.account_id = a.id
             WHERE g.due_date IS NOT NULL AND g.is_complete IS FALSE AND s.receive_emails IS TRUE AND g.due_date <= (CURRENT_TIMESTAMP + INTERVAL '24 hours') AND g.due_date > CURRENT_TIMESTAMP;
         `;
         const result = await this.parseDatabase(query);
-        console.log("Parsed Accounts with upcoming due dates:");
-        for(const object of result) {
-            console.log(`${JSON.stringify(object)}`);
-        }
-        return result;
+        // I have no idea why, but I keep getting duplicates when retrieving test values specifically.
+        return this.#getRidOfDuplicates(result);
+    }
+
+    async #getRidOfDuplicates(result: any[]): Promise<any[]> {
+        const previousGoals : number[] = []; 
+        const filtered = result.filter((element) => {
+            const result : boolean = !previousGoals.includes(element.id);
+            if(result) previousGoals.push(element.id);
+            return result;
+        });    
+        return filtered;
     }
 
     async runMaintenanceProcedures() {

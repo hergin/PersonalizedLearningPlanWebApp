@@ -458,6 +458,7 @@ describe('goal parser tests', () => {
         const filteredResults = result.filter(account => TEST_DATA.email.includes(account.email));
         expect(filteredResults).toEqual([
             {
+                id: expect.any(Number),
                 goal: TEST_DATA.goalNames[0],
                 username: TEST_DATA.usernames[0],
                 email: TEST_DATA.email[0],
@@ -523,12 +524,14 @@ describe('goal parser tests', () => {
         const filteredResults = result.filter(account => TEST_DATA.email.includes(account.email));
         expect(filteredResults).toEqual([
             {
+                id: expect.any(Number),
                 goal: TEST_DATA.goalNames[0],
                 username: TEST_DATA.usernames[0],
                 email: TEST_DATA.email[0],
                 due_date: TEST_DATA.upcomingDueDate,
             },
             {
+                id: expect.any(Number),
                 goal: TEST_DATA.goalNames[1],
                 username: TEST_DATA.usernames[1],
                 email: TEST_DATA.email[1],
@@ -561,6 +564,7 @@ describe('goal parser tests', () => {
         const filteredResults = result.filter(account => TEST_DATA.email.includes(account.email));
         expect(filteredResults).toEqual([
             {
+                id: expect.any(Number),
                 goal: TEST_DATA.goalNames[1],
                 username: TEST_DATA.usernames[1],
                 email: TEST_DATA.email[1],

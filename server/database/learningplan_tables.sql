@@ -47,7 +47,7 @@ DROP TABLE IF EXISTS MODULE CASCADE;
 CREATE TABLE MODULE(
     module_id SERIAL PRIMARY KEY,
     module_name TEXT,
-    module_description TEXT,
+    description TEXT,
     completion_percent INT,
     account_id INT,
     FOREIGN KEY (account_id) REFERENCES ACCOUNT(id)

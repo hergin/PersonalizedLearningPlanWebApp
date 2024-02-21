@@ -9,6 +9,7 @@ import { ApiClient } from "../../../hooks/ApiClient";
 import { useQueryClient } from "@tanstack/react-query";
 import SubGoalCreator from "./SubGoalCreator";
 import GoalDescriptionModal from "./GoalDescriptionModal";
+import { AxiosError } from "axios";
 
 interface GoalItemProps {
   id: string;
@@ -56,9 +57,10 @@ export default function GoalItem({ id, goal }: GoalItemProps) {
       queryClient.invalidateQueries({ queryKey: ["goals"] });
       console.log("Database updated");
       console.log();
-    } catch (error: any) {
-      console.error(error);
-      alert(error.response ? error.response.data : error);
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError;
+      console.error(axiosError);
+      alert(axiosError.response ? axiosError.response.data : error);
     }
   }
 
