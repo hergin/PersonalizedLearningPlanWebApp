@@ -21,12 +21,7 @@ function TagCreator() {
 
   return (
       <div>
-        <button
-          className="flex flex-row transition-transform rounded  w-full h-[100px] border-2 border-solid border-black justify-center items-center hover:scale-105"
-          onClick={() => setOpen(true)}
-        >
-          <h1 className="text-black font-headlineFont text-4xl">Add Goal</h1>
-        </button>
+
         <Modal
           className="absolute float-left flex items-center justify-center top-2/4 left-2/4 "
           open={open}

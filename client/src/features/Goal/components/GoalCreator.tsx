@@ -3,11 +3,13 @@ import Modal from "@mui/material/Modal";
 import { ApiClient } from "../../../hooks/ApiClient";
 import { useHotKeys } from "../../../hooks/useHotKeys";
 import { DatePicker } from "@mui/x-date-pickers";
-import { Checkbox } from "@mui/material";
+import { Checkbox, InputLabel, MenuItem, Select } from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { useQueryClient } from "@tanstack/react-query";
 import { GoalType } from "../../../types";
+import DropDownMenu from "../../../components/dropDown/DropDownMenu";
+import TagCreator from "../../tags/components/TagCreator";
 
 interface GoalCreatorProps {
   moduleID: string;
@@ -16,7 +18,9 @@ interface GoalCreatorProps {
 }
 
 function GoalCreator({ moduleID, goalID, height }: GoalCreatorProps) {
+  const [color, setColor] = useState("");
   const [goalName, setGoalName] = useState("");
+  const [tag, setTag] = useState("");
   const [description, setDescription] = useState("");
   const [goalType, setGoalType] = useState(GoalType.TASK);
   const queryClient = useQueryClient();
@@ -25,6 +29,10 @@ function GoalCreator({ moduleID, goalID, height }: GoalCreatorProps) {
   const submitDisabled = goalName === "" || description === "";
   const { post } = ApiClient();
   const { handleEnterPress } = useHotKeys();
+
+  const handleChange = (event: any) => {
+    setColor(event.target.value);
+  };
 
   async function handleGoalCreation() {
     try {
@@ -100,7 +108,29 @@ function GoalCreator({ moduleID, goalID, height }: GoalCreatorProps) {
                 }}
                 required
               />
-              <div className="w-full flex justify-between items-center px-20 ">
+              {/* <DropDownMenu absolutePosition={""} /> */}
+              <div className="flex flex-row  items-center gap-4">
+              <InputLabel id="simple-select-label">Color</InputLabel>
+                <Select
+                  value={color}
+                  onChange={handleChange}
+                  sx={{
+                    color: "black",
+                    width: 250,
+                    height: 50,
+                  }}
+                >
+                  <MenuItem value={1}>Red</MenuItem>
+                  <MenuItem value={2}>Black</MenuItem>
+                  <MenuItem value={3}>Blue</MenuItem>
+                  <MenuItem value={4}>Green</MenuItem>
+                  <MenuItem value={5}>Yellow</MenuItem>
+                  <MenuItem value={6} onClick={() => console.log(":")}>Purple</MenuItem>
+                  <TagCreator />
+                </Select>
+                </div>
+              <div className="w-full flex justify-between items-center px-20 gap-4 ">
+                
                 <div className="flex flex-row justify-center items-center">
                   <p className="font-headlineFont text-xl">Daily</p>
                   <Checkbox
@@ -112,7 +142,9 @@ function GoalCreator({ moduleID, goalID, height }: GoalCreatorProps) {
                   value={dueDate}
                   onChange={(newDueDate) => setDueDate(newDueDate)}
                 />
+
               </div>
+
               <button
                 onClick={handleGoalCreation}
                 disabled={submitDisabled}
