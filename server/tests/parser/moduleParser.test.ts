@@ -4,7 +4,7 @@ import { GoalType } from '../../types';
 import ModuleParser from '../../parser/moduleParser';
 
 const TEST_DATA = {
-    emails: ["testdummy@yahoo.com", "example@outlook.com", "testCoach@gmail.com"],
+    email: ["testdummy@yahoo.com", "example@outlook.com", "testCoach@gmail.com"],
     password: "01010101010",
     moduleNames: ["School", "Relationship", "Schools"],
     moduleDescriptions: ["My school goals :3", "My relationship goals :3", "My school goals"],
@@ -20,16 +20,16 @@ describe('module parser',() => {
 
     beforeEach(async () => {
         client = await parser.pool.connect();
-        await createTestAccount(TEST_DATA.emails[0]);
-        accountId = await getAccountID(TEST_DATA.emails[0]);
-        await createTestAccount(TEST_DATA.emails[2]);
-        altAccountId = await getAccountID(TEST_DATA.emails[2]);
+        await createTestAccount(TEST_DATA.email[0]);
+        accountId = await getAccountID(TEST_DATA.email[0]);
+        await createTestAccount(TEST_DATA.email[2]);
+        altAccountId = await getAccountID(TEST_DATA.email[2]);
     });
 
     async function createTestAccount(email: string): Promise<void> {
         await client.query({
             text: "INSERT INTO ACCOUNT(email, account_password) VALUES($1, $2)",
-            values: [email, TEST_DATA.password]
+            values: [TEST_DATA.email[0], TEST_DATA.password]
         });
     }
 
@@ -50,8 +50,8 @@ describe('module parser',() => {
 
     afterEach(async () => {
         await client.query(
-            "DELETE FROM ACCOUNT WHERE (email = $1 OR email = $2 OR email = $3)",
-            [TEST_DATA.emails[0], TEST_DATA.emails[1], TEST_DATA.emails[2]]
+            "DELETE FROM ACCOUNT WHERE (email = $1 OR email = $3) AND account_password = $2",
+            [TEST_DATA.email[0], TEST_DATA.password, TEST_DATA.email[1]]
         );
         client.release();
     });
@@ -313,6 +313,13 @@ describe('module parser',() => {
                 account_id: accountId,
                 coach_id: null
             },
+            {
+                module_id: altModuleID,
+                module_name: TEST_DATA.moduleNames[1],
+                description: TEST_DATA.moduleDescriptions[1],
+                completion_percent: 100,
+                account_id: accountId
+            }
         ]);
     });
 
@@ -321,9 +328,9 @@ describe('module parser',() => {
         const moduleID = await getModuleID(TEST_DATA.moduleNames[0], TEST_DATA.moduleDescriptions[0]);
         await client.query({
             text: "INSERT INTO ACCOUNT(email, account_password) VALUES ($1, $2)",
-            values: [TEST_DATA.emails[1], TEST_DATA.password]
+            values: [TEST_DATA.email[1], TEST_DATA.password]
         });
-        const altAccountID = await getAccountID(TEST_DATA.emails[1]);
+        const altAccountID = await getAccountID(TEST_DATA.email[1]);
         await client.query({
             text: "INSERT INTO MODULE(module_name, description, completion_percent, account_id) VALUES ($1, $2, $3, $4)",
             values: [TEST_DATA.moduleNames[1], TEST_DATA.moduleDescriptions[1], 0, altAccountID]
@@ -355,6 +362,13 @@ describe('module parser',() => {
                 account_id: accountId,
                 coach_id: null
             },
+            {
+                module_id: altModuleID,
+                module_name: TEST_DATA.moduleNames[1],
+                description: TEST_DATA.moduleDescriptions[1],
+                completion_percent: 0,
+                account_id: altAccountID
+            }
         ]);
     });
 
