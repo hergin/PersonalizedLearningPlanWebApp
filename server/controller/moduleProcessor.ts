@@ -1,6 +1,7 @@
 import ModuleParser from "../parser/moduleParser";
-import { STATUS_CODES } from "../utils/statusCodes";
+import { StatusCode } from "../types";
 import { ErrorCodeInterpreter } from "./errorCodeInterpreter";
+import { DatabaseError } from "pg";
 
 export class ModuleAPI {
     parser: ModuleParser;
@@ -11,13 +12,13 @@ export class ModuleAPI {
         this.errorCodeInterpreter = new ErrorCodeInterpreter();
     }
 
-    async getModules(email: string) {
+    async getModules(accountId : number) {
         try {
-            const modules = await this.parser.parseModules(email);
+            const modules = await this.parser.parseModules(accountId);
             console.log(`Parsed modules: \n${JSON.stringify(modules)}`);
             return modules;
-        } catch (error) {
-            return this.errorCodeInterpreter.getStatusCode(error);
+        } catch (error: unknown) {
+            return this.errorCodeInterpreter.getStatusCode(error as DatabaseError);
         }
     }
 
@@ -25,8 +26,8 @@ export class ModuleAPI {
         try {
             const result = await this.parser.storeModule(name, description, completion_percent, email, coach_id);
             return result;
-        } catch (error) {
-            return this.errorCodeInterpreter.getStatusCode(error);
+        } catch (error: unknown) {
+            return this.errorCodeInterpreter.getStatusCode(error as DatabaseError);
         }
     }
 
@@ -34,17 +35,17 @@ export class ModuleAPI {
         try {
             await this.parser.updateModule(name, description, completion_percent, email, module_id, coach_id);
             return STATUS_CODES.OK;
-        } catch (error) {
-            return this.errorCodeInterpreter.getStatusCode(error);
+        } catch (error: unknown) {
+            return this.errorCodeInterpreter.getStatusCode(error as DatabaseError);
         }
     }
 
     async deleteModule(moduleID: number) {
         try {
             await this.parser.deleteModule(moduleID);
-            return STATUS_CODES.OK;
-        } catch (error) {
-            return this.errorCodeInterpreter.getStatusCode(error);
+            return StatusCode.OK;
+        } catch (error: unknown) {
+            return this.errorCodeInterpreter.getStatusCode(error as DatabaseError);
         }
     }
 
@@ -52,8 +53,8 @@ export class ModuleAPI {
         try {
             const result = await this.parser.getModuleVariable(moduleID, variableName);
             return result;
-        } catch (error) {
-            return this.errorCodeInterpreter.getStatusCode(error);
+        } catch (error: unknown) {
+            return this.errorCodeInterpreter.getStatusCode(error as DatabaseError);
         }
     }
 }

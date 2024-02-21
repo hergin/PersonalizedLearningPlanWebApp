@@ -1,64 +1,58 @@
 export { };
 
+import { GoalType } from '../../types';
 import ModuleParser from '../../parser/moduleParser';
 
 const TEST_DATA = {
-    email: "testdummy@yahoo.com",
+    emails: ["testdummy@yahoo.com", "example@outlook.com", "testCoach@gmail.com"],
     password: "01010101010",
-    refreshToken: "UTDefpAEyREXmgCkK04pL1SXK6jrB2tEc2ZyMbrFs61THq2y3bpRZOCj5RiPoZGa",
-    moduleName: "School",
-    moduleDescription: "My school goals :3",
+    moduleNames: ["School", "Relationship", "Schools"],
+    moduleDescriptions: ["My school goals :3", "My relationship goals :3", "My school goals"],
     completion: 0,
-    coach_id: null,
-}
-const TEST_DATA2 = {
-    email: "test@yahoo.com",
-    password: "01010101012",
-    refreshToken: "UTDefpAEyREXmgCkK04pL1SXK6jrB2tEc2ZyMbrFs61THq2y3bpRZOCj5RiPoZGa",
-    moduleName: "Schools",
-    moduleDescription: "My school goals",
-    completion: 1,
-    coach_id: "testCoach@gmail.com",
+    coach_id: [1, 2],
 }
 
-const CREATE_ACCOUNT_QUERY = {
-    text: "INSERT INTO ACCOUNT(email, account_password) VALUES($1, $2)",
-    values: [TEST_DATA.email, TEST_DATA.password]
-}
-const CREATE_ACCOUNT2_QUERY = {
-    text: "INSERT INTO ACCOUNT(email, account_password) VALUES($1, $2)",
-    values: [TEST_DATA2.email, TEST_DATA2.password]
-}
-
-const CREATE_MODULE_QUERY = {
-    text: "INSERT INTO MODULE(module_name, description, completion_percent, email) VALUES($1, $2, $3, $4)",
-    values: [TEST_DATA.moduleName, TEST_DATA.moduleDescription, TEST_DATA.completion, TEST_DATA.email]
-}
-const CREATE_MODULE2_QUERY = {
-    text: "INSERT INTO MODULE(module_name, description, completion_percent, email, coach_id) VALUES($1, $2, $3, $4, $5)",
-    values: [TEST_DATA2.moduleName, TEST_DATA2.moduleDescription, TEST_DATA2.completion, TEST_DATA2.email, TEST_DATA2.coach_id]
-}
-
-describe('module parser', () => {
+describe('module parser',() => {
     const parser = new ModuleParser();
-    var client: any;
+    var client : any;
+    var accountId : number;
+    var altAccountId: number;
 
     beforeEach(async () => {
         client = await parser.pool.connect();
-        await client.query(CREATE_ACCOUNT_QUERY);
-        await client.query(CREATE_ACCOUNT2_QUERY);
+        await createTestAccount(TEST_DATA.emails[0]);
+        accountId = await getAccountID(TEST_DATA.emails[0]);
+        await createTestAccount(TEST_DATA.emails[2]);
+        altAccountId = await getAccountID(TEST_DATA.emails[2]);
     });
+
+    async function createTestAccount(email: string): Promise<void> {
+        await client.query({
+            text: "INSERT INTO ACCOUNT(email, account_password) VALUES($1, $2)",
+            values: [email, TEST_DATA.password]
+        });
+    }
+
+    async function getAccountID(email: string): Promise<number> {
+        const queryResult = await client.query({
+            text: "SELECT id FROM ACCOUNT WHERE email = $1 AND account_password = $2",
+            values: [email, TEST_DATA.password]
+        });
+        return queryResult.rows[0].id;
+    }
+
+    async function createTestModule(name: string, description: string, accountId: number): Promise<void> {
+        await client.query({
+            text: "INSERT INTO MODULE(module_name, description, completion_percent, account_id) VALUES($1, $2, $3, $4)",
+            values: [name, description, TEST_DATA.completion, accountId]
+        });
+    }
 
     afterEach(async () => {
         await client.query(
-            "DELETE FROM ACCOUNT WHERE email = $1 AND account_password = $2",
-            [TEST_DATA.email, TEST_DATA.password]
+            "DELETE FROM ACCOUNT WHERE (email = $1 OR email = $2 OR email = $3)",
+            [TEST_DATA.emails[0], TEST_DATA.emails[1], TEST_DATA.emails[2]]
         );
-        await client.query(
-            "DELETE FROM ACCOUNT WHERE email = $1 AND account_password = $2",
-            [TEST_DATA2.email, TEST_DATA2.password]
-        );
-        await client.query("DELETE FROM GOAL");
         client.release();
     });
 
@@ -67,93 +61,92 @@ describe('module parser', () => {
     });
 
     it('store module', async () => {
-        const result = await parser.storeModule(TEST_DATA.moduleName, TEST_DATA.moduleDescription, TEST_DATA.completion, TEST_DATA.email);
-        expect(result).toEqual({ module_id: expect.any(Number) });
+        const result = await parser.storeModule(TEST_DATA.moduleNames[0], TEST_DATA.moduleDescriptions[0], TEST_DATA.completion, accountId);
+        expect(result).toEqual({module_id: expect.any(Number)});
         var actual = await client.query(
-            "SELECT * FROM MODULE WHERE email = $1",
-            [TEST_DATA.email]
+            "SELECT * FROM MODULE WHERE account_id = $1",
+            [accountId]
         );
         expect(actual.rows).toEqual([
             {
                 module_id: result.module_id,
-                module_name: TEST_DATA.moduleName,
-                description: TEST_DATA.moduleDescription,
+                module_name: TEST_DATA.moduleNames[0],
+                description: TEST_DATA.moduleDescriptions[0],
                 completion_percent: TEST_DATA.completion,
                 email: TEST_DATA.email,
-                coach_id: TEST_DATA.coach_id,
+                coach_id: null,
             }
         ]);
     });
 
     it('store module with coach', async () => {
-        const result = await parser.storeModule(TEST_DATA2.moduleName, TEST_DATA2.moduleDescription, TEST_DATA2.completion, TEST_DATA2.email, TEST_DATA2.coach_id);
+        const result = await parser.storeModule(TEST_DATA.moduleNames[2], TEST_DATA.moduleDescriptions[2], TEST_DATA.completion, altAccountId, TEST_DATA.coach_id[0]);
         expect(result).toEqual({ module_id: expect.any(Number) });
         var actual = await client.query(
-            `SELECT * FROM MODULE WHERE email = $1`,
-            [TEST_DATA2.email]
+            `SELECT * FROM MODULE WHERE account_id = $1`,
+            [accountId]
         );
         expect(actual.rows).toEqual([
             {
                 module_id: result.module_id,
-                module_name: TEST_DATA2.moduleName,
-                description: TEST_DATA2.moduleDescription,
-                completion_percent: TEST_DATA2.completion,
-                email: TEST_DATA2.email,
-                coach_id: TEST_DATA2.coach_id,
+                module_name: TEST_DATA.moduleNames[2],
+                description: TEST_DATA.moduleDescriptions[2],
+                completion_percent: TEST_DATA.completion,
+                account_id: accountId,
+                coach_id: TEST_DATA.coach_id[0],
             }
         ]);
     });
 
     it('parse module', async () => {
-        await client.query(CREATE_MODULE_QUERY);
-        var actual = await parser.parseModules(TEST_DATA.email);
+        await createTestModule(TEST_DATA.moduleNames[0], TEST_DATA.moduleDescriptions[0], accountId);
+        var actual = await parser.parseModules(accountId);
         expect(actual).toEqual([
             {
                 module_id: expect.any(Number),
-                module_name: TEST_DATA.moduleName,
-                description: TEST_DATA.moduleDescription,
+                module_name: TEST_DATA.moduleNames[0],
+                description: TEST_DATA.moduleDescriptions[0],
                 completion_percent: TEST_DATA.completion,
-                email: TEST_DATA.email,
-                coach_id: TEST_DATA.coach_id,
+                account_id: accountId,
+                coach_id: null,
             }
         ]);
     });
 
     it('parse module with coach', async () => {
-        await client.query(CREATE_MODULE2_QUERY);
-        var actual = await parser.parseModules(TEST_DATA2.email);
+        await createTestModule(TEST_DATA.moduleNames[2], TEST_DATA.moduleDescriptions[2], altAccountId);
+        var actual = await parser.parseModules(altAccountId);
         expect(actual).toEqual([
             {
                 module_id: expect.any(Number),
-                module_name: TEST_DATA2.moduleName,
-                description: TEST_DATA2.moduleDescription,
-                completion_percent: TEST_DATA2.completion,
-                email: TEST_DATA2.email,
-                coach_id: TEST_DATA2.coach_id,
+                module_name: TEST_DATA.moduleNames[2],
+                description: TEST_DATA.moduleDescriptions[2],
+                completion_percent: TEST_DATA.completion,
+                account_id: account_id,
+                coach_id: TEST_DATA.coach_id[0],
             }
         ]);
     });
 
     it('parse module by coach', async () => {
-        await client.query(CREATE_MODULE2_QUERY);
-        var actual = await parser.parseModules(TEST_DATA2.coach_id);
+        await createTestModule(TEST_DATA.moduleNames[2], TEST_DATA.moduleDescriptions[2], altAccountId);
+        var actual = await parser.parseModules(TEST_DATA.coach_id[0]);
         expect(actual).toEqual([
             {
                 module_id: expect.any(Number),
-                module_name: TEST_DATA2.moduleName,
-                description: TEST_DATA2.moduleDescription,
-                completion_percent: TEST_DATA2.completion,
-                email: TEST_DATA2.email,
-                coach_id: TEST_DATA2.coach_id,
+                module_name: TEST_DATA.moduleNames[2],
+                description: TEST_DATA.moduleDescriptions[2],
+                completion_percent: TEST_DATA.completion,
+                account_id: accountId,
+                coach_id: TEST_DATA.coach_id[0],
             }
         ]);
     });
 
     it('update module', async () => {
-        const updatedDescription = "My name is jeff.";
-        await client.query(CREATE_MODULE_QUERY);
-        var moduleID = await getModuleID();
-        await parser.updateModule(TEST_DATA.moduleName, updatedDescription, TEST_DATA.completion, TEST_DATA.email, moduleID);
+        await createTestModule();
+        const moduleID = await getModuleID(TEST_DATA.moduleNames[0], TEST_DATA.moduleDescriptions[0]);
+        await parser.updateModule(TEST_DATA.moduleNames[0], TEST_DATA.moduleDescriptions[1], TEST_DATA.completion, accountId, moduleID);
         var actual = await client.query(
             "SELECT * FROM MODULE WHERE module_id = $1",
             [moduleID]
@@ -161,20 +154,19 @@ describe('module parser', () => {
         expect(actual.rows).toEqual([
             {
                 module_id: moduleID,
-                module_name: TEST_DATA.moduleName,
-                description: updatedDescription,
+                module_name: TEST_DATA.moduleNames[0],
+                description: TEST_DATA.moduleDescriptions[1],
                 completion_percent: TEST_DATA.completion,
-                email: TEST_DATA.email,
-                coach_id: TEST_DATA.coach_id,
+                account_id: accountId,
+                coach_id: null,
             }
         ]);
     });
 
     it('update module with coach', async () => {
-        const updatedCoach = "cats@gamil.com";
-        await client.query(CREATE_MODULE2_QUERY);
-        var moduleID = await getModuleID2();
-        await parser.updateModule(TEST_DATA2.moduleName, TEST_DATA2.moduleDescription, TEST_DATA2.completion, TEST_DATA2.email, moduleID, updatedCoach);
+        await createTestModule(TEST_DATA.moduleNames[2], TEST_DATA.moduleDescriptions[2], altAccountId);
+        const moduleID = await getModuleID(TEST_DATA.moduleNames[2], TEST_DATA.moduleDescriptions[2]);
+        await parser.updateModule(TEST_DATA.moduleName[2], TEST_DATA.moduleDescription[2], TEST_DATA.completion, altAccountId, moduleID, TEST_DATA.coach_id[1]);
         var actual = await client.query(
             "SELECT * FROM MODULE WHERE module_id = $1",
             [moduleID]
@@ -182,18 +174,18 @@ describe('module parser', () => {
         expect(actual.rows).toEqual([
             {
                 module_id: moduleID,
-                module_name: TEST_DATA2.moduleName,
-                description: TEST_DATA2.moduleDescription,
-                completion_percent: TEST_DATA2.completion,
-                email: TEST_DATA2.email,
-                coach_id: updatedCoach,
+                module_name: TEST_DATA.moduleNames[2],
+                description: TEST_DATA.moduleDescriptions[2],
+                completion_percent: TEST_DATA.completion,
+                account_id: altAccountId,
+                coach_id: TEST_DATA.coach_id[1],
             }
         ]);
     });
 
     it('delete module', async () => {
-        await client.query(CREATE_MODULE_QUERY);
-        var moduleID = await getModuleID();
+        await createTestModule();
+        const moduleID = await getModuleID(TEST_DATA.moduleNames[0], TEST_DATA.moduleDescriptions[0]);
         await parser.deleteModule(moduleID);
         var actual = await client.query(
             "SELECT * FROM MODULE WHERE module_id = $1",
@@ -202,21 +194,21 @@ describe('module parser', () => {
         expect(actual.rows).toEqual([]);
     });
 
-    it('get module variable (name case)', async () => {
-        await client.query(CREATE_MODULE_QUERY);
-        var moduleID = await getModuleID();
+    it('get module variable (name case)', async() => {
+        await createTestModule();
+        const moduleID = await getModuleID(TEST_DATA.moduleNames[0], TEST_DATA.moduleDescriptions[0]);
         const result = await parser.getModuleVariable(moduleID, "module_name");
         console.log(`Result from get module variable name case: ${JSON.stringify(result)}`);
         expect(result).toEqual([
             {
-                module_name: TEST_DATA.moduleName
+                module_name: TEST_DATA.moduleNames[0]
             }
         ]);
     });
 
-    it('get module variable (completion percent case)', async () => {
-        await client.query(CREATE_MODULE_QUERY);
-        var moduleID = await getModuleID();
+    it('get module variable (completion percent case)', async() => {
+        await createTestModule();
+        const moduleID = await getModuleID(TEST_DATA.moduleNames[0], TEST_DATA.moduleDescriptions[0]);
         const result = await parser.getModuleVariable(moduleID, "completion_percent");
         expect(result).toEqual([
             {
@@ -225,18 +217,144 @@ describe('module parser', () => {
         ]);
     });
 
-    async function getModuleID() {
-        const moduleIDQuery = await client.query(
-            "SELECT module_id FROM MODULE WHERE module_name = $1 AND description = $2 AND email = $3",
-            [TEST_DATA.moduleName, TEST_DATA.moduleDescription, TEST_DATA.email]
-        );
-        return moduleIDQuery.rows[0].module_id;
-    }
+    it('module maintenance (no changes case)', async() => {
+        await createTestModule();
+        const moduleID = await getModuleID(TEST_DATA.moduleNames[0], TEST_DATA.moduleDescriptions[0]);
+        parser.runMaintenanceProcedures();
+        const result = await client.query("SELECT * FROM MODULE WHERE module_id = $1", [moduleID]);
+        expect(result.rows).toEqual([
+            {
+                module_id: moduleID,
+                module_name: TEST_DATA.moduleNames[0],
+                description: TEST_DATA.moduleDescriptions[0],
+                completion_percent: TEST_DATA.completion,
+                account_id: accountId
+            }
+        ]);
+    });
 
-    async function getModuleID2() {
+    it('module maintenance (goal update case)', async() => {
+        await createTestModule();
+        const moduleID = await getModuleID(TEST_DATA.moduleNames[0], TEST_DATA.moduleDescriptions[0]);
+        await client.query({
+            text: "INSERT INTO GOAL(goal_type, is_complete, module_id) VALUES ($1, $2, $3)",
+            values: [GoalType.TASK, true, moduleID]
+        });
+        await parser.runMaintenanceProcedures();
+        const results = await client.query({
+            text: "SELECT * FROM MODULE WHERE module_id = $1",
+            values: [moduleID]
+        });
+        expect(results.rows).toEqual([
+            {
+                module_id: moduleID,
+                module_name: TEST_DATA.moduleNames[0],
+                description: TEST_DATA.moduleDescriptions[0],
+                completion_percent: 100,
+                account_id: accountId
+            }
+        ]);
+    });
+
+    it('module maintenance (3 new goals case)', async () => {
+        await createTestModule();
+        const moduleID = await getModuleID(TEST_DATA.moduleNames[0], TEST_DATA.moduleDescriptions[0]);
+        await client.query({
+            text: "INSERT INTO GOAL(goal_type, is_complete, module_id) VALUES ($1, $4, $3), ($1, $2, $3), ($1, $4, $3)",
+            values: [GoalType.TASK, true, moduleID, false]
+        });
+        await parser.runMaintenanceProcedures();
+        const results = await client.query({text: "SELECT * FROM MODULE WHERE module_id = $1", values: [moduleID]});
+        expect(results.rows).toEqual([
+            {
+                module_id: moduleID,
+                module_name: TEST_DATA.moduleNames[0],
+                description: TEST_DATA.moduleDescriptions[0],
+                completion_percent: 33,
+                account_id: accountId
+            }
+        ]);
+    });
+
+    it('module maintenance (more than 1 module, same account case)', async() => {
+        await createTestModule();
+        const moduleID = await getModuleID(TEST_DATA.moduleNames[0], TEST_DATA.moduleDescriptions[0]);
+        await client.query({
+            text: "INSERT INTO MODULE(module_name, description, completion_percent, account_id) VALUES ($1, $2, $3, $4)",
+            values: [TEST_DATA.moduleNames[1], TEST_DATA.moduleDescriptions[1], 0, accountId]
+        });
+        const altModuleID = await getModuleID(TEST_DATA.moduleNames[1], TEST_DATA.moduleDescriptions[1]);
+        await client.query({
+            text: "INSERT INTO GOAL(goal_type, is_complete, module_id) VALUES ($1, $2, $3), ($1, $4, $5), ($1, $4, $3)",
+            values: [GoalType.TASK, false, moduleID, true, altModuleID]
+        });
+        await parser.runMaintenanceProcedures();
+        const results = await client.query({
+            text: "SELECT * FROM MODULE WHERE module_id = $1 OR module_id = $2", 
+            values: [moduleID, altModuleID]
+        });
+        expect(results.rows).toEqual([
+            {
+                module_id: altModuleID,
+                module_name: TEST_DATA.moduleNames[1],
+                description: TEST_DATA.moduleDescriptions[1],
+                completion_percent: 100,
+                account_id: accountId
+            },
+            {
+                module_id: moduleID,
+                module_name: TEST_DATA.moduleNames[0],
+                description: TEST_DATA.moduleDescriptions[0],
+                completion_percent: 50,
+                account_id: accountId
+            },
+        ]);
+    });
+
+    it('module maintenance (more than 1 module, different accounts case)', async() => {
+        await createTestModule();
+        const moduleID = await getModuleID(TEST_DATA.moduleNames[0], TEST_DATA.moduleDescriptions[0]);
+        await client.query({
+            text: "INSERT INTO ACCOUNT(email, account_password) VALUES ($1, $2)",
+            values: [TEST_DATA.emails[1], TEST_DATA.password]
+        });
+        const altAccountID = await getAccountID(TEST_DATA.emails[1]);
+        await client.query({
+            text: "INSERT INTO MODULE(module_name, description, completion_percent, account_id) VALUES ($1, $2, $3, $4)",
+            values: [TEST_DATA.moduleNames[1], TEST_DATA.moduleDescriptions[1], 0, altAccountID]
+        });
+        const altModuleID = await getModuleID(TEST_DATA.moduleNames[1], TEST_DATA.moduleDescriptions[1]);
+        await client.query({
+            text: "INSERT INTO GOAL(goal_type, is_complete, module_id) VALUES ($1, $4, $3), ($1, $2, $5), ($1, $4, $3)",
+            values: [GoalType.TASK, false, moduleID, true, altModuleID]
+        });
+        await parser.runMaintenanceProcedures();
+        const results = await client.query({
+            text: "SELECT * FROM MODULE WHERE module_id = $1 OR module_id = $2", 
+            values: [moduleID, altModuleID]
+        });
+        expect(results.rows).toEqual([
+            {
+                module_id: altModuleID,
+                module_name: TEST_DATA.moduleNames[1],
+                description: TEST_DATA.moduleDescriptions[1],
+                completion_percent: 0,
+                account_id: altAccountID
+            },
+            {
+                module_id: moduleID,
+                module_name: TEST_DATA.moduleNames[0],
+                description: TEST_DATA.moduleDescriptions[0],
+                completion_percent: 100,
+                account_id: accountId
+            },
+        ]);
+    });
+
+    async function getModuleID(moduleName: string, moduleDescription: string) {
         const moduleIDQuery = await client.query(
-            "SELECT module_id FROM MODULE WHERE module_name = $1 AND description = $2 AND email = $3",
-            [TEST_DATA2.moduleName, TEST_DATA2.moduleDescription, TEST_DATA2.email]
+            "SELECT module_id FROM MODULE WHERE module_name = $1 AND description = $2",
+            [moduleName, moduleDescription]
         );
         return moduleIDQuery.rows[0].module_id;
     }

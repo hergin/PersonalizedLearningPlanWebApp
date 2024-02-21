@@ -1,36 +1,36 @@
-import express from "express";
+import { Router, Request, Response } from "express";
 import { authenticateToken } from "../utils/token";
 import { initializeErrorMap } from "../utils/errorMessages";
 import { ProfileAPI } from "../controller/profileProcessor";
-import { STATUS_CODES } from "../utils/statusCodes";
+import { StatusCode } from "../types";
 
-const profileRoutes = express.Router();
+const profileRoutes = Router();
 const ERROR_MESSAGES = initializeErrorMap();
 const profileAPI = new ProfileAPI();
 
-profileRoutes.get('/get/:id', authenticateToken, async(req : any, res : any) => {
+profileRoutes.get('/get/:id', authenticateToken, async(req : Request, res : Response) => {
     console.log(`Data received in get profile: ${req.params.id}`);
-    const profileQuery = await profileAPI.getProfile(req.params.id);
+    const profileQuery = await profileAPI.getProfile(Number(req.params.id));
     if(typeof profileQuery !== "object") {
         console.error("There was a problem retrieving profile.");
         res.status(profileQuery).send(ERROR_MESSAGES.get(profileQuery));
         return;
     }
-    res.status(STATUS_CODES.OK).json(profileQuery);
+    res.status(StatusCode.OK).json(profileQuery);
 });
 
-profileRoutes.post('/create', async(req : any, res : any) => {
-    console.log(`Data received in create profile: ${req.body.email}`);
-    const profileQuery = await profileAPI.createProfile(req.body.username, req.body.firstName, req.body.lastName, req.body.email);
-    if(profileQuery !== STATUS_CODES.OK) {
+profileRoutes.post('/create', async(req : Request, res : Response) => {
+    console.log(`Data received in create profile: ${req.body.account_id}`);
+    const profileQuery = await profileAPI.createProfile(req.body.username, req.body.firstName, req.body.lastName, req.body.account_id);
+    if(profileQuery !== StatusCode.OK) {
         console.error("There was a problem creating profile.");
         res.status(profileQuery).send(ERROR_MESSAGES.get(profileQuery));
         return;
     }
-    res.sendStatus(STATUS_CODES.OK);
+    res.sendStatus(StatusCode.OK);
 });
 
-profileRoutes.put('/edit/:id', authenticateToken, async(req : any, res : any) => {
+profileRoutes.put('/edit/:id', authenticateToken, async(req : Request, res : Response) => {
     console.log(`Data received in update profile: ${req.params.id}`);
     const profileQuery = await profileAPI.updateProfile({
         id: parseInt(req.params.id), 
@@ -41,15 +41,15 @@ profileRoutes.put('/edit/:id', authenticateToken, async(req : any, res : any) =>
         jobTitle: req.body.jobTitle, 
         bio: req.body.bio
     });
-    if(profileQuery !== STATUS_CODES.OK) {
+    if(profileQuery !== StatusCode.OK) {
         console.error("There was a problem updating profile.");
         res.status(profileQuery).send(ERROR_MESSAGES.get(profileQuery));
         return;
     }
-    res.sendStatus(STATUS_CODES.OK);
+    res.sendStatus(StatusCode.OK);
 });
 
-profileRoutes.delete('/delete/:id', authenticateToken, async(req : any, res : any) => {
+profileRoutes.delete('/delete/:id', authenticateToken, async(req : Request, res : Response) => {
     console.log(`Data received in delete profile: ${req.params.id}`);
     const profileQuery = await profileAPI.deleteProfile(parseInt(req.params.id));
     if(typeof profileQuery !== "object") {
@@ -57,7 +57,7 @@ profileRoutes.delete('/delete/:id', authenticateToken, async(req : any, res : an
         res.status(profileQuery).send(ERROR_MESSAGES.get(profileQuery));
         return;
     }
-    res.sendStatus(STATUS_CODES.OK);
+    res.sendStatus(StatusCode.OK);
 });
 
 export default profileRoutes;

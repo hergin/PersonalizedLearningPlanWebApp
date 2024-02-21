@@ -26,7 +26,7 @@ function CreationModal({
         name: moduleName,
         description,
         completion_percent: 0,
-        email: user.email,
+        account_id: user.id,
       });
       console.log(response.module_id);
       queryClient.invalidateQueries({ queryKey: ["modules"] });

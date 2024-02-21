@@ -21,35 +21,35 @@ export default class LoginParser extends DatabaseParser {
         return await this.parseDatabase(query);
     }
     
-    async storeToken(email : string, refreshToken : string) {
+    async storeToken(accountId : number, refreshToken : string) {
         const query = {
-            text: "UPDATE ACCOUNT SET refresh_token = $1 WHERE email = $2",
-            values: [refreshToken, email]
+            text: "UPDATE ACCOUNT SET refresh_token = $1 WHERE id = $2",
+            values: [refreshToken, accountId]
         };
         await this.updateDatabase(query);
     }
 
-    async parseToken(email : string) {
+    async parseToken(accountId : number) {
         const query = {
-            text: "SELECT refresh_token FROM ACCOUNT WHERE email = $1",
-            values: [email]
+            text: "SELECT refresh_token FROM ACCOUNT WHERE id = $1",
+            values: [accountId]
         }
         return await this.parseDatabase(query);
     }
 
-    async deleteToken(email : string) {
+    async deleteToken(accountId : number) {
         const query = {
-            text: "UPDATE ACCOUNT SET refresh_token = '' WHERE email = $1",
-            values: [email]
+            text: "UPDATE ACCOUNT SET refresh_token = '' WHERE id = $1",
+            values: [accountId]
         };
         await this.updateDatabase(query);
     }
 
-    async deleteAccount(email : string) {
+    async deleteAccount(accountId : number) {
         console.log("Deleting account...");
         const query = {
-            text: "DELETE FROM ACCOUNT WHERE email = $1",
-            values: [email]
+            text: "DELETE FROM ACCOUNT WHERE id = $1",
+            values: [accountId]
         };
         await this.updateDatabase(query);
         console.log("Account deleted!");

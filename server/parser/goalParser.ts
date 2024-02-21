@@ -1,8 +1,6 @@
 import DatabaseParser from "./databaseParser";
 import { Goal, GoalType } from "../types";
 
-const TIMESTAMP_FORMAT : string = "YYYY-MM-DD HH24:MI:SS"
-
 export default class GoalParser extends DatabaseParser {
     constructor() {
         super();
@@ -13,6 +11,15 @@ export default class GoalParser extends DatabaseParser {
         const query = {
             text: "SELECT * FROM get_goals($1) where parent_goal is null",
             values: [moduleId]
+        };
+        return this.parseDatabase(query);
+    }
+
+    async parseSubGoals(goalID: number) {
+        console.log("Getting sub goals...");
+        const query = {
+            text: "SELECT * FROM GOAL WHERE parent_goal = $1",
+            values: [goalID]
         };
         return this.parseDatabase(query);
     }
@@ -98,12 +105,18 @@ export default class GoalParser extends DatabaseParser {
         return this.parseDatabase(idQuery);
     }
 
-    async parseSubGoals(goalID: number) {
-        console.log("Getting sub goals...");
-        const query = {
-            text: "SELECT * FROM GOAL WHERE parent_goal = $1",
-            values: [goalID]
-        };
+    async parseAccountsWithUpcomingDueDates() {
+        console.log("Getting information about upcoming due dates...");
+        const query = `
+            SELECT g.name as goal, p.username as username, a.email as email, g.due_date as due_date 
+            FROM GOAL g JOIN MODULE m USING (module_id) JOIN ACCOUNT a ON a.id = m.account_id JOIN PROFILE p ON a.id = p.account_id JOIN ACCOUNT_SETTINGS s ON s.account_id = a.id
+            WHERE g.due_date IS NOT NULL AND g.is_complete IS FALSE AND s.receive_emails IS TRUE AND g.due_date <= (CURRENT_TIMESTAMP + INTERVAL '24 hours') AND g.due_date > CURRENT_TIMESTAMP;
+        `;
         return this.parseDatabase(query);
+    }
+
+    async runMaintenanceProcedures() {
+        console.log("Running goal's maintenance procedures...");
+        await this.updateDatabase("CALL update_is_complete()");
     }
 }

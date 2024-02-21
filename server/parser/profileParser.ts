@@ -6,22 +6,22 @@ export default class ProfileParser extends DatabaseParser {
         super();
     }
 
-    async parseProfile(email : string) {
+    async parseProfile(accountId : number) {
         console.log("Getting profile...");
         const query = {
-            text: "SELECT * FROM PROFILE WHERE email = $1",
-            values: [email]
+            text: "SELECT * FROM PROFILE WHERE account_id = $1",
+            values: [accountId]
         };
         const result = await this.parseDatabase(query);
         return result[0];
     }
 
-    async storeProfile(username : string, firstName : string, lastName : string, email : string) {
+    async storeProfile(username : string, firstName : string, lastName : string, accountId : number) {
         console.log("Creating profile...");
-        console.log(email);
+        console.log(accountId);
         const query = {
-            text: "INSERT INTO PROFILE(username, first_name, last_name, email) VALUES($1, $2, $3, $4)",
-            values: [username, firstName, lastName, email]
+            text: "INSERT INTO PROFILE(username, first_name, last_name, account_id) VALUES($1, $2, $3, $4)",
+            values: [username, firstName, lastName, accountId]
         };
         await this.updateDatabase(query);
         console.log("Profile Created!");

@@ -15,6 +15,7 @@ const ModuleComponent = () => {
   function closeModal() {
     setOpen(false);
   }
+  
   if (isLoading) {
     return <div>Loading...</div>;
   }
@@ -22,35 +23,6 @@ const ModuleComponent = () => {
   if (isError) {
     return <div>Error</div>;
   }
-
-  /*   function addModule(module: Module) {
-    if (modules.includes(module)) {
-      return;
-    }
-    let newModules: Module[] = ([] as Module[]).concat(modules);
-    newModules.push(module);
-    console.log(newModules);
-    setModules(newModules);
-  }
-
-  function editModule(updatedModule: Module) {
-    const newModule = modules.map((module: Module) => {
-      if (module.id === updatedModule.id) {
-        return {
-          ...module,
-          name: updatedModule.name,
-          description: updatedModule.description,
-        };
-      }
-      return module;
-    });
-    setModules(newModule);
-  }
-
-  const deleteModule = (id: number) => {
-    const newModules = modules.filter((module: Module) => module.id !== id);
-    setModules(newModules);
-  }; */
 
   return (
     <div className="flex flex-wrap w-full h-full justify-start gap-[5%]">

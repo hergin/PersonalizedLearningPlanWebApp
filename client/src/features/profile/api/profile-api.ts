@@ -6,7 +6,7 @@ export const ProfileApi = () => {
   const { get } = ApiClient();
   async function FetchProfile() {
     try {
-      const data = await get(`profile/get/${user.email}`);
+      const data = await get(`profile/get/${user.id}`);
       return data;
     } catch (error: any) {
       console.error(error);

@@ -1,11 +1,8 @@
-import path from "path";
-require('dotenv').config({
-    path: path.join(__dirname, ".env")
-});
 import bcrypt from "bcryptjs";
 import LoginParser from "../parser/loginParser";
-import { STATUS_CODES } from "../utils/statusCodes";
+import { StatusCode } from "../types";
 import { ErrorCodeInterpreter } from "./errorCodeInterpreter";
+import { DatabaseError } from "pg";
 
 export class LoginAPI {
     parser : LoginParser;
@@ -19,10 +16,10 @@ export class LoginAPI {
     async verifyLogin(email : string, password : string) {
         try {
             const login = await this.parser.retrieveLogin(email);
-            if(login.length === 0) return STATUS_CODES.GONE;
-            return await bcrypt.compare(password, login[0].account_password) ? STATUS_CODES.OK : STATUS_CODES.UNAUTHORIZED;
-        } catch(error) {
-            return this.errorCodeInterpreter.getStatusCode(error);
+            if(login.length === 0) return StatusCode.GONE;
+            return await bcrypt.compare(password, login[0].account_password) ? login[0].id : StatusCode.UNAUTHORIZED;
+        } catch (error: unknown) {
+            return this.errorCodeInterpreter.getStatusCode(error as DatabaseError);
         }
     }
     
@@ -32,46 +29,46 @@ export class LoginAPI {
             const hash = await this.#hashPassword(password);
             console.log(hash);
             await this.parser.storeLogin(email, hash);
-            return STATUS_CODES.OK;
-        } catch(error) {
-            return this.errorCodeInterpreter.getStatusCode(error);
+            return StatusCode.OK;
+        } catch (error: unknown) {
+            return this.errorCodeInterpreter.getStatusCode(error as DatabaseError);
         }
     }
 
-    async setToken(email : string, refreshToken : string) {
+    async setToken(accountId: number, refreshToken : string) {
         try {
-            await this.parser.storeToken(email, refreshToken);
-            return STATUS_CODES.OK;
-        } catch(error) {
-            return this.errorCodeInterpreter.getStatusCode(error);
+            await this.parser.storeToken(accountId, refreshToken);
+            return StatusCode.OK;
+        } catch (error: unknown) {
+            return this.errorCodeInterpreter.getStatusCode(error as DatabaseError);
         }
     }
 
-    async verifyToken(email : string, refreshToken : string) {
+    async verifyToken(accountId: number, refreshToken : string) {
         try {
-            const result = await this.parser.parseToken(email);
-            if(result.length === 0) return STATUS_CODES.GONE;
-            return (result[0].refresh_token === refreshToken) ? STATUS_CODES.OK : STATUS_CODES.UNAUTHORIZED;
-        } catch(error) {
-            return this.errorCodeInterpreter.getStatusCode(error);
+            const result = await this.parser.parseToken(accountId);
+            if(result.length === 0) return StatusCode.GONE;
+            return (result[0].refresh_token === refreshToken) ? StatusCode.OK : StatusCode.UNAUTHORIZED;
+        } catch (error: unknown) {
+            return this.errorCodeInterpreter.getStatusCode(error as DatabaseError);
         }
     }
 
-    async logout(email : string) {
+    async logout(accountId : number) {
         try {
-            await this.parser.deleteToken(email);
-            return STATUS_CODES.OK;
-        } catch(error) {
-            return this.errorCodeInterpreter.getStatusCode(error);
+            await this.parser.deleteToken(accountId);
+            return StatusCode.OK;
+        } catch (error: unknown) {
+            return this.errorCodeInterpreter.getStatusCode(error as DatabaseError);
         }
     }
 
-    async delete(email : string) {
+    async delete(accountId : number) {
         try {
-            await this.parser.deleteAccount(email);
-            return STATUS_CODES.OK;
-        } catch(error) {
-            return this.errorCodeInterpreter.getStatusCode(error);
+            await this.parser.deleteAccount(accountId);
+            return StatusCode.OK;
+        } catch (error: unknown) {
+            return this.errorCodeInterpreter.getStatusCode(error as DatabaseError);
         }
     }
 

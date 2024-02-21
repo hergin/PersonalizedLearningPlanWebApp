@@ -2,6 +2,7 @@ import { ApiClient } from "../../../hooks/ApiClient";
 
 export const GoalApi = (moduleID: string) => {
   const { get } = ApiClient();
+  
   async function FetchGoals() {
     try {
       const data = await get(`/goal/get/module/${moduleID}`);
@@ -11,5 +12,6 @@ export const GoalApi = (moduleID: string) => {
       alert(error.message ? error.message : error);
     }
   }
+  
   return { FetchGoals };
 };

@@ -1,4 +1,7 @@
-export type GoalType = "todo" | "daily";
+export enum GoalType {
+  TASK = "todo",
+  REPEATABLE = "daily",
+}
 
 export interface Module {
   module_id: number,
@@ -19,7 +22,7 @@ export interface Goal {
 }
 
 export interface User {
-  email: string,
+  id: number,
   accessToken: string,
   refreshToken: string,
 }
@@ -78,6 +81,6 @@ export interface GoalCreatorProps {
   addGoal: (goal: Goal) => void;
 }
 
-export const emptyUser: User = { email: "", accessToken: "", refreshToken: "" };
+export const emptyUser: User = { id: -1, accessToken: "", refreshToken: "" };
 export const emptyProfile : Profile = { id: -1, username: "", firstName: "", lastName: "", profilePicture: "", jobTitle: "", bio: ""};
 

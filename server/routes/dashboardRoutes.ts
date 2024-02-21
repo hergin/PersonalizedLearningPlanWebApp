@@ -1,41 +1,41 @@
-import express from 'express';
-import { STATUS_CODES } from '../utils/statusCodes';
+import { Router, Request, Response } from "express";
 import { initializeErrorMap } from '../utils/errorMessages';
 import { authenticateToken } from '../utils/token';
 import { DashboardAPI } from '../controller/dashboardProcessor';
+import { StatusCode } from '../types';
 
-const dashboardRoutes = express.Router();
+const dashboardRoutes = Router();
 const ERROR_MESSAGES = initializeErrorMap();
-const api = new DashboardAPI();
+const dashboardApi = new DashboardAPI();
 
-dashboardRoutes.get('/get/:id', authenticateToken, async (req : any, res : any) => {
+dashboardRoutes.get('/get/:id', authenticateToken, async (req : Request, res : Response) => {
     console.log(`Received in get dashboard: ${req.params.id}`);
-    const dashboardQuery = await api.getDashboard(parseInt(req.params.id));
+    const dashboardQuery = await dashboardApi.getDashboard(parseInt(req.params.id));
     if(typeof dashboardQuery !== "object") {
         res.status(dashboardQuery).send(ERROR_MESSAGES.get(dashboardQuery));
         return;
     }
-    res.status(STATUS_CODES.OK).json(dashboardQuery);
+    res.status(StatusCode.OK).json(dashboardQuery);
 });
 
-dashboardRoutes.post('/create', authenticateToken, async (req : any, res : any) => {
+dashboardRoutes.post('/create', authenticateToken, async (req : Request, res : Response) => {
     console.log(`Received in create dashboard: ${req.body}`);
-    const dashboardQuery = await api.createDashboard(req.body.profile_id);
-    if(dashboardQuery !== STATUS_CODES.OK) {
+    const dashboardQuery = await dashboardApi.createDashboard(req.body.profile_id);
+    if(dashboardQuery !== StatusCode.OK) {
         res.status(dashboardQuery).send(ERROR_MESSAGES.get(dashboardQuery));
         return;
     }
-    res.sendStatus(STATUS_CODES.OK);
+    res.sendStatus(StatusCode.OK);
 });
 
-dashboardRoutes.delete('/delete/:id', authenticateToken, async (req : any, res : any) => {
+dashboardRoutes.delete('/delete/:id', authenticateToken, async (req : Request, res : Response) => {
     console.log(`Received in delete dashboard: ${req.params.id}`);
-    const dashboardQuery = await api.deleteDashboard(parseInt(req.params.id));
-    if(dashboardQuery !== STATUS_CODES.OK) {
+    const dashboardQuery = await dashboardApi.deleteDashboard(parseInt(req.params.id));
+    if(dashboardQuery !== StatusCode.OK) {
         res.status(dashboardQuery).send(ERROR_MESSAGES.get(dashboardQuery));
         return;
     }
-    res.sendStatus(STATUS_CODES.OK);
+    res.sendStatus(StatusCode.OK);
 });
 
 export default dashboardRoutes;
