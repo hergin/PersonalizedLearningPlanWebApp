@@ -3,11 +3,14 @@ import Modal from "@mui/material/Modal";
 import { ApiClient } from "../../../hooks/ApiClient";
 import { useHotKeys } from "../../../hooks/useHotKeys";
 import { DatePicker } from "@mui/x-date-pickers";
-import { Checkbox } from "@mui/material";
+import { Checkbox, InputLabel, MenuItem, Select } from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { useQueryClient } from "@tanstack/react-query";
 import { GoalType } from "../../../types";
+import TagCreator from "../../tags/components/TagCreator";
+import { useUser } from "../../../hooks/useUser";
+import useTags from "../../tags/hooks/useTags";
 
 interface GoalCreatorProps {
   moduleID: string;
@@ -15,6 +18,9 @@ interface GoalCreatorProps {
 }
 
 function SubGoalCreator({ moduleID, parent_id }: GoalCreatorProps) {
+  const [tag, setTag] = useState("");
+  const user = useUser();
+  const { data: tags } = useTags(user.user.id);
   const [goalName, setGoalName] = useState("");
   const [description, setDescription] = useState("");
   const GoalTypes = {
@@ -48,6 +54,10 @@ function SubGoalCreator({ moduleID, parent_id }: GoalCreatorProps) {
       alert(error.message ? error.message : error);
     }
   }
+  const handleChange = (event: any) => {
+    setTag(event.target.value);
+    console.log(event.target.value);
+  };
   function changeType(checked: boolean) {
     if (checked) {
       setGoalType(GoalTypes.DAILY);
@@ -89,6 +99,7 @@ function SubGoalCreator({ moduleID, parent_id }: GoalCreatorProps) {
                 }}
                 required
               />
+
               <input
                 className="h-40 rounded text-base w-full border border-solid border-gray-300 px-2 "
                 name="module"
@@ -103,6 +114,25 @@ function SubGoalCreator({ moduleID, parent_id }: GoalCreatorProps) {
                 }}
                 required
               />
+              <div className="flex flex-row  items-center gap-4">
+                <InputLabel id="simple-select-label">Tag</InputLabel>
+                <Select
+                  value={tag}
+                  onChange={handleChange}
+                  sx={{
+                    color: "black",
+                    width: 250,
+                    height: 50,
+                  }}
+                >
+                  {tags?.map((tag: any) => (
+                    <MenuItem key={tag.id} value={tag.id}>
+                      {tag.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+                <TagCreator />
+              </div>
               <div className="w-full flex justify-between items-center px-20 ">
                 <div className="flex flex-row justify-center items-center">
                   <p className="font-headlineFont text-xl">Daily</p>
