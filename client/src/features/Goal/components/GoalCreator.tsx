@@ -10,6 +10,8 @@ import { useQueryClient } from "@tanstack/react-query";
 import { GoalType } from "../../../types";
 import DropDownMenu from "../../../components/dropDown/DropDownMenu";
 import TagCreator from "../../tags/components/TagCreator";
+import useTags from "../../tags/hooks/useTags";
+import { useUser } from "../../../hooks/useUser";
 
 interface GoalCreatorProps {
   moduleID: string;
@@ -18,20 +20,23 @@ interface GoalCreatorProps {
 }
 
 function GoalCreator({ moduleID, goalID, height }: GoalCreatorProps) {
-  const [color, setColor] = useState("");
-  const [goalName, setGoalName] = useState("");
   const [tag, setTag] = useState("");
+  const [goalName, setGoalName] = useState("");
   const [description, setDescription] = useState("");
   const [goalType, setGoalType] = useState(GoalType.TASK);
   const queryClient = useQueryClient();
+  const user = useUser();
+  const { data: tags } = useTags(user.user.id);
+  console.log(tags);
   const [dueDate, setDueDate] = useState<Date | null>(null);
   const [open, setOpen] = useState(false);
-  const submitDisabled = goalName === "" || description === "";
+  const submitDisabled = goalName === "" || description === "" ;
   const { post } = ApiClient();
   const { handleEnterPress } = useHotKeys();
 
   const handleChange = (event: any) => {
-    setColor(event.target.value);
+    setTag(event.target.value);
+    console.log(event.target.value);
   };
 
   async function handleGoalCreation() {
@@ -44,6 +49,7 @@ function GoalCreator({ moduleID, goalID, height }: GoalCreatorProps) {
         moduleId: moduleID,
         dueDate: dueDate,
         parentGoal: goalID,
+        tagId: tag,
       });
       queryClient.invalidateQueries({ queryKey: ["goals"] });
       console.log("Goal creation is not implemented yet.");
@@ -110,9 +116,9 @@ function GoalCreator({ moduleID, goalID, height }: GoalCreatorProps) {
               />
               {/* <DropDownMenu absolutePosition={""} /> */}
               <div className="flex flex-row  items-center gap-4">
-              <InputLabel id="simple-select-label">Color</InputLabel>
+              <InputLabel id="simple-select-label">Tag</InputLabel>
                 <Select
-                  value={color}
+                  value={tag}
                   onChange={handleChange}
                   sx={{
                     color: "black",
@@ -120,14 +126,12 @@ function GoalCreator({ moduleID, goalID, height }: GoalCreatorProps) {
                     height: 50,
                   }}
                 >
-                  <MenuItem value={1}>Red</MenuItem>
-                  <MenuItem value={2}>Black</MenuItem>
-                  <MenuItem value={3}>Blue</MenuItem>
-                  <MenuItem value={4}>Green</MenuItem>
-                  <MenuItem value={5}>Yellow</MenuItem>
-                  <MenuItem value={6} onClick={() => console.log(":")}>Purple</MenuItem>
-                  <TagCreator />
+                  {tags?.map((tag: any) => ( 
+                    <MenuItem key={tag.id} value={tag.id}>{tag.name}</MenuItem>
+                  ))}
+                  
                 </Select>
+                <TagCreator />
                 </div>
               <div className="w-full flex justify-between items-center px-20 gap-4 ">
                 

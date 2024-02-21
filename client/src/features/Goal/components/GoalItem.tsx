@@ -10,6 +10,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import SubGoalCreator from "./SubGoalCreator";
 import GoalDescriptionModal from "./GoalDescriptionModal";
 import { AxiosError } from "axios";
+import useTags from "../../tags/hooks/useTags";
 
 interface GoalItemProps {
   id: string;
@@ -24,7 +25,7 @@ export default function GoalItem({ id, goal }: GoalItemProps) {
   const [openDescription, setOpenDescription] = useState(false);
   console.log(isComplete + " isComplete");
   console.log(id + "id");
-  console.log(goal.sub_goals?.length);
+  console.log(goal);
   const { put } = ApiClient();
 
   function handleToggle(checked: boolean) {
@@ -103,7 +104,8 @@ export default function GoalItem({ id, goal }: GoalItemProps) {
               <Checkbox
                 checked={isComplete}
                 onChange={(checked) => handleToggle(checked.target.checked)}
-              />
+                />
+                
             )}
           </div>
           <GoalEditor

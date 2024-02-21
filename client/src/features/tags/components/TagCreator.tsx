@@ -4,6 +4,8 @@ import { ApiClient } from "../../../hooks/ApiClient";
 import { useHotKeys } from "../../../hooks/useHotKeys";
 import { useQueryClient } from "@tanstack/react-query";
 import { MuiColorInput } from "mui-color-input";
+import { Button } from "@mui/material";
+import { useUser } from "../../../hooks/useUser";
 
 function TagCreator() {
   const [tagName, setTagName] = useState("");
@@ -13,30 +15,47 @@ function TagCreator() {
   const submitDisabled = tagName === "" || tagColor === "";
   const { post } = ApiClient();
   const { handleEnterPress } = useHotKeys();
+  const user = useUser();
 
   function handleTagCreation() {
+    try {
+      post("/tag/add", {
+        accountId: user.user.id,
+        name: tagName,
+        color: tagColor,
+      });
+      queryClient.invalidateQueries({ queryKey: ["tags"] });
+    } catch (error: any) {
+      console.error(error);
+      alert(error.message ? error.message : error);
+    }
     console.log("Tag creation is not implemented yet.");
     setOpen(false);
   }
 
   return (
       <div>
-
+      <button
+        onClick={() => setOpen(true)}
+        className="w-auto h-auto border-1 border-solid border-gray-300 rounded p-2 text-base bg-element-base text-text-color hover:bg-[#820000] hover:cursor-pointer"
+      >
+        Create New Tag
+      </button>
         <Modal
-          className="absolute float-left flex items-center justify-center top-2/4 left-2/4 "
+          className="absolute float-left flex items-center justify-center top-2/4 left-2/4 w "
           open={open}
           onClose={() => setOpen(false)}
         >
           <div className="bg-white w-2/4 flex flex-col items-center justify-start border border-black border-solid p-4 gap-5">
             <div className="w-full flex justify-center">
-              <h1 className="font-headlineFont text-5xl">Create a new goal</h1>
+              <h1 className="font-headlineFont text-5xl">Create a new Tag</h1>
             </div>
             <div className="w-full h-full flex flex-col items-center justify-center gap-10">
               <input
                 className="h-10 rounded text-base w-full border border-solid border-gray-300 px-2 "
                 name="module"
                 type="text"
-                placeholder="Goal Name"
+                placeholder="Tag Name"
                 value={tagName}
                 onChange={(event) => {
                   setTagName(event.target.value);
@@ -51,10 +70,7 @@ function TagCreator() {
                 value={tagColor}
                 onChange={setTagColor}
               />
-              <div className="w-full flex justify-between items-center px-20 ">
-                <div className="flex flex-row justify-center items-center">
-                  <p className="font-headlineFont text-xl">Daily</p>
-                </div>
+              <div className="w-full flex justify-center items-center px-20 ">
                 <button
                   onClick={handleTagCreation}
                   disabled={submitDisabled}
