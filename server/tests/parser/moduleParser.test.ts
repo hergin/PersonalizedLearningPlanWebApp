@@ -29,7 +29,7 @@ describe('module parser',() => {
     async function createTestAccount(email: string): Promise<void> {
         await client.query({
             text: "INSERT INTO ACCOUNT(email, account_password) VALUES($1, $2)",
-            values: [TEST_DATA.email[0], TEST_DATA.password]
+            values: [email, TEST_DATA.password]
         });
     }
 
@@ -49,10 +49,10 @@ describe('module parser',() => {
     }
 
     afterEach(async () => {
-        await client.query(
-            "DELETE FROM ACCOUNT WHERE (email = $1 OR email = $3) AND account_password = $2",
-            [TEST_DATA.email[0], TEST_DATA.password, TEST_DATA.email[1]]
-        );
+        await client.query({
+            text: "DELETE FROM ACCOUNT WHERE email = $1 OR email = $2 OR email = $3",
+            values: [TEST_DATA.email[0], TEST_DATA.email[1], TEST_DATA.email[2]]
+        });
         client.release();
     });
 
@@ -298,14 +298,6 @@ describe('module parser',() => {
         });
         expect(results.rows).toEqual([
             {
-                module_id: altModuleID,
-                module_name: TEST_DATA.moduleNames[1],
-                description: TEST_DATA.moduleDescriptions[1],
-                completion_percent: 100,
-                account_id: accountId,
-                coach_id: null
-            },
-            {
                 module_id: moduleID,
                 module_name: TEST_DATA.moduleNames[0],
                 description: TEST_DATA.moduleDescriptions[0],
@@ -318,7 +310,8 @@ describe('module parser',() => {
                 module_name: TEST_DATA.moduleNames[1],
                 description: TEST_DATA.moduleDescriptions[1],
                 completion_percent: 100,
-                account_id: accountId
+                account_id: accountId,
+                coach_id: null
             }
         ]);
     });
@@ -347,14 +340,6 @@ describe('module parser',() => {
         });
         expect(results.rows).toEqual([
             {
-                module_id: altModuleID,
-                module_name: TEST_DATA.moduleNames[1],
-                description: TEST_DATA.moduleDescriptions[1],
-                completion_percent: 0,
-                account_id: altAccountID,
-                coach_id: null
-            },
-            {
                 module_id: moduleID,
                 module_name: TEST_DATA.moduleNames[0],
                 description: TEST_DATA.moduleDescriptions[0],
@@ -367,7 +352,8 @@ describe('module parser',() => {
                 module_name: TEST_DATA.moduleNames[1],
                 description: TEST_DATA.moduleDescriptions[1],
                 completion_percent: 0,
-                account_id: altAccountID
+                account_id: altAccountID,
+                coach_id: null
             }
         ]);
     });
