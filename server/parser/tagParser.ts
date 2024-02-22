@@ -5,20 +5,20 @@ export default class TagParser extends DatabaseParser {
         super();
     }
 
-    async parseTags(user_id: number) {
-        console.log(`Getting tags from user ${user_id}`);
+    async parseTags(accountId: number) {
+        console.log(`Getting tags from user ${accountId}`);
         const query = {
-            text: "SELECT id, name FROM TAG WHERE user_id = $1",
-            values: [user_id]
+            text: "SELECT * FROM TAG WHERE account_id = $1",
+            values: [accountId]
         }
         return this.parseDatabase(query);
     }
 
-    async storeTag(name: string, user_id: number) {
-        console.log(`Storing tag ${name} for user ${user_id}`);
+    async storeTag(name: string, color: string, accountId: number) {
+        console.log(`Storing tag ${name} for user ${accountId}`);
         const query = {
-            text: "INSERT INTO TAG(name, user_id) VALUES ($1, $2)",
-            values: [name, user_id]
+            text: "INSERT INTO TAG(name, color, account_id) VALUES ($1, $2, $3)",
+            values: [name, color, accountId]
         }
         await this.updateDatabase(query);
     }

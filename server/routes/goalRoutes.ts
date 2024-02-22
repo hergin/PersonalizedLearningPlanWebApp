@@ -26,6 +26,7 @@ goalRoutes.post('/add', authenticateToken, async (req: Request, res: Response) =
         goalType: req.body.goalType,
         isComplete: req.body.isComplete,
         moduleId: req.body.moduleId,
+        tagId: req.body.tagId,
         dueDate: req.body.dueDate
     });
     if (typeof goalQuery !== "object") {
@@ -38,13 +39,14 @@ goalRoutes.post('/add', authenticateToken, async (req: Request, res: Response) =
 
 goalRoutes.put('/update/:id', authenticateToken, async (req: Request, res: Response) => {
     console.log(`Received in update goal: ${req.params.id}`);
-    const goalQuery = await goalAPI.updateGoal(
-        parseInt(req.params.id), {
+    const goalQuery = await goalAPI.updateGoal({
+            id: Number(req.params.id),
             name: req.body.name, 
             description: req.body.description,
             goalType: req.body.goalType, 
             isComplete: req.body.isComplete,
-            dueDate: req.body.dueDate, 
+            dueDate: req.body.dueDate,
+            tagId: req.body.tagId, 
             completionTime: req.body.completionTime, 
             expiration: req.body.expiration
     });
@@ -93,6 +95,7 @@ goalRoutes.post('/add/:id', authenticateToken, async (req: Request, res: Respons
         goalType: req.body.goalType,
         isComplete: req.body.isComplete,
         moduleId: req.body.moduleId,
+        tagId: req.body.tagId,
         dueDate: req.body.dueDate
     });
     if(typeof goalQuery !== "object") {

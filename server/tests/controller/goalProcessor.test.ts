@@ -216,7 +216,8 @@ describe('goal processor unit tests', () => {
 
     it('update goal (pass case)', async () => {
         parser.updateGoal.mockResolvedValueOnce();
-        expect(await goalAPI.updateGoal(TEST_DATA.goalIDs[0], {
+        expect(await goalAPI.updateGoal({
+            id: TEST_DATA.goalIDs[0],
             name: TEST_DATA.firstName, 
             description: TEST_DATA.firstDescription, 
             goalType: TEST_DATA.goalType, 
@@ -226,7 +227,8 @@ describe('goal processor unit tests', () => {
 
     it('update goal (duplicate case)', async () => {
         parser.updateGoal.mockRejectedValue(FAKE_ERRORS.primaryKeyViolation);
-        expect(await goalAPI.updateGoal(TEST_DATA.goalIDs[0], {
+        expect(await goalAPI.updateGoal({
+            id: TEST_DATA.goalIDs[0],
             name: TEST_DATA.firstName, 
             description: TEST_DATA.firstDescription, 
             goalType: TEST_DATA.goalType, 
@@ -236,7 +238,8 @@ describe('goal processor unit tests', () => {
 
     it('update goal (bad data case)', async () => {
         parser.updateGoal.mockRejectedValue(FAKE_ERRORS.badRequest);
-        expect(await goalAPI.updateGoal(TEST_DATA.goalIDs[0], {
+        expect(await goalAPI.updateGoal({
+            id: TEST_DATA.goalIDs[0],
             name: TEST_DATA.firstName, 
             description: TEST_DATA.firstDescription, 
             goalType: TEST_DATA.goalType, 
@@ -246,7 +249,8 @@ describe('goal processor unit tests', () => {
 
     it('update goal (connection lost case)', async () => {
         parser.updateGoal.mockRejectedValue(FAKE_ERRORS.networkError);
-        expect(await goalAPI.updateGoal(TEST_DATA.goalIDs[0], {
+        expect(await goalAPI.updateGoal({
+            id: TEST_DATA.goalIDs[0],
             name: TEST_DATA.firstName, 
             description: TEST_DATA.firstDescription, 
             goalType: TEST_DATA.goalType, 
@@ -256,7 +260,8 @@ describe('goal processor unit tests', () => {
 
     it('update goal (fatal error case)', async () => {
         parser.updateGoal.mockRejectedValue(FAKE_ERRORS.fatalServerError);
-        expect(await goalAPI.updateGoal(TEST_DATA.goalIDs[0], {
+        expect(await goalAPI.updateGoal({
+            id: TEST_DATA.goalIDs[0],
             name: TEST_DATA.firstName, 
             description: TEST_DATA.firstDescription, 
             goalType: TEST_DATA.goalType, 
