@@ -26,7 +26,7 @@ export default function FeedbackCollapsable({getCollapsableProps, feedback, id}:
             <textarea className="flex w-full relative text-black border" value={newFeedback} onChange={(input) => setFeedback(input.target.value)}>
 
             </textarea>
-            <button onClick={HandleSubmit} className="flex w-full relative items-center bg-element-base text-text-color h-[20px] pl-[3%]">
+            <button onClick={HandleSubmit} className="flex w-full text-align-center bg-element-base text-text-color h-[20px] pl-[48%]">
                 Submit
             </button>
         </div>
