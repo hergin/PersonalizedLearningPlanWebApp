@@ -22,6 +22,7 @@ function App() {
           <Routes>
             <Route path="/" element={<DefaultScreen />}>
               <Route element={<ProtectedRoute />}>
+                <Route path="/" element={<LearningPlan />} />
                 <Route path="/LearningPlan" element={<LearningPlan />} />
                 <Route path="/profile" element={<ProfileScreen />} />
                 <Route path="/goals/:id" element={<GoalParentContainer />} />
