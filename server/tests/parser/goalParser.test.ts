@@ -18,7 +18,8 @@ const TEST_DATA = {
     completionTime: `2024-01-23T14:19:19.000Z`,
     distantFutureDate: `2030-01-23T14:15:00.000Z`,
     feedback: "Good job!",
-    tagName: ["School"]
+    tagName: ["School"],
+    color: ["#0000FF"],
 }
 
 interface ExpectedParentGoalResultProps {
@@ -77,7 +78,7 @@ describe('goal parser tests', () => {
         createTestProfile(TEST_DATA.usernames[0], TEST_DATA.firstNames[0], TEST_DATA.lastNames[0], accountId);
         createTestModule(accountId);
         moduleId = await getModuleID(accountId);
-        createTestTag(accountId, TEST_DATA.tagName[0]);
+        createTestTag(accountId, TEST_DATA.tagName[0], TEST_DATA.color[0]);
         tagId = await getTagID(accountId, TEST_DATA.tagName[0]);
     });
 
@@ -125,16 +126,16 @@ describe('goal parser tests', () => {
         return moduleIDQuery.rows[0].module_id;
     }
 
-    async function createTestTag(id: number, name: string) {
+    async function createTestTag(id: number, name: string, color: string) {
         await client.query({
-            text: "INSERT INTO TAG(name, account_id) VALUES($1, $2)",
-            values: [name, id]
+            text: "INSERT INTO TAG(tag_name, color, account_id) VALUES($1, $2, $3)",
+            values: [name, color, id]
         });
     }
 
     async function getTagID(accountId: number, name: string): Promise<number> {
         const tagIdQuery = await client.query({
-            text: "SELECT id FROM TAG WHERE name = $1 AND account_id = $2",
+            text: "SELECT tag_id AS id FROM TAG WHERE tag_name = $1 AND account_id = $2",
             values: [name, accountId]
         });
         return tagIdQuery.rows[0].id;
@@ -210,7 +211,15 @@ describe('goal parser tests', () => {
         });
         const result = await parser.parseParentGoals(moduleId);
         console.log(`Parsed from goals: ${JSON.stringify(result)}`);
-        expect(result).toEqual(getExpectedParentGoal({goalId: id, goalType: GoalType.TASK, dueDateExists: true}));
+        const defaultExpected = getExpectedParentGoal({goalId: id, goalType: GoalType.TASK, dueDateExists: true})[0];
+        expect(result).toEqual([
+            {
+                ...defaultExpected,
+                tag_name: TEST_DATA.tagName[0],
+                color: TEST_DATA.color[0],
+                account_id: accountId,
+            }
+        ]);
     });
 
     async function createTestGoal(goal: Goal): Promise<number> {
@@ -409,7 +418,21 @@ describe('goal parser tests', () => {
         });
         createTestSubGoals(goalID);
         const result = await parser.parseSubGoals(goalID);
-        expect(result).toEqual(getExceptedSubGoals({goalType: GoalType.REPEATABLE, parentGoalId: goalID}));
+        const defaultExpected = getExceptedSubGoals({goalType: GoalType.REPEATABLE, parentGoalId: goalID});
+        expect(result).toEqual([
+            {
+                ...defaultExpected[0],
+                tag_name: TEST_DATA.tagName[0],
+                color: TEST_DATA.color[0],
+                account_id: accountId
+            },
+            {
+                ...defaultExpected[1],
+                tag_name: TEST_DATA.tagName[0],
+                color: TEST_DATA.color[0],
+                account_id: accountId
+            }
+        ]);
     });
 
     it('parse accounts with upcoming due dates (null due date case)', async () => {

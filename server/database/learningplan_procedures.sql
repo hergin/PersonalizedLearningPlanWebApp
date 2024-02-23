@@ -34,22 +34,33 @@ $$ LANGUAGE PLPGSQL;
 -- Checks to see if the goal's completion has expired before returning the data.
 -- You must use this function to parse a goal otherwise it might be inaccurate.
 CREATE OR REPLACE FUNCTION get_goal(id INT)
-RETURNS GOAL AS $$
-    CALL update_is_complete();
+RETURNS goal_with_tag AS $$
+    BEGIN
+        CALL update_is_complete();
 
-    SELECT * FROM GOAL g
-    WHERE g.goal_id = get_goal.id;
-$$ LANGUAGE SQL SECURITY definer;
+        RETURN (SELECT * FROM goal_with_tag WHERE goal_id = get_goal.id);
+    END;
+$$ LANGUAGE PLPGSQL;
 
 CREATE OR REPLACE FUNCTION get_goals(id INT)
-RETURNS SETOF GOAL AS $$    
+RETURNS SETOF goal_with_tag AS $$    
     BEGIN
-        UPDATE GOAL g
-        SET is_complete = CURRENT_TIMESTAMP < g.expiration
-        WHERE g.expiration IS NOT NULL;
+        CALL update_is_complete();
         CALL update_module_completion();
 
-        RETURN QUERY SELECT * FROM GOAL g WHERE g.module_id = get_goals.id;
+        RETURN QUERY SELECT * FROM goal_with_tag
+                     WHERE module_id = get_goals.id;
+    END;
+$$ LANGUAGE PLPGSQL;
+
+CREATE OR REPLACE FUNCTION get_child_goals(id INT)
+RETURNS SETOF goal_with_tag AS $$
+    BEGIN
+        CALL update_is_complete();
+        CALL update_module_completion();
+
+        RETURN QUERY SELECT * FROM goal_with_tag
+                     WHERE parent_goal = get_child_goals.id;
     END;
 $$ LANGUAGE PLPGSQL;
 
