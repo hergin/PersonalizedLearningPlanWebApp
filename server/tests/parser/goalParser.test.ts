@@ -17,7 +17,7 @@ const TEST_DATA = {
     pastDueDate: "1990-01-23T14:19:19.000Z",
     completionTime: `2024-01-23T14:19:19.000Z`,
     distantFutureDate: `2030-01-23T14:15:00.000Z`,
-    feedback: "Good job!",
+    feedback: ["Good job!", "This is feedback!"],
     tagName: ["School"],
     color: ["#0000FF"],
 }
@@ -347,18 +347,21 @@ describe('goal parser tests', () => {
     });
 
     it('update goal feedback', async () => {
-        await client.query(
-            "INSERT INTO GOAL(name, description, goal_type, is_complete, module_id) VALUES ($1, $2, $3, $4, $5)",
-            [TEST_DATA.goalNames[0], TEST_DATA.goalDescriptions[0], GoalType.TASK, TEST_DATA.isComplete, moduleID]
-        );
-        var goalID = await getGoalID();
-        await parser.updateGoalFeedback(goalID, "this is feedback!");
+        const goalID = await createTestGoal({
+            name: TEST_DATA.goalNames[0], 
+            description: TEST_DATA.goalDescriptions[0],
+            goalType: GoalType.REPEATABLE,
+            isComplete: TEST_DATA.isComplete,
+            moduleId: moduleId,
+            tagId: tagId
+        });
+        await parser.updateGoalFeedback(goalID, TEST_DATA.feedback[1]);
         var actual = await client.query(selectQuery(goalID, QUERY_VARIABLES.goal));
-        var defaultExpected = getExpectedParentGoal({goalId: goalID, goalType: GoalType.TASK})[0];
+        var defaultExpected = getExpectedParentGoal({goalId: goalID, goalType: GoalType.REPEATABLE})[0];
         expect(actual.rows).toEqual([
             {
                 ...defaultExpected,
-                feedback: "this is feedback!"
+                feedback: TEST_DATA.feedback[1]
             }
         ]);
     });
@@ -438,13 +441,13 @@ describe('goal parser tests', () => {
         const defaultExpected = getExceptedSubGoals({goalType: GoalType.REPEATABLE, parentGoalId: goalID});
         expect(result).toEqual([
             {
-                ...defaultExpected[0],
+                ...defaultExpected[1],
                 tag_name: TEST_DATA.tagName[0],
                 color: TEST_DATA.color[0],
                 account_id: accountId
             },
             {
-                ...defaultExpected[1],
+                ...defaultExpected[0],
                 tag_name: TEST_DATA.tagName[0],
                 color: TEST_DATA.color[0],
                 account_id: accountId
