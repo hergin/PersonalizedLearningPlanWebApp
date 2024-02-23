@@ -10,6 +10,9 @@ import DropDownCheckbox from "./dropDown/DropDownCheckbox";
 import useSettings from "../hooks/useSettings";
 import { useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
+import { IoIosLogOut } from "react-icons/io";
+import { FaCaretUp } from "react-icons/fa";
+import { FaCaretDown } from "react-icons/fa";
 
 const CLICKABLE_ELEMENT_STYLE = "hover:bg-[#820000] cursor-pointer duration-500";
 
@@ -55,11 +58,11 @@ const AccountButton = () => {
     // Fixed values need to be changed to adjust to smaller screens, but this is fine for now. -Tim
     return (
       <ProfilePicture>
-        <DropDownMenu absolutePosition="absolute top-[58px] w-[200px] translate-x-[-45%] translate-y-[20px]">
+        <DropDownMenu absolutePosition="absolute top-[58px] w-[190px] translate-x-[-45%] translate-y-[20px]">
           <DropDownCheckbox handleCheckToggle={handleCheckChange} checked={receivesEmail}>
             Receives Email
           </DropDownCheckbox>
-          <DropDownItem onClick={handleLogout}>Logout</DropDownItem>
+          <DropDownItem leftIcon={<IoIosLogOut className="size-6" />} onClick={handleLogout}>Logout</DropDownItem>
         </DropDownMenu>
       </ProfilePicture>
     );
@@ -76,12 +79,13 @@ const AccountButton = () => {
   function ProfilePicture(props: PropsWithChildren) {
     return (
       <div>  
-          <div className={`flex flex-row ${CLICKABLE_ELEMENT_STYLE} py-[5px] px-[8px]`} onClick={() => {setOpen(!open)}}>
+          <div className={`flex flex-row ${CLICKABLE_ELEMENT_STYLE} py-[5px] px-[8px] gap-[5px] items-center`} onClick={() => {setOpen(!open)}}>
             <img
               src={profilePicture}
               alt="pfp here"
               className="h-[8vh] w-[4vw] rounded-full"
             />
+            {open ? <FaCaretUp className="size-5" /> : <FaCaretDown className="size-5" />}
           </div>
         {open && props.children}
       </div>

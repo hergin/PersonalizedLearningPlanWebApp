@@ -27,6 +27,7 @@ app.get('/api', (req : Request, res : Response) => {
     res.send('Okay');
 });
 
+// When we host, cron jobs will separate from the server.
 app.listen(4000, () => {
     console.log("Server running!");
     notifyOfCloseDueDates.start();
