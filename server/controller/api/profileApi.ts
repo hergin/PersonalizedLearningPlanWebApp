@@ -47,5 +47,12 @@ export default class ProfileAPI {
             return this.errorCodeInterpreter.getStatusCode(error as DatabaseError);
         }
     }
-}
 
+    async getUserData(accountId: number) {
+        try {
+            return await this.parser.parseUserData(accountId);
+        } catch (error: unknown) {
+            return this.errorCodeInterpreter.getStatusCode(error as DatabaseError);
+        }
+    }
+}

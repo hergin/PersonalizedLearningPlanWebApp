@@ -45,4 +45,14 @@ export default class ProfileParser extends DatabaseParser {
         };
         await this.updateDatabase(query);
     }
+
+
+    async parseUserData(accountId: number) {
+        console.log("Retrieving user data...");
+        const query = {
+            text: "SELECT * FROM USER_DATA WHERE id = $1",
+            values: [accountId]
+        }
+        return await this.parseDatabase(query);
+    }
 }

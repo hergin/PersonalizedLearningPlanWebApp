@@ -3,7 +3,7 @@ import { StatusCode } from "../../../types";
 import LoginAPI from "../../../controller/api/loginApi";
 import { initializeErrorMap } from "../../../utils/errorMessages";
 import { generateAccessToken, generateRefreshToken } from "../../../utils/token";
-import { createMockRequest, MOCK_RESPONSE, TEST_ACCOUNT } from "./universal/mockValues";
+import { createMockRequest, MOCK_RESPONSE, TEST_ACCOUNT } from "../global/mockValues";
 
 jest.mock("../../../controller/api/loginAPI");
 jest.mock("../../../utils/token", () => ({

@@ -1,0 +1,6 @@
+CREATE OR REPLACE VIEW GOAL_WITH_TAG AS
+SELECT * FROM GOAL g JOIN TAG t USING(tag_id);
+
+CREATE OR REPLACE VIEW USER_DATA AS
+SELECT a.id AS id, a.email AS email, p.username AS username
+FROM ACCOUNT a JOIN PROFILE p ON a.id = p.account_id;

@@ -67,25 +67,7 @@ describe('dashboard parser', () => {
         await parser.pool.end();
     });
 
-    it('create dashboard', async () => {
-        await parser.storeDashboard(profileId);
-        const actual = await client.query(
-            'SELECT * FROM DASHBOARD WHERE profile_id = $1',
-            [profileId]
-        );
-        expect(actual.rows).toEqual([
-            {
-                dashboard_id: expect.any(Number),
-                profile_id: profileId
-            }
-        ]);
-    });
-
     it('parse dashboard', async () => {
-        await client.query(
-            'INSERT INTO DASHBOARD(profile_id) VALUES($1)',
-            [profileId]
-        );
         const actual = await parser.parseDashboard(profileId);
         expect(actual).toEqual([
             {

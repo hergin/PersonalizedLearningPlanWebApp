@@ -12,15 +12,6 @@ export default class DashboardAPI {
         this.errorCodeInterpreter = new ErrorCodeInterpreter();
     }
 
-    async createDashboard(profile_id : number) {
-        try {
-            await this.parser.storeDashboard(profile_id);
-            return StatusCode.OK;
-        } catch (error: unknown) {
-            return this.errorCodeInterpreter.getStatusCode(error as DatabaseError);
-        }
-    }
-
     async getDashboard(profile_id : number) {
         try {
             const dashboard = await this.parser.parseDashboard(profile_id);

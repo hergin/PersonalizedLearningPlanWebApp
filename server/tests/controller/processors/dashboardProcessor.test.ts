@@ -2,7 +2,7 @@ import * as DashboardProcessor from "../../../controller/processors/dashboardPro
 import DashboardAPI from "../../../controller/api/dashboardApi";
 import { StatusCode } from "../../../types";
 import { initializeErrorMap } from "../../../utils/errorMessages";
-import { createMockRequest, MOCK_RESPONSE, TEST_DASHBOARD } from "./universal/mockValues";
+import { createMockRequest, MOCK_RESPONSE, TEST_DASHBOARD } from "../global/mockValues";
 
 jest.mock("../../../controller/api/dashboardApi");
 
@@ -39,30 +39,6 @@ describe("dashboard processor unit tests", () => {
         expect(MOCK_RESPONSE.status).toHaveBeenCalledWith(StatusCode.GONE);
         expect(MOCK_RESPONSE.send).toHaveBeenCalledTimes(1);
         expect(MOCK_RESPONSE.send).toHaveBeenCalledWith(ERROR_MESSAGES.get(StatusCode.GONE));
-    });
-
-    it("post dashboard (normal case)", async () => {
-        dashboardApi.createDashboard.mockResolvedValueOnce(StatusCode.OK);
-        const mRequest = createMockRequest({profileId: TEST_DASHBOARD.profileId});
-        await DashboardProcessor.postDashboard(mRequest, MOCK_RESPONSE);
-        expect(dashboardApi.createDashboard).toHaveBeenCalledTimes(1);
-        expect(dashboardApi.createDashboard).toHaveBeenCalledWith(TEST_DASHBOARD.profileId);
-        expect(MOCK_RESPONSE.send).toHaveBeenCalledTimes(0);
-        expect(MOCK_RESPONSE.sendStatus).toHaveBeenCalledTimes(1);
-        expect(MOCK_RESPONSE.sendStatus).toHaveBeenCalledWith(StatusCode.OK);
-    });
-
-    it("post dashboard (error case)", async () => {
-        dashboardApi.createDashboard.mockResolvedValueOnce(StatusCode.BAD_REQUEST);
-        const mRequest = createMockRequest({profileId: TEST_DASHBOARD.profileId});
-        await DashboardProcessor.postDashboard(mRequest, MOCK_RESPONSE);
-        expect(dashboardApi.createDashboard).toHaveBeenCalledTimes(1);
-        expect(dashboardApi.createDashboard).toHaveBeenCalledWith(TEST_DASHBOARD.profileId);
-        expect(MOCK_RESPONSE.sendStatus).toHaveBeenCalledTimes(0);
-        expect(MOCK_RESPONSE.status).toHaveBeenCalledTimes(1);
-        expect(MOCK_RESPONSE.status).toHaveBeenCalledWith(StatusCode.BAD_REQUEST);
-        expect(MOCK_RESPONSE.send).toHaveBeenCalledTimes(1);
-        expect(MOCK_RESPONSE.send).toHaveBeenCalledWith(ERROR_MESSAGES.get(StatusCode.BAD_REQUEST));
     });
 
     it("delete dashboard (normal case)", async () => {

@@ -1,4 +1,11 @@
-import { GoalType } from "../../../../types";
+import { GoalType } from "../../../types";
+
+export const FAKE_ERRORS = {
+    badRequest: {code: '23514'},
+    networkError: {code: '08000'},
+    primaryKeyViolation: {code: '23505'},
+    fatalServerError: {code: 'help :('},
+};
 
 export const MOCK_RESPONSE : any = {
     sendStatus: jest.fn().mockImplementation((status: number) => {
@@ -72,23 +79,23 @@ export const TEST_MODULE = {
 }
 
 export const TEST_GOAL = {
-    id: 5292,
-    name: "Study for coding test",
-    description: "I need to pass the coding test to graduate!",
+    id: [5292, 7869, 4324],
+    name: ["Study for coding test", "do Homework", "Do project"],
+    description: ["I need to pass the coding test to graduate!", "spend 3 hours a day on homework", "Finish my project."],
     isComplete: false,
     goalType: GoalType.TASK,
     moduleId: TEST_MODULE.id,
     tagId: TEST_TAG.id,
-    dueDate: new Date(Date.now() + ((24 * 3600) * 5)).toISOString(),
+    dueDate: "2025-01-01T23:59:59.000Z",
     completionTime: null,
     expiration: null,
     feedback: "It's important to study!",
 }
 
 export const TEST_SUB_GOAL = {
-    id: 5293,
-    name: "Complete this quiz",
-    description: "Take this quiz can get all the questions correct",
+    id: [5293, 7870, 4325],
+    name: ["Complete this quiz", "Sub Goal", "Another Sub Goal"],
+    description: ["Take this quiz can get all the questions correct", "This is a sub goal", "This is another sub goal."],
     isComplete: false,
     goalType: GoalType.REPEATABLE,
     moduleId: TEST_MODULE.id,

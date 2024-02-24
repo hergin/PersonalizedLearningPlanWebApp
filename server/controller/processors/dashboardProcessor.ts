@@ -16,16 +16,6 @@ async function getDashboard(req : Request, res : Response) {
     res.status(StatusCode.OK).json(dashboardQuery);
 }
 
-async function postDashboard(req: Request, res: Response) {
-    console.log(`Received in create dashboard: ${req.body}`);
-    const dashboardQuery = await dashboardApi.createDashboard(req.body.profileId);
-    if(dashboardQuery !== StatusCode.OK) {
-        res.status(dashboardQuery).send(ERROR_MESSAGES.get(dashboardQuery));
-        return;
-    }
-    res.sendStatus(StatusCode.OK);
-}
-
 async function deleteDashboard(req: Request, res: Response) {
     console.log(`Received in delete dashboard: ${req.params.id}`);
     const dashboardQuery = await dashboardApi.deleteDashboard(parseInt(req.params.id));
@@ -36,4 +26,4 @@ async function deleteDashboard(req: Request, res: Response) {
     res.sendStatus(StatusCode.OK);
 }
 
-export {getDashboard, postDashboard, deleteDashboard};
+export {getDashboard, deleteDashboard};
