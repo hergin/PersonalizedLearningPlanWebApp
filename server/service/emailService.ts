@@ -2,6 +2,7 @@ import { join } from "path";
 import dotenv from "dotenv";
 import { createTransport, Transporter } from 'nodemailer';
 import SMTPTransport from "nodemailer/lib/smtp-transport";
+import { StatusCode } from "../types";
 
 dotenv.config({
     path: join(__dirname, ".env")
@@ -28,12 +29,21 @@ export default class EmailService {
     }
 
     async sendEmail(recipient : string, subject : string, messageHtml : string) {
-        const info = await this.transporter.sendMail({
-            from: `Learning Plan <${process.env.ACCOUNT_EMAIL}>`,
-            to: recipient,
-            subject: subject,
-            html: messageHtml
-        });
-        console.log(`Message sent: ${info.messageId}`);
+        if(!recipient || !recipient.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
+            return StatusCode.BAD_REQUEST;
+        }
+
+        try {
+            const info = await this.transporter.sendMail({
+                from: `Learning Plan <${process.env.ACCOUNT_EMAIL}>`,
+                to: recipient,
+                subject: subject,
+                html: messageHtml
+            });
+            console.log(`Message sent: ${info.messageId}`);
+            return StatusCode.OK;
+        } catch(error: unknown) {
+            return StatusCode.INTERNAL_SERVER_ERROR;
+        }
     }
 }
