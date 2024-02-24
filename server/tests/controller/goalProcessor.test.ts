@@ -269,6 +269,14 @@ describe('goal processor unit tests', () => {
         })).toEqual(StatusCode.INTERNAL_SERVER_ERROR);
     });
 
+    it('update goal feedback (correct case)', async () => {
+        parser.updateGoalFeedback.mockResolvedValueOnce();
+        const actual = await goalAPI.updateGoalFeedback(TEST_DATA.goalIDs[0], "this is feedback");
+        expect(parser.updateGoalFeedback).toHaveBeenCalledTimes(1);
+        expect(parser.updateGoalFeedback).toHaveBeenCalledWith(TEST_DATA.goalIDs[0], "this is feedback");
+        expect(actual).toEqual(StatusCode.OK);
+    });
+
     it('delete goal (pass case)', async () => {
         parser.deleteGoal.mockResolvedValueOnce();
         expect(await goalAPI.deleteGoal(TEST_DATA.goalIDs[0])).toEqual(StatusCode.OK);
