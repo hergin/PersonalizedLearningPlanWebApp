@@ -21,7 +21,7 @@ DROP TABLE IF EXISTS TAG CASCADE;
 CREATE TABLE TAG(
     tag_id SERIAL PRIMARY KEY,
     tag_name TEXT,
-    color TEXT,
+    color VARCHAR(7),
     account_id INT,
     FOREIGN KEY (account_id) REFERENCES ACCOUNT(id)
         ON DELETE CASCADE ON UPDATE CASCADE,
