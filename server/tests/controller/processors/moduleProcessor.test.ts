@@ -2,7 +2,7 @@ import * as ModuleProcessor from "../../../controller/processors/moduleProcessor
 import ModuleAPI from "../../../controller/api/moduleApi";
 import { StatusCode } from "../../../types";
 import { initializeErrorMap } from "../../../utils/errorMessages";
-import { createMockRequest, MOCK_RESPONSE, TEST_MODULE } from "../global/mockValues";
+import { createMockRequest, MOCK_RESPONSE, TEST_MODULE } from "../global/mockValues.test";
 
 jest.mock("../../../controller/api/moduleApi");
 const ERROR_MESSAGES = initializeErrorMap();

@@ -2,7 +2,7 @@ import * as TagProcessor from "../../../controller/processors/tagProcessor";
 import TagApi from "../../../controller/api/tagApi";
 import { StatusCode } from "../../../types";
 import { initializeErrorMap } from "../../../utils/errorMessages";
-import { createMockRequest, MOCK_RESPONSE, TEST_TAG } from "../global/mockValues";
+import { createMockRequest, MOCK_RESPONSE, TEST_TAG } from "../global/mockValues.test";
 
 jest.mock("../../../controller/api/tagApi");
 

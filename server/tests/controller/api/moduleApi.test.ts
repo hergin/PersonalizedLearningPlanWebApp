@@ -3,7 +3,7 @@ export { };
 import ModuleAPI from "../../../controller/api/moduleApi";
 import ModuleParser from "../../../parser/moduleParser";
 import { StatusCode } from "../../../types";
-import { FAKE_ERRORS, TEST_MODULE } from "../global/mockValues";
+import { FAKE_ERRORS, TEST_MODULE } from "../global/mockValues.test";
 
 jest.mock("../../../parser/moduleParser");
 
