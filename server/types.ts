@@ -40,6 +40,15 @@ export type Profile = {
     bio?: string
 }
 
+export type Module = {
+    id?: number,
+    name: string,
+    description: string,
+    completion: number
+    accountId?: number
+    coachId?: number
+}
+
 export type AccountSettings = {
     id?: number,
     receiveEmails: boolean,

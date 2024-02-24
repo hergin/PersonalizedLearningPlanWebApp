@@ -1,17 +1,11 @@
 import * as SettingsProcessor from "../../../controller/processors/settingsProcessor";
 import SettingsApi from "../../../controller/api/settingsApi";
-import { createMockRequest, MOCK_RESPONSE, TEST_DATA } from "./universal/mockValues";
+import { createMockRequest, MOCK_RESPONSE, TEST_SETTINGS } from "./universal/mockValues";
 import { StatusCode } from "../../../types";
 import { initializeErrorMap } from "../../../utils/errorMessages";
-import { response } from "express";
 
 jest.mock("../../../controller/api/settingsApi");
 
-const TEST_SETTINGS = {
-    id: TEST_DATA.settingsId,
-    receive_emails: TEST_DATA.receiveEmails,
-    account_id: TEST_DATA.accountId
-};
 const ERROR_MESSAGES = initializeErrorMap();
 
 describe("Settings Processor unit tests", () => {
@@ -23,10 +17,10 @@ describe("Settings Processor unit tests", () => {
     
     it("get settings (normal case)", async () => {
         settingsApi.getSettings.mockResolvedValueOnce([TEST_SETTINGS]);
-        const mRequest = createMockRequest({}, {id: TEST_DATA.accountId});
+        const mRequest = createMockRequest({}, {id: TEST_SETTINGS.accountId});
         await SettingsProcessor.getSettings(mRequest, MOCK_RESPONSE);
         expect(settingsApi.getSettings).toHaveBeenCalledTimes(1);
-        expect(settingsApi.getSettings).toHaveBeenCalledWith(TEST_DATA.accountId);
+        expect(settingsApi.getSettings).toHaveBeenCalledWith(TEST_SETTINGS.accountId);
         expect(MOCK_RESPONSE.send).toHaveBeenCalledTimes(0);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledTimes(1);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledWith(StatusCode.OK);
@@ -36,10 +30,10 @@ describe("Settings Processor unit tests", () => {
 
     it("get settings (error case)", async () => {
         settingsApi.getSettings.mockResolvedValueOnce(StatusCode.CONNECTION_ERROR);
-        const mRequest = createMockRequest({}, {id: TEST_DATA.accountId});
+        const mRequest = createMockRequest({}, {id: TEST_SETTINGS.accountId});
         await SettingsProcessor.getSettings(mRequest, MOCK_RESPONSE);
         expect(settingsApi.getSettings).toHaveBeenCalledTimes(1);
-        expect(settingsApi.getSettings).toHaveBeenCalledWith(TEST_DATA.accountId);
+        expect(settingsApi.getSettings).toHaveBeenCalledWith(TEST_SETTINGS.accountId);
         expect(MOCK_RESPONSE.json).toHaveBeenCalledTimes(0);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledTimes(1);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledWith(StatusCode.CONNECTION_ERROR);
@@ -49,10 +43,10 @@ describe("Settings Processor unit tests", () => {
 
     it("update settings (normal case)", async () => {
         settingsApi.updateSettings.mockResolvedValueOnce(StatusCode.OK);
-        const mRequest = createMockRequest({receiveEmails: !TEST_DATA.receiveEmails}, {id: TEST_DATA.accountId});
+        const mRequest = createMockRequest({receiveEmails: !TEST_SETTINGS.receiveEmails}, {id: TEST_SETTINGS.accountId});
         await SettingsProcessor.updateSettings(mRequest, MOCK_RESPONSE);
         expect(settingsApi.updateSettings).toHaveBeenCalledTimes(1);
-        expect(settingsApi.updateSettings).toHaveBeenCalledWith(TEST_DATA.accountId, {receiveEmails: !TEST_DATA.receiveEmails});
+        expect(settingsApi.updateSettings).toHaveBeenCalledWith(TEST_SETTINGS.accountId, {receiveEmails: !TEST_SETTINGS.receiveEmails});
         expect(MOCK_RESPONSE.send).toHaveBeenCalledTimes(0);
         expect(MOCK_RESPONSE.sendStatus).toHaveBeenCalledTimes(1);
         expect(MOCK_RESPONSE.sendStatus).toHaveBeenCalledWith(StatusCode.OK);
@@ -60,10 +54,10 @@ describe("Settings Processor unit tests", () => {
 
     it("update settings (error case)", async () => {
         settingsApi.updateSettings.mockResolvedValueOnce(StatusCode.UNAUTHORIZED);
-        const mRequest = createMockRequest({receiveEmails: !TEST_DATA.receiveEmails}, {id: TEST_DATA.accountId});
+        const mRequest = createMockRequest({receiveEmails: !TEST_SETTINGS.receiveEmails}, {id: TEST_SETTINGS.accountId});
         await SettingsProcessor.updateSettings(mRequest, MOCK_RESPONSE);
         expect(settingsApi.updateSettings).toHaveBeenCalledTimes(1);
-        expect(settingsApi.updateSettings).toHaveBeenCalledWith(TEST_DATA.accountId, {receiveEmails: !TEST_DATA.receiveEmails});
+        expect(settingsApi.updateSettings).toHaveBeenCalledWith(TEST_SETTINGS.accountId, {receiveEmails: !TEST_SETTINGS.receiveEmails});
         expect(MOCK_RESPONSE.sendStatus).toHaveBeenCalledTimes(0);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledTimes(1);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledWith(StatusCode.UNAUTHORIZED);

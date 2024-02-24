@@ -61,7 +61,12 @@ describe('module parser',() => {
     });
 
     it('store module', async () => {
-        const result = await parser.storeModule(TEST_DATA.moduleNames[0], TEST_DATA.moduleDescriptions[0], TEST_DATA.completion, accountId);
+        const result = await parser.storeModule({
+            name: TEST_DATA.moduleNames[0], 
+            description: TEST_DATA.moduleDescriptions[0], 
+            completion: TEST_DATA.completion, 
+            accountId
+        });
         expect(result).toEqual({module_id: expect.any(Number)});
         var actual = await client.query(
             "SELECT * FROM MODULE WHERE account_id = $1",
@@ -80,7 +85,13 @@ describe('module parser',() => {
     });
 
     it('store module with coach', async () => {
-        const result = await parser.storeModule(TEST_DATA.moduleNames[2], TEST_DATA.moduleDescriptions[2], TEST_DATA.completion, altAccountId, TEST_DATA.coach_id[0]);
+        const result = await parser.storeModule({
+            name: TEST_DATA.moduleNames[0], 
+            description: TEST_DATA.moduleDescriptions[0], 
+            completion: TEST_DATA.completion, 
+            accountId,
+            coachId: TEST_DATA.coach_id[0]
+        });
         expect(result).toEqual({ module_id: expect.any(Number) });
         var actual = await client.query(
             `SELECT * FROM MODULE WHERE account_id = $1`,
@@ -146,7 +157,12 @@ describe('module parser',() => {
     it('update module', async () => {
         await createTestModule(TEST_DATA.moduleNames[0], TEST_DATA.moduleDescriptions[0], accountId);
         const moduleID = await getModuleID(TEST_DATA.moduleNames[0], TEST_DATA.moduleDescriptions[0]);
-        await parser.updateModule(TEST_DATA.moduleNames[0], TEST_DATA.moduleDescriptions[1], TEST_DATA.completion, accountId, moduleID);
+        await parser.updateModule({
+            name: TEST_DATA.moduleNames[0], 
+            description: TEST_DATA.moduleDescriptions[1], 
+            completion: TEST_DATA.completion, 
+            id: moduleID
+        });
         var actual = await client.query(
             "SELECT * FROM MODULE WHERE module_id = $1",
             [moduleID]
@@ -166,7 +182,13 @@ describe('module parser',() => {
     it('update module with coach', async () => {
         await createTestModule(TEST_DATA.moduleNames[2], TEST_DATA.moduleDescriptions[2], altAccountId);
         const moduleID = await getModuleID(TEST_DATA.moduleNames[2], TEST_DATA.moduleDescriptions[2]);
-        await parser.updateModule(TEST_DATA.moduleNames[2], TEST_DATA.moduleDescriptions[2], TEST_DATA.completion, altAccountId, moduleID, TEST_DATA.coach_id[1]);
+        await parser.updateModule({
+            name: TEST_DATA.moduleNames[2], 
+            description: TEST_DATA.moduleDescriptions[2], 
+            completion: TEST_DATA.completion, 
+            id: moduleID, 
+            coachId: TEST_DATA.coach_id[1]
+        });
         var actual = await client.query(
             "SELECT * FROM MODULE WHERE module_id = $1",
             [moduleID]

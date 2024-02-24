@@ -81,62 +81,119 @@ describe('module processor unit tests', () => {
 
     it('create module (correct case)', async () => {
         parser.storeModule.mockResolvedValueOnce({module_id: TEST_DATA.module_id});
-        var actual = await moduleAPI.createModule(TEST_DATA.module_name, TEST_DATA.description, TEST_DATA.completion_percent, TEST_DATA.account_id);
+        var actual = await moduleAPI.createModule({
+            name: TEST_DATA.module_name, 
+            description: TEST_DATA.description, 
+            completion: TEST_DATA.completion_percent, 
+            accountId: TEST_DATA.account_id
+        });
         expect(actual).toEqual({module_id: TEST_DATA.module_id});
     });
 
     it('create module with coach (correct case)', async () => {
         parser.storeModule.mockResolvedValueOnce({ module_id: TEST_DATA.module_id });
-        var actual = await moduleAPI.createModule(TEST_DATA.module_name, TEST_DATA.description, TEST_DATA.completion_percent, TEST_DATA.account_id, TEST_DATA.coach_id);
+        var actual = await moduleAPI.createModule({
+            name: TEST_DATA.module_name, 
+            description: TEST_DATA.description, 
+            completion: TEST_DATA.completion_percent, 
+            accountId: TEST_DATA.account_id, 
+            coachId: TEST_DATA.coach_id
+        });
         expect(actual).toEqual({ module_id: TEST_DATA.module_id });
     });
 
     it('create module (primary key violation case)', async () => {
         parser.storeModule.mockRejectedValue(FAKE_ERRORS.primaryKeyViolation);
-        var actual = await moduleAPI.createModule(TEST_DATA.module_name, TEST_DATA.description, TEST_DATA.completion_percent, TEST_DATA.account_id);
+        var actual = await moduleAPI.createModule({
+            name: TEST_DATA.module_name, 
+            description: TEST_DATA.description, 
+            completion: TEST_DATA.completion_percent, 
+            accountId: TEST_DATA.account_id
+        });
         expect(actual).toEqual(StatusCode.CONFLICT);
     });
 
     it('create module (network error case)', async () => {
         parser.storeModule.mockRejectedValue(FAKE_ERRORS.networkError);
-        var actual = await moduleAPI.createModule(TEST_DATA.module_name, TEST_DATA.description, TEST_DATA.completion_percent, TEST_DATA.account_id);
+        var actual = await moduleAPI.createModule({
+            name: TEST_DATA.module_name, 
+            description: TEST_DATA.description, 
+            completion: TEST_DATA.completion_percent, 
+            accountId: TEST_DATA.account_id
+        });
         expect(actual).toEqual(StatusCode.CONNECTION_ERROR);
     });
 
     it('create module (server error case)', async () => {
         parser.storeModule.mockRejectedValue(FAKE_ERRORS.fatalServerError);
-        var actual = await moduleAPI.createModule(TEST_DATA.module_name, TEST_DATA.description, TEST_DATA.completion_percent, TEST_DATA.account_id);
+        var actual = await moduleAPI.createModule({
+            name: TEST_DATA.module_name, 
+            description: TEST_DATA.description, 
+            completion: TEST_DATA.completion_percent, 
+            accountId: TEST_DATA.account_id
+        });
         expect(actual).toEqual(StatusCode.INTERNAL_SERVER_ERROR);
     });
 
     it('update module (pass case)', async () => {
         parser.updateModule.mockResolvedValueOnce();
-        expect(await moduleAPI.updateModule(TEST_DATA.module_id, TEST_DATA.module_name, TEST_DATA.description, TEST_DATA.completion_percent, TEST_DATA.account_id)).toEqual(StatusCode.OK);
+        expect(await moduleAPI.updateModule({
+            id: TEST_DATA.module_id, 
+            name: TEST_DATA.module_name, 
+            description: TEST_DATA.description, 
+            completion: TEST_DATA.completion_percent, 
+        })).toEqual(StatusCode.OK);
     });
 
     it('update module with coach (pass case)', async () => {
         parser.updateModule.mockResolvedValueOnce();
-        expect(await moduleAPI.updateModule(TEST_DATA.module_id, TEST_DATA.module_name, TEST_DATA.description, TEST_DATA.completion_percent, TEST_DATA.account_id, TEST_DATA.coach_id)).toEqual(StatusCode.OK);
+        expect(await moduleAPI.updateModule({
+            id: TEST_DATA.module_id, 
+            name: TEST_DATA.module_name, 
+            description: TEST_DATA.description, 
+            completion: TEST_DATA.completion_percent, 
+            coachId: TEST_DATA.coach_id
+        })).toEqual(StatusCode.OK);
     });
 
     it('update module (duplicate case)', async () => {
         parser.updateModule.mockRejectedValue(FAKE_ERRORS.primaryKeyViolation);
-        expect(await moduleAPI.updateModule(TEST_DATA.module_id, TEST_DATA.module_name, TEST_DATA.description, TEST_DATA.completion_percent, TEST_DATA.account_id)).toEqual(StatusCode.CONFLICT);
+        expect(await moduleAPI.updateModule({
+            id: TEST_DATA.module_id, 
+            name: TEST_DATA.module_name, 
+            description: TEST_DATA.description, 
+            completion: TEST_DATA.completion_percent, 
+        })).toEqual(StatusCode.CONFLICT);
     });
 
     it('update module (bad data case)', async () => {
         parser.updateModule.mockRejectedValue(FAKE_ERRORS.badRequest);
-        expect(await moduleAPI.updateModule(TEST_DATA.module_id, TEST_DATA.module_name, TEST_DATA.description, TEST_DATA.completion_percent, TEST_DATA.account_id)).toEqual(StatusCode.BAD_REQUEST);
+        expect(await moduleAPI.updateModule({
+            id: TEST_DATA.module_id, 
+            name: TEST_DATA.module_name, 
+            description: TEST_DATA.description, 
+            completion: TEST_DATA.completion_percent, 
+        })).toEqual(StatusCode.BAD_REQUEST);
     });
 
     it('update module (connection lost case)', async () => {
         parser.updateModule.mockRejectedValue(FAKE_ERRORS.networkError);
-        expect(await moduleAPI.updateModule(TEST_DATA.module_id, TEST_DATA.module_name, TEST_DATA.description, TEST_DATA.completion_percent, TEST_DATA.account_id)).toEqual(StatusCode.CONNECTION_ERROR);
+        expect(await moduleAPI.updateModule({
+            id: TEST_DATA.module_id, 
+            name: TEST_DATA.module_name, 
+            description: TEST_DATA.description, 
+            completion: TEST_DATA.completion_percent, 
+        })).toEqual(StatusCode.CONNECTION_ERROR);
     });
 
     it('update module (fatal error case)', async () => {
         parser.updateModule.mockRejectedValue(FAKE_ERRORS.fatalServerError);
-        expect(await moduleAPI.updateModule(TEST_DATA.module_id, TEST_DATA.module_name, TEST_DATA.description, TEST_DATA.completion_percent, TEST_DATA.account_id)).toEqual(StatusCode.INTERNAL_SERVER_ERROR);
+        expect(await moduleAPI.updateModule({
+            id: TEST_DATA.module_id, 
+            name: TEST_DATA.module_name, 
+            description: TEST_DATA.description, 
+            completion: TEST_DATA.completion_percent, 
+        })).toEqual(StatusCode.INTERNAL_SERVER_ERROR);
     });
 
     it('delete module (pass case)', async () => {

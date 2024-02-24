@@ -24,22 +24,47 @@ export function createMockRequest(body: any, params?: any): any {
     };
 }
 
-export const TEST_DATA = {
-    accountId: 601,
+export const TEST_ACCOUNT = {
+    id: 601,
     email: "example@outlook.com",
     password: "09122001",
     accessToken: "1234567890",
     refreshToken: "refresh please",
-    profileId: 12,
+}
+
+export const TEST_PROFILE = {
+    id: 12,
     username: "Xx_testdummy_xX",
     firstName: "Test",
     lastName: "Dummy",
     profilePicture: "",
     jobTitle: "Construction Dummy",
-    bio: "I'm a dummy...",
-    settingsId: 42,
+    bio: "I'm a dummy..."
+}
+
+export const TEST_SETTINGS = {
+    id: 42,
     receiveEmails: true,
-    tagId: 120,
-    tagName: "school",
-    color: "#0000FF"
+    accountId: TEST_ACCOUNT.id
+}
+
+export const TEST_TAG = {
+    id: 120,
+    name: "school",
+    color: "#0000FF",
+    accountId: TEST_ACCOUNT.id
+}
+
+export const TEST_DASHBOARD = {
+    id: 541,
+    profileId: TEST_PROFILE.id
+}
+
+export const TEST_MODULE = {
+    id: 2377,
+    name: "School",
+    description: "Get better grades in school.",
+    completionPercent: 0,
+    accountId: TEST_ACCOUNT.id,
+    coachId: 12
 }
