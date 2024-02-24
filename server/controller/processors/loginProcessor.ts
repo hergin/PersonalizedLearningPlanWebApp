@@ -27,25 +27,23 @@ async function verifyLogin(req: Request, res: Response) {
 }
 
 async function verifyToken(req : Request, res : Response) {
-    console.log(`Received in token: ${JSON.stringify(req.body)}`);
+    console.log(`Received in verify token: ${JSON.stringify(req.body)}`);
     const tokenQuery = await loginAPI.verifyToken(req.body.id, req.body.refreshToken);
     if(tokenQuery !== StatusCode.OK) {
-        console.log("Token verification failed.");
-        res.status(tokenQuery);
-        res.send(ERROR_MESSAGES.get(tokenQuery));
+        console.log(`Token verification failed with status code: ${tokenQuery}`);
+        res.status(tokenQuery).send(ERROR_MESSAGES.get(tokenQuery));
         return;
     }
     const accessToken = generateAccessToken(req.body.id);
-    res.status(StatusCode.OK);
-    res.json({accessToken});
+    res.status(StatusCode.OK).json({accessToken});
 }
 
 async function registerAccount(req : Request, res : Response) {
     console.log(`Received in register: ${JSON.stringify(req.body)}`);
     const accountStatusCode = await loginAPI.createAccount(req.body.email, req.body.password);
     if(accountStatusCode !== StatusCode.OK) {
-        res.status(accountStatusCode);
-        res.send(ERROR_MESSAGES.get(accountStatusCode));
+        console.log(`Failed to register account with status code: ${accountStatusCode}`);
+        res.status(accountStatusCode).send(ERROR_MESSAGES.get(accountStatusCode));
         return;
     }
     res.sendStatus(StatusCode.OK);
@@ -55,8 +53,8 @@ async function logoutUser(req : Request, res : Response) {
     console.log(`Received in logout: ${JSON.stringify(req.body)}`);
     const logoutQuery = await loginAPI.logout(req.body.id);
     if(logoutQuery !== StatusCode.OK) {
-        res.status(logoutQuery);
-        res.send(ERROR_MESSAGES.get(logoutQuery));
+        console.log(`Failed to logout user with status code: ${logoutQuery}`);
+        res.status(logoutQuery).send(ERROR_MESSAGES.get(logoutQuery));
         return;
     }
     res.sendStatus(StatusCode.OK);
