@@ -3,7 +3,7 @@ export {};
 import SettingsApi from "../../../controller/api/settingsApi";
 import SettingsParser from "../../../parser/settingsParser";
 import { StatusCode } from "../../../types";
-import { FAKE_ERRORS } from "./fakeErrors";
+import { FAKE_ERRORS } from "./universal/fakeErrors";
 jest.mock("../../../parser/settingsParser");
 
 const TEST_DATA = {

@@ -3,7 +3,7 @@ export {};
 import GoalAPI from "../../../controller/api/goalApi";
 import GoalParser from "../../../parser/goalParser";
 import { StatusCode } from "../../../types";
-import { FAKE_ERRORS } from "./fakeErrors";
+import { FAKE_ERRORS } from "./universal/fakeErrors";
 import { GoalType } from "../../../types";
 jest.mock("../../../parser/goalParser");
 

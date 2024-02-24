@@ -3,7 +3,7 @@ export {};
 import ProfileAPI from "../../../controller/api/profileApi";
 import ProfileParser from "../../../parser/profileParser";
 import { StatusCode } from "../../../types";
-import { FAKE_ERRORS } from "./fakeErrors";
+import { FAKE_ERRORS } from "./universal/fakeErrors";
 jest.mock("../../../parser/profileParser");
 
 describe('profile processor', () => {

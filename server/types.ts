@@ -30,10 +30,11 @@ export type Goal = {
 }
 
 export type Profile = {
-    id: number,
+    id?: number,
     username: string,
     firstName: string,
     lastName: string,
+    accountId?: number,
     profilePicture?: string,
     jobTitle?: string,
     bio?: string
