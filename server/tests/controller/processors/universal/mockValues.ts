@@ -36,5 +36,10 @@ export const TEST_DATA = {
     lastName: "Dummy",
     profilePicture: "",
     jobTitle: "Construction Dummy",
-    bio: "I'm a dummy..."
+    bio: "I'm a dummy...",
+    settingsId: 42,
+    receiveEmails: true,
+    tagId: 120,
+    tagName: "school",
+    color: "#0000FF"
 }
