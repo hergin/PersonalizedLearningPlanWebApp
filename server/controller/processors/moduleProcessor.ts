@@ -70,7 +70,7 @@ async function getModuleVariable(req : Request, res : Response) {
         res.status(variableQuery as StatusCode).send(ERROR_MESSAGES.get(variableQuery));
         return;
     }
-    res.sendStatus(StatusCode.OK).json(variableQuery);
+    res.status(StatusCode.OK).json(variableQuery);
 }
 
 export {getAccountModules, postModule, putModule, deleteModule, getModuleVariable};

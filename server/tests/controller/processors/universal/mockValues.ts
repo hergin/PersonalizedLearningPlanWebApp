@@ -1,3 +1,5 @@
+import { GoalType } from "../../../../types";
+
 export const MOCK_RESPONSE : any = {
     sendStatus: jest.fn().mockImplementation((status: number) => {
         console.log(`Status being sent: ${status}`);
@@ -67,4 +69,33 @@ export const TEST_MODULE = {
     completionPercent: 0,
     accountId: TEST_ACCOUNT.id,
     coachId: 12
+}
+
+export const TEST_GOAL = {
+    id: 5292,
+    name: "Study for coding test",
+    description: "I need to pass the coding test to graduate!",
+    isComplete: false,
+    goalType: GoalType.TASK,
+    moduleId: TEST_MODULE.id,
+    tagId: TEST_TAG.id,
+    dueDate: new Date(Date.now() + ((24 * 3600) * 5)).toISOString(),
+    completionTime: null,
+    expiration: null,
+    feedback: "It's important to study!",
+}
+
+export const TEST_SUB_GOAL = {
+    id: 5293,
+    name: "Complete this quiz",
+    description: "Take this quiz can get all the questions correct",
+    isComplete: false,
+    goalType: GoalType.REPEATABLE,
+    moduleId: TEST_MODULE.id,
+    tagId: TEST_TAG.id,
+    dueDate: new Date(Date.now() + (24 * 3600)).toISOString(),
+    completionTime: null,
+    expiration: null,
+    feedback: "I approve this goal!",
+    parentGoal: TEST_GOAL.id,
 }
