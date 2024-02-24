@@ -133,4 +133,54 @@ describe("Module Processor unit tests", () => {
         expect(MOCK_RESPONSE.send).toHaveBeenCalledTimes(1);
         expect(MOCK_RESPONSE.send).toHaveBeenCalledWith(ERROR_MESSAGES.get(StatusCode.BAD_REQUEST));
     });
+
+    it("delete module (normal case)", async () => {
+        moduleApi.deleteModule.mockResolvedValueOnce(StatusCode.OK);
+        const mRequest = createMockRequest({}, {id: TEST_MODULE.id});
+        await ModuleProcessor.deleteModule(mRequest, MOCK_RESPONSE);
+        expect(moduleApi.deleteModule).toHaveBeenCalledTimes(1);
+        expect(moduleApi.deleteModule).toHaveBeenCalledWith(TEST_MODULE.id);
+        expect(MOCK_RESPONSE.send).toHaveBeenCalledTimes(0);
+        expect(MOCK_RESPONSE.sendStatus).toHaveBeenCalledTimes(1);
+        expect(MOCK_RESPONSE.sendStatus).toHaveBeenCalledWith(StatusCode.OK);
+    });
+
+    it("delete module (error case)", async () => {
+        moduleApi.deleteModule.mockResolvedValueOnce(StatusCode.FORBIDDEN);
+        const mRequest = createMockRequest({}, {id: TEST_MODULE.id});
+        await ModuleProcessor.deleteModule(mRequest, MOCK_RESPONSE);
+        expect(moduleApi.deleteModule).toHaveBeenCalledTimes(1);
+        expect(moduleApi.deleteModule).toHaveBeenCalledWith(TEST_MODULE.id);
+        expect(MOCK_RESPONSE.sendStatus).toHaveBeenCalledTimes(0);
+        expect(MOCK_RESPONSE.status).toHaveBeenCalledTimes(1);
+        expect(MOCK_RESPONSE.status).toHaveBeenCalledWith(StatusCode.FORBIDDEN);
+        expect(MOCK_RESPONSE.send).toHaveBeenCalledTimes(1);
+        expect(MOCK_RESPONSE.send).toHaveBeenCalledWith(ERROR_MESSAGES.get(StatusCode.FORBIDDEN));
+    });
+
+    it("get module variable (normal case)", async () => {
+        moduleApi.getModuleVariable.mockResolvedValueOnce({completion_percent: TEST_MODULE.completionPercent});
+        const mRequest = createMockRequest({}, {id: TEST_MODULE.id, variable: "completion_percent"});
+        await ModuleProcessor.getModuleVariable(mRequest, MOCK_RESPONSE);
+        expect(moduleApi.getModuleVariable).toHaveBeenCalledTimes(1);
+        expect(moduleApi.getModuleVariable).toHaveBeenCalledWith(TEST_MODULE.id, "completion_percent");
+        expect(MOCK_RESPONSE.send).toHaveBeenCalledTimes(0);
+        expect(MOCK_RESPONSE.status).toHaveBeenCalledTimes(1);
+        expect(MOCK_RESPONSE.status).toHaveBeenCalledWith(StatusCode.OK);
+        expect(MOCK_RESPONSE.json).toHaveBeenCalledTimes(1);
+        expect(MOCK_RESPONSE.json).toHaveBeenCalledWith({completion_percent: TEST_MODULE.completionPercent});
+    });
+
+    it("get module variable (error case)", async () => {
+        moduleApi.getModuleVariable.mockResolvedValueOnce(StatusCode.UNAUTHORIZED);
+        const mRequest = createMockRequest({}, {id: TEST_MODULE.id, variable: "completion_percent"});
+        await ModuleProcessor.getModuleVariable(mRequest, MOCK_RESPONSE);
+        expect(moduleApi.getModuleVariable).toHaveBeenCalledTimes(1);
+        expect(moduleApi.getModuleVariable).toHaveBeenCalledWith(TEST_MODULE.id, "completion_percent");
+        expect(MOCK_RESPONSE.json).toHaveBeenCalledTimes(0);
+        expect(MOCK_RESPONSE.status).toHaveBeenCalledTimes(1);
+        expect(MOCK_RESPONSE.status).toHaveBeenCalledWith(StatusCode.UNAUTHORIZED);
+        expect(MOCK_RESPONSE.send).toHaveBeenCalledTimes(1);
+        expect(MOCK_RESPONSE.send).toHaveBeenCalledWith(ERROR_MESSAGES.get(StatusCode.UNAUTHORIZED));
+    });
 });

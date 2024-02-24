@@ -65,9 +65,9 @@ async function deleteModule(req : Request, res : Response) {
 async function getModuleVariable(req : Request, res : Response) {
     console.log(`Received in get module variable: ${req.params.id} ${req.params.variable}`);
     const variableQuery = await moduleAPI.getModuleVariable(parseInt(req.params.id), req.params.variable);
-    if(typeof variableQuery !== "object") {
+    if(variableQuery as StatusCode in StatusCode) {
         console.log("Something went wrong while receiving module variable.");
-        res.status(variableQuery).send(ERROR_MESSAGES.get(variableQuery));
+        res.status(variableQuery as StatusCode).send(ERROR_MESSAGES.get(variableQuery));
         return;
     }
     res.sendStatus(StatusCode.OK).json(variableQuery);
