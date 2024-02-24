@@ -1,6 +1,6 @@
 import * as ProfileProcessor from "../../../controller/processors/profileProcessor";
 import ProfileAPI from "../../../controller/api/profileApi";
-import { createMockRequest, MOCK_RESPONSE, TEST_PROFILE, TEST_ACCOUNT } from "../global/mockValues.test";
+import { createMockRequest, MOCK_RESPONSE, TEST_PROFILE, TEST_ACCOUNT } from "../global/mockValues";
 import { StatusCode } from "../../../types";
 import { initializeErrorMap } from "../../../utils/errorMessages";
 

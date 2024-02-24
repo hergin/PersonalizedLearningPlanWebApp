@@ -3,7 +3,7 @@ export {};
 import ProfileAPI from "../../../controller/api/profileApi";
 import ProfileParser from "../../../parser/profileParser";
 import { StatusCode } from "../../../types";
-import { FAKE_ERRORS, TEST_PROFILE, TEST_ACCOUNT } from "../global/mockValues.test";
+import { FAKE_ERRORS, TEST_PROFILE, TEST_ACCOUNT } from "../global/mockValues";
 jest.mock("../../../parser/profileParser");
 
 describe('profile processor', () => {
@@ -167,7 +167,7 @@ describe('profile processor', () => {
         const result = await profileAPI.getUserData(TEST_ACCOUNT.id);
         expect(parser.parseUserData).toHaveBeenCalledTimes(1);
         expect(parser.parseUserData).toHaveBeenCalledWith(TEST_ACCOUNT.id);
-        expect(result).toEqual([{id: TEST_ACCOUNT.id, email: TEST_ACCOUNT.email, username: TEST_PROFILE.username}]);
+        expect(result).toEqual({id: TEST_ACCOUNT.id, email: TEST_ACCOUNT.email, username: TEST_PROFILE.username});
     });
 
     it('get user data (error case)', async () => {

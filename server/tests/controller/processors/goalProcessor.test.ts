@@ -2,7 +2,7 @@ import * as GoalProcessor from "../../../controller/processors/goalProcessor";
 import GoalAPI from "../../../controller/api/goalApi";
 import { StatusCode } from "../../../types";
 import { initializeErrorMap } from "../../../utils/errorMessages";
-import { createMockRequest, MOCK_RESPONSE, TEST_GOAL, TEST_SUB_GOAL, TEST_TAG } from "../global/mockValues.test";
+import { createMockRequest, MOCK_RESPONSE, TEST_GOAL, TEST_SUB_GOAL, TEST_TAG } from "../global/mockValues";
 
 jest.mock("../../../controller/api/goalApi");
 

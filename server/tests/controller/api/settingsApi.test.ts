@@ -3,7 +3,7 @@ export {};
 import SettingsApi from "../../../controller/api/settingsApi";
 import SettingsParser from "../../../parser/settingsParser";
 import { StatusCode } from "../../../types";
-import { FAKE_ERRORS, TEST_SETTINGS } from "../global/mockValues.test";
+import { FAKE_ERRORS, TEST_SETTINGS } from "../global/mockValues";
 jest.mock("../../../parser/settingsParser");
 
 describe('Settings Processor Unit Tests', () => {

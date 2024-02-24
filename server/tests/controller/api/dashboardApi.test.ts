@@ -3,7 +3,7 @@ export {};
 import DashboardAPI from "../../../controller/api/dashboardApi";
 import DashboardParser from "../../../parser/dashboardParser";
 import { StatusCode } from "../../../types";
-import { FAKE_ERRORS, TEST_DASHBOARD } from "../global/mockValues.test";
+import { FAKE_ERRORS, TEST_DASHBOARD } from "../global/mockValues";
 jest.mock("../../../parser/dashboardParser");
 
 describe('Dashboard Functions', () => {
