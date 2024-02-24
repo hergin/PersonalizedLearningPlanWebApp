@@ -78,3 +78,18 @@ $$ LANGUAGE PLPGSQL;
 CREATE OR REPLACE TRIGGER trigger_create_new_user
 AFTER INSERT ON ACCOUNT FOR EACH ROW
 EXECUTE FUNCTION create_new_user();
+
+CREATE OR REPLACE FUNCTION create_new_profile()
+RETURNS TRIGGER AS $$
+    BEGIN
+        INSERT INTO DASHBOARD(profile_id)
+        VALUES (NEW.id);
+
+        RETURN NEW;
+    END;
+$$ LANGUAGE PLPGSQL;
+
+-- When a profile is created, automatically create a new Dashboard for the newly created profile.
+CREATE OR REPLACE TRIGGER trigger_create_new_profile
+AFTER INSERT ON PROFILE FOR EACH ROW
+EXECUTE FUNCTION create_new_profile();
