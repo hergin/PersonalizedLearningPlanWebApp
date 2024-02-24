@@ -1,6 +1,6 @@
 import { Router, Response, Request } from "express";
 import { authenticateToken } from "../utils/token";
-import SettingsApi from "../controller/settingsProcessor";
+import SettingsApi from "../controller/api/settingsApi";
 import { StatusCode } from "../types";
 import { initializeErrorMap } from "../utils/errorMessages";
 

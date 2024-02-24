@@ -2,7 +2,7 @@ import { Router, Response, Request } from "express";
 import { authenticateToken } from "../utils/token";
 import { StatusCode } from "../types";
 import { initializeErrorMap } from "../utils/errorMessages";
-import TagApi from "../controller/tagProcessor";
+import TagApi from "../controller/api/tagApi";
 
 const tagRoute = Router();
 const errorMessageMap = initializeErrorMap();

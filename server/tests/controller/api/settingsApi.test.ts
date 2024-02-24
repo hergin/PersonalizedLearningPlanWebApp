@@ -1,10 +1,10 @@
 export {};
 
-import SettingsApi from "../../controller/settingsProcessor";
-import SettingsParser from "../../parser/settingsParser";
-import { StatusCode } from "../../types";
+import SettingsApi from "../../../controller/api/settingsApi";
+import SettingsParser from "../../../parser/settingsParser";
+import { StatusCode } from "../../../types";
 import { FAKE_ERRORS } from "./fakeErrors";
-jest.mock("../../parser/settingsParser");
+jest.mock("../../../parser/settingsParser");
 
 const TEST_DATA = {
     id: 1,

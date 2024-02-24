@@ -1,7 +1,7 @@
-import SettingsParser from "../parser/settingsParser";
+import SettingsParser from "../../parser/settingsParser";
 import { ErrorCodeInterpreter } from "./errorCodeInterpreter";
 import { DatabaseError } from "pg";
-import { AccountSettings, StatusCode } from "../types";
+import { AccountSettings, StatusCode } from "../../types";
 
 export default class SettingsApi {
     parser : SettingsParser;

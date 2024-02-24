@@ -1,7 +1,7 @@
 import { Router, Request, Response } from "express";
 import { authenticateToken } from "../utils/token";
 import { initializeErrorMap } from "../utils/errorMessages";
-import { ModuleAPI } from "../controller/moduleProcessor";
+import ModuleAPI from "../controller/api/moduleApi";
 import { StatusCode } from "../types";
 
 const moduleRoutes = Router();

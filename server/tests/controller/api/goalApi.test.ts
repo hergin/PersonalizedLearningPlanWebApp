@@ -1,11 +1,11 @@
 export {};
 
-import { GoalAPI } from "../../controller/goalProcessor";
-import GoalParser from "../../parser/goalParser";
-import { StatusCode } from "../../types";
+import GoalAPI from "../../../controller/api/goalApi";
+import GoalParser from "../../../parser/goalParser";
+import { StatusCode } from "../../../types";
 import { FAKE_ERRORS } from "./fakeErrors";
-import { GoalType } from "../../types";
-jest.mock("../../parser/goalParser");
+import { GoalType } from "../../../types";
+jest.mock("../../../parser/goalParser");
 
 const TEST_DATA = {
     firstName: "do Homework",

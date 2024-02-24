@@ -87,3 +87,6 @@ CREATE TABLE DASHBOARD(
 
 CREATE OR REPLACE VIEW goal_with_tag AS
 SELECT * FROM GOAL g JOIN TAG t USING(tag_id);
+
+-- This will eliminate the possibility that an account's id will match a status code.
+ALTER SEQUENCE IF EXISTS ACCOUNT_id_seq RESTART WITH 600;

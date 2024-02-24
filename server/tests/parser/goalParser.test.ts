@@ -441,13 +441,13 @@ describe('goal parser tests', () => {
         const defaultExpected = getExceptedSubGoals({goalType: GoalType.REPEATABLE, parentGoalId: goalID});
         expect(result).toEqual([
             {
-                ...defaultExpected[1],
+                ...defaultExpected[0],
                 tag_name: TEST_DATA.tagName[0],
                 color: TEST_DATA.color[0],
                 account_id: accountId
             },
             {
-                ...defaultExpected[0],
+                ...defaultExpected[1],
                 tag_name: TEST_DATA.tagName[0],
                 color: TEST_DATA.color[0],
                 account_id: accountId

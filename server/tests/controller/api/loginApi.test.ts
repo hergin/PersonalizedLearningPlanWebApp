@@ -1,11 +1,11 @@
 export {};
 
 import bcrypt from "bcryptjs";
-import { LoginAPI } from "../../controller/loginProcessor";
-import LoginParser from "../../parser/loginParser";
-import { StatusCode } from "../../types";
+import LoginAPI from "../../../controller/api/loginApi";
+import LoginParser from "../../../parser/loginParser";
+import { StatusCode } from "../../../types";
 import { FAKE_ERRORS } from "./fakeErrors";
-jest.mock("../../parser/loginParser");
+jest.mock("../../../parser/loginParser");
 
 describe('Login Functions', () => {
     const testData = {
@@ -37,7 +37,10 @@ describe('Login Functions', () => {
 
     it('verify login (email does not exist case)', async () => {
         parser.retrieveLogin.mockResolvedValueOnce([]);
-        expect(await loginAPI.verifyLogin(testData.email, testData.password)).toEqual(StatusCode.GONE);
+        const result = await loginAPI.verifyLogin(testData.email, testData.password);
+        expect(parser.retrieveLogin).toHaveBeenCalledTimes(1);
+        expect(parser.retrieveLogin).toHaveBeenCalledWith(testData.email);
+        expect(result).toEqual(StatusCode.GONE);
     });
 
     it('verify login (wrong password case)', async () => {

@@ -1,7 +1,7 @@
 import { Router, Request, Response } from "express";
 import { authenticateToken } from "../utils/token";
 import { initializeErrorMap } from "../utils/errorMessages";
-import { ProfileAPI } from "../controller/profileProcessor";
+import ProfileAPI from "../controller/api/profileApi";
 import { StatusCode } from "../types";
 
 const profileRoutes = Router();

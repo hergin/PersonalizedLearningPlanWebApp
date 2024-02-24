@@ -1,50 +1,51 @@
-import DashboardParser from "../parser/dashboardParser";
-import { StatusCode } from "../types";
+import ProfileParser from "../../parser/profileParser";
 import { ErrorCodeInterpreter } from "./errorCodeInterpreter";
+import { Profile, StatusCode } from "../../types";
 import { DatabaseError } from "pg";
 
-export class DashboardAPI {
-    parser : DashboardParser;
+export default class ProfileAPI {
+    parser : ProfileParser;
     errorCodeInterpreter : ErrorCodeInterpreter;
 
     constructor() {
-        this.parser = new DashboardParser();
+        this.parser = new ProfileParser();
         this.errorCodeInterpreter = new ErrorCodeInterpreter();
     }
 
-    async createDashboard(profile_id : number) {
+    async createProfile(username : string, firstName : string, lastName : string, accountId : number) {
         try {
-            await this.parser.storeDashboard(profile_id);
+            await this.parser.storeProfile(username, firstName, lastName, accountId);
             return StatusCode.OK;
         } catch (error: unknown) {
             return this.errorCodeInterpreter.getStatusCode(error as DatabaseError);
         }
     }
 
-    async getDashboard(profile_id : number) {
+    async getProfile(accountId : number) {
         try {
-            const dashboard = await this.parser.parseDashboard(profile_id);
-            return (dashboard.length === 0) ? StatusCode.UNAUTHORIZED : dashboard[0];
+            const profile = await this.parser.parseProfile(accountId);
+            return profile ? profile : StatusCode.UNAUTHORIZED;
         } catch (error: unknown) {
             return this.errorCodeInterpreter.getStatusCode(error as DatabaseError);
         }
     }
 
-    async updateDashboard(profile_id : number, dashboard_id : number) {
+    async updateProfile(profile: Profile) {
         try {
-            await this.parser.updateDashboard(profile_id, dashboard_id);
+            await this.parser.updateProfile(profile);
             return StatusCode.OK;
         } catch (error: unknown) {
             return this.errorCodeInterpreter.getStatusCode(error as DatabaseError);
         }
     }
 
-    async deleteDashboard(dashboard_id : number) {
+    async deleteProfile(profileId : number) {
         try {
-            await this.parser.deleteDashboard(dashboard_id);
+            await this.parser.deleteProfile(profileId);
             return StatusCode.OK;
         } catch (error: unknown) {
             return this.errorCodeInterpreter.getStatusCode(error as DatabaseError);
         }
     }
 }
+

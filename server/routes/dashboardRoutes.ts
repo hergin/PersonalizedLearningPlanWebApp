@@ -1,7 +1,7 @@
 import { Router, Request, Response } from "express";
 import { initializeErrorMap } from '../utils/errorMessages';
 import { authenticateToken } from '../utils/token';
-import { DashboardAPI } from '../controller/dashboardProcessor';
+import DashboardAPI from '../controller/api/dashboardApi';
 import { StatusCode } from '../types';
 
 const dashboardRoutes = Router();

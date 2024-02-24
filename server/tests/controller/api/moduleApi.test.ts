@@ -1,10 +1,10 @@
 export { };
 
-import { ModuleAPI } from "../../controller/moduleProcessor";
-import ModuleParser from "../../parser/moduleParser";
-import { StatusCode } from "../../types";
+import ModuleAPI from "../../../controller/api/moduleApi";
+import ModuleParser from "../../../parser/moduleParser";
+import { StatusCode } from "../../../types";
 import { FAKE_ERRORS } from "./fakeErrors";
-jest.mock("../../parser/moduleParser");
+jest.mock("../../../parser/moduleParser");
 
 const TEST_DATA = {
     module_id: 9,

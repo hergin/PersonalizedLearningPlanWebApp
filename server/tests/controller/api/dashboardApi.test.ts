@@ -1,10 +1,10 @@
 export {};
 
-import { DashboardAPI } from "../../controller/dashboardProcessor";
-import DashboardParser from "../../parser/dashboardParser";
-import { StatusCode } from "../../types";
+import DashboardAPI from "../../../controller/api/dashboardApi";
+import DashboardParser from "../../../parser/dashboardParser";
+import { StatusCode } from "../../../types";
 import { FAKE_ERRORS } from "./fakeErrors";
-jest.mock("../../parser/dashboardParser");
+jest.mock("../../../parser/dashboardParser");
 
 describe('Dashboard Functions', () => {
     const testData = {

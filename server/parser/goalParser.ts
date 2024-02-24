@@ -18,10 +18,12 @@ export default class GoalParser extends DatabaseParser {
     async parseSubGoals(goalID: number) {
         console.log("Getting sub goals...");
         const query = {
-            text: "SELECT * FROM get_child_goals($1)",
-            values: [goalID]
+            text: `SELECT * FROM goal_with_tag WHERE parent_goal = ${goalID}`,
+            values: []
         };
-        return this.parseDatabase(query);
+        const result = this.parseDatabase(query);
+        console.log(`Parsed in sub goals: ${JSON.stringify(result)}`);
+        return result;
     }
 
     async storeGoal(goal: Goal) {

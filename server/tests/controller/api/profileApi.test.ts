@@ -1,10 +1,10 @@
 export {};
 
-import { ProfileAPI } from "../../controller/profileProcessor";
-import ProfileParser from "../../parser/profileParser";
-import { StatusCode } from "../../types";
+import ProfileAPI from "../../../controller/api/profileApi";
+import ProfileParser from "../../../parser/profileParser";
+import { StatusCode } from "../../../types";
 import { FAKE_ERRORS } from "./fakeErrors";
-jest.mock("../../parser/profileParser");
+jest.mock("../../../parser/profileParser");
 
 describe('profile processor', () => {
     const testData = {

@@ -1,9 +1,9 @@
-import ModuleParser from "../parser/moduleParser";
-import { StatusCode } from "../types";
+import ModuleParser from "../../parser/moduleParser";
+import { StatusCode } from "../../types";
 import { ErrorCodeInterpreter } from "./errorCodeInterpreter";
 import { DatabaseError } from "pg";
 
-export class ModuleAPI {
+export default class ModuleAPI {
     parser: ModuleParser;
     errorCodeInterpreter: ErrorCodeInterpreter;
 
