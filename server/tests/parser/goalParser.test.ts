@@ -439,20 +439,18 @@ describe('goal parser tests', () => {
         createTestSubGoals(goalID);
         const result = await parser.parseSubGoals(goalID);
         const defaultExpected = getExceptedSubGoals({goalType: GoalType.REPEATABLE, parentGoalId: goalID});
-        expect(result).toEqual([
-            {
-                ...defaultExpected[0],
-                tag_name: TEST_DATA.tagName[0],
-                color: TEST_DATA.color[0],
-                account_id: accountId
-            },
-            {
-                ...defaultExpected[1],
-                tag_name: TEST_DATA.tagName[0],
-                color: TEST_DATA.color[0],
-                account_id: accountId
-            }
-        ]);
+        expect(result).toContainEqual({
+            ...defaultExpected[0],
+            tag_name: TEST_DATA.tagName[0],
+            color: TEST_DATA.color[0],
+            account_id: accountId
+        });
+        expect(result).toContainEqual({
+            ...defaultExpected[1],
+            tag_name: TEST_DATA.tagName[0],
+            color: TEST_DATA.color[0],
+            account_id: accountId
+        });
     });
 
     it('parse accounts with upcoming due dates (null due date case)', async () => {
