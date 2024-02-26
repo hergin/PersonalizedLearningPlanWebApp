@@ -21,10 +21,10 @@ export default class ModuleParser extends DatabaseParser {
         return result[0];
     }
 
-    async parseModules(account_id : number) {
+    async parseModules(account_id: number) {
         console.log("Getting Module...");
         const query = {
-            text: "SELECT * FROM Module WHERE account_id = $1",
+            text: "SELECT * FROM Module WHERE account_id = $1 OR coach_id = $1",
             values: [account_id]
         };
         return this.parseDatabase(query);
