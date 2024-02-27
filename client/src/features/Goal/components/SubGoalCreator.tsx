@@ -66,12 +66,16 @@ function SubGoalCreator({ moduleID, parent_id }: GoalCreatorProps) {
     }
   }
 
+  function onClick() {
+    setOpen(true);
+  }
+
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <div>
         <button
           className="flex flex-row transition-transform rounded  w-full h-[50px] border-2 border-solid border-[#F4F4F4] justify-center items-center hover:scale-105"
-          onClick={() => setOpen(true)}
+          onClick={() => onClick}
         >
           <h1 className="text-black font-headlineFont text-lg">Add SubGoal</h1>
         </button>

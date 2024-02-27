@@ -116,7 +116,21 @@ function GoalCreator({ moduleID, goalID, height }: GoalCreatorProps) {
               />
               {/* <DropDownMenu absolutePosition={""} /> */}
               <div className="flex flex-row  items-center gap-4">
-              <InputLabel id="simple-select-label">Tag</InputLabel>
+
+                
+                </div>
+              <div className="w-full flex justify-between items-center px-20 gap-4 ">
+                
+                <div className="flex flex-row justify-center items-center">
+                  <p className="font-headlineFont text-xl">Daily</p>
+                  <Checkbox
+                    onChange={(event) => changeType(event.target.checked)}
+                  />
+                               
+                
+                </div>
+                <div className="flex flex-row">
+                <InputLabel id="simple-select-label">Tag</InputLabel>
                 <Select
                   value={tag}
                   onChange={handleChange}
@@ -129,17 +143,8 @@ function GoalCreator({ moduleID, goalID, height }: GoalCreatorProps) {
                   {tags?.map((tag: any) => ( 
                     <MenuItem key={tag.id} value={tag.id}>{tag.name}</MenuItem>
                   ))}
-                  
-                </Select>
-                <TagCreator />
-                </div>
-              <div className="w-full flex justify-between items-center px-20 gap-4 ">
                 
-                <div className="flex flex-row justify-center items-center">
-                  <p className="font-headlineFont text-xl">Daily</p>
-                  <Checkbox
-                    onChange={(event) => changeType(event.target.checked)}
-                  />
+                </Select>
                 </div>
                 <DatePicker
                   label="Due Date"

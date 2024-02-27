@@ -10,7 +10,6 @@ import { useQueryClient } from "@tanstack/react-query";
 import SubGoalCreator from "./SubGoalCreator";
 import GoalDescriptionModal from "./GoalDescriptionModal";
 import { AxiosError } from "axios";
-import useTags from "../../tags/hooks/useTags";
 
 interface GoalItemProps {
   id: string;
@@ -90,7 +89,8 @@ export default function GoalItem({ id, goal }: GoalItemProps) {
             )}
           </div>
           <div className="flex flex-col transition-transform w-[15%] h-full justify-center p-3 items-center">
-            <p className="text-black"></p>
+            {/* Color not yet implemented due to bug */}
+            <p className={`text-black`}>{goal.tag_name}</p>
           </div>
           <div className="flex flex-col transition-transform w-[15%] h-full justify-center p-3 items-center">
             <p className="text-black">{progress + "/ 1"}</p>
