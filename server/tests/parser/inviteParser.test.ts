@@ -67,7 +67,7 @@ describe("Invitation Parser unit test", () => {
             text: "INSERT INTO INVITATION(sender_id, recipient_id) VALUES ($1, $2)",
             values: [accountIds[0], accountIds[1]]
         });
-        const result = await parser.getInvite(accountIds[1]);
+        const result = await parser.getInvites(accountIds[1]);
         expect(result).toEqual([
             {
                 id: expect.any(Number),

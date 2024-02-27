@@ -2,7 +2,8 @@ import { join } from "path";
 import dotenv from "dotenv";
 import { createTransport, Transporter } from 'nodemailer';
 import SMTPTransport from "nodemailer/lib/smtp-transport";
-import { StatusCode } from "../types";
+import { InviteData, StatusCode, Subject } from "../types";
+import MessageGenerator from "./messageGenerator";
 
 dotenv.config({
     path: join(__dirname, ".env")
@@ -10,6 +11,7 @@ dotenv.config({
 
 export default class EmailService {
     transporter : Transporter;
+    messageGenerator : MessageGenerator;
     
     constructor() {
         const transportOptions : SMTPTransport.Options = {
@@ -26,19 +28,21 @@ export default class EmailService {
             }
         }
         this.transporter = createTransport(transportOptions);
+        this.messageGenerator = new MessageGenerator();
     }
 
-    async sendEmail(recipient : string, subject : string, messageHtml : string) {
-        if(!recipient || !recipient.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
+    async sendInviteEmail(data: InviteData, subject : Subject) {
+        if(!data.recipient_email || !data.recipient_email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
             return StatusCode.BAD_REQUEST;
         }
 
         try {
+            const message = this.messageGenerator.getMessage(subject, data);
             const info = await this.transporter.sendMail({
                 from: `Learning Plan <${process.env.ACCOUNT_EMAIL}>`,
-                to: recipient,
+                to: data.recipient_email,
                 subject: subject,
-                html: messageHtml
+                html: message
             });
             console.log(`Message sent: ${info.messageId}`);
             return StatusCode.OK;
