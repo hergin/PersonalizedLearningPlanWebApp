@@ -4,6 +4,7 @@ CREATE TABLE ACCOUNT(
     email TEXT UNIQUE NOT NULL,
     account_password TEXT NOT NULL,
     refresh_token TEXT,
+    coach_id INT UNIQUE,
     CONSTRAINT valid_email 
     CHECK (email ~* '^[A-Za-z0-9._%-]+@[A-Za-z0-9.-]+[.][A-Za-z]+$')
 );
@@ -82,6 +83,17 @@ CREATE TABLE DASHBOARD(
     dashboard_id SERIAL PRIMARY KEY,
     profile_id INT NOT NULL,
     FOREIGN KEY (profile_id) REFERENCES PROFILE(profile_id)
+        ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+DROP TABLE IF EXISTS INVITATION CASCADE;
+CREATE TABLE INVITATION(
+    id SERIAL PRIMARY KEY,
+    recipient_id INT,
+    sender_id INT,
+    FOREIGN KEY (recipient_id) REFERENCES ACCOUNT(id)
+        ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (sender_id) REFERENCES ACCOUNT(id)
         ON DELETE CASCADE ON UPDATE CASCADE
 );
 
