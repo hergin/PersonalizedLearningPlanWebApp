@@ -33,7 +33,7 @@ describe("service tests", () => {
 
     it("send mail (normal case)", async () => {
         sendMailMock.mockResolvedValueOnce({messageId: "message"});
-        const status = await emailService.sendEmail(TEST_DATA.recipient, TEST_DATA.subject, TEST_DATA.messageHtml);
+        const status = await emailService.sendInviteEmail(TEST_DATA.recipient, TEST_DATA.subject, TEST_DATA.messageHtml);
         expect(sendMailMock).toHaveBeenCalledTimes(1);
         expect(sendMailMock).toHaveBeenCalledWith({
             from: `Learning Plan <${process.env.ACCOUNT_EMAIL}>`,
@@ -45,14 +45,14 @@ describe("service tests", () => {
     });
 
     it("send mail (bad request case)", async () => {
-        const status = await emailService.sendEmail("not an email >:3", TEST_DATA.subject, TEST_DATA.messageHtml);
+        const status = await emailService.sendInviteEmail("not an email >:3", TEST_DATA.subject, TEST_DATA.messageHtml);
         expect(sendMailMock).toHaveBeenCalledTimes(0);
         expect(status).toEqual(StatusCode.BAD_REQUEST);
     });
 
     it("send mail (internal error)", async () => {
         sendMailMock.mockRejectedValue({error: "I am error."});
-        const status = await emailService.sendEmail(TEST_DATA.recipient, TEST_DATA.subject, TEST_DATA.messageHtml);
+        const status = await emailService.sendInviteEmail(TEST_DATA.recipient, TEST_DATA.subject, TEST_DATA.messageHtml);
         expect(sendMailMock).toHaveBeenCalledTimes(1);
         expect(sendMailMock).toHaveBeenCalledWith({
             from: `Learning Plan <${process.env.ACCOUNT_EMAIL}>`,

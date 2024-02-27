@@ -5,7 +5,23 @@ export default class InvitationParser extends DatabaseParser {
         super();
     }
 
-    async getInvite(recipientId: number) {
+    async getInviteWithId(inviteId: number) {
+        const query = {
+            text: "SELECT * FROM INVITE_DATA WHERE id = $1",
+            values: [inviteId]
+        };
+        return this.parseDatabase(query);
+    }
+
+    async getInviteWithAccounts(senderId: number, recipientId: number) {
+        const query = {
+            text: "SELECT * FROM INVITE_DATA WHERE sender_id = $1 AND recipient_id = $2",
+            values: [senderId, recipientId]
+        };
+        return this.parseDatabase(query);
+    }
+
+    async getInvites(recipientId: number) {
         const query = {
             text: "SELECT * FROM INVITE_DATA WHERE recipient_id = $1",
             values: [recipientId]
@@ -35,7 +51,7 @@ export default class InvitationParser extends DatabaseParser {
             values: [recipientId, senderId]
         }
         await this.updateDatabase(updateCoachQuery);
-        await this.deleteInvite(inviteId);
+        return await this.deleteInvite(inviteId);
     }
 
     async deleteInvite(inviteId: number) {
@@ -43,6 +59,8 @@ export default class InvitationParser extends DatabaseParser {
             text: "DELETE FROM INVITATION WHERE id = $1",
             values: [inviteId]
         };
+        const inviteData = await this.getInviteWithId(inviteId);
         await this.updateDatabase(deleteQuery);
+        return inviteData;
     }
 }

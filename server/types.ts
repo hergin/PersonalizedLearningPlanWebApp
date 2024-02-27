@@ -61,8 +61,12 @@ export type AccountSettings = {
     accountId?: number
 }
 
-export type User = {
+export type InviteData = {
     id: number,
-    email: string,
-    username: string
+    recipient_id: number,
+    recipient_email: string,
+    recipient_username: string,
+    sender_id: number,
+    sender_email: string,
+    sender_username: string
 }

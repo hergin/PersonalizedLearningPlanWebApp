@@ -1,4 +1,4 @@
-import { Subject, User } from "../types";
+import { Subject, InviteData } from "../types";
 
 const RECIPIENT_IDENTIFIER = "$~recipient~$";
 const SENDER_IDENTIFIER = "$~sender~$";
@@ -34,20 +34,18 @@ export default class MessageGenerator {
         return map;
     }
 
-    getMessage(subject: Subject, recipient?: User, sender?: string): string {
+    getMessage(subject: Subject, data: InviteData): string {
         const messageTemplate = this.messageMap.get(subject);
         if(!messageTemplate) {
             throw new Error("The given subject has no unknown premade message.");
         }
-        return this.#insertValues(messageTemplate, recipient, sender);
+        return this.#insertValues(messageTemplate, data);
     }
 
-    #insertValues(template: string, recipient?: User, sender?: string): string {
-        if(recipient) {
-            template = template.replace(RECIPIENT_IDENTIFIER, recipient.username);
-        }
-        if(sender) {
-            template = template.replace(SENDER_IDENTIFIER, sender);
+    #insertValues(template: string, data?: InviteData): string {
+        if(data) {
+            template = template.replace(RECIPIENT_IDENTIFIER, data.recipient_username);
+            template = template.replace(SENDER_IDENTIFIER, data.sender_username);
         }
         return template;
     }

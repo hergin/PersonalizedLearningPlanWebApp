@@ -1,6 +1,6 @@
 import ProfileParser from "../../parser/profileParser";
 import { ErrorCodeInterpreter } from "./errorCodeInterpreter";
-import { Profile, StatusCode, User } from "../../types";
+import { Profile, StatusCode, InviteData } from "../../types";
 import { DatabaseError } from "pg";
 
 export default class ProfileAPI {
@@ -48,7 +48,7 @@ export default class ProfileAPI {
         }
     }
 
-    async getUserData(accountId: number): Promise<User | StatusCode> {
+    async getUserData(accountId: number): Promise<InviteData | StatusCode> {
         try {
             const result = await this.parser.parseUserData(accountId);
             return result[0];
