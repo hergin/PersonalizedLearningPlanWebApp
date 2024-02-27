@@ -12,10 +12,10 @@ const TEST_DATA = {
     coach_id: [1, 2],
 }
 
-describe('module parser',() => {
+describe('module parser', () => {
     const parser = new ModuleParser();
-    var client : any;
-    var accountId : number;
+    var client: any;
+    var accountId: number;
     var altAccountId: number;
 
     beforeEach(async () => {
@@ -41,10 +41,10 @@ describe('module parser',() => {
         return queryResult.rows[0].id;
     }
 
-    async function createTestModule(name: string, description: string, accountId: number): Promise<void> {
+    async function createTestModule(name: string, description: string, accountId: number, coach_id?: number): Promise<void> {
         await client.query({
-            text: "INSERT INTO MODULE(module_name, description, completion_percent, account_id) VALUES($1, $2, $3, $4)",
-            values: [name, description, TEST_DATA.completion, accountId]
+            text: `INSERT INTO MODULE(module_name, description, completion_percent, account_id${coach_id ? `, coach_id` : ""}) VALUES($1, $2, $3, $4${coach_id ? `, $5` : ""})`,
+            values: coach_id ? [name, description, TEST_DATA.completion, accountId, coach_id] : [name, description, TEST_DATA.completion, accountId]
         });
     }
 
@@ -95,7 +95,7 @@ describe('module parser',() => {
         expect(result).toEqual({ module_id: expect.any(Number) });
         var actual = await client.query(
             `SELECT * FROM MODULE WHERE account_id = $1`,
-            [accountId]
+            [altAccountId]
         );
         expect(actual.rows).toEqual([
             {
@@ -103,7 +103,7 @@ describe('module parser',() => {
                 module_name: TEST_DATA.moduleNames[2],
                 description: TEST_DATA.moduleDescriptions[2],
                 completion_percent: TEST_DATA.completion,
-                account_id: accountId,
+                account_id: altAccountId,
                 coach_id: TEST_DATA.coach_id[0],
             }
         ]);
@@ -125,7 +125,7 @@ describe('module parser',() => {
     });
 
     it('parse module with coach', async () => {
-        await createTestModule(TEST_DATA.moduleNames[2], TEST_DATA.moduleDescriptions[2], altAccountId);
+        await createTestModule(TEST_DATA.moduleNames[2], TEST_DATA.moduleDescriptions[2], altAccountId, TEST_DATA.coach_id[0]);
         var actual = await parser.parseModules(altAccountId);
         expect(actual).toEqual([
             {
@@ -133,14 +133,14 @@ describe('module parser',() => {
                 module_name: TEST_DATA.moduleNames[2],
                 description: TEST_DATA.moduleDescriptions[2],
                 completion_percent: TEST_DATA.completion,
-                account_id: accountId,
+                account_id: altAccountId,
                 coach_id: TEST_DATA.coach_id[0],
             }
         ]);
     });
 
     it('parse module by coach', async () => {
-        await createTestModule(TEST_DATA.moduleNames[2], TEST_DATA.moduleDescriptions[2], altAccountId);
+        await createTestModule(TEST_DATA.moduleNames[2], TEST_DATA.moduleDescriptions[2], altAccountId, TEST_DATA.coach_id[0]);
         var actual = await parser.parseModules(TEST_DATA.coach_id[0]);
         expect(actual).toEqual([
             {
@@ -148,7 +148,7 @@ describe('module parser',() => {
                 module_name: TEST_DATA.moduleNames[2],
                 description: TEST_DATA.moduleDescriptions[2],
                 completion_percent: TEST_DATA.completion,
-                account_id: accountId,
+                account_id: altAccountId,
                 coach_id: TEST_DATA.coach_id[0],
             }
         ]);
@@ -216,7 +216,7 @@ describe('module parser',() => {
         expect(actual.rows).toEqual([]);
     });
 
-    it('get module variable (name case)', async() => {
+    it('get module variable (name case)', async () => {
         await createTestModule(TEST_DATA.moduleNames[0], TEST_DATA.moduleDescriptions[0], accountId);
         const moduleID = await getModuleID(TEST_DATA.moduleNames[0], TEST_DATA.moduleDescriptions[0]);
         const result = await parser.getModuleVariable(moduleID, "module_name");
@@ -228,7 +228,7 @@ describe('module parser',() => {
         ]);
     });
 
-    it('get module variable (completion percent case)', async() => {
+    it('get module variable (completion percent case)', async () => {
         await createTestModule(TEST_DATA.moduleNames[0], TEST_DATA.moduleDescriptions[0], accountId);
         const moduleID = await getModuleID(TEST_DATA.moduleNames[0], TEST_DATA.moduleDescriptions[0]);
         const result = await parser.getModuleVariable(moduleID, "completion_percent");
@@ -239,7 +239,7 @@ describe('module parser',() => {
         ]);
     });
 
-    it('module maintenance (no changes case)', async() => {
+    it('module maintenance (no changes case)', async () => {
         await createTestModule(TEST_DATA.moduleNames[0], TEST_DATA.moduleDescriptions[0], accountId);
         const moduleID = await getModuleID(TEST_DATA.moduleNames[0], TEST_DATA.moduleDescriptions[0]);
         parser.runMaintenanceProcedures();
@@ -256,7 +256,7 @@ describe('module parser',() => {
         ]);
     });
 
-    it('module maintenance (goal update case)', async() => {
+    it('module maintenance (goal update case)', async () => {
         await createTestModule(TEST_DATA.moduleNames[0], TEST_DATA.moduleDescriptions[0], accountId);
         const moduleID = await getModuleID(TEST_DATA.moduleNames[0], TEST_DATA.moduleDescriptions[0]);
         await client.query({
@@ -288,7 +288,7 @@ describe('module parser',() => {
             values: [GoalType.TASK, true, moduleID, false]
         });
         await parser.runMaintenanceProcedures();
-        const results = await client.query({text: "SELECT * FROM MODULE WHERE module_id = $1", values: [moduleID]});
+        const results = await client.query({ text: "SELECT * FROM MODULE WHERE module_id = $1", values: [moduleID] });
         expect(results.rows).toEqual([
             {
                 module_id: moduleID,
@@ -301,7 +301,7 @@ describe('module parser',() => {
         ]);
     });
 
-    it('module maintenance (more than 1 module, same account case)', async() => {
+    it('module maintenance (more than 1 module, same account case)', async () => {
         await createTestModule(TEST_DATA.moduleNames[0], TEST_DATA.moduleDescriptions[0], accountId);
         const moduleID = await getModuleID(TEST_DATA.moduleNames[0], TEST_DATA.moduleDescriptions[0]);
         await client.query({
@@ -315,7 +315,7 @@ describe('module parser',() => {
         });
         await parser.runMaintenanceProcedures();
         const results = await client.query({
-            text: "SELECT * FROM MODULE WHERE module_id = $1 OR module_id = $2", 
+            text: "SELECT * FROM MODULE WHERE module_id = $1 OR module_id = $2",
             values: [moduleID, altModuleID]
         });
         expect(results.rows).toEqual([
@@ -338,7 +338,7 @@ describe('module parser',() => {
         ]);
     });
 
-    it('module maintenance (more than 1 module, different accounts case)', async() => {
+    it('module maintenance (more than 1 module, different accounts case)', async () => {
         await createTestModule(TEST_DATA.moduleNames[0], TEST_DATA.moduleDescriptions[0], accountId);
         const moduleID = await getModuleID(TEST_DATA.moduleNames[0], TEST_DATA.moduleDescriptions[0]);
         await client.query({
@@ -357,7 +357,7 @@ describe('module parser',() => {
         });
         await parser.runMaintenanceProcedures();
         const results = await client.query({
-            text: "SELECT * FROM MODULE WHERE module_id = $1 OR module_id = $2", 
+            text: "SELECT * FROM MODULE WHERE module_id = $1 OR module_id = $2",
             values: [moduleID, altModuleID]
         });
         expect(results.rows).toEqual([
