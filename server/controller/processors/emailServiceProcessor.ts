@@ -11,13 +11,14 @@ const messageGenerator = new MessageGenerator();
 const emailService = new EmailService();
 const profileApi = new ProfileAPI();
 
-/*
-    Request body:
-    - username of requester as username
-    - accountId of recipient as recipientId
-*/
+async function postInvitation(req: Request, res: Response) {
+    console.log(`Received in post invitation ${req.body.senderId} ${req.body.recipientId}`);
+    const invitationQuery = await invitationApi.createInvite(req.body.senderId, req.body.recipientId);
+    
+}
+
 async function postCoachRequest(req: Request, res: Response) {
-    console.log(`Received in send coach request: ${req.body.username} ${req.body.recipientId}`);
+    console.log(`Received in send coach request: ${req.body.senderId} ${req.body.recipientId}`);
     const recipientQuery = await profileApi.getUserData(req.body.recipientId);
     if(recipientQuery as StatusCode in StatusCode) {
         console.log(`Failed to retrieve data for account ${req.body.recipientId} with status code ${recipientQuery}`);
