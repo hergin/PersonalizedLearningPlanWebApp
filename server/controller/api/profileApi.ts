@@ -1,9 +1,9 @@
-import ProfileParser from "../parser/profileParser";
+import ProfileParser from "../../parser/profileParser";
 import { ErrorCodeInterpreter } from "./errorCodeInterpreter";
-import { Profile, StatusCode } from "../types";
+import { Profile, StatusCode, InviteData } from "../../types";
 import { DatabaseError } from "pg";
 
-export class ProfileAPI {
+export default class ProfileAPI {
     parser : ProfileParser;
     errorCodeInterpreter : ErrorCodeInterpreter;
 
@@ -47,5 +47,13 @@ export class ProfileAPI {
             return this.errorCodeInterpreter.getStatusCode(error as DatabaseError);
         }
     }
-}
 
+    async getUserData(accountId: number): Promise<InviteData | StatusCode> {
+        try {
+            const result = await this.parser.parseUserData(accountId);
+            return result[0];
+        } catch (error: unknown) {
+            return this.errorCodeInterpreter.getStatusCode(error as DatabaseError);
+        }
+    }
+}

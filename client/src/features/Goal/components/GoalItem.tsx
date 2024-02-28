@@ -10,6 +10,8 @@ import { useQueryClient } from "@tanstack/react-query";
 import SubGoalCreator from "./SubGoalCreator";
 import GoalDescriptionModal from "./GoalDescriptionModal";
 import { AxiosError } from "axios";
+import useTags from "../../tags/hooks/useTags";
+import FeedbackCollapsable from "./FeedbackCollapsable";
 
 interface GoalItemProps {
   id: string;
@@ -18,6 +20,7 @@ interface GoalItemProps {
 
 export default function GoalItem({ id, goal }: GoalItemProps) {
   const { getCollapseProps, getToggleProps, isExpanded } = useCollapse();
+  const { getCollapseProps: getFeedbackCollapsable, getToggleProps: getFeedbackToggle, isExpanded: isFeedbackExpanded } = useCollapse();
   const queryClient = useQueryClient();
   const [progress, setProgress] = useState(0);
   const [isComplete, setIsComplete] = useState(goal.is_complete);
@@ -93,7 +96,9 @@ export default function GoalItem({ id, goal }: GoalItemProps) {
             <p className={`text-black`}>{goal.tag_name}</p>
           </div>
           <div className="flex flex-col transition-transform w-[15%] h-full justify-center p-3 items-center">
-            <p className="text-black">{progress + "/ 1"}</p>
+            <button {...getFeedbackToggle()} className="text-black">
+              +
+            </button>
           </div>
           <div className="flex flex-col transition-transform w-[15%] h-full justify-center p-3 items-center">
             {goal.sub_goals?.length !== 0 ? (
@@ -116,6 +121,11 @@ export default function GoalItem({ id, goal }: GoalItemProps) {
             dueDate={goal.due_date}
           />
         </div>
+        <FeedbackCollapsable
+              getCollapsableProps={getFeedbackCollapsable}
+              feedback={goal.feedback}
+              id={goal.goal_id}
+            />
         {goal.sub_goals?.map((subGoal: Goal) => (
           <SubGoalsCollapsable
             key={subGoal.goal_id}

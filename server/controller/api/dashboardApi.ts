@@ -1,24 +1,15 @@
-import DashboardParser from "../parser/dashboardParser";
-import { StatusCode } from "../types";
+import DashboardParser from "../../parser/dashboardParser";
+import { StatusCode } from "../../types";
 import { ErrorCodeInterpreter } from "./errorCodeInterpreter";
 import { DatabaseError } from "pg";
 
-export class DashboardAPI {
+export default class DashboardAPI {
     parser : DashboardParser;
     errorCodeInterpreter : ErrorCodeInterpreter;
 
     constructor() {
         this.parser = new DashboardParser();
         this.errorCodeInterpreter = new ErrorCodeInterpreter();
-    }
-
-    async createDashboard(profile_id : number) {
-        try {
-            await this.parser.storeDashboard(profile_id);
-            return StatusCode.OK;
-        } catch (error: unknown) {
-            return this.errorCodeInterpreter.getStatusCode(error as DatabaseError);
-        }
     }
 
     async getDashboard(profile_id : number) {

@@ -1,10 +1,10 @@
-import GoalParser from "../parser/goalParser";
-import { StatusCode } from "../types";
+import GoalParser from "../../parser/goalParser";
+import { StatusCode } from "../../types";
 import { ErrorCodeInterpreter } from "./errorCodeInterpreter";
-import { Goal } from "../types";
+import { Goal } from "../../types";
 import { DatabaseError } from "pg";
 
-export class GoalAPI {
+export default class GoalAPI {
     parser: GoalParser;
     errorCodeInterpreter: ErrorCodeInterpreter;
 

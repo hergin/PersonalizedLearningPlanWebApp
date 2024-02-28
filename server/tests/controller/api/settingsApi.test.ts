@@ -1,16 +1,10 @@
 export {};
 
-import SettingsApi from "../../controller/settingsProcessor";
-import SettingsParser from "../../parser/settingsParser";
-import { StatusCode } from "../../types";
-import { FAKE_ERRORS } from "./fakeErrors";
-jest.mock("../../parser/settingsParser");
-
-const TEST_DATA = {
-    id: 1,
-    receiveEmails: true,
-    accountId: 1,
-}
+import SettingsApi from "../../../controller/api/settingsApi";
+import SettingsParser from "../../../parser/settingsParser";
+import { StatusCode } from "../../../types";
+import { FAKE_ERRORS, TEST_SETTINGS } from "../global/mockValues";
+jest.mock("../../../parser/settingsParser");
 
 describe('Settings Processor Unit Tests', () => {
     var api: SettingsApi;
@@ -26,15 +20,15 @@ describe('Settings Processor Unit Tests', () => {
     });
     
     it("get settings (normal resolved case)", async () => {
-        parser.getAccountSettings.mockResolvedValueOnce({id: TEST_DATA.id, receive_emails: TEST_DATA.receiveEmails, account_id: TEST_DATA.accountId});
-        const result = await api.getSettings(TEST_DATA.accountId);
+        parser.getAccountSettings.mockResolvedValueOnce({id: TEST_SETTINGS.id, receive_emails: TEST_SETTINGS.receiveEmails, account_id: TEST_SETTINGS.accountId});
+        const result = await api.getSettings(TEST_SETTINGS.accountId);
         expect(parser.getAccountSettings).toHaveBeenCalledTimes(1);
-        expect(parser.getAccountSettings).toHaveBeenCalledWith(TEST_DATA.accountId);
+        expect(parser.getAccountSettings).toHaveBeenCalledWith(TEST_SETTINGS.accountId);
         expect(result).toEqual(
             {
-                id: TEST_DATA.id,
-                receive_emails: TEST_DATA.receiveEmails,
-                account_id: TEST_DATA.accountId
+                id: TEST_SETTINGS.id,
+                receive_emails: TEST_SETTINGS.receiveEmails,
+                account_id: TEST_SETTINGS.accountId
             }
         );
     });
@@ -49,33 +43,33 @@ describe('Settings Processor Unit Tests', () => {
 
     it("get settings (network error case)", async () => {
         parser.getAccountSettings.mockRejectedValue(FAKE_ERRORS.networkError);
-        const result = await api.getSettings(TEST_DATA.accountId);
+        const result = await api.getSettings(TEST_SETTINGS.accountId);
         expect(parser.getAccountSettings).toHaveBeenCalledTimes(1);
-        expect(parser.getAccountSettings).toHaveBeenCalledWith(TEST_DATA.accountId);
+        expect(parser.getAccountSettings).toHaveBeenCalledWith(TEST_SETTINGS.accountId);
         expect(result).toEqual(StatusCode.CONNECTION_ERROR);
     });
 
     it("update settings (normal resolved case)", async () => {
         parser.updateAccountSettings.mockResolvedValueOnce();
-        const result = await api.updateSettings(TEST_DATA.accountId, {receiveEmails: !TEST_DATA.receiveEmails});
+        const result = await api.updateSettings(TEST_SETTINGS.accountId, {receiveEmails: !TEST_SETTINGS.receiveEmails});
         expect(parser.updateAccountSettings).toHaveBeenCalledTimes(1);
-        expect(parser.updateAccountSettings).toHaveBeenCalledWith(TEST_DATA.accountId, {receiveEmails: !TEST_DATA.receiveEmails});
+        expect(parser.updateAccountSettings).toHaveBeenCalledWith(TEST_SETTINGS.accountId, {receiveEmails: !TEST_SETTINGS.receiveEmails});
         expect(result).toEqual(StatusCode.OK);
     });
 
     it("update settings (bad request case)", async () => {
         parser.updateAccountSettings.mockRejectedValue(FAKE_ERRORS.badRequest);
-        const result = await api.updateSettings(TEST_DATA.accountId, {receiveEmails: !TEST_DATA.receiveEmails});
+        const result = await api.updateSettings(TEST_SETTINGS.accountId, {receiveEmails: !TEST_SETTINGS.receiveEmails});
         expect(parser.updateAccountSettings).toHaveBeenCalledTimes(1);
-        expect(parser.updateAccountSettings).toHaveBeenCalledWith(TEST_DATA.accountId, {receiveEmails: !TEST_DATA.receiveEmails});
+        expect(parser.updateAccountSettings).toHaveBeenCalledWith(TEST_SETTINGS.accountId, {receiveEmails: !TEST_SETTINGS.receiveEmails});
         expect(result).toEqual(StatusCode.BAD_REQUEST);
     });
 
     it("update settings (network error case)", async () => {
         parser.updateAccountSettings.mockRejectedValue(FAKE_ERRORS.networkError);
-        const result = await api.updateSettings(TEST_DATA.accountId, {receiveEmails: !TEST_DATA.receiveEmails});
+        const result = await api.updateSettings(TEST_SETTINGS.accountId, {receiveEmails: !TEST_SETTINGS.receiveEmails});
         expect(parser.updateAccountSettings).toHaveBeenCalledTimes(1);
-        expect(parser.updateAccountSettings).toHaveBeenCalledWith(TEST_DATA.accountId, {receiveEmails: !TEST_DATA.receiveEmails});
+        expect(parser.updateAccountSettings).toHaveBeenCalledWith(TEST_SETTINGS.accountId, {receiveEmails: !TEST_SETTINGS.receiveEmails});
         expect(result).toEqual(StatusCode.CONNECTION_ERROR);
     });
 });

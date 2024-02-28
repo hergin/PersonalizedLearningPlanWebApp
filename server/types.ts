@@ -14,6 +14,12 @@ export enum GoalType {
     REPEATABLE = "daily"
 }
 
+export enum Subject {
+    INVITATION = "Coach Invitation",
+    ACCEPTED = "Invitation Accepted!",
+    REJECTED = "Invitation Rejected!"
+}
+
 export type Goal = {
     id?: number,
     name: string,
@@ -30,17 +36,37 @@ export type Goal = {
 }
 
 export type Profile = {
-    id: number,
+    id?: number,
     username: string,
     firstName: string,
     lastName: string,
+    accountId?: number,
     profilePicture?: string,
     jobTitle?: string,
     bio?: string
+}
+
+export type Module = {
+    id?: number,
+    name: string,
+    description: string,
+    completion: number
+    accountId?: number
+    coachId?: number
 }
 
 export type AccountSettings = {
     id?: number,
     receiveEmails: boolean,
     accountId?: number
+}
+
+export type InviteData = {
+    id: number,
+    recipient_id: number,
+    recipient_email: string,
+    recipient_username: string,
+    sender_id: number,
+    sender_email: string,
+    sender_username: string
 }

@@ -14,16 +14,6 @@ export default class DashboardParser extends DatabaseParser {
         return this.parseDatabase(query);
     }
 
-    async storeDashboard(profile_id : number) {
-        console.log("Creating Dashboard...");
-        const query = {
-            text: "INSERT INTO Dashboard(profile_id) VALUES($1)",
-            values: [profile_id]
-        };
-        await this.updateDatabase(query);
-        console.log("Dashboard Created!");
-    }
-
     async updateDashboard(profile_id : number, dashboard_id : number) {
         console.log("Inserting new data into Dashboard...");
         const query = {

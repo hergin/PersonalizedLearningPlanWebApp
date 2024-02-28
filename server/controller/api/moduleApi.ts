@@ -1,9 +1,9 @@
-import ModuleParser from "../parser/moduleParser";
-import { StatusCode } from "../types";
+import ModuleParser from "../../parser/moduleParser";
+import { Module, StatusCode } from "../../types";
 import { ErrorCodeInterpreter } from "./errorCodeInterpreter";
 import { DatabaseError } from "pg";
 
-export class ModuleAPI {
+export default class ModuleAPI {
     parser: ModuleParser;
     errorCodeInterpreter: ErrorCodeInterpreter;
 
@@ -22,18 +22,22 @@ export class ModuleAPI {
         }
     }
 
-    async createModule(name: string, description: string, completion_percent: number, accountId: number, coachId?: number) {
+    async createModule(module: Module): Promise<number | StatusCode> {
         try {
-            const result = await this.parser.storeModule(name, description, completion_percent, accountId, coachId);
+            const result = await this.parser.storeModule(module);
             return result;
         } catch (error: unknown) {
             return this.errorCodeInterpreter.getStatusCode(error as DatabaseError);
         }
     }
 
-    async updateModule(module_id: number, name: string, description: string, completion_percent: number, accountId: number, coachId?: number) {
+    async updateModule(module: Module) {
+        if(!module.id) {
+            return StatusCode.BAD_REQUEST;
+        }
+
         try {
-            await this.parser.updateModule(name, description, completion_percent, accountId, module_id, coachId);
+            await this.parser.updateModule(module);
             return StatusCode.OK;
         } catch (error: unknown) {
             return this.errorCodeInterpreter.getStatusCode(error as DatabaseError);
