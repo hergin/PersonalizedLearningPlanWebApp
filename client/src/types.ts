@@ -21,6 +21,7 @@ export interface Goal {
   sub_goals?: Goal[]
   tag_name?: string
   color?: string
+  feedback?: string
 }
 
 export interface User {

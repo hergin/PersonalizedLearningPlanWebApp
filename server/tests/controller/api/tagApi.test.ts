@@ -1,7 +1,7 @@
-import TagApi from "../../controller/tagProcessor";
-import { StatusCode } from "../../types";
-import TagParser from "../../parser/tagParser";
-jest.mock("../../parser/tagParser");
+import TagApi from "../../../controller/api/tagApi";
+import { StatusCode } from "../../../types";
+import TagParser from "../../../parser/tagParser";
+jest.mock("../../../parser/tagParser");
 
 const TEST_DATA = {
     id: 1,

@@ -1,5 +1,5 @@
 import { DatabaseError } from "pg";
-import { StatusCode } from "../types";
+import { StatusCode } from "../../types";
 
 export class ErrorCodeInterpreter {
     getStatusCode(error : DatabaseError) {

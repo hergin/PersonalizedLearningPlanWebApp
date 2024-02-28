@@ -1,6 +1,6 @@
-import TagParser from "../parser/tagParser";
+import TagParser from "../../parser/tagParser";
 import { ErrorCodeInterpreter } from "./errorCodeInterpreter";
-import { StatusCode } from "../types";
+import { StatusCode } from "../../types";
 import { DatabaseError } from "pg";
 
 export default class TagApi {

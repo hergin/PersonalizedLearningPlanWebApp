@@ -1,3 +1,4 @@
+import { Module } from '../types';
 import DatabaseParser from './databaseParser';
 
 export default class ModuleParser extends DatabaseParser {
@@ -5,36 +6,38 @@ export default class ModuleParser extends DatabaseParser {
         super();
     }
 
-    async storeModule(name: string, description: string, completion_percent: number, account_id: number, coach_id?: number) {
+    async storeModule(module: Module) {
         console.log("Storing Module...");
         const storingQuery = {
-            text: `INSERT INTO Module(module_name, description, completion_percent, account_id${coach_id ? `, coach_id` : ""}) VALUES($1, $2, $3, $4${coach_id ? `, $5` : ""})`,
-            values: coach_id ? [name, description, completion_percent, account_id, coach_id] : [name, description, completion_percent, account_id]
+            text: `INSERT INTO Module(module_name, description, completion_percent, account_id${module.coachId ? `, coach_id` : ""}) VALUES($1, $2, $3, $4${module.coachId ? `, $5` : ""})`,
+            values: module.coachId ? [module.name, module.description, module.completion, module.accountId, module.coachId] : 
+            [module.name, module.description, module.completion, module.accountId]
         };
         await this.updateDatabase(storingQuery);
         console.log("Module Stored!");
         const idQuery = {
             text: "SELECT module_id FROM MODULE WHERE module_name = $1 AND description = $2 AND account_id = $3",
-            values: [name, description, account_id]
+            values: [module.name, module.description, module.accountId]
         };
         const result = await this.parseDatabase(idQuery);
         return result[0];
     }
 
-    async parseModules(account_id : number) {
+    async parseModules(account_id: number) {
         console.log("Getting Module...");
         const query = {
-            text: "SELECT * FROM Module WHERE account_id = $1",
+            text: "SELECT * FROM Module WHERE account_id = $1 OR coach_id = $1",
             values: [account_id]
         };
         return this.parseDatabase(query);
     }
 
-    async updateModule(name: string, description: string, completion_percent: number, account_id: number, module_id: number, coach_id?: number) {
+    async updateModule(module: Module) {
         console.log("Inserting updated data into Module...");
         const query = {
-            text: `UPDATE MODULE SET module_name = $1, description = $2, completion_percent = $3, account_id = $4${coach_id ? `, coach_id = $6` : ""} WHERE module_id = $5`,
-            values: coach_id ? [name, description, completion_percent, account_id, module_id, coach_id] : [name, description, completion_percent, account_id, module_id]
+            text: `UPDATE MODULE SET module_name = $1, description = $2, completion_percent = $3${module.coachId ? `, coach_id = $5` : ""} WHERE module_id = $4`,
+            values: module.coachId ? [module.name, module.description, module.completion, module.id, module.coachId] : 
+            [module.name, module.description, module.completion, module.id]
         };
         await this.updateDatabase(query);
         console.log("Module data updated!");

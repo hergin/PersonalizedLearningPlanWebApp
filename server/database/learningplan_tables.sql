@@ -4,6 +4,7 @@ CREATE TABLE ACCOUNT(
     email TEXT UNIQUE NOT NULL,
     account_password TEXT NOT NULL,
     refresh_token TEXT,
+    coach_id INT UNIQUE,
     CONSTRAINT valid_email 
     CHECK (email ~* '^[A-Za-z0-9._%-]+@[A-Za-z0-9.-]+[.][A-Za-z]+$')
 );
@@ -21,7 +22,7 @@ DROP TABLE IF EXISTS TAG CASCADE;
 CREATE TABLE TAG(
     tag_id SERIAL PRIMARY KEY,
     tag_name TEXT,
-    color TEXT,
+    color VARCHAR(7),
     account_id INT,
     FOREIGN KEY (account_id) REFERENCES ACCOUNT(id)
         ON DELETE CASCADE ON UPDATE CASCADE,
@@ -85,5 +86,18 @@ CREATE TABLE DASHBOARD(
         ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-CREATE OR REPLACE VIEW goal_with_tag AS
-SELECT * FROM GOAL g JOIN TAG t USING(tag_id);
+DROP TABLE IF EXISTS INVITATION CASCADE;
+CREATE TABLE INVITATION(
+    id SERIAL PRIMARY KEY,
+    recipient_id INT,
+    sender_id INT,
+    FOREIGN KEY (recipient_id) REFERENCES ACCOUNT(id)
+        ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (sender_id) REFERENCES ACCOUNT(id)
+        ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+-- This will eliminate the possibility that an id from these tables will match a status code.
+ALTER SEQUENCE IF EXISTS ACCOUNT_id_seq RESTART WITH 600;
+ALTER SEQUENCE IF EXISTS MODULE_module_id_seq RESTART WITH 600;
+ALTER SEQUENCE IF EXISTS GOAL_goal_id_seq RESTART WITH 600;

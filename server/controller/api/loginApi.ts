@@ -1,10 +1,10 @@
 import bcrypt from "bcryptjs";
-import LoginParser from "../parser/loginParser";
-import { StatusCode } from "../types";
+import LoginParser from "../../parser/loginParser";
+import { StatusCode } from "../../types";
 import { ErrorCodeInterpreter } from "./errorCodeInterpreter";
 import { DatabaseError } from "pg";
 
-export class LoginAPI {
+export default class LoginAPI {
     parser : LoginParser;
     errorCodeInterpreter : ErrorCodeInterpreter;
 
@@ -13,9 +13,10 @@ export class LoginAPI {
       this.errorCodeInterpreter = new ErrorCodeInterpreter();
     }
 
-    async verifyLogin(email : string, password : string) {
+    async verifyLogin(email : string, password : string): Promise<number | StatusCode> {
         try {
             const login = await this.parser.retrieveLogin(email);
+            console.log(JSON.stringify(login));
             if(login.length === 0) return StatusCode.GONE;
             return await bcrypt.compare(password, login[0].account_password) ? login[0].id : StatusCode.UNAUTHORIZED;
         } catch (error: unknown) {

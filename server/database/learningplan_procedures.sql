@@ -34,21 +34,22 @@ $$ LANGUAGE PLPGSQL;
 -- Checks to see if the goal's completion has expired before returning the data.
 -- You must use this function to parse a goal otherwise it might be inaccurate.
 CREATE OR REPLACE FUNCTION get_goal(id INT)
-RETURNS goal_with_tag AS $$
-    BEGIN
-        CALL update_is_complete();
-
-        RETURN (SELECT * FROM goal_with_tag WHERE goal_id = get_goal.id);
-    END;
-$$ LANGUAGE PLPGSQL;
-
-CREATE OR REPLACE FUNCTION get_goals(id INT)
-RETURNS SETOF goal_with_tag AS $$    
+RETURNS GOAL_WITH_TAG AS $$
     BEGIN
         CALL update_is_complete();
         CALL update_module_completion();
 
-        RETURN QUERY SELECT * FROM goal_with_tag
+        RETURN (SELECT * FROM GOAL_WITH_TAG WHERE goal_id = get_goal.id);
+    END;
+$$ LANGUAGE PLPGSQL;
+
+CREATE OR REPLACE FUNCTION get_goals(id INT)
+RETURNS SETOF GOAL_WITH_TAG AS $$    
+    BEGIN
+        CALL update_is_complete();
+        CALL update_module_completion();
+
+        RETURN QUERY SELECT * FROM GOAL_WITH_TAG
                      WHERE module_id = get_goals.id;
     END;
 $$ LANGUAGE PLPGSQL;
@@ -67,9 +68,7 @@ $$ LANGUAGE PLPGSQL;
 CREATE OR REPLACE FUNCTION create_new_user()
 RETURNS TRIGGER AS $$
     BEGIN
-        INSERT INTO ACCOUNT_SETTINGS(account_id) 
-        VALUES (NEW.id);
-
+        INSERT INTO ACCOUNT_SETTINGS(account_id) VALUES (NEW.id);
         RETURN NEW;
     END;
 $$ LANGUAGE PLPGSQL;
@@ -78,3 +77,29 @@ $$ LANGUAGE PLPGSQL;
 CREATE OR REPLACE TRIGGER trigger_create_new_user
 AFTER INSERT ON ACCOUNT FOR EACH ROW
 EXECUTE FUNCTION create_new_user();
+
+CREATE OR REPLACE FUNCTION create_new_profile()
+RETURNS TRIGGER AS $$
+    BEGIN
+        INSERT INTO DASHBOARD(profile_id) VALUES (NEW.profile_id);
+        RETURN NEW;
+    END;
+$$ LANGUAGE PLPGSQL;
+
+-- When a profile is created, automatically create a new Dashboard for the newly created profile.
+CREATE OR REPLACE TRIGGER trigger_create_new_profile
+AFTER INSERT ON PROFILE FOR EACH ROW
+EXECUTE FUNCTION create_new_profile();
+
+CREATE OR REPLACE FUNCTION calculate_new_module_completion()
+RETURNS TRIGGER AS $$
+    BEGIN
+        CALL update_module_completion();
+        RETURN NEW;
+    END;
+$$ LANGUAGE PLPGSQL;
+
+-- Automatically update module's completion percent when data is inserted or updated from Goal.
+CREATE OR REPLACE TRIGGER trigger_calculate_new_module_completion
+AFTER INSERT OR UPDATE OF is_complete OR DELETE ON GOAL FOR EACH ROW
+EXECUTE FUNCTION calculate_new_module_completion();

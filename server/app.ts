@@ -10,6 +10,7 @@ import settingsRoute from "./routes/settingRoutes";
 import { notifyOfCloseDueDates, updateCompletionStatus } from "./cron_jobs/goalJobs";
 import { updateCompletionPercent } from "./cron_jobs/moduleJobs";
 import tagRoute from "./routes/tagRoutes";
+import inviteRoutes from "./routes/inviteRoutes";
 
 const app = express();
 app.use(cors());
@@ -21,6 +22,7 @@ app.use("/api/goal", goalRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/settings', settingsRoute);
 app.use("/api/tag", tagRoute);
+app.use("/api/invite", inviteRoutes);
 
 app.get('/api', (req : Request, res : Response) => {
     console.log(req.body);
