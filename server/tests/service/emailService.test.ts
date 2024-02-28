@@ -1,7 +1,8 @@
 export {};
 
 import EmailService from "../../service/emailService";
-import { StatusCode } from "../../types";
+import MessageGenerator from "../../service/messageGenerator";
+import { InviteData, StatusCode, Subject } from "../../types";
 
 const sendMailMock = jest.fn(); 
 jest.mock('nodemailer', () => ({
@@ -9,6 +10,7 @@ jest.mock('nodemailer', () => ({
     sendMail: sendMailMock,
   })),
 }));
+jest.mock("../../service/messageGenerator");
 
 const TEST_DATA = {
     recipient: "example@gmail.com",
@@ -19,17 +21,28 @@ const TEST_DATA = {
     `,
 }
 
+const TEST_INVITE : InviteData = {
+    id: 50,
+    sender_id: 1,
+    recipient_id: 2,
+    sender_username: "bobjonesxx",
+    recipient_username: "tsnicholas",
+    sender_email: "example@outlook.com",
+    recipient_email: "foo@gmail.com"
+}
+
 describe("service tests", () => {
     var emailService : EmailService
+    var messageGenerator : any;
 
     beforeEach(() => {
         emailService = new EmailService();
+        messageGenerator = new MessageGenerator();
     });
     
     afterEach(() => {
         jest.clearAllMocks();
     });
-    
 
     it("send mail (normal case)", async () => {
         sendMailMock.mockResolvedValueOnce({messageId: "message"});
@@ -61,5 +74,32 @@ describe("service tests", () => {
             html: TEST_DATA.messageHtml
         });
         expect(status).toEqual(StatusCode.INTERNAL_SERVER_ERROR);
+    });
+
+    it("send invite mail (normal case)", async () => {
+        sendMailMock.mockResolvedValueOnce({messageId: "message"});
+        messageGenerator.getMessage.mockReturnValue("message");
+        const status = await emailService.sendInviteEmail(TEST_INVITE, Subject.INVITATION);
+        expect(messageGenerator.getMessage).toHaveBeenCalledTimes(1);
+        expect(messageGenerator.getMessage).toHaveBeenCalledWith(Subject.INVITATION, TEST_INVITE);
+        expect(sendMailMock).toHaveBeenCalledTimes(1);
+        expect(sendMailMock).toHaveBeenCalledWith({
+            from: `Learning Plan <${process.env.ACCOUNT_EMAIL}>`,
+            to: TEST_INVITE.recipient_email,
+            subject: Subject.INVITATION,
+            html: "message"
+        });
+        expect(status).toEqual(StatusCode.OK);
+    });
+
+    it("send invite mail (bad request case)", async () => {
+        sendMailMock.mockResolvedValueOnce({messageId: "message"});
+        messageGenerator.getMessage.mockReturnValue("message");
+        const status = await emailService.sendInviteEmail({
+            ...TEST_INVITE, recipient_email: "This isn't an email"
+        }, Subject.INVITATION);
+        expect(messageGenerator.getMessage).toHaveBeenCalledTimes(0);
+        expect(sendMailMock).toHaveBeenCalledTimes(0);
+        expect(status).toEqual(StatusCode.BAD_REQUEST);
     });
 });
