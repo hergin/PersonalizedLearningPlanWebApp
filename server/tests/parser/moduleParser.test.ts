@@ -86,10 +86,10 @@ describe('module parser', () => {
 
     it('store module with coach', async () => {
         const result = await parser.storeModule({
-            name: TEST_DATA.moduleNames[0], 
-            description: TEST_DATA.moduleDescriptions[0], 
+            name: TEST_DATA.moduleNames[2], 
+            description: TEST_DATA.moduleDescriptions[2], 
             completion: TEST_DATA.completion, 
-            accountId,
+            accountId: altAccountId,
             coachId: TEST_DATA.coach_id[0]
         });
         expect(result).toEqual({ module_id: expect.any(Number) });
