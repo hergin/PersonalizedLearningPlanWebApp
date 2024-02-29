@@ -11,7 +11,7 @@ request_testing
 unit_test.sql
 
 # production
-/build
+build
 
 # misc
 .env

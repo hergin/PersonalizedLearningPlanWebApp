@@ -7,8 +7,7 @@ import profilePicture from "../assets/Default_Profile_Picture.jpg";
 import DropDownMenu from "./dropDown/DropDownMenu";
 import DropDownItem from "./dropDown/DropDownItem";
 import DropDownCheckbox from "./dropDown/DropDownCheckbox";
-import useSettings from "../hooks/useSettings";
-import { useQueryClient } from "@tanstack/react-query";
+import { useSettings, useSettingsMutation } from "../hooks/useSettings";
 import { AxiosError } from "axios";
 import { IoIosLogOut } from "react-icons/io";
 import { FaCaretUp } from "react-icons/fa";
@@ -19,16 +18,10 @@ const CLICKABLE_ELEMENT_STYLE = "hover:bg-[#820000] cursor-pointer duration-500"
 const AccountButton = () => {
   const [open, setOpen] = useState<boolean>(false);
   const { user, removeUser } = useUser();
-  const { post, put } = ApiClient();
+  const { post } = ApiClient();
   const navigate = useNavigate();
-  const {data, isLoading, error} = useSettings(user.id);
-  const queryClient = useQueryClient();
-  const [receivesEmail, setReceivesEmail] = useState<boolean>(() => {
-    if(isLoading || error || !data) {
-      return true;
-    }
-    return data[0].receive_emails;
-  });
+  const { data, isLoading, error } = useSettings(user.id);
+  const { mutate } = useSettingsMutation(user.id);
 
   async function handleLogout() {
     try {
@@ -41,27 +34,30 @@ const AccountButton = () => {
       alert(axiosError.response ? axiosError.response.data : error);
     }
   }
-
-  async function handleCheckChange(checked : boolean) {
-      try {
-          await put(`settings/update/${user.id}`, {receiveEmails: checked});
-          queryClient.invalidateQueries({queryKey: ["settings"]});
-          setReceivesEmail(checked);
-      } catch (error: unknown) {
-        const axiosError = error as AxiosError;
-        console.error(error);
-        alert(axiosError.response ? axiosError.response.data : error);
-      }
-  }
   
   if(user.id !== emptyUser.id) {
     // Fixed values need to be changed to adjust to smaller screens, but this is fine for now. -Tim
     return (
       <ProfilePicture>
         <DropDownMenu absolutePosition="absolute top-[58px] w-[190px] translate-x-[-45%] translate-y-[20px]">
-          <DropDownCheckbox handleCheckToggle={handleCheckChange} checked={receivesEmail}>
-            Receives Email
-          </DropDownCheckbox>
+          {isLoading && <p>Loading...</p>}
+          {error && <p>An error has occurred!</p>}
+          {!isLoading && !error && 
+            <div>
+              <DropDownCheckbox 
+                handleCheckToggle={(checked) => mutate({allowCoachInvitations: data[0].allow_coach_invitations, receiveEmails: checked})} 
+                checked={data[0].receive_emails}
+              >
+                Receives Email
+              </DropDownCheckbox>
+              <DropDownCheckbox 
+                handleCheckToggle={(checked) => mutate({receiveEmails: data[0].receive_emails, allowCoachInvitations: checked})} 
+                checked={data[0].allow_coach_invitations}
+              >
+                Allow Invites
+              </DropDownCheckbox>
+            </div>
+          }
           <DropDownItem leftIcon={<IoIosLogOut className="size-6" />} onClick={handleLogout}>Logout</DropDownItem>
         </DropDownMenu>
       </ProfilePicture>
@@ -83,7 +79,7 @@ const AccountButton = () => {
             <img
               src={profilePicture}
               alt="pfp here"
-              className="h-[8vh] w-[4vw] rounded-full"
+              className="h-14 w-14 rounded-full"
             />
             {open ? <FaCaretUp className="size-5" /> : <FaCaretDown className="size-5" />}
           </div>

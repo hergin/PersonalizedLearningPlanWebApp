@@ -31,7 +31,7 @@ export default class InvitationApi {
     async createInvite(senderId: number, recipientId: number) {
         try {
             await this.parser.createInvite(senderId, recipientId);
-            return this.parser.getInviteWithAccounts(senderId, recipientId);
+            return await this.parser.getInviteWithAccounts(senderId, recipientId);
         } catch(error: unknown) {
             return this.errorCodeInterpreter.getStatusCode(error as DatabaseError);
         }
@@ -39,7 +39,7 @@ export default class InvitationApi {
 
     async acceptInvite(inviteId: number, senderId: number, recipientId: number): Promise<InviteData[] | StatusCode> {
         try {
-            return this.parser.acceptInvite(inviteId, senderId, recipientId);
+            return await this.parser.acceptInvite(inviteId, senderId, recipientId);
         } catch(error: unknown) {
             return this.errorCodeInterpreter.getStatusCode(error as DatabaseError);
         }
@@ -47,7 +47,7 @@ export default class InvitationApi {
 
     async rejectInvite(inviteId: number): Promise<InviteData[] | StatusCode> {
         try {
-            return this.parser.deleteInvite(inviteId);
+            return await this.parser.deleteInvite(inviteId);
         } catch(error: unknown) {
             return this.errorCodeInterpreter.getStatusCode(error as DatabaseError);
         }

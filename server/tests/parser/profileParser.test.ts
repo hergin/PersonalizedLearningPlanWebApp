@@ -74,19 +74,33 @@ describe('profile parser tests', () => {
             }
         ]);
     });
+
+    it('parse all profiles', async () => {
+        await createTestProfile();
+        const profileId = await getProfileID();
+        var actual = await parser.parseAllProfiles();
+        const testOnly = actual.filter(result => result.account_id === accountID);
+        expect(testOnly).toEqual([
+            {
+                account_id: accountID,
+                profile_id: profileId,
+                username: TEST_DATA.username
+            }
+        ]);
+    });
     
     it('parse profile', async () => {
         await createTestProfile();
         var actual = await parser.parseProfile(accountID);
         expect(actual).toEqual({
-                profile_id: expect.any(Number),
-                username: TEST_DATA.username,
-                first_name: TEST_DATA.firstName, 
-                last_name: TEST_DATA.lastName,
-                profile_picture: null,
-                job_title: null,
-                bio: null,
-                account_id: accountID
+            profile_id: expect.any(Number),
+            username: TEST_DATA.username,
+            first_name: TEST_DATA.firstName, 
+            last_name: TEST_DATA.lastName,
+            profile_picture: null,
+            job_title: null,
+            bio: null,
+            account_id: accountID
         });
     });
 
@@ -138,17 +152,5 @@ describe('profile parser tests', () => {
             [profileID]
         );
         expect(actual.rows).toEqual([]);
-    });
-
-    it('parse user data', async() => {
-        await createTestProfile();
-        const result = await parser.parseUserData(accountID);
-        expect(result).toEqual([
-            {
-                id: accountID,
-                email: TEST_DATA.email,
-                username: TEST_DATA.username
-            }
-        ]);
     });
 });

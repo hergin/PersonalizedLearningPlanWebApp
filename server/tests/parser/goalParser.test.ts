@@ -155,8 +155,8 @@ describe('goal parser tests', () => {
     
     it('store goal (no due date)', async () => {
         const goalID = await parser.storeGoal({
-            name: TEST_DATA.goalNames[0], description: TEST_DATA.goalDescriptions[0], goalType: GoalType.TASK, 
-            isComplete: TEST_DATA.isComplete, moduleId: moduleId, tagId: tagId
+            name: TEST_DATA.goalNames[0], description: TEST_DATA.goalDescriptions[0], goal_type: GoalType.TASK, 
+            is_complete: TEST_DATA.isComplete, module_id: moduleId, tag_id: tagId
         });
         expect(goalID).toEqual([
             {
@@ -188,8 +188,8 @@ describe('goal parser tests', () => {
 
     it('store goal (with due date)', async () => {
         const goalID = await parser.storeGoal({
-            name: TEST_DATA.goalNames[0], description: TEST_DATA.goalDescriptions[0], goalType: GoalType.REPEATABLE, 
-            isComplete: TEST_DATA.isComplete, moduleId: moduleId, tagId: tagId, dueDate: convertToPostgresTimestamp(TEST_DATA.dueDate)});
+            name: TEST_DATA.goalNames[0], description: TEST_DATA.goalDescriptions[0], goal_type: GoalType.REPEATABLE, 
+            is_complete: TEST_DATA.isComplete, module_id: moduleId, tag_id: tagId, due_date: convertToPostgresTimestamp(TEST_DATA.dueDate)});
         expect(goalID).toEqual([
             {
                 goal_id: expect.any(Number)
@@ -203,11 +203,11 @@ describe('goal parser tests', () => {
         const id = await createTestGoal({
             name: TEST_DATA.goalNames[0], 
             description: TEST_DATA.goalDescriptions[0],
-            goalType: GoalType.TASK,
-            isComplete: TEST_DATA.isComplete,
-            moduleId: moduleId,
-            tagId: tagId,
-            dueDate: TEST_DATA.dueDate
+            goal_type: GoalType.TASK,
+            is_complete: TEST_DATA.isComplete,
+            module_id: moduleId,
+            tag_id: tagId,
+            due_date: TEST_DATA.dueDate
         });
         const result = await parser.parseParentGoals(moduleId);
         console.log(`Parsed from goals: ${JSON.stringify(result)}`);
@@ -224,10 +224,10 @@ describe('goal parser tests', () => {
 
     async function createTestGoal(goal: Goal): Promise<number> {
         await client.query({
-            text: `INSERT INTO GOAL(name, description, goal_type, is_complete, module_id, tag_id${goal.dueDate ? ", due_date" : ""}) VALUES($1, $2, $3, $4, $5, $6${goal.dueDate ? ", $7" : ""})`,
-            values: goal.dueDate ? 
-            [goal.name, goal.description, goal.goalType, goal.isComplete, goal.moduleId, goal.tagId, goal.dueDate] :
-            [goal.name, goal.description, goal.goalType, goal.isComplete, goal.moduleId, goal.tagId]
+            text: `INSERT INTO GOAL(name, description, goal_type, is_complete, module_id, tag_id${goal.due_date ? ", due_date" : ""}) VALUES($1, $2, $3, $4, $5, $6${goal.due_date ? ", $7" : ""})`,
+            values: goal.due_date ? 
+            [goal.name, goal.description, goal.goal_type, goal.is_complete, goal.module_id, goal.tag_id, goal.due_date] :
+            [goal.name, goal.description, goal.goal_type, goal.is_complete, goal.module_id, goal.tag_id]
         });
         const id = await getGoalID(goal.name, goal.description);
         return id;
@@ -245,10 +245,10 @@ describe('goal parser tests', () => {
         var goalID = await createTestGoal({
             name: TEST_DATA.goalNames[0], 
             description: TEST_DATA.goalDescriptions[0],
-            goalType: GoalType.TASK,
-            isComplete: TEST_DATA.isComplete,
-            moduleId: moduleId,
-            tagId: tagId,
+            goal_type: GoalType.TASK,
+            is_complete: TEST_DATA.isComplete,
+            module_id: moduleId,
+            tag_id: tagId,
         });
         var result = await parser.parseGoalVariable(goalID, "module_id");
         expect(result).toEqual([
@@ -262,18 +262,18 @@ describe('goal parser tests', () => {
         var goalID = await createTestGoal({
             name: TEST_DATA.goalNames[0], 
             description: TEST_DATA.goalDescriptions[0],
-            goalType: GoalType.TASK,
-            isComplete: TEST_DATA.isComplete,
-            moduleId: moduleId,
-            tagId: tagId,
+            goal_type: GoalType.TASK,
+            is_complete: TEST_DATA.isComplete,
+            module_id: moduleId,
+            tag_id: tagId,
         });
         await parser.updateGoal({
             id: goalID, 
             name: TEST_DATA.goalNames[1], 
             description: TEST_DATA.goalDescriptions[1], 
-            goalType: GoalType.TASK, 
-            isComplete: false,
-            tagId: tagId
+            goal_type: GoalType.TASK, 
+            is_complete: false,
+            tag_id: tagId
         });
         var actual = await client.query(selectQuery(goalID, QUERY_VARIABLES.goal));
         var defaultExpected = getExpectedParentGoal({goalType: GoalType.TASK, goalId: goalID})[0];
@@ -290,19 +290,19 @@ describe('goal parser tests', () => {
         var goalID = await createTestGoal({
             name: TEST_DATA.goalNames[0], 
             description: TEST_DATA.goalDescriptions[0],
-            goalType: GoalType.TASK,
-            isComplete: TEST_DATA.isComplete,
-            moduleId: moduleId,
-            tagId: tagId,
+            goal_type: GoalType.TASK,
+            is_complete: TEST_DATA.isComplete,
+            module_id: moduleId,
+            tag_id: tagId,
         });
         await parser.updateGoal({
             id: goalID, 
             name: TEST_DATA.goalNames[1], 
             description: TEST_DATA.goalDescriptions[1], 
-            goalType: GoalType.TASK, 
-            isComplete: false,
-            tagId: tagId,
-            dueDate: convertToPostgresTimestamp(TEST_DATA.dueDate)
+            goal_type: GoalType.TASK, 
+            is_complete: false,
+            tag_id: tagId,
+            due_date: convertToPostgresTimestamp(TEST_DATA.dueDate)
         });
         var actual = await client.query(selectQuery(goalID, QUERY_VARIABLES.goal));
         var defaultExpected = getExpectedParentGoal({goalType: GoalType.TASK, goalId: goalID, dueDateExists: true})[0];
@@ -319,10 +319,10 @@ describe('goal parser tests', () => {
         var goalID = await createTestGoal({
             name: TEST_DATA.goalNames[0], 
             description: TEST_DATA.goalDescriptions[0],
-            goalType: GoalType.REPEATABLE,
-            isComplete: TEST_DATA.isComplete,
-            moduleId: moduleId,
-            tagId: tagId,
+            goal_type: GoalType.REPEATABLE,
+            is_complete: TEST_DATA.isComplete,
+            module_id: moduleId,
+            tag_id: tagId,
         });
         await parser.updateGoalTimestamps(goalID, convertToPostgresTimestamp(TEST_DATA.completionTime));
         var actual = await client.query(selectQuery(goalID, QUERY_VARIABLES.goal));
@@ -333,10 +333,10 @@ describe('goal parser tests', () => {
         var goalID = await createTestGoal({
             name: TEST_DATA.goalNames[0], 
             description: TEST_DATA.goalDescriptions[0],
-            goalType: GoalType.TASK,
-            isComplete: TEST_DATA.isComplete,
-            moduleId: moduleId,
-            tagId: tagId,
+            goal_type: GoalType.TASK,
+            is_complete: TEST_DATA.isComplete,
+            module_id: moduleId,
+            tag_id: tagId,
         });
         await parser.updateGoalTimestamps(goalID, 
             convertToPostgresTimestamp(TEST_DATA.completionTime), 
@@ -350,10 +350,10 @@ describe('goal parser tests', () => {
         const goalID = await createTestGoal({
             name: TEST_DATA.goalNames[0], 
             description: TEST_DATA.goalDescriptions[0],
-            goalType: GoalType.REPEATABLE,
-            isComplete: TEST_DATA.isComplete,
-            moduleId: moduleId,
-            tagId: tagId
+            goal_type: GoalType.REPEATABLE,
+            is_complete: TEST_DATA.isComplete,
+            module_id: moduleId,
+            tag_id: tagId
         });
         await parser.updateGoalFeedback(goalID, TEST_DATA.feedback[1]);
         var actual = await client.query(selectQuery(goalID, QUERY_VARIABLES.goal));
@@ -370,10 +370,10 @@ describe('goal parser tests', () => {
         var goalID = await createTestGoal({
             name: TEST_DATA.goalNames[0], 
             description: TEST_DATA.goalDescriptions[0],
-            goalType: GoalType.TASK,
-            isComplete: TEST_DATA.isComplete,
-            moduleId: moduleId,
-            tagId: tagId,
+            goal_type: GoalType.TASK,
+            is_complete: TEST_DATA.isComplete,
+            module_id: moduleId,
+            tag_id: tagId,
         });
         await parser.deleteGoal(goalID);
         var actual = await client.query(selectQuery(goalID, QUERY_VARIABLES.goal));
@@ -384,14 +384,14 @@ describe('goal parser tests', () => {
         var goalID = await createTestGoal({
             name: TEST_DATA.goalNames[0], 
             description: TEST_DATA.goalDescriptions[0],
-            goalType: GoalType.TASK,
-            isComplete: TEST_DATA.isComplete,
-            moduleId: moduleId,
-            tagId: tagId,
+            goal_type: GoalType.TASK,
+            is_complete: TEST_DATA.isComplete,
+            module_id: moduleId,
+            tag_id: tagId,
         });
         var subGoalID = await parser.storeSubGoal(goalID, 
-            {name: TEST_DATA.goalNames[2], description: TEST_DATA.goalDescriptions[2], goalType: GoalType.TASK, 
-                isComplete: false, moduleId: moduleId, tagId: tagId});
+            {name: TEST_DATA.goalNames[2], description: TEST_DATA.goalDescriptions[2], goal_type: GoalType.TASK, 
+                is_complete: false, module_id: moduleId, tag_id: tagId});
         expect(subGoalID).toEqual([
             {
                 goal_id: expect.any(Number)
@@ -407,15 +407,15 @@ describe('goal parser tests', () => {
         var goalID = await createTestGoal({
             name: TEST_DATA.goalNames[0], 
             description: TEST_DATA.goalDescriptions[0],
-            goalType: GoalType.TASK,
-            isComplete: TEST_DATA.isComplete,
-            moduleId: moduleId,
-            tagId: tagId,
-            dueDate: TEST_DATA.dueDate
+            goal_type: GoalType.TASK,
+            is_complete: TEST_DATA.isComplete,
+            module_id: moduleId,
+            tag_id: tagId,
+            due_date: TEST_DATA.dueDate
         });
         var subGoalID = await parser.storeSubGoal(goalID, 
-            {name: TEST_DATA.goalNames[2], description: TEST_DATA.goalDescriptions[2], goalType: GoalType.TASK, 
-                isComplete: false, moduleId: moduleId, tagId: tagId, dueDate: convertToPostgresTimestamp(TEST_DATA.dueDate)});
+            {name: TEST_DATA.goalNames[2], description: TEST_DATA.goalDescriptions[2], goal_type: GoalType.TASK, 
+                is_complete: false, module_id: moduleId, tag_id: tagId, due_date: convertToPostgresTimestamp(TEST_DATA.dueDate)});
         expect(subGoalID).toEqual([
             {
                 goal_id: expect.any(Number)
@@ -431,10 +431,10 @@ describe('goal parser tests', () => {
         var goalID = await createTestGoal({
             name: TEST_DATA.goalNames[0], 
             description: TEST_DATA.goalDescriptions[0],
-            goalType: GoalType.TASK,
-            isComplete: TEST_DATA.isComplete,
-            moduleId: moduleId,
-            tagId: tagId,
+            goal_type: GoalType.TASK,
+            is_complete: TEST_DATA.isComplete,
+            module_id: moduleId,
+            tag_id: tagId,
         });
         createTestSubGoals(goalID);
         const result = await parser.parseSubGoals(goalID);
@@ -457,10 +457,10 @@ describe('goal parser tests', () => {
         await createTestGoal({
             name: TEST_DATA.goalNames[0], 
             description: TEST_DATA.goalDescriptions[0],
-            goalType: GoalType.TASK,
-            isComplete: TEST_DATA.isComplete,
-            moduleId: moduleId,
-            tagId: tagId,
+            goal_type: GoalType.TASK,
+            is_complete: TEST_DATA.isComplete,
+            module_id: moduleId,
+            tag_id: tagId,
         });
         const result = await parser.parseAccountsWithUpcomingDueDates();
         const filteredResults = result.filter(account => TEST_DATA.email.includes(account.email));
@@ -471,10 +471,10 @@ describe('goal parser tests', () => {
         await createTestGoal({
             name: TEST_DATA.goalNames[0], 
             description: TEST_DATA.goalDescriptions[0],
-            goalType: GoalType.TASK,
-            isComplete: TEST_DATA.isComplete,
-            moduleId: moduleId,
-            tagId: tagId,
+            goal_type: GoalType.TASK,
+            is_complete: TEST_DATA.isComplete,
+            module_id: moduleId,
+            tag_id: tagId,
         });
         await client.query({
             text: "UPDATE ACCOUNT_SETTINGS SET receive_emails = $1 WHERE account_id = $2",
@@ -489,11 +489,11 @@ describe('goal parser tests', () => {
         await createTestGoal({
             name: TEST_DATA.goalNames[0], 
             description: TEST_DATA.goalDescriptions[0],
-            goalType: GoalType.TASK,
-            isComplete: TEST_DATA.isComplete,
-            moduleId: moduleId,
-            tagId: tagId,
-            dueDate: TEST_DATA.upcomingDueDate.toISOString(),
+            goal_type: GoalType.TASK,
+            is_complete: TEST_DATA.isComplete,
+            module_id: moduleId,
+            tag_id: tagId,
+            due_date: TEST_DATA.upcomingDueDate.toISOString(),
         });
         const result = await parser.parseAccountsWithUpcomingDueDates();
         const filteredResults = result.filter(account => TEST_DATA.email.includes(account.email));
@@ -512,11 +512,11 @@ describe('goal parser tests', () => {
         await createTestGoal({
             name: TEST_DATA.goalNames[0], 
             description: TEST_DATA.goalDescriptions[0],
-            goalType: GoalType.TASK,
-            isComplete: !TEST_DATA.isComplete,
-            moduleId: moduleId,
-            tagId: tagId,
-            dueDate: TEST_DATA.upcomingDueDate.toISOString(),
+            goal_type: GoalType.TASK,
+            is_complete: !TEST_DATA.isComplete,
+            module_id: moduleId,
+            tag_id: tagId,
+            due_date: TEST_DATA.upcomingDueDate.toISOString(),
         });
         const result = await parser.parseAccountsWithUpcomingDueDates();
         const filteredResults = result.filter(account => TEST_DATA.email.includes(account.email));
@@ -527,11 +527,11 @@ describe('goal parser tests', () => {
         await createTestGoal({
             name: TEST_DATA.goalNames[0], 
             description: TEST_DATA.goalDescriptions[0],
-            goalType: GoalType.TASK,
-            isComplete: TEST_DATA.isComplete,
-            moduleId: moduleId,
-            tagId: tagId,
-            dueDate: TEST_DATA.pastDueDate
+            goal_type: GoalType.TASK,
+            is_complete: TEST_DATA.isComplete,
+            module_id: moduleId,
+            tag_id: tagId,
+            due_date: TEST_DATA.pastDueDate
         });
         const result = await parser.parseAccountsWithUpcomingDueDates();
         const filteredResults = result.filter(account => TEST_DATA.email.includes(account.email));
@@ -542,11 +542,11 @@ describe('goal parser tests', () => {
         await createTestGoal({
             name: TEST_DATA.goalNames[0], 
             description: TEST_DATA.goalDescriptions[0],
-            goalType: GoalType.TASK,
-            isComplete: TEST_DATA.isComplete,
-            moduleId: moduleId,
-            tagId: tagId,
-            dueDate: TEST_DATA.distantFutureDate
+            goal_type: GoalType.TASK,
+            is_complete: TEST_DATA.isComplete,
+            module_id: moduleId,
+            tag_id: tagId,
+            due_date: TEST_DATA.distantFutureDate
         });
         const result = await parser.parseAccountsWithUpcomingDueDates();
         const filteredResults = result.filter(account => TEST_DATA.email.includes(account.email));
@@ -618,10 +618,10 @@ describe('goal parser tests', () => {
         var goalID = await createTestGoal({
             name: TEST_DATA.goalNames[0], 
             description: TEST_DATA.goalDescriptions[0],
-            goalType: GoalType.TASK,
-            isComplete: TEST_DATA.isComplete,
-            moduleId: moduleId,
-            tagId: tagId
+            goal_type: GoalType.TASK,
+            is_complete: TEST_DATA.isComplete,
+            module_id: moduleId,
+            tag_id: tagId
         });
         await client.query({
             text: "UPDATE GOAL SET is_complete = 'true', expiration = $1 WHERE goal_id = $2",

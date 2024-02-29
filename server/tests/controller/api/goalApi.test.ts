@@ -143,9 +143,9 @@ describe('goal processor unit tests', () => {
         var actual = await goalAPI.createGoal({
             name: TEST_GOAL.name[0], 
             description: TEST_GOAL.description[0], 
-            goalType: TEST_GOAL.goalType, 
-            isComplete: TEST_GOAL.isComplete, 
-            moduleId: TEST_GOAL.moduleId}
+            goal_type: TEST_GOAL.goalType, 
+            is_complete: TEST_GOAL.isComplete, 
+            module_id: TEST_GOAL.moduleId}
         );
         expect(actual).toEqual({goal_id: TEST_GOAL.id[0]});
     });
@@ -154,10 +154,10 @@ describe('goal processor unit tests', () => {
         const testObject = {
             name: TEST_GOAL.name[0],
             description: TEST_GOAL.description[0],
-            goalType: TEST_GOAL.goalType,
-            isComplete: TEST_GOAL.isComplete,
-            moduleId: TEST_GOAL.moduleId,
-            dueDate: TEST_GOAL.dueDate
+            goal_type: TEST_GOAL.goalType,
+            is_complete: TEST_GOAL.isComplete,
+            module_id: TEST_GOAL.moduleId,
+            due_date: TEST_GOAL.dueDate
         }
         parser.storeGoal.mockResolvedValueOnce({goal_id: TEST_GOAL.id[0]});
         var actual = await goalAPI.createGoal(testObject);
@@ -174,9 +174,9 @@ describe('goal processor unit tests', () => {
         var actual = await goalAPI.createGoal({
             name: TEST_GOAL.name[0], 
             description: TEST_GOAL.description[0], 
-            goalType: TEST_GOAL.goalType, 
-            isComplete: TEST_GOAL.isComplete, 
-            moduleId: TEST_GOAL.moduleId
+            goal_type: TEST_GOAL.goalType, 
+            is_complete: TEST_GOAL.isComplete, 
+            module_id: TEST_GOAL.moduleId
         });
         expect(actual).toEqual(StatusCode.CONFLICT);
     });
@@ -186,9 +186,9 @@ describe('goal processor unit tests', () => {
         var actual = await goalAPI.createGoal({
             name: TEST_GOAL.name[0], 
             description: TEST_GOAL.description[0], 
-            goalType: TEST_GOAL.goalType, 
-            isComplete: TEST_GOAL.isComplete, 
-            moduleId: TEST_GOAL.moduleId
+            goal_type: TEST_GOAL.goalType, 
+            is_complete: TEST_GOAL.isComplete, 
+            module_id: TEST_GOAL.moduleId
         });
         expect(actual).toEqual(StatusCode.CONNECTION_ERROR);
     });
@@ -198,9 +198,9 @@ describe('goal processor unit tests', () => {
         var actual = await goalAPI.createGoal({
             name: TEST_GOAL.name[0], 
             description: TEST_GOAL.description[0], 
-            isComplete: TEST_GOAL.isComplete, 
-            moduleId: TEST_GOAL.moduleId,
-            goalType: GoalType.REPEATABLE
+            is_complete: TEST_GOAL.isComplete, 
+            module_id: TEST_GOAL.moduleId,
+            goal_type: GoalType.REPEATABLE
         });
         expect(actual).toEqual(StatusCode.INTERNAL_SERVER_ERROR);
     });
@@ -211,8 +211,8 @@ describe('goal processor unit tests', () => {
             id: TEST_GOAL.id[0],
             name: TEST_GOAL.name[0], 
             description: TEST_GOAL.description[0], 
-            goalType: TEST_GOAL.goalType, 
-            isComplete: TEST_GOAL.isComplete
+            goal_type: TEST_GOAL.goalType, 
+            is_complete: TEST_GOAL.isComplete
         })).toEqual(StatusCode.OK);
     });
 
@@ -222,8 +222,8 @@ describe('goal processor unit tests', () => {
             id: TEST_GOAL.id[0],
             name: TEST_GOAL.name[0], 
             description: TEST_GOAL.description[0], 
-            goalType: TEST_GOAL.goalType, 
-            isComplete: TEST_GOAL.isComplete
+            goal_type: TEST_GOAL.goalType, 
+            is_complete: TEST_GOAL.isComplete
         })).toEqual(StatusCode.CONFLICT);
     });
 
@@ -233,8 +233,8 @@ describe('goal processor unit tests', () => {
             id: TEST_GOAL.id[0],
             name: TEST_GOAL.name[0], 
             description: TEST_GOAL.description[0], 
-            goalType: TEST_GOAL.goalType, 
-            isComplete: TEST_GOAL.isComplete
+            goal_type: TEST_GOAL.goalType, 
+            is_complete: TEST_GOAL.isComplete
         })).toEqual(StatusCode.BAD_REQUEST);
     });
 
@@ -244,8 +244,8 @@ describe('goal processor unit tests', () => {
             id: TEST_GOAL.id[0],
             name: TEST_GOAL.name[0], 
             description: TEST_GOAL.description[0], 
-            goalType: TEST_GOAL.goalType, 
-            isComplete: TEST_GOAL.isComplete
+            goal_type: TEST_GOAL.goalType, 
+            is_complete: TEST_GOAL.isComplete
         })).toEqual(StatusCode.CONNECTION_ERROR);
     });
 
@@ -255,8 +255,8 @@ describe('goal processor unit tests', () => {
             id: TEST_GOAL.id[0],
             name: TEST_GOAL.name[0], 
             description: TEST_GOAL.description[0], 
-            goalType: TEST_GOAL.goalType, 
-            isComplete: TEST_GOAL.isComplete
+            goal_type: TEST_GOAL.goalType, 
+            is_complete: TEST_GOAL.isComplete
         })).toEqual(StatusCode.INTERNAL_SERVER_ERROR);
     });
 
