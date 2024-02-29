@@ -20,7 +20,7 @@ const AccountButton = () => {
   const { user, removeUser } = useUser();
   const { post } = ApiClient();
   const navigate = useNavigate();
-  const {data, isLoading, error} = useSettings(user.id);
+  const { data, isLoading, error } = useSettings(user.id);
   const { mutate } = useSettingsMutation(user.id);
 
   async function handleLogout() {
@@ -79,7 +79,7 @@ const AccountButton = () => {
             <img
               src={profilePicture}
               alt="pfp here"
-              className="h-[8vh] w-[4vw] rounded-full"
+              className="h-14 w-14 rounded-full"
             />
             {open ? <FaCaretUp className="size-5" /> : <FaCaretDown className="size-5" />}
           </div>
