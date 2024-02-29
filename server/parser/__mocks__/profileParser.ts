@@ -1,8 +1,8 @@
 export const mockStoreProfile = jest.fn();
+export const mockParseAllProfiles = jest.fn();
 export const mockParseProfile = jest.fn();
 export const mockUpdateProfile = jest.fn();
 export const mockDeleteProfile = jest.fn();
-export const mockParseUserData = jest.fn();
 
 const mock = jest.fn().mockImplementation(() => {
     return {
@@ -10,7 +10,7 @@ const mock = jest.fn().mockImplementation(() => {
         parseProfile : mockParseProfile,
         updateProfile : mockUpdateProfile,
         deleteProfile : mockDeleteProfile,
-        parseUserData: mockParseUserData,
+        parseAllProfiles: mockParseAllProfiles,
     }
 });
 
