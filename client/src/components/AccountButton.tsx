@@ -2,7 +2,7 @@ import React, { useState, PropsWithChildren } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useUser } from "../hooks/useUser";
 import { ApiClient } from "../hooks/ApiClient";
-import { emptyUser } from "../types";
+import { emptyUser, Settings, defaultSettings } from "../types";
 import profilePicture from "../assets/Default_Profile_Picture.jpg";
 import DropDownMenu from "./dropDown/DropDownMenu";
 import DropDownItem from "./dropDown/DropDownItem";
@@ -23,12 +23,7 @@ const AccountButton = () => {
   const navigate = useNavigate();
   const {data, isLoading, error} = useSettings(user.id);
   const queryClient = useQueryClient();
-  const [receivesEmail, setReceivesEmail] = useState<boolean>(() => {
-    if(isLoading || error || !data) {
-      return true;
-    }
-    return data[0].receive_emails;
-  });
+  
 
   async function handleLogout() {
     try {
@@ -42,11 +37,10 @@ const AccountButton = () => {
     }
   }
 
-  async function handleCheckChange(checked : boolean) {
+  async function handleCheckChange(settings : Settings) {
       try {
-          await put(`settings/update/${user.id}`, {receiveEmails: checked});
+          await put(`settings/update/${user.id}`, settings);
           queryClient.invalidateQueries({queryKey: ["settings"]});
-          setReceivesEmail(checked);
       } catch (error: unknown) {
         const axiosError = error as AxiosError;
         console.error(error);
@@ -59,9 +53,26 @@ const AccountButton = () => {
     return (
       <ProfilePicture>
         <DropDownMenu absolutePosition="absolute top-[58px] w-[190px] translate-x-[-45%] translate-y-[20px]">
-          <DropDownCheckbox handleCheckToggle={handleCheckChange} checked={receivesEmail}>
-            Receives Email
-          </DropDownCheckbox>
+          {isLoading && <p>Loading...</p>}
+          {error && <p>An error has occurred!</p>}
+          {!isLoading && !error && 
+            <div>
+              <DropDownCheckbox 
+                handleCheckToggle={(checked) => handleCheckChange(
+                  {allowCoachInvitations: data[0].allow_coach_invitations, receiveEmails: checked})} 
+                checked={data[0].receive_emails}
+              >
+                Receives Email
+              </DropDownCheckbox>
+              <DropDownCheckbox 
+                handleCheckToggle={(checked) => handleCheckChange(
+                  {receiveEmails: data[0].receive_emails, allowCoachInvitations: checked})} 
+                checked={data[0].allow_coach_invitations}
+              >
+                Allow Invites
+              </DropDownCheckbox>
+            </div>
+          }
           <DropDownItem leftIcon={<IoIosLogOut className="size-6" />} onClick={handleLogout}>Logout</DropDownItem>
         </DropDownMenu>
       </ProfilePicture>
