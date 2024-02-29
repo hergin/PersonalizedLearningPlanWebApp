@@ -25,11 +25,11 @@ function TagCreator() {
         color: tagColor,
       });
       queryClient.invalidateQueries({ queryKey: ["tags"] });
+      console.log("Tag created");
     } catch (error: any) {
       console.error(error);
       alert(error.message ? error.message : error);
     }
-    console.log("Tag creation is not implemented yet.");
     setOpen(false);
   }
 

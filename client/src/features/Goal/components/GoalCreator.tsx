@@ -15,11 +15,10 @@ import { useUser } from "../../../hooks/useUser";
 
 interface GoalCreatorProps {
   moduleID: string;
-  height?: string;
   goalID?: string;
 }
 
-function GoalCreator({ moduleID, goalID, height }: GoalCreatorProps) {
+function GoalCreator({ moduleID, goalID }: GoalCreatorProps) {
   const [tag, setTag] = useState("");
   const [goalName, setGoalName] = useState("");
   const [description, setDescription] = useState("");
@@ -30,7 +29,7 @@ function GoalCreator({ moduleID, goalID, height }: GoalCreatorProps) {
   console.log(tags);
   const [dueDate, setDueDate] = useState<Date | null>(null);
   const [open, setOpen] = useState(false);
-  const submitDisabled = goalName === "" || description === "" ;
+  const submitDisabled = goalName === "" || description === "";
   const { post } = ApiClient();
   const { handleEnterPress } = useHotKeys();
 
@@ -115,38 +114,36 @@ function GoalCreator({ moduleID, goalID, height }: GoalCreatorProps) {
                 required
               />
               {/* <DropDownMenu absolutePosition={""} /> */}
-              <div className="flex flex-row  items-center gap-4">
-              <InputLabel id="simple-select-label">Tag</InputLabel>
-                <Select
-                  value={tag}
-                  onChange={handleChange}
-                  sx={{
-                    color: "black",
-                    width: 250,
-                    height: 50,
-                  }}
-                >
-                  {tags?.map((tag: any) => ( 
-                    <MenuItem key={tag.id} value={tag.id}>{tag.name}</MenuItem>
-                  ))}
-                  
-                </Select>
-                <TagCreator />
-                </div>
               <div className="w-full flex justify-between items-center px-20 gap-4 ">
-                
                 <div className="flex flex-row justify-center items-center">
                   <p className="font-headlineFont text-xl">Daily</p>
                   <Checkbox
                     onChange={(event) => changeType(event.target.checked)}
                   />
                 </div>
+                <div className="flex flex-row items-center gap-2">
+                  <InputLabel id="simple-select-label">Tag</InputLabel>
+                  <Select
+                    value={tag}
+                    onChange={handleChange}
+                    sx={{
+                      color: "black",
+                      width: 250,
+                      height: 50,
+                    }}
+                  >
+                    {tags?.map((tag: any) => (
+                      <MenuItem key={tag.id} value={tag.id}>
+                        {tag.name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </div>
                 <DatePicker
                   label="Due Date"
                   value={dueDate}
                   onChange={(newDueDate) => setDueDate(newDueDate)}
                 />
-
               </div>
 
               <button

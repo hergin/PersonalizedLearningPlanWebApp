@@ -8,7 +8,6 @@ import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { useQueryClient } from "@tanstack/react-query";
 import { GoalType } from "../../../types";
-import TagCreator from "../../tags/components/TagCreator";
 import { useUser } from "../../../hooks/useUser";
 import useTags from "../../tags/hooks/useTags";
 
@@ -37,7 +36,6 @@ function SubGoalCreator({ moduleID, parent_id }: GoalCreatorProps) {
 
   async function handleGoalCreation() {
     try {
-      console.log(parent_id + "parent_id is here");
       await post(`/goal/add/${parent_id}`, {
         name: goalName,
         description: description,
@@ -114,31 +112,30 @@ function SubGoalCreator({ moduleID, parent_id }: GoalCreatorProps) {
                 }}
                 required
               />
-              <div className="flex flex-row  items-center gap-4">
-                <InputLabel id="simple-select-label">Tag</InputLabel>
-                <Select
-                  value={tag}
-                  onChange={handleChange}
-                  sx={{
-                    color: "black",
-                    width: 250,
-                    height: 50,
-                  }}
-                >
-                  {tags?.map((tag: any) => (
-                    <MenuItem key={tag.id} value={tag.id}>
-                      {tag.name}
-                    </MenuItem>
-                  ))}
-                </Select>
-                <TagCreator />
-              </div>
-              <div className="w-full flex justify-between items-center px-20 ">
+              <div className="w-full flex justify-between items-center px-20 gap-4 ">
                 <div className="flex flex-row justify-center items-center">
                   <p className="font-headlineFont text-xl">Daily</p>
                   <Checkbox
                     onChange={(event) => changeType(event.target.checked)}
                   />
+                </div>
+                <div className="flex flex-row items-center gap-2 ">
+                  <InputLabel id="simple-select-label">Tag</InputLabel>
+                  <Select
+                    value={tag}
+                    onChange={handleChange}
+                    sx={{
+                      color: "black",
+                      width: 250,
+                      height: 50,
+                    }}
+                  >
+                    {tags?.map((tag: any) => (
+                      <MenuItem key={tag.id} value={tag.id}>
+                        {tag.name}
+                      </MenuItem>
+                    ))}
+                  </Select>
                 </div>
                 <DatePicker
                   label="Due Date"

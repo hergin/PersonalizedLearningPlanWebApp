@@ -19,6 +19,8 @@ export interface Goal {
   is_complete: boolean,
   moduleId?: number
   sub_goals?: Goal[]
+  tag_name?: string
+  color?: string
   feedback?: string
 }
 
