@@ -2,13 +2,12 @@ import React, { useState, PropsWithChildren } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useUser } from "../hooks/useUser";
 import { ApiClient } from "../hooks/ApiClient";
-import { emptyUser, Settings, defaultSettings } from "../types";
+import { emptyUser } from "../types";
 import profilePicture from "../assets/Default_Profile_Picture.jpg";
 import DropDownMenu from "./dropDown/DropDownMenu";
 import DropDownItem from "./dropDown/DropDownItem";
 import DropDownCheckbox from "./dropDown/DropDownCheckbox";
-import useSettings from "../hooks/useSettings";
-import { useQueryClient } from "@tanstack/react-query";
+import { useSettings, useSettingsMutation } from "../hooks/useSettings";
 import { AxiosError } from "axios";
 import { IoIosLogOut } from "react-icons/io";
 import { FaCaretUp } from "react-icons/fa";
@@ -19,11 +18,10 @@ const CLICKABLE_ELEMENT_STYLE = "hover:bg-[#820000] cursor-pointer duration-500"
 const AccountButton = () => {
   const [open, setOpen] = useState<boolean>(false);
   const { user, removeUser } = useUser();
-  const { post, put } = ApiClient();
+  const { post } = ApiClient();
   const navigate = useNavigate();
   const {data, isLoading, error} = useSettings(user.id);
-  const queryClient = useQueryClient();
-  
+  const { mutate } = useSettingsMutation(user.id);
 
   async function handleLogout() {
     try {
@@ -36,17 +34,6 @@ const AccountButton = () => {
       alert(axiosError.response ? axiosError.response.data : error);
     }
   }
-
-  async function handleCheckChange(settings : Settings) {
-      try {
-          await put(`settings/update/${user.id}`, settings);
-          queryClient.invalidateQueries({queryKey: ["settings"]});
-      } catch (error: unknown) {
-        const axiosError = error as AxiosError;
-        console.error(error);
-        alert(axiosError.response ? axiosError.response.data : error);
-      }
-  }
   
   if(user.id !== emptyUser.id) {
     // Fixed values need to be changed to adjust to smaller screens, but this is fine for now. -Tim
@@ -58,15 +45,13 @@ const AccountButton = () => {
           {!isLoading && !error && 
             <div>
               <DropDownCheckbox 
-                handleCheckToggle={(checked) => handleCheckChange(
-                  {allowCoachInvitations: data[0].allow_coach_invitations, receiveEmails: checked})} 
+                handleCheckToggle={(checked) => mutate({allowCoachInvitations: data[0].allow_coach_invitations, receiveEmails: checked})} 
                 checked={data[0].receive_emails}
               >
                 Receives Email
               </DropDownCheckbox>
               <DropDownCheckbox 
-                handleCheckToggle={(checked) => handleCheckChange(
-                  {receiveEmails: data[0].receive_emails, allowCoachInvitations: checked})} 
+                handleCheckToggle={(checked) => mutate({receiveEmails: data[0].receive_emails, allowCoachInvitations: checked})} 
                 checked={data[0].allow_coach_invitations}
               >
                 Allow Invites
