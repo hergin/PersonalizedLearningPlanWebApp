@@ -41,12 +41,12 @@ export default class GoalAPI {
     }
 
     async createGoal(goal: Goal) {
-        const dueDate : string | undefined = this.#convertToPostgresTimestamp(goal.dueDate);
+        const dueDate : string | undefined = this.#convertToPostgresTimestamp(goal.due_date);
 
         try {
             const results = await this.parser.storeGoal({
                 ...goal,
-                dueDate: dueDate
+                due_date: dueDate
             });
             return results;
         } catch (error: unknown) {
@@ -63,12 +63,12 @@ export default class GoalAPI {
             return StatusCode.BAD_REQUEST;
         }
         
-        const dueDate : string | undefined = this.#convertToPostgresTimestamp(goal.dueDate);
-        const completionTime : string | undefined = this.#convertToPostgresTimestamp(goal.completionTime);
+        const dueDate : string | undefined = this.#convertToPostgresTimestamp(goal.due_date);
+        const completionTime : string | undefined = this.#convertToPostgresTimestamp(goal.completion_time);
         const expiration : string | undefined = this.#convertToPostgresTimestamp(goal.expiration);
 
         try {
-            await this.parser.updateGoal({...goal, dueDate: dueDate});
+            await this.parser.updateGoal({...goal, due_date: dueDate});
             if (completionTime) {
                 await this.parser.updateGoalTimestamps(goal.id, completionTime, expiration);
             }

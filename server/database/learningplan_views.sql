@@ -1,5 +1,5 @@
 CREATE OR REPLACE VIEW GOAL_WITH_TAG AS
-SELECT * FROM GOAL g JOIN TAG t USING(tag_id);
+SELECT * FROM GOAL g LEFT JOIN TAG t USING(tag_id);
 
 CREATE OR REPLACE VIEW PUBLIC_USER_DATA AS
 SELECT a.id as account_id, p.profile_id as profile_id, p.username as username

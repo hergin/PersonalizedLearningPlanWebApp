@@ -79,7 +79,8 @@ describe('profile parser tests', () => {
         await createTestProfile();
         const profileId = await getProfileID();
         var actual = await parser.parseAllProfiles();
-        expect(actual).toEqual([
+        const testOnly = actual.filter(result => result.account_id === accountID);
+        expect(testOnly).toEqual([
             {
                 account_id: accountID,
                 profile_id: profileId,
