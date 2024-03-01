@@ -20,7 +20,11 @@ interface GoalItemProps {
 
 export default function GoalItem({ id, goal }: GoalItemProps) {
   const { getCollapseProps, getToggleProps, isExpanded } = useCollapse();
-  const { getCollapseProps: getFeedbackCollapsable, getToggleProps: getFeedbackToggle, isExpanded: isFeedbackExpanded } = useCollapse();
+  const {
+    getCollapseProps: getFeedbackCollapsable,
+    getToggleProps: getFeedbackToggle,
+    isExpanded: isFeedbackExpanded,
+  } = useCollapse();
   const queryClient = useQueryClient();
   const [progress, setProgress] = useState(0);
   const [isComplete, setIsComplete] = useState(goal.is_complete);
@@ -92,8 +96,8 @@ export default function GoalItem({ id, goal }: GoalItemProps) {
             )}
           </div>
           <div className="flex flex-col transition-transform w-[15%] h-full justify-center p-3 items-center">
-            {/* Color not yet implemented due to bug */}
-            <p className={`text-black`}>{goal.tag_name}</p>
+          
+            <p className={`text-[${goal.color}]`}>{goal.tag_name}</p>
           </div>
           <div className="flex flex-col transition-transform w-[15%] h-full justify-center p-3 items-center">
             <button {...getFeedbackToggle()} className="text-black">
@@ -109,8 +113,7 @@ export default function GoalItem({ id, goal }: GoalItemProps) {
               <Checkbox
                 checked={isComplete}
                 onChange={(checked) => handleToggle(checked.target.checked)}
-                />
-                
+              />
             )}
           </div>
           <GoalEditor
@@ -122,10 +125,10 @@ export default function GoalItem({ id, goal }: GoalItemProps) {
           />
         </div>
         <FeedbackCollapsable
-              getCollapsableProps={getFeedbackCollapsable}
-              feedback={goal.feedback}
-              id={goal.goal_id}
-            />
+          getCollapsableProps={getFeedbackCollapsable}
+          feedback={goal.feedback}
+          id={goal.goal_id}
+        />
         {goal.sub_goals?.map((subGoal: Goal) => (
           <SubGoalsCollapsable
             key={subGoal.goal_id}
