@@ -1,13 +1,11 @@
 import React, { useState } from "react";
 import Modal from "@mui/material/Modal";
 import { useUser } from "../../../hooks/useUser";
-import { ApiClient } from "../../../hooks/ApiClient";
 import { useHotKeys } from "../../../hooks/useHotKeys";
 import { ModuleCreatorProps } from "../../../types";
-import { useQueryClient } from "@tanstack/react-query";
+import { useModuleCreator } from "../hooks/useModules";
 
 function CreationModal({
-  addModule,
   modalTitle,
   open,
   closeModal,
@@ -16,26 +14,8 @@ function CreationModal({
   const [description, setDescription] = useState("");
   const submitDisabled = moduleName === "" || description === "";
   const { user } = useUser();
-  const { post } = ApiClient();
+  const { mutateAsync: createModule } = useModuleCreator(); 
   const { handleEnterPress } = useHotKeys();
-  const queryClient = useQueryClient();
-
-  async function handleModuleCreation() {
-    try {
-      const response = await post("/module/add", {
-        name: moduleName,
-        description,
-        completion_percent: 0,
-        account_id: user.id,
-      });
-      console.log(response.module_id);
-      queryClient.invalidateQueries({ queryKey: ["modules"] });
-      closeModal();
-    } catch (error: any) {
-      console.error(error);
-      alert(error.response ? error.response.data : error);
-    }
-  }
 
   return (
     <Modal
@@ -58,10 +38,9 @@ function CreationModal({
               setModuleName(event.target.value);
             }}
             onKeyUp={(event) => {
-              if (submitDisabled) {
-                return;
-              }
-              handleEnterPress(event, handleModuleCreation);
+              handleEnterPress(event, async () => {
+                await createModule({module_name: moduleName, description, account_id: user.id})
+              }, submitDisabled);
             }}
             required
           />
@@ -78,12 +57,16 @@ function CreationModal({
               if (submitDisabled) {
                 return;
               }
-              handleEnterPress(event, handleModuleCreation);
+              handleEnterPress(event, async () => {
+                await createModule({module_name: moduleName, description, account_id: user.id})
+              }, submitDisabled);
             }}
             required
           />
           <button
-            onClick={handleModuleCreation}
+            onClick={async () => {
+              await createModule({module_name: moduleName, description, account_id: user.id})
+            }}
             disabled={submitDisabled}
             className="w-6/12 h-10 border-1 border-solid border-gray-300 rounded px-2 text-base bg-element-base text-text-color hover:bg-[#820000] hover:cursor-pointer disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-element-base"
           >

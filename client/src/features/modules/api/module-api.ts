@@ -1,33 +1,45 @@
 import { ApiClient } from "../../../hooks/ApiClient";
-import { useUser } from "../../../hooks/useUser";
+import { AxiosError } from "axios";
+import { CreateModuleProps, Module } from "../../../types";
 
 export const ModuleApi = () => {
-  const { user } = useUser();
-  const { get, post } = ApiClient();
+  const { get, post, put } = ApiClient();
 
-  async function fetchModules() {
+  async function fetchModules(userId: number) {
     try {
-      const data = await get(`/module/get/${user.id}`);
-      return data;
-    } catch (error: any) {
+      return await get(`/module/get/${userId}`);
+    } catch (error: unknown) {
       console.error(error);
-      alert(error.message ? error.message : error);
+      alert((error as AxiosError).message ? (error as AxiosError).message : error);
     }
   }
 
-  async function createModule({ module_name, description }: any) {
+  async function createModule({ module_name, description, account_id }: CreateModuleProps) {
     try {
-      const response = await post("/module/add", {
-        module_name: module_name,
+      return await post("/module/add", {
+        name: module_name,
         description,
-        completion_percent: 10,
-        account_id: user.id,
+        completionPercent: 0,
+        accountId: account_id,
       });
-      return response;
-    } catch (error: any) {
-      console.log(module_name, description);
+    } catch (error: unknown) {
       console.error(error);
+      alert((error as AxiosError).message ? (error as AxiosError).message : error);
     }
   }
-  return { fetchModules, createModule };
+
+  async function updateModule(module: Module) {
+    try {
+      return await put(`/module/edit/${module.id}`, {
+        name: module.name,
+        description: module.description,
+        completion: module.completion 
+      });
+    } catch (error: unknown) {
+      console.error(error);
+      alert((error as AxiosError).message ? (error as AxiosError).message : error);
+    }
+  }
+
+  return { fetchModules, createModule, updateModule };
 };

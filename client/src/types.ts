@@ -4,10 +4,10 @@ export enum GoalType {
 }
 
 export interface Module {
-  module_id: number,
-  module_name: string,
+  id: number,
+  name: string,
   description: string,
-  completion_percent: number,
+  completion: number,
 }
 
 export interface Goal {
@@ -46,7 +46,6 @@ export type Settings = {
 }
 
 export interface ModuleCreatorProps {
-  addModule: ({ module_id, module_name, description, completion_percent }: Module) => void,
   closeModal: () => void,
   modalTitle: string;
   open: boolean;
@@ -54,12 +53,12 @@ export interface ModuleCreatorProps {
 }
 
 export interface LongMenuProps {
-  editObject: (module: Module) => void,
-  dataName: string,
-  dataDescription: string,
   id: number,
+  moduleName: string,
+  moduleDescription: string,
   moduleCompletion: number,
-  deleteObject: (id: number) => void
+  editFunction: (module: Module) => void,
+  deleteFunction: (id: number) => void
 }
 
 export interface GoalStepperProps {
@@ -93,6 +92,12 @@ export interface CreateProfileProps {
   username : string, 
   firstName : string, 
   lastName : string, 
+  account_id: number
+}
+
+export interface CreateModuleProps {
+  module_name: string,
+  description: string,
   account_id: number
 }
 

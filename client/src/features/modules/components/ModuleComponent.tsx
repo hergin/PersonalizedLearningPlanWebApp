@@ -1,11 +1,14 @@
 import React, { useState } from "react";
 import CreationModal from "./CreationModal";
 import ModuleItem from "./ModuleItem";
-import { useModules } from "../hooks/useModules";
+import { useModules, useModuleUpdater } from "../hooks/useModules";
+import { useUser } from "../../../hooks/useUser";
+import { Module } from "../../../types";
 
 const ModuleComponent = () => {
-  const { data: modules, isLoading, isError } = useModules();
-  console.log(modules);
+  const { user } = useUser();
+  const { data: modules, isLoading, isError } = useModules(user.id);
+  const { mutateAsync: updateModule } = useModuleUpdater();
   const [open, setOpen] = useState(false);
 
   function openModal() {
@@ -29,8 +32,8 @@ const ModuleComponent = () => {
       {modules?.map((module: any) => (
         <ModuleItem
           key={module.module_id}
-          module={module}
-          editModule={() => console.log("edit")}
+          module={{...module, id: module.module_id, name: module.module_name, completion: module.completion_percent}}
+          editModule={async (module: Module) => {await updateModule(module)}}
           deleteModule={() => console.log("delete")}
         />
       ))}
@@ -42,7 +45,6 @@ const ModuleComponent = () => {
           <h1>+</h1>
         </button>
         <CreationModal
-          addModule={() => console.log("add")}
           modalTitle="Create a new module"
           open={open}
           closeModal={closeModal}

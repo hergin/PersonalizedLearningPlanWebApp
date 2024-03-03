@@ -23,5 +23,5 @@ export function useSettingsMutation(accountId: number) {
     onSuccess: () => {
       queryClient.invalidateQueries({queryKey: ["settings"]})
     }
-  })
+  });
 }

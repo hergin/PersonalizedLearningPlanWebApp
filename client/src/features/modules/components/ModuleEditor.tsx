@@ -11,34 +11,33 @@ import {
   DialogTitle,
   TextField,
 } from "@mui/material";
-import { useUser } from "../../../hooks/useUser";
 import { ApiClient } from "../../../hooks/ApiClient";
 import { useHotKeys } from "../../../hooks/useHotKeys";
 import { LongMenuProps } from "../../../types";
 import { useQueryClient } from "@tanstack/react-query";
 
 const ModuleEditorButton = ({
-  editObject,
-  dataName,
-  dataDescription,
-  id,
+  id: module_id,
+  moduleName,
+  moduleDescription,
   moduleCompletion,
-  deleteObject,
+  editFunction,
+  deleteFunction
 }: LongMenuProps) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const queryClient = useQueryClient();
 
   const open = Boolean(anchorEl);
-  const [dataNameLocal, setDataNameLocal] = useState(dataName);
-  const [dataDescriptionLocal, setDataDescriptionLocal] =
-    useState(dataDescription);
+  const [newModuleName, seNewModuleName] = useState(moduleName);
+  const [newDescription, setNewDescription] =
+    useState(moduleDescription);
   const [openModal, setOpenModal] = useState(false);
   const handleClick = (event: any) => {
     setAnchorEl(event.currentTarget);
   };
   const handleOpenModal = () => {
-    setDataNameLocal(dataName);
-    setDataDescriptionLocal(dataDescription);
+    seNewModuleName(moduleName);
+    setNewDescription(moduleDescription);
     setOpenModal(true);
     setAnchorEl(null); // Close the menu when the modal opens
   };
@@ -48,29 +47,22 @@ const ModuleEditorButton = ({
   const handleCloseModal = () => {
     setOpenModal(false);
   };
-  const { user } = useUser();
-  const { put, del } = ApiClient();
+  const { del } = ApiClient();
   const { handleEnterPress } = useHotKeys();
 
   async function handleModuleEdit() {
-    try {
-      await put(`/module/edit/${id}`, {
-        name: dataNameLocal,
-        description: dataDescriptionLocal,
-        completion: moduleCompletion,
-        account_id: user.id,
-      });
-      queryClient.invalidateQueries({ queryKey: ["modules"] });
-      handleCloseModal();
-    } catch (error: any) {
-      console.error(error);
-      alert(error.response ? error.response.data : error);
-    }
+    await editFunction({
+      id: module_id,
+      name: newModuleName,
+      description: newDescription,
+      completion: moduleCompletion,
+    });
+    handleCloseModal();
   }
 
   async function handleModuleDelete() {
     try {
-      const result = await del(`/module/delete/${id}`);
+      const result = await del(`/module/delete/${module_id}`);
       console.log(result);
       queryClient.invalidateQueries({ queryKey: ["modules"] });
       handleClose();
@@ -113,8 +105,8 @@ const ModuleEditorButton = ({
         <DialogTitle>Edit Object</DialogTitle>
         <DialogContent>
           <TextField
-            value={dataNameLocal}
-            onChange={(e) => setDataNameLocal(e.target.value)}
+            value={newModuleName}
+            onChange={(e) => seNewModuleName(e.target.value)}
             onKeyDown={(event) => {
               handleEnterPress(event, handleModuleEdit);
             }}
@@ -122,8 +114,8 @@ const ModuleEditorButton = ({
             margin="normal"
           />
           <TextField
-            value={dataDescriptionLocal}
-            onChange={(e) => setDataDescriptionLocal(e.target.value)}
+            value={newDescription}
+            onChange={(e) => setNewDescription(e.target.value)}
             onKeyDown={(event) => {
               handleEnterPress(event, handleModuleEdit);
             }}
