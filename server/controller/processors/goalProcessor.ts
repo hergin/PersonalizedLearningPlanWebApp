@@ -21,11 +21,11 @@ async function postGoal(req: Request, res: Response) {
     const goalQuery = await goalAPI.createGoal({
         name: req.body.name,
         description: req.body.description,
-        goalType: req.body.goalType,
-        isComplete: req.body.isComplete,
-        moduleId: req.body.moduleId,
-        tagId: req.body.tagId,
-        dueDate: req.body.dueDate
+        goal_type: req.body.goalType,
+        is_complete: req.body.isComplete,
+        module_id: req.body.moduleId,
+        tag_id: req.body.tagId,
+        due_date: req.body.dueDate
     });
     if (typeof goalQuery !== "object") {
         console.log("Something went wrong while creating module.");
@@ -41,11 +41,11 @@ async function putGoal(req: Request, res: Response) {
             id: Number(req.params.id),
             name: req.body.name, 
             description: req.body.description,
-            goalType: req.body.goalType, 
-            isComplete: req.body.isComplete,
-            dueDate: req.body.dueDate,
-            tagId: req.body.tagId, 
-            completionTime: req.body.completionTime, 
+            goal_type: req.body.goalType, 
+            is_complete: req.body.isComplete,
+            due_date: req.body.dueDate,
+            tag_id: req.body.tagId, 
+            completion_time: req.body.completionTime, 
             expiration: req.body.expiration
     });
     if (resultingStatusCode !== StatusCode.OK) {
@@ -91,11 +91,11 @@ async function postSubGoal(req: Request, res: Response) {
     const goalQuery = await goalAPI.addSubGoal(Number(req.params.id), {
         name: req.body.name,
         description: req.body.description,
-        goalType: req.body.goalType,
-        isComplete: req.body.isComplete,
-        moduleId: req.body.moduleId,
-        tagId: req.body.tagId,
-        dueDate: req.body.dueDate
+        goal_type: req.body.goalType,
+        is_complete: req.body.isComplete,
+        module_id: req.body.moduleId,
+        tag_id: req.body.tagId,
+        due_date: req.body.dueDate
     });
     if (typeof goalQuery !== "object") {
       res.status(goalQuery).send(ERROR_MESSAGES.get(goalQuery));

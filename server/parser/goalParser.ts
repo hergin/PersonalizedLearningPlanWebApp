@@ -1,5 +1,5 @@
 import DatabaseParser from "./databaseParser";
-import { Goal } from "../types";
+import { Goal, Query } from "../types";
 
 export default class GoalParser extends DatabaseParser {
     constructor() {
@@ -18,8 +18,8 @@ export default class GoalParser extends DatabaseParser {
     async parseSubGoals(goalID: number) {
         console.log("Getting sub goals...");
         const query = {
-            text: `SELECT * FROM goal_with_tag WHERE parent_goal = ${goalID}`,
-            values: []
+            text: "SELECT * FROM goal_with_tag WHERE parent_goal = $1",
+            values: [goalID]
         };
         const result = await this.parseDatabase(query);
         console.log(`Parsed in sub goals: ${JSON.stringify(result)}`);
@@ -28,28 +28,40 @@ export default class GoalParser extends DatabaseParser {
 
     async storeGoal(goal: Goal) {
         console.log("Storing Goal...");
-        const query = {
-            text: `INSERT INTO GOAL(name, description, goal_type, is_complete, module_id, tag_id${goal.dueDate ? ", due_date" : ""}) VALUES($1, $2, $3, $4, $5, $6${goal.dueDate ? ", $7" : ""})`,
-            values: goal.dueDate ?
-                [goal.name, goal.description, goal.goalType, goal.isComplete, goal.moduleId, goal.tagId, goal.dueDate] :
-                [goal.name, goal.description, goal.goalType, goal.isComplete, goal.moduleId, goal.tagId]
-        };
+        const query = this.#generateInsertQuery(goal);
         await this.updateDatabase(query);
         console.log("Goal Stored! Now returning id...");
         const idQuery = {
             text: "SELECT goal_id FROM GOAL WHERE name = $1 AND description = $2 AND module_id = $3",
-            values: [goal.name, goal.description, goal.moduleId]
+            values: [goal.name, goal.description, goal.module_id]
         }
         return this.parseDatabase(idQuery);
+    }
+    
+    #generateInsertQuery(goal: Goal): Query {
+        var beginningText = "INSERT INTO GOAL(";
+        var endingText = "VALUES (";
+        var values : (string | number | boolean | Date | undefined)[] = [];
+        Object.entries(goal).forEach((goalElement) => {
+            const [variable, value] = goalElement;
+            if(value === undefined || Array.isArray(value) || value === "") return;
+            beginningText = beginningText.concat(`${variable}, `);
+            values.push(value);
+            endingText = endingText.concat(`$${values.length}, `);
+        });
+        beginningText = beginningText.slice(0, beginningText.length - 2).concat(") ");
+        endingText = endingText.slice(0, endingText.length - 2).concat(") ");
+        const finalText = beginningText.concat(endingText);
+        console.log(`Final Query: ${finalText}`);
+        return {
+            text: finalText,
+            values: values
+        }
     }
 
     async updateGoal(goal: Goal) {
         console.log("Inserting updated data into Goal...");
-        const query = {
-            text: `UPDATE GOAL SET name = $1, description = $2, goal_type = $3, is_complete = $4, tag_id = $5${goal.dueDate ? `, due_date = $7` : ""} WHERE goal_id = $6`,
-            values: goal.dueDate ? [goal.name, goal.description, goal.goalType, goal.isComplete, goal.tagId, goal.id, goal.dueDate] : 
-            [goal.name, goal.description, goal.goalType, goal.isComplete, goal.tagId, goal.id]
-        };
+        const query = this.#generateInsertQuery(goal);
         console.log(JSON.stringify(query));
         await this.updateDatabase(query);
         console.log("Goal data updated!");
@@ -101,11 +113,11 @@ export default class GoalParser extends DatabaseParser {
 
     async storeSubGoal(parentGoalID: number, goal: Goal) {
         console.log("Storing sub goal...");
-        const text = `INSERT INTO goal(name, description, goal_type, is_complete, module_id, tag_id, parent_goal${goal.dueDate ? ", due_date" : ""}) VALUES ($1, $2, $3, $4, $5, $6, $7${goal.dueDate ? `, $8` : ""})`;
+        const text = `INSERT INTO goal(name, description, goal_type, is_complete, module_id, tag_id, parent_goal${goal.due_date ? ", due_date" : ""}) VALUES ($1, $2, $3, $4, $5, $6, $7${goal.due_date ? `, $8` : ""})`;
         const query = {
             text: text,
-            values: goal.dueDate ? [goal.name, goal.description, goal.goalType, goal.isComplete, goal.moduleId, goal.tagId, parentGoalID, goal.dueDate] :
-                [goal.name, goal.description, goal.goalType, goal.isComplete, goal.moduleId, goal.tagId, parentGoalID]
+            values: goal.due_date ? [goal.name, goal.description, goal.goal_type, goal.is_complete, goal.module_id, goal.tag_id, parentGoalID, goal.due_date] :
+                [goal.name, goal.description, goal.goal_type, goal.is_complete, goal.module_id, goal.tag_id, parentGoalID]
         };
         console.log(JSON.stringify(query));
         await this.updateDatabase(query);
