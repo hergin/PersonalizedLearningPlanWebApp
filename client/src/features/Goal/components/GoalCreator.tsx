@@ -3,28 +3,40 @@ import Modal from "@mui/material/Modal";
 import { ApiClient } from "../../../hooks/ApiClient";
 import { useHotKeys } from "../../../hooks/useHotKeys";
 import { DatePicker } from "@mui/x-date-pickers";
-import { Checkbox } from "@mui/material";
+import { Checkbox, InputLabel, MenuItem, Select } from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { useQueryClient } from "@tanstack/react-query";
 import { GoalType } from "../../../types";
+import DropDownMenu from "../../../components/dropDown/DropDownMenu";
+import TagCreator from "../../tags/components/TagCreator";
+import useTags from "../../tags/hooks/useTags";
+import { useUser } from "../../../hooks/useUser";
 
 interface GoalCreatorProps {
   moduleID: string;
-  height?: string;
   goalID?: string;
 }
 
-function GoalCreator({ moduleID, goalID, height }: GoalCreatorProps) {
+function GoalCreator({ moduleID, goalID }: GoalCreatorProps) {
+  const [tag, setTag] = useState("");
   const [goalName, setGoalName] = useState("");
   const [description, setDescription] = useState("");
   const [goalType, setGoalType] = useState(GoalType.TASK);
   const queryClient = useQueryClient();
+  const user = useUser();
+  const { data: tags } = useTags(user.user.id);
+  console.log(tags);
   const [dueDate, setDueDate] = useState<Date | null>(null);
   const [open, setOpen] = useState(false);
   const submitDisabled = goalName === "" || description === "";
   const { post } = ApiClient();
   const { handleEnterPress } = useHotKeys();
+
+  const handleChange = (event: any) => {
+    setTag(event.target.value);
+    console.log(event.target.value);
+  };
 
   async function handleGoalCreation() {
     try {
@@ -36,6 +48,7 @@ function GoalCreator({ moduleID, goalID, height }: GoalCreatorProps) {
         moduleId: moduleID,
         dueDate: dueDate,
         parentGoal: goalID,
+        tagId: tag,
       });
       queryClient.invalidateQueries({ queryKey: ["goals"] });
       console.log("Goal creation is not implemented yet.");
@@ -100,12 +113,31 @@ function GoalCreator({ moduleID, goalID, height }: GoalCreatorProps) {
                 }}
                 required
               />
-              <div className="w-full flex justify-between items-center px-20 ">
+              {/* <DropDownMenu absolutePosition={""} /> */}
+              <div className="w-full flex justify-between items-center px-20 gap-4 ">
                 <div className="flex flex-row justify-center items-center">
                   <p className="font-headlineFont text-xl">Daily</p>
                   <Checkbox
                     onChange={(event) => changeType(event.target.checked)}
                   />
+                </div>
+                <div className="flex flex-row items-center gap-2">
+                  <InputLabel id="simple-select-label">Tag</InputLabel>
+                  <Select
+                    value={tag}
+                    onChange={handleChange}
+                    sx={{
+                      color: "black",
+                      width: 250,
+                      height: 50,
+                    }}
+                  >
+                    {tags?.map((tag: any) => (
+                      <MenuItem key={tag.id} value={tag.id}>
+                        {tag.name}
+                      </MenuItem>
+                    ))}
+                  </Select>
                 </div>
                 <DatePicker
                   label="Due Date"
@@ -113,6 +145,7 @@ function GoalCreator({ moduleID, goalID, height }: GoalCreatorProps) {
                   onChange={(newDueDate) => setDueDate(newDueDate)}
                 />
               </div>
+
               <button
                 onClick={handleGoalCreation}
                 disabled={submitDisabled}

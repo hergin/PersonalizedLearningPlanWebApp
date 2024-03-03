@@ -1,11 +1,15 @@
 import { AxiosError } from "axios";
 import { ApiClient } from "../hooks/ApiClient";
-import { useUser } from "../hooks/useUser";
+import { emptyUser } from "../types";
 
 export const SettingsApi = (accountId: number) => {
   const { get } = ApiClient();
   
   async function FetchSettings() {
+    if(accountId === emptyUser.id) {
+      return;
+    }
+
     try {
       const data = await get(`/settings/get/${accountId}`);
       return data;

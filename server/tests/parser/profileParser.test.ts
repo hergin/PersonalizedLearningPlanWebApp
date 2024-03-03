@@ -76,7 +76,7 @@ describe('profile parser tests', () => {
     });
     
     it('parse profile', async () => {
-        createTestProfile();
+        await createTestProfile();
         var actual = await parser.parseProfile(accountID);
         expect(actual).toEqual({
                 profile_id: expect.any(Number),
@@ -91,7 +91,7 @@ describe('profile parser tests', () => {
     });
 
     it('update profile', async () => {
-        createTestProfile();
+        await createTestProfile();
         const profileID = await getProfileID();
         await parser.updateProfile({
             id: profileID, 
@@ -120,8 +120,17 @@ describe('profile parser tests', () => {
         ]);
     });
 
+    async function getProfileID() {
+        const query = {
+            text: "SELECT profile_id FROM PROFILE WHERE account_id = $1",
+            values: [accountID]
+        };
+        const result = await client.query(query);
+        return result.rows[0].profile_id;
+    }
+
     it('delete profile', async () => {
-        createTestProfile();
+        await createTestProfile();
         const profileID = await getProfileID();
         await parser.deleteProfile(profileID);
         const actual = await client.query(
@@ -131,12 +140,15 @@ describe('profile parser tests', () => {
         expect(actual.rows).toEqual([]);
     });
 
-    async function getProfileID() {
-        const query = {
-            text: "SELECT profile_id FROM PROFILE WHERE account_id = $1",
-            values: [accountID]
-        };
-        const result = await client.query(query);
-        return result.rows[0].profile_id;
-    }
+    it('parse user data', async() => {
+        await createTestProfile();
+        const result = await parser.parseUserData(accountID);
+        expect(result).toEqual([
+            {
+                id: accountID,
+                email: TEST_DATA.email,
+                username: TEST_DATA.username
+            }
+        ]);
+    });
 });

@@ -9,8 +9,9 @@ import { ApiClient } from "../../../hooks/ApiClient";
 import { useQueryClient } from "@tanstack/react-query";
 import SubGoalCreator from "./SubGoalCreator";
 import GoalDescriptionModal from "./GoalDescriptionModal";
-import FeedbackCollapsable from "./FeedbackCollapsable";
 import { AxiosError } from "axios";
+import useTags from "../../tags/hooks/useTags";
+import FeedbackCollapsable from "./FeedbackCollapsable";
 
 interface GoalItemProps {
   id: string;
@@ -19,14 +20,18 @@ interface GoalItemProps {
 
 export default function GoalItem({ id, goal }: GoalItemProps) {
   const { getCollapseProps, getToggleProps, isExpanded } = useCollapse();
-  const { getCollapseProps: getFeedbackCollapsable, getToggleProps: getFeedbackToggle, isExpanded: isFeedbackExpanded } = useCollapse();
+  const {
+    getCollapseProps: getFeedbackCollapsable,
+    getToggleProps: getFeedbackToggle,
+    isExpanded: isFeedbackExpanded,
+  } = useCollapse();
   const queryClient = useQueryClient();
   const [progress, setProgress] = useState(0);
   const [isComplete, setIsComplete] = useState(goal.is_complete);
   const [openDescription, setOpenDescription] = useState(false);
   console.log(isComplete + " isComplete");
   console.log(id + "id");
-  console.log(goal.sub_goals?.length);
+  console.log(goal);
   const { put } = ApiClient();
 
   function handleToggle(checked: boolean) {
@@ -91,7 +96,8 @@ export default function GoalItem({ id, goal }: GoalItemProps) {
             )}
           </div>
           <div className="flex flex-col transition-transform w-[15%] h-full justify-center p-3 items-center">
-            <p className="text-black"></p>
+          
+            <p className={`text-[${goal.color}]`}>{goal.tag_name}</p>
           </div>
           <div className="flex flex-col transition-transform w-[15%] h-full justify-center p-3 items-center">
             <button {...getFeedbackToggle()} className="text-black">
@@ -119,10 +125,10 @@ export default function GoalItem({ id, goal }: GoalItemProps) {
           />
         </div>
         <FeedbackCollapsable
-              getCollapsableProps={getFeedbackCollapsable}
-              feedback={goal.feedback}
-              id={goal.goal_id}
-            />
+          getCollapsableProps={getFeedbackCollapsable}
+          feedback={goal.feedback}
+          id={goal.goal_id}
+        />
         {goal.sub_goals?.map((subGoal: Goal) => (
           <SubGoalsCollapsable
             key={subGoal.goal_id}

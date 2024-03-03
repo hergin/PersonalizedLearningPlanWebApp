@@ -10,6 +10,7 @@ import ProfileScreen from "./features/profile/components/Profile";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { AuthProvider } from "./context/AuthContext";
 import GoalParentContainer from "./features/Goal/components/GoalMain";
+import CoachingPage from "./features/coaching/components/CoachingPage";
 
 
 const queryClient = new QueryClient();
@@ -22,9 +23,11 @@ function App() {
           <Routes>
             <Route path="/" element={<DefaultScreen />}>
               <Route element={<ProtectedRoute />}>
+                <Route path="/" element={<LearningPlan />} />
                 <Route path="/LearningPlan" element={<LearningPlan />} />
                 <Route path="/profile" element={<ProfileScreen />} />
                 <Route path="/goals/:id" element={<GoalParentContainer />} />
+                <Route path="/coaching" element={<CoachingPage />} />
               </Route>
               <Route path="/login" element={<LoginScreen />} />
               <Route path="/register" element={<Register />} />

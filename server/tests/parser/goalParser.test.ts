@@ -17,8 +17,9 @@ const TEST_DATA = {
     pastDueDate: "1990-01-23T14:19:19.000Z",
     completionTime: `2024-01-23T14:19:19.000Z`,
     distantFutureDate: `2030-01-23T14:15:00.000Z`,
-    feedback: "Good job!",
-    tagName: ["School"]
+    feedback: ["Good job!", "This is feedback!"],
+    tagName: ["School"],
+    color: ["#0000FF"],
 }
 
 interface ExpectedParentGoalResultProps {
@@ -77,7 +78,7 @@ describe('goal parser tests', () => {
         createTestProfile(TEST_DATA.usernames[0], TEST_DATA.firstNames[0], TEST_DATA.lastNames[0], accountId);
         createTestModule(accountId);
         moduleId = await getModuleID(accountId);
-        createTestTag(accountId, TEST_DATA.tagName[0]);
+        createTestTag(accountId, TEST_DATA.tagName[0], TEST_DATA.color[0]);
         tagId = await getTagID(accountId, TEST_DATA.tagName[0]);
     });
 
@@ -125,16 +126,16 @@ describe('goal parser tests', () => {
         return moduleIDQuery.rows[0].module_id;
     }
 
-    async function createTestTag(id: number, name: string) {
+    async function createTestTag(id: number, name: string, color: string) {
         await client.query({
-            text: "INSERT INTO TAG(name, account_id) VALUES($1, $2)",
-            values: [name, id]
+            text: "INSERT INTO TAG(tag_name, color, account_id) VALUES($1, $2, $3)",
+            values: [name, color, id]
         });
     }
 
     async function getTagID(accountId: number, name: string): Promise<number> {
         const tagIdQuery = await client.query({
-            text: "SELECT id FROM TAG WHERE name = $1 AND account_id = $2",
+            text: "SELECT tag_id AS id FROM TAG WHERE tag_name = $1 AND account_id = $2",
             values: [name, accountId]
         });
         return tagIdQuery.rows[0].id;
@@ -210,7 +211,15 @@ describe('goal parser tests', () => {
         });
         const result = await parser.parseParentGoals(moduleId);
         console.log(`Parsed from goals: ${JSON.stringify(result)}`);
-        expect(result).toEqual(getExpectedParentGoal({goalId: id, goalType: GoalType.TASK, dueDateExists: true}));
+        const defaultExpected = getExpectedParentGoal({goalId: id, goalType: GoalType.TASK, dueDateExists: true})[0];
+        expect(result).toEqual([
+            {
+                ...defaultExpected,
+                tag_name: TEST_DATA.tagName[0],
+                color: TEST_DATA.color[0],
+                account_id: accountId,
+            }
+        ]);
     });
 
     async function createTestGoal(goal: Goal): Promise<number> {
@@ -338,18 +347,21 @@ describe('goal parser tests', () => {
     });
 
     it('update goal feedback', async () => {
-        await client.query(
-            "INSERT INTO GOAL(name, description, goal_type, is_complete, module_id) VALUES ($1, $2, $3, $4, $5)",
-            [TEST_DATA.goalNames[0], TEST_DATA.goalDescriptions[0], GoalType.TASK, TEST_DATA.isComplete, moduleID]
-        );
-        var goalID = await getGoalID();
-        await parser.updateGoalFeedback(goalID, "this is feedback!");
+        const goalID = await createTestGoal({
+            name: TEST_DATA.goalNames[0], 
+            description: TEST_DATA.goalDescriptions[0],
+            goalType: GoalType.REPEATABLE,
+            isComplete: TEST_DATA.isComplete,
+            moduleId: moduleId,
+            tagId: tagId
+        });
+        await parser.updateGoalFeedback(goalID, TEST_DATA.feedback[1]);
         var actual = await client.query(selectQuery(goalID, QUERY_VARIABLES.goal));
-        var defaultExpected = getExpectedParentGoal({goalId: goalID, goalType: GoalType.TASK})[0];
+        var defaultExpected = getExpectedParentGoal({goalId: goalID, goalType: GoalType.REPEATABLE})[0];
         expect(actual.rows).toEqual([
             {
                 ...defaultExpected,
-                feedback: "this is feedback!"
+                feedback: TEST_DATA.feedback[1]
             }
         ]);
     });
@@ -426,7 +438,19 @@ describe('goal parser tests', () => {
         });
         createTestSubGoals(goalID);
         const result = await parser.parseSubGoals(goalID);
-        expect(result).toEqual(getExceptedSubGoals({goalType: GoalType.REPEATABLE, parentGoalId: goalID}));
+        const defaultExpected = getExceptedSubGoals({goalType: GoalType.REPEATABLE, parentGoalId: goalID});
+        expect(result).toContainEqual({
+            ...defaultExpected[0],
+            tag_name: TEST_DATA.tagName[0],
+            color: TEST_DATA.color[0],
+            account_id: accountId
+        });
+        expect(result).toContainEqual({
+            ...defaultExpected[1],
+            tag_name: TEST_DATA.tagName[0],
+            color: TEST_DATA.color[0],
+            account_id: accountId
+        });
     });
 
     it('parse accounts with upcoming due dates (null due date case)', async () => {
