@@ -89,6 +89,13 @@ export interface GoalCreatorProps {
   addGoal: (goal: Goal) => void;
 }
 
+export interface CreateProfileProps {
+  username : string, 
+  firstName : string, 
+  lastName : string, 
+  account_id: number
+}
+
 export const emptyUser: User = { id: -1, accessToken: "", refreshToken: "" };
 export const emptyProfile : Profile = { id: -1, username: "", firstName: "", lastName: "", profilePicture: "", jobTitle: "", bio: ""};
 export const defaultSettings = {receiveEmails: true, allowCoachInvitations: true};

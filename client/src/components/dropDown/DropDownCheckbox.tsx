@@ -17,7 +17,7 @@ export default function DropDownCheckbox(props: DropDownCheckboxProps) {
                 checked={props.checked}
                 onChange={(event) => props.handleCheckToggle(event.target.checked)}
             />
-            <p>{props.children}</p>
+            <p className={"truncate"}>{props.children}</p>
             {props.rightIcon && <span className="icon-button">{props.rightIcon}</span>}
         </div>
     );
