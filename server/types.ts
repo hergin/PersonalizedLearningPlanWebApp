@@ -58,6 +58,7 @@ export type Module = {
 export type AccountSettings = {
     id?: number,
     receiveEmails: boolean,
+    allowCoachInvitations: boolean,
     accountId?: number
 }
 

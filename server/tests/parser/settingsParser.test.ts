@@ -72,7 +72,7 @@ describe('Settings Parser Unit Tests', () => {
     it('update account settings (normal case)', async () => {
         const id = await getAccountSettingsID();
         console.log(`Expected ID: ${id}`);
-        await parser.updateAccountSettings(accountId, {receiveEmails: !TEST_DATA.receive_emails});
+        await parser.updateAccountSettings(accountId, {receiveEmails: !TEST_DATA.receive_emails, allowCoachInvitations: TEST_DATA.allow_coach_invitations});
         const results = await client.query({
             text: "SELECT * FROM ACCOUNT_SETTINGS WHERE account_id = $1",
             values: [accountId]
