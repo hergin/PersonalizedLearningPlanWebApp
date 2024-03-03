@@ -30,3 +30,15 @@ export function useModuleUpdater() {
     }
   });
 }
+
+export function useModuleRemover() {
+  const queryClient = useQueryClient();
+  const { deleteModule } = ModuleApi();
+
+  return useMutation({
+    mutationFn: async (id: number) => {await deleteModule(id)},
+    onSuccess: () => {
+      queryClient.invalidateQueries({queryKey: ["modules"]});
+    }
+  });
+}

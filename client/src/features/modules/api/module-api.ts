@@ -3,7 +3,7 @@ import { AxiosError } from "axios";
 import { CreateModuleProps, Module } from "../../../types";
 
 export const ModuleApi = () => {
-  const { get, post, put } = ApiClient();
+  const { get, post, put, del } = ApiClient();
 
   async function fetchModules(userId: number) {
     try {
@@ -41,5 +41,14 @@ export const ModuleApi = () => {
     }
   }
 
-  return { fetchModules, createModule, updateModule };
+  async function deleteModule(id: number) {
+    try {
+      return await del(`/module/delete/${id}`);
+    } catch (error: unknown) {
+      console.error(error);
+      alert((error as AxiosError).message ? (error as AxiosError).message : error);
+    }
+  }
+
+  return { fetchModules, createModule, updateModule, deleteModule };
 };

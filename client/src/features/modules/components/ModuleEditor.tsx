@@ -51,7 +51,7 @@ const ModuleEditorButton = ({
   const { handleEnterPress } = useHotKeys();
 
   async function handleModuleEdit() {
-    await editFunction({
+    editFunction({
       id: module_id,
       name: newModuleName,
       description: newDescription,
@@ -61,15 +61,8 @@ const ModuleEditorButton = ({
   }
 
   async function handleModuleDelete() {
-    try {
-      const result = await del(`/module/delete/${module_id}`);
-      console.log(result);
-      queryClient.invalidateQueries({ queryKey: ["modules"] });
-      handleClose();
-    } catch (error: any) {
-      console.error(error);
-      alert(error.message ? error.message : error);
-    }
+    deleteFunction(module_id);
+    handleCloseModal();
   }
 
   return (
