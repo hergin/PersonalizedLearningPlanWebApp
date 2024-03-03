@@ -6,7 +6,7 @@ import { StatusCode } from "../../../types";
 import { FAKE_ERRORS, TEST_SETTINGS } from "../global/mockValues";
 jest.mock("../../../parser/settingsParser");
 
-describe('Settings Processor Unit Tests', () => {
+describe('Settings Api Unit Tests', () => {
     var api: SettingsApi;
     var parser: any;
 
@@ -51,25 +51,25 @@ describe('Settings Processor Unit Tests', () => {
 
     it("update settings (normal resolved case)", async () => {
         parser.updateAccountSettings.mockResolvedValueOnce();
-        const result = await api.updateSettings(TEST_SETTINGS.accountId, {receiveEmails: !TEST_SETTINGS.receiveEmails});
+        const result = await api.updateSettings(TEST_SETTINGS.accountId, {receiveEmails: !TEST_SETTINGS.receiveEmails, allowCoachInvitations: TEST_SETTINGS.allowCoachInvitations});
         expect(parser.updateAccountSettings).toHaveBeenCalledTimes(1);
-        expect(parser.updateAccountSettings).toHaveBeenCalledWith(TEST_SETTINGS.accountId, {receiveEmails: !TEST_SETTINGS.receiveEmails});
+        expect(parser.updateAccountSettings).toHaveBeenCalledWith(TEST_SETTINGS.accountId, {receiveEmails: !TEST_SETTINGS.receiveEmails, allowCoachInvitations: TEST_SETTINGS.allowCoachInvitations});
         expect(result).toEqual(StatusCode.OK);
     });
 
     it("update settings (bad request case)", async () => {
         parser.updateAccountSettings.mockRejectedValue(FAKE_ERRORS.badRequest);
-        const result = await api.updateSettings(TEST_SETTINGS.accountId, {receiveEmails: !TEST_SETTINGS.receiveEmails});
+        const result = await api.updateSettings(TEST_SETTINGS.accountId, {receiveEmails: !TEST_SETTINGS.receiveEmails, allowCoachInvitations: TEST_SETTINGS.allowCoachInvitations});
         expect(parser.updateAccountSettings).toHaveBeenCalledTimes(1);
-        expect(parser.updateAccountSettings).toHaveBeenCalledWith(TEST_SETTINGS.accountId, {receiveEmails: !TEST_SETTINGS.receiveEmails});
+        expect(parser.updateAccountSettings).toHaveBeenCalledWith(TEST_SETTINGS.accountId, {receiveEmails: !TEST_SETTINGS.receiveEmails, allowCoachInvitations: TEST_SETTINGS.allowCoachInvitations});
         expect(result).toEqual(StatusCode.BAD_REQUEST);
     });
 
     it("update settings (network error case)", async () => {
         parser.updateAccountSettings.mockRejectedValue(FAKE_ERRORS.networkError);
-        const result = await api.updateSettings(TEST_SETTINGS.accountId, {receiveEmails: !TEST_SETTINGS.receiveEmails});
+        const result = await api.updateSettings(TEST_SETTINGS.accountId, {receiveEmails: !TEST_SETTINGS.receiveEmails, allowCoachInvitations: TEST_SETTINGS.allowCoachInvitations});
         expect(parser.updateAccountSettings).toHaveBeenCalledTimes(1);
-        expect(parser.updateAccountSettings).toHaveBeenCalledWith(TEST_SETTINGS.accountId, {receiveEmails: !TEST_SETTINGS.receiveEmails});
+        expect(parser.updateAccountSettings).toHaveBeenCalledWith(TEST_SETTINGS.accountId, {receiveEmails: !TEST_SETTINGS.receiveEmails, allowCoachInvitations: TEST_SETTINGS.allowCoachInvitations});
         expect(result).toEqual(StatusCode.CONNECTION_ERROR);
     });
 });

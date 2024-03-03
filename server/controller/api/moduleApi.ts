@@ -24,8 +24,7 @@ export default class ModuleAPI {
 
     async createModule(module: Module): Promise<number | StatusCode> {
         try {
-            const result = await this.parser.storeModule(module);
-            return result;
+            return await this.parser.storeModule(module);
         } catch (error: unknown) {
             return this.errorCodeInterpreter.getStatusCode(error as DatabaseError);
         }
@@ -55,8 +54,7 @@ export default class ModuleAPI {
 
     async getModuleVariable(moduleID: number, variableName: string) {
         try {
-            const result = await this.parser.getModuleVariable(moduleID, variableName);
-            return result;
+            return await this.parser.getModuleVariable(moduleID, variableName);
         } catch (error: unknown) {
             return this.errorCodeInterpreter.getStatusCode(error as DatabaseError);
         }

@@ -4,7 +4,7 @@ CREATE TABLE ACCOUNT(
     email TEXT UNIQUE NOT NULL,
     account_password TEXT NOT NULL,
     refresh_token TEXT,
-    coach_id INT UNIQUE,
+    coach_id INT,
     CONSTRAINT valid_email 
     CHECK (email ~* '^[A-Za-z0-9._%-]+@[A-Za-z0-9.-]+[.][A-Za-z]+$')
 );

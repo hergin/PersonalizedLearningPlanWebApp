@@ -38,7 +38,7 @@ async function postGoal(req: Request, res: Response) {
 async function putGoal(req: Request, res: Response) {
     console.log(`Received in update goal: ${req.params.id}`);
     const resultingStatusCode = await goalAPI.updateGoal({
-            id: Number(req.params.id),
+            goal_id: Number(req.params.id),
             name: req.body.name, 
             description: req.body.description,
             goal_type: req.body.goalType, 

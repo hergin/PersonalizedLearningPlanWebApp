@@ -6,7 +6,7 @@ import { StatusCode } from "../../../types";
 import { FAKE_ERRORS, TEST_PROFILE, TEST_ACCOUNT } from "../global/mockValues";
 jest.mock("../../../parser/profileParser");
 
-describe('profile processor', () => {
+describe('Profile Api Unit Tests', () => {
     let parser : any;
     let profileAPI : ProfileAPI;
 

@@ -36,6 +36,11 @@ export default class LoginAPI {
         }
     }
 
+    async #hashPassword(password : string) {
+        const salt = await bcrypt.genSalt(10);
+        return await bcrypt.hash(password, salt);
+    }
+
     async setToken(accountId: number, refreshToken : string) {
         try {
             await this.parser.storeToken(accountId, refreshToken);
@@ -73,8 +78,11 @@ export default class LoginAPI {
         }
     }
 
-    async #hashPassword(password : string) {
-        const salt = await bcrypt.genSalt(10);
-        return await bcrypt.hash(password, salt);
+    async getUnderstudies(accountId: number) {
+        try {
+            return await this.parser.parseUnderstudies(accountId);
+        } catch (error : unknown) {
+            return this.errorCodeInterpreter.getStatusCode(error as DatabaseError);
+        }
     }
 }

@@ -54,4 +54,13 @@ export default class LoginParser extends DatabaseParser {
         await this.updateDatabase(query);
         console.log("Account deleted!");
     }
+
+    async parseUnderstudies(accountId: number) {
+        console.log("Parsing Understudies...");
+        const query = {
+            text: "SELECT * FROM UNDERSTUDY_DATA WHERE coach_id = $1",
+            values: [accountId]
+        };
+        return this.parseDatabase(query);
+    }
 }

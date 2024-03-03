@@ -7,7 +7,7 @@ import { FAKE_ERRORS, TEST_MODULE } from "../global/mockValues";
 
 jest.mock("../../../parser/moduleParser");
 
-describe('module processor unit tests', () => {
+describe('Module Api Unit Tests', () => {
     let moduleAPI: ModuleAPI;
     let parser: any;
 

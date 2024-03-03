@@ -64,11 +64,21 @@ async function deleteAccount(req : Request, res : Response) {
     console.log(`Received in delete account: ${req.params.id}`);
     const deleteQuery = await loginAPI.delete(Number(req.params.id));
     if(deleteQuery !== StatusCode.OK) {
-        res.status(deleteQuery);
-        res.send(ERROR_MESSAGES.get(deleteQuery));
+        res.status(deleteQuery).send(ERROR_MESSAGES.get(deleteQuery));
         return;
     }
     res.sendStatus(StatusCode.OK);
 }
 
-export {verifyLogin, verifyToken, registerAccount, logoutUser, deleteAccount};
+async function getUnderstudies(req : Request, res: Response) {
+    console.log(`Received in get understudies: ${req.params.id}`);
+    const understudyQuery = await loginAPI.getUnderstudies(Number(req.params.id));
+    if(understudyQuery as StatusCode in StatusCode) {
+        console.log(`Retrieving account ${req.params.id}'s understudies failed with status code ${understudyQuery}`);
+        res.status(understudyQuery as StatusCode).send(ERROR_MESSAGES.get(understudyQuery));
+        return;
+    }
+    res.status(StatusCode.OK).json(understudyQuery);
+}
+
+export {verifyLogin, verifyToken, registerAccount, logoutUser, deleteAccount, getUnderstudies};
