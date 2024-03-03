@@ -17,6 +17,11 @@ function CreationModal({
   const { mutateAsync: createModule } = useModuleCreator(); 
   const { handleEnterPress } = useHotKeys();
 
+  async function handleCreation() {
+    await createModule({module_name: moduleName, description, account_id: user.id});
+    closeModal();
+  }
+
   return (
     <Modal
       className="absolute float-left flex items-center justify-center top-2/4 left-2/4 "
@@ -38,9 +43,7 @@ function CreationModal({
               setModuleName(event.target.value);
             }}
             onKeyUp={(event) => {
-              handleEnterPress(event, async () => {
-                await createModule({module_name: moduleName, description, account_id: user.id})
-              }, submitDisabled);
+              handleEnterPress(event, handleCreation, submitDisabled);
             }}
             required
           />
@@ -57,16 +60,12 @@ function CreationModal({
               if (submitDisabled) {
                 return;
               }
-              handleEnterPress(event, async () => {
-                await createModule({module_name: moduleName, description, account_id: user.id})
-              }, submitDisabled);
+              handleEnterPress(event, handleCreation, submitDisabled);
             }}
             required
           />
           <button
-            onClick={async () => {
-              await createModule({module_name: moduleName, description, account_id: user.id})
-            }}
+            onClick={handleCreation}
             disabled={submitDisabled}
             className="w-6/12 h-10 border-1 border-solid border-gray-300 rounded px-2 text-base bg-element-base text-text-color hover:bg-[#820000] hover:cursor-pointer disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-element-base"
           >
