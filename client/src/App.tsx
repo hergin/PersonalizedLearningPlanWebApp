@@ -13,7 +13,6 @@ import { MuiThemeProvider } from "./context/MuiThemeContext";
 import GoalParentContainer from "./features/Goal/components/GoalMain";
 import CoachingPage from "./features/coaching/components/CoachingPage";
 
-
 const queryClient = new QueryClient();
 
 function App() {
