@@ -45,11 +45,18 @@ export type Settings = {
   allowCoachInvitations: boolean
 }
 
-export interface ModuleCreatorProps {
-  closeModal: () => void,
-  modalTitle: string;
-  open: boolean;
+export type Understudy = {
+  account_id: number,
+  profile_id: number,
+  username: string,
+  coach_id: number
+}
 
+export interface ModuleCreatorProps {
+  accountId: number,
+  modalTitle: string,
+  open: boolean,
+  closeModal: () => void
 }
 
 export interface LongMenuProps {

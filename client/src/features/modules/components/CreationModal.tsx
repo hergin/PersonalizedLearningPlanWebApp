@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Modal from "@mui/material/Modal";
-import { useUser } from "../../../hooks/useUser";
+import { useUser } from "../../login/hooks/useUser";
 import { useHotKeys } from "../../../hooks/useHotKeys";
 import { ModuleCreatorProps } from "../../../types";
 import { useModuleCreator } from "../hooks/useModules";

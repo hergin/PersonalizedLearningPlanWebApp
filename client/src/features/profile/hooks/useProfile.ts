@@ -15,7 +15,7 @@ export function useAllProfiles() {
   });
 }
 
-export function useCreateProfile(accountId: number) {
+export function useProfileCreator(accountId: number) {
   const queryClient = useQueryClient();
   const { CreateProfile } = ProfileApi();
 
@@ -27,7 +27,7 @@ export function useCreateProfile(accountId: number) {
   })
 }
 
-export function useUpdateProfile(accountId: number) {
+export function useProfileUpdater(accountId: number) {
   const queryClient = useQueryClient();
   const { UpdateProfile } = ProfileApi();
 

@@ -2,15 +2,17 @@ import React, { useState } from "react";
 import CreationModal from "./CreationModal";
 import ModuleItem from "./ModuleItem";
 import { useModules, useModuleUpdater, useModuleRemover } from "../hooks/useModules";
-import { useUser } from "../../../hooks/useUser";
 import { Module } from "../../../types";
 
-const ModuleComponent = () => {
-  const { user } = useUser();
-  const { data: modules, isLoading, isError } = useModules(user.id);
+interface ModuleComponentProps {
+  accountId: number
+}
+
+const ModuleComponent = ({accountId}: ModuleComponentProps) => {
+  const { data: modules, isLoading, error } = useModules(accountId);
   const { mutateAsync: updateModule } = useModuleUpdater();
   const { mutateAsync: deleteModule } = useModuleRemover();
-  const [open, setOpen] = useState(false);
+  const [ open, setOpen ] = useState(false);
 
   function openModal() {
     setOpen(true);
@@ -21,11 +23,11 @@ const ModuleComponent = () => {
   }
   
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <div>Loading, please wait...</div>;
   }
 
-  if (isError) {
-    return <div>Error</div>;
+  if (error) {
+    return <div>An error has occurred. Please refresh the page and try again.</div>;
   }
 
   return (
@@ -46,6 +48,7 @@ const ModuleComponent = () => {
           <h1>+</h1>
         </button>
         <CreationModal
+          accountId={accountId}
           modalTitle="Create a new module"
           open={open}
           closeModal={closeModal}

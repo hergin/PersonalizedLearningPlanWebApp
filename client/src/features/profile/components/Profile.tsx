@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useReducer } from "react";
 import { useNavigate } from "react-router-dom";
-import { useUser } from "../../../hooks/useUser";
+import { useUser } from "../../login/hooks/useUser";
 import { ApiClient } from "../../../hooks/ApiClient";
 import profilePicture from "../../../assets/Default_Profile_Picture.jpg";
-import { useProfile, useUpdateProfile } from "../hooks/useProfile";
+import { useProfile, useProfileUpdater } from "../hooks/useProfile";
 import { useHotKeys } from "../../../hooks/useHotKeys";
 import { emptyProfile, Profile } from "../../../types";
 
@@ -27,7 +27,7 @@ function ProfileScreen() {
   const { user, removeUser } = useUser();
   const { del } = ApiClient();
   const { data: profileData, isLoading, error } = useProfile(user.id);
-  const { mutate: putProfile } = useUpdateProfile(user.id);
+  const { mutate: putProfile } = useProfileUpdater(user.id);
   const { handleEnterPress } = useHotKeys();
   const [ profile, setProfile ] = useState<Profile>(emptyProfile);
 

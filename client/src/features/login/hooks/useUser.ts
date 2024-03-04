@@ -1,7 +1,7 @@
 import { useEffect } from "react";
-import { useAuth } from "../context/AuthContext";
-import { useSessionStorage } from "./useSessionStorage";
-import { emptyUser, User } from "../types";
+import { useAuth } from "../../../context/AuthContext";
+import { useSessionStorage } from "../../../hooks/useSessionStorage";
+import { emptyUser, User } from "../../../types";
 
 export const useUser = () => {
     const { user, setUser } = useAuth();

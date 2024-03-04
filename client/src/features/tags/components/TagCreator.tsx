@@ -5,7 +5,7 @@ import { useHotKeys } from "../../../hooks/useHotKeys";
 import { useQueryClient } from "@tanstack/react-query";
 import { MuiColorInput } from "mui-color-input";
 import { Button } from "@mui/material";
-import { useUser } from "../../../hooks/useUser";
+import { useUser } from "../../login/hooks/useUser";
 
 function TagCreator() {
   const [tagName, setTagName] = useState("");

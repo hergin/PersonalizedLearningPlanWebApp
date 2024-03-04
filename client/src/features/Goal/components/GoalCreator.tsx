@@ -11,7 +11,7 @@ import { GoalType } from "../../../types";
 import DropDownMenu from "../../../components/dropDown/DropDownMenu";
 import TagCreator from "../../tags/components/TagCreator";
 import useTags from "../../tags/hooks/useTags";
-import { useUser } from "../../../hooks/useUser";
+import { useUser } from "../../login/hooks/useUser";
 
 interface GoalCreatorProps {
   moduleID: string;

@@ -1,6 +1,6 @@
 import React, { useState, PropsWithChildren } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useUser } from "../hooks/useUser";
+import { useUser } from "../features/login/hooks/useUser";
 import { ApiClient } from "../hooks/ApiClient";
 import { emptyUser } from "../types";
 import profilePicture from "../assets/Default_Profile_Picture.jpg";
@@ -21,7 +21,7 @@ const AccountButton = () => {
   const { post } = ApiClient();
   const navigate = useNavigate();
   const { data, isLoading, error } = useSettings(user.id);
-  const { mutate } = useSettingsMutation(user.id);
+  const { mutate: updateSettings } = useSettingsMutation(user.id);
 
   async function handleLogout() {
     try {
@@ -45,13 +45,13 @@ const AccountButton = () => {
           {!isLoading && !error && 
             <div>
               <DropDownCheckbox 
-                handleCheckToggle={(checked) => mutate({allowCoachInvitations: data[0].allow_coach_invitations, receiveEmails: checked})} 
+                handleCheckToggle={(checked) => updateSettings({allowCoachInvitations: data[0].allow_coach_invitations, receiveEmails: checked})} 
                 checked={data[0].receive_emails}
               >
                 Receives Email
               </DropDownCheckbox>
               <DropDownCheckbox 
-                handleCheckToggle={(checked) => mutate({receiveEmails: data[0].receive_emails, allowCoachInvitations: checked})} 
+                handleCheckToggle={(checked) => updateSettings({receiveEmails: data[0].receive_emails, allowCoachInvitations: checked})} 
                 checked={data[0].allow_coach_invitations}
               >
                 Allow Invites
@@ -75,14 +75,14 @@ const AccountButton = () => {
   function ProfilePicture(props: PropsWithChildren) {
     return (
       <div>  
-          <div className={`flex flex-row ${CLICKABLE_ELEMENT_STYLE} py-[5px] px-[8px] gap-[5px] items-center`} onClick={() => {setOpen(!open)}}>
-            <img
-              src={profilePicture}
-              alt="pfp here"
-              className="h-14 w-14 rounded-full"
-            />
-            {open ? <FaCaretUp className="size-5" /> : <FaCaretDown className="size-5" />}
-          </div>
+        <div className={`flex flex-row ${CLICKABLE_ELEMENT_STYLE} py-[5px] px-[8px] gap-[5px] items-center`} onClick={() => {setOpen(!open)}}>
+          <img
+            src={profilePicture}
+            alt="pfp here"
+            className="h-14 w-14 rounded-full"
+          />
+          {open ? <FaCaretUp className="size-5" /> : <FaCaretDown className="size-5" />}
+        </div>
         {open && props.children}
       </div>
     );
