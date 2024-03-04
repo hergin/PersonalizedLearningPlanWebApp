@@ -12,7 +12,6 @@ export const AccountApi = () => {
             console.error(error);
             alert((error as AxiosError).message ? (error as AxiosError).message : error);
         }
-        
     }
 
     return {fetchUnderstudies};
