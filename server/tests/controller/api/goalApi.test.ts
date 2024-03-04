@@ -8,7 +8,7 @@ import { GoalType } from "../../../types";
 jest.mock("../../../parser/goalParser");
 
 
-describe('goal processor unit tests', () => {
+describe('Goal Api Unit Tests', () => {
     let goalAPI : GoalAPI;
     let parser : any;
 
@@ -143,9 +143,9 @@ describe('goal processor unit tests', () => {
         var actual = await goalAPI.createGoal({
             name: TEST_GOAL.name[0], 
             description: TEST_GOAL.description[0], 
-            goalType: TEST_GOAL.goalType, 
-            isComplete: TEST_GOAL.isComplete, 
-            moduleId: TEST_GOAL.moduleId}
+            goal_type: TEST_GOAL.goalType, 
+            is_complete: TEST_GOAL.isComplete, 
+            module_id: TEST_GOAL.moduleId}
         );
         expect(actual).toEqual({goal_id: TEST_GOAL.id[0]});
     });
@@ -154,17 +154,17 @@ describe('goal processor unit tests', () => {
         const testObject = {
             name: TEST_GOAL.name[0],
             description: TEST_GOAL.description[0],
-            goalType: TEST_GOAL.goalType,
-            isComplete: TEST_GOAL.isComplete,
-            moduleId: TEST_GOAL.moduleId,
-            dueDate: TEST_GOAL.dueDate
+            goal_type: TEST_GOAL.goalType,
+            is_complete: TEST_GOAL.isComplete,
+            module_id: TEST_GOAL.moduleId,
+            due_date: TEST_GOAL.dueDate
         }
         parser.storeGoal.mockResolvedValueOnce({goal_id: TEST_GOAL.id[0]});
         var actual = await goalAPI.createGoal(testObject);
         expect(parser.storeGoal).toHaveBeenCalledTimes(1);
         expect(parser.storeGoal).toHaveBeenCalledWith({
             ...testObject,
-            dueDate: "2025-01-01 23:59:59.000 "
+            due_date: "2025-01-01 23:59:59.000 "
         });
         expect(actual).toEqual({goal_id: TEST_GOAL.id[0]});
     });
@@ -174,9 +174,9 @@ describe('goal processor unit tests', () => {
         var actual = await goalAPI.createGoal({
             name: TEST_GOAL.name[0], 
             description: TEST_GOAL.description[0], 
-            goalType: TEST_GOAL.goalType, 
-            isComplete: TEST_GOAL.isComplete, 
-            moduleId: TEST_GOAL.moduleId
+            goal_type: TEST_GOAL.goalType, 
+            is_complete: TEST_GOAL.isComplete, 
+            module_id: TEST_GOAL.moduleId
         });
         expect(actual).toEqual(StatusCode.CONFLICT);
     });
@@ -186,9 +186,9 @@ describe('goal processor unit tests', () => {
         var actual = await goalAPI.createGoal({
             name: TEST_GOAL.name[0], 
             description: TEST_GOAL.description[0], 
-            goalType: TEST_GOAL.goalType, 
-            isComplete: TEST_GOAL.isComplete, 
-            moduleId: TEST_GOAL.moduleId
+            goal_type: TEST_GOAL.goalType, 
+            is_complete: TEST_GOAL.isComplete, 
+            module_id: TEST_GOAL.moduleId
         });
         expect(actual).toEqual(StatusCode.CONNECTION_ERROR);
     });
@@ -198,9 +198,9 @@ describe('goal processor unit tests', () => {
         var actual = await goalAPI.createGoal({
             name: TEST_GOAL.name[0], 
             description: TEST_GOAL.description[0], 
-            isComplete: TEST_GOAL.isComplete, 
-            moduleId: TEST_GOAL.moduleId,
-            goalType: GoalType.REPEATABLE
+            is_complete: TEST_GOAL.isComplete, 
+            module_id: TEST_GOAL.moduleId,
+            goal_type: GoalType.REPEATABLE
         });
         expect(actual).toEqual(StatusCode.INTERNAL_SERVER_ERROR);
     });
@@ -208,55 +208,55 @@ describe('goal processor unit tests', () => {
     it('update goal (pass case)', async () => {
         parser.updateGoal.mockResolvedValueOnce();
         expect(await goalAPI.updateGoal({
-            id: TEST_GOAL.id[0],
+            goal_id: TEST_GOAL.id[0],
             name: TEST_GOAL.name[0], 
             description: TEST_GOAL.description[0], 
-            goalType: TEST_GOAL.goalType, 
-            isComplete: TEST_GOAL.isComplete
+            goal_type: TEST_GOAL.goalType, 
+            is_complete: TEST_GOAL.isComplete
         })).toEqual(StatusCode.OK);
     });
 
     it('update goal (duplicate case)', async () => {
         parser.updateGoal.mockRejectedValue(FAKE_ERRORS.primaryKeyViolation);
         expect(await goalAPI.updateGoal({
-            id: TEST_GOAL.id[0],
+            goal_id: TEST_GOAL.id[0],
             name: TEST_GOAL.name[0], 
             description: TEST_GOAL.description[0], 
-            goalType: TEST_GOAL.goalType, 
-            isComplete: TEST_GOAL.isComplete
+            goal_type: TEST_GOAL.goalType, 
+            is_complete: TEST_GOAL.isComplete
         })).toEqual(StatusCode.CONFLICT);
     });
 
     it('update goal (bad data case)', async () => {
         parser.updateGoal.mockRejectedValue(FAKE_ERRORS.badRequest);
         expect(await goalAPI.updateGoal({
-            id: TEST_GOAL.id[0],
+            goal_id: TEST_GOAL.id[0],
             name: TEST_GOAL.name[0], 
             description: TEST_GOAL.description[0], 
-            goalType: TEST_GOAL.goalType, 
-            isComplete: TEST_GOAL.isComplete
+            goal_type: TEST_GOAL.goalType, 
+            is_complete: TEST_GOAL.isComplete
         })).toEqual(StatusCode.BAD_REQUEST);
     });
 
     it('update goal (connection lost case)', async () => {
         parser.updateGoal.mockRejectedValue(FAKE_ERRORS.networkError);
         expect(await goalAPI.updateGoal({
-            id: TEST_GOAL.id[0],
+            goal_id: TEST_GOAL.id[0],
             name: TEST_GOAL.name[0], 
             description: TEST_GOAL.description[0], 
-            goalType: TEST_GOAL.goalType, 
-            isComplete: TEST_GOAL.isComplete
+            goal_type: TEST_GOAL.goalType, 
+            is_complete: TEST_GOAL.isComplete
         })).toEqual(StatusCode.CONNECTION_ERROR);
     });
 
     it('update goal (fatal error case)', async () => {
         parser.updateGoal.mockRejectedValue(FAKE_ERRORS.fatalServerError);
         expect(await goalAPI.updateGoal({
-            id: TEST_GOAL.id[0],
+            goal_id: TEST_GOAL.id[0],
             name: TEST_GOAL.name[0], 
             description: TEST_GOAL.description[0], 
-            goalType: TEST_GOAL.goalType, 
-            isComplete: TEST_GOAL.isComplete
+            goal_type: TEST_GOAL.goalType, 
+            is_complete: TEST_GOAL.isComplete
         })).toEqual(StatusCode.INTERNAL_SERVER_ERROR);
     });
 

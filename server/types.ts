@@ -21,15 +21,15 @@ export enum Subject {
 }
 
 export type Goal = {
-    id?: number,
+    goal_id?: number,
     name: string,
     description: string,
-    isComplete: boolean,
-    goalType: GoalType,
-    moduleId?: number,
-    tagId?: number,
-    dueDate?: string,
-    completionTime?: string,
+    is_complete: boolean,
+    goal_type: GoalType,
+    module_id?: number,
+    tag_id?: number,
+    due_date?: string,
+    completion_time?: string,
     expiration?: string,
     feedback?: string,
     subGoals?: Goal[]
@@ -58,6 +58,7 @@ export type Module = {
 export type AccountSettings = {
     id?: number,
     receiveEmails: boolean,
+    allowCoachInvitations: boolean,
     accountId?: number
 }
 
@@ -69,4 +70,9 @@ export type InviteData = {
     sender_id: number,
     sender_email: string,
     sender_username: string
+}
+
+export interface Query {
+    text: string,
+    values: (string | number | boolean | Date | undefined)[]
 }

@@ -54,6 +54,7 @@ export const TEST_PROFILE = {
 export const TEST_SETTINGS = {
     id: 42,
     receiveEmails: true,
+    allowCoachInvitations: true,
     accountId: TEST_ACCOUNT.id
 }
 
@@ -105,4 +106,14 @@ export const TEST_SUB_GOAL = {
     expiration: null,
     feedback: "I approve this goal!",
     parentGoal: TEST_GOAL.id,
+}
+
+export const TEST_INVITE = {
+    id: 50,
+    senderId: 1,
+    recipientId: 2,
+    senderUsername: "bobjonesxx",
+    recipientUsername: "tsnicholas",
+    senderEmail: "example@outlook.com",
+    recipientEmail: "foo@gmail.com"
 }

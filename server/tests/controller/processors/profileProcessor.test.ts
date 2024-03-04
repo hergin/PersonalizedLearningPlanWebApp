@@ -18,6 +18,36 @@ describe("Profile Processor unit tests", () => {
         jest.clearAllMocks();
     });
 
+    it("get all profiles (normal case)", async () => {
+        profileApi.getAllProfiles.mockResolvedValueOnce([
+            {account_id: TEST_ACCOUNT.id, profile_id: TEST_PROFILE.id, username: TEST_PROFILE.username}
+        ]);
+        const mRequest = createMockRequest({}, {});
+        await ProfileProcessor.getAllProfiles(mRequest, MOCK_RESPONSE);
+        expect(profileApi.getAllProfiles).toHaveBeenCalledTimes(1);
+        expect(profileApi.getAllProfiles).toHaveBeenCalledWith();
+        expect(MOCK_RESPONSE.send).toHaveBeenCalledTimes(0);
+        expect(MOCK_RESPONSE.status).toHaveBeenCalledTimes(1);
+        expect(MOCK_RESPONSE.status).toHaveBeenCalledWith(StatusCode.OK);
+        expect(MOCK_RESPONSE.json).toHaveBeenCalledTimes(1);
+        expect(MOCK_RESPONSE.json).toHaveBeenCalledWith([
+            {account_id: TEST_ACCOUNT.id, profile_id: TEST_PROFILE.id, username: TEST_PROFILE.username}
+        ]);
+    });
+
+    it("get all profiles (error case)", async () => {
+        profileApi.getAllProfiles.mockResolvedValueOnce(StatusCode.FORBIDDEN);
+        const mRequest = createMockRequest({}, {});
+        await ProfileProcessor.getAllProfiles(mRequest, MOCK_RESPONSE);
+        expect(profileApi.getAllProfiles).toHaveBeenCalledTimes(1);
+        expect(profileApi.getAllProfiles).toHaveBeenCalledWith();
+        expect(MOCK_RESPONSE.json).toHaveBeenCalledTimes(0);
+        expect(MOCK_RESPONSE.status).toHaveBeenCalledTimes(1);
+        expect(MOCK_RESPONSE.status).toHaveBeenCalledWith(StatusCode.FORBIDDEN);
+        expect(MOCK_RESPONSE.send).toHaveBeenCalledTimes(1);
+        expect(MOCK_RESPONSE.send).toHaveBeenCalledWith(ERROR_MESSAGES.get(StatusCode.FORBIDDEN));
+    });
+
     it("get profile (normal case)", async () => {
         profileApi.getProfile.mockResolvedValueOnce(TEST_PROFILE);
         const mRequest = createMockRequest({}, {id: TEST_ACCOUNT.id});

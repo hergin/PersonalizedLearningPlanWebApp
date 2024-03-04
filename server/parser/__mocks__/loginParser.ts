@@ -4,6 +4,7 @@ export const mockStoreToken = jest.fn();
 export const mockParseToken = jest.fn();
 export const mockDeleteToken = jest.fn();
 export const mockDeleteAccount = jest.fn();
+export const mockParseUnderstudies = jest.fn();
 
 const mock = jest.fn().mockImplementation(() => {
     return {
@@ -12,7 +13,8 @@ const mock = jest.fn().mockImplementation(() => {
         storeToken : mockStoreToken,
         parseToken : mockParseToken,
         deleteToken : mockDeleteToken,
-        deleteAccount : mockDeleteAccount
+        deleteAccount : mockDeleteAccount,
+        parseUnderstudies: mockParseUnderstudies
     }
 });
 

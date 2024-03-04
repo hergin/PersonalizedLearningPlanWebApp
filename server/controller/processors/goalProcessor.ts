@@ -21,11 +21,11 @@ async function postGoal(req: Request, res: Response) {
     const goalQuery = await goalAPI.createGoal({
         name: req.body.name,
         description: req.body.description,
-        goalType: req.body.goalType,
-        isComplete: req.body.isComplete,
-        moduleId: req.body.moduleId,
-        tagId: req.body.tagId,
-        dueDate: req.body.dueDate
+        goal_type: req.body.goalType,
+        is_complete: req.body.isComplete,
+        module_id: req.body.moduleId,
+        tag_id: req.body.tagId,
+        due_date: req.body.dueDate
     });
     if (typeof goalQuery !== "object") {
         console.log("Something went wrong while creating module.");
@@ -38,14 +38,14 @@ async function postGoal(req: Request, res: Response) {
 async function putGoal(req: Request, res: Response) {
     console.log(`Received in update goal: ${req.params.id}`);
     const resultingStatusCode = await goalAPI.updateGoal({
-            id: Number(req.params.id),
+            goal_id: Number(req.params.id),
             name: req.body.name, 
             description: req.body.description,
-            goalType: req.body.goalType, 
-            isComplete: req.body.isComplete,
-            dueDate: req.body.dueDate,
-            tagId: req.body.tagId, 
-            completionTime: req.body.completionTime, 
+            goal_type: req.body.goal_type, 
+            is_complete: req.body.is_complete,
+            due_date: req.body.due_date,
+            tag_id: req.body.tag_id, 
+            completion_time: req.body.completion_time, 
             expiration: req.body.expiration
     });
     if (resultingStatusCode !== StatusCode.OK) {
@@ -91,11 +91,11 @@ async function postSubGoal(req: Request, res: Response) {
     const goalQuery = await goalAPI.addSubGoal(Number(req.params.id), {
         name: req.body.name,
         description: req.body.description,
-        goalType: req.body.goalType,
-        isComplete: req.body.isComplete,
-        moduleId: req.body.moduleId,
-        tagId: req.body.tagId,
-        dueDate: req.body.dueDate
+        goal_type: req.body.goalType,
+        is_complete: req.body.isComplete,
+        module_id: req.body.moduleId,
+        tag_id: req.body.tagId,
+        due_date: req.body.dueDate
     });
     if (typeof goalQuery !== "object") {
       res.status(goalQuery).send(ERROR_MESSAGES.get(goalQuery));

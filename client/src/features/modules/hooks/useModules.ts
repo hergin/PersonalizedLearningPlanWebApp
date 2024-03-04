@@ -1,17 +1,44 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ModuleApi } from "../api/module-api";
+import { CreateModuleProps, Module } from "../../../types";
 
-export function useModules() {
+export function useModules(userId: number) {
   const { fetchModules } = ModuleApi();
-  return useQuery({ queryFn: () => fetchModules(), queryKey: ["modules"] });
+  return useQuery({ queryFn: () => fetchModules(userId), queryKey: ["modules"] });
 }
 
-export function MutateModules({ module_name, description }: any) {
+export function useModuleCreator() {
+  const queryClient = useQueryClient();
   const { createModule } = ModuleApi();
+  
   return useMutation({
-    mutationFn: createModule,
+    mutationFn: async (createdModule : CreateModuleProps) => {await createModule(createdModule)},
     onSuccess: () => {
-      console.log("Module created successfully");
+      queryClient.invalidateQueries({queryKey: ["modules"]});
     },
+  });
+}
+
+export function useModuleUpdater() {
+  const queryClient = useQueryClient();
+  const { updateModule } = ModuleApi();
+
+  return useMutation({
+    mutationFn: async (updatedModule: Module) => {await updateModule(updatedModule)},
+    onSuccess: () => {
+      queryClient.invalidateQueries({queryKey: ["modules"]});
+    }
+  });
+}
+
+export function useModuleRemover() {
+  const queryClient = useQueryClient();
+  const { deleteModule } = ModuleApi();
+
+  return useMutation({
+    mutationFn: async (id: number) => {await deleteModule(id)},
+    onSuccess: () => {
+      queryClient.invalidateQueries({queryKey: ["modules"]});
+    }
   });
 }

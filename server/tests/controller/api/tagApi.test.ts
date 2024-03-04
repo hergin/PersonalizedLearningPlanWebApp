@@ -10,7 +10,7 @@ const TEST_DATA = {
     accountId: 1
 }
 
-describe("Tag Processor unit tests", () => {
+describe("Tag Api Unit Tests", () => {
     var api: TagApi;
     var parser: any;
 

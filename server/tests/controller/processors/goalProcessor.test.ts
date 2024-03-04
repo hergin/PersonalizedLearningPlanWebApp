@@ -77,11 +77,11 @@ describe("Goal Processor Unit Tests", () => {
         expect(goalApi.createGoal).toHaveBeenCalledWith({
             name: TEST_GOAL.name[0],
             description: TEST_GOAL.description[0],
-            goalType: TEST_GOAL.goalType,
-            isComplete: TEST_GOAL.isComplete,
-            moduleId: TEST_GOAL.moduleId,
-            tagId: TEST_GOAL.tagId,
-            dueDate: TEST_GOAL.dueDate
+            goal_type: TEST_GOAL.goalType,
+            is_complete: TEST_GOAL.isComplete,
+            module_id: TEST_GOAL.moduleId,
+            tag_id: TEST_GOAL.tagId,
+            due_date: TEST_GOAL.dueDate
         });
         expect(MOCK_RESPONSE.send).toHaveBeenCalledTimes(0);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledTimes(1);
@@ -106,11 +106,11 @@ describe("Goal Processor Unit Tests", () => {
         expect(goalApi.createGoal).toHaveBeenCalledWith({
             name: TEST_GOAL.name[0],
             description: TEST_GOAL.description[0],
-            goalType: TEST_GOAL.goalType,
-            isComplete: TEST_GOAL.isComplete,
-            moduleId: TEST_GOAL.moduleId,
-            tagId: TEST_GOAL.tagId,
-            dueDate: TEST_GOAL.dueDate
+            goal_type: TEST_GOAL.goalType,
+            is_complete: TEST_GOAL.isComplete,
+            module_id: TEST_GOAL.moduleId,
+            tag_id: TEST_GOAL.tagId,
+            due_date: TEST_GOAL.dueDate
         });
         expect(MOCK_RESPONSE.json).toHaveBeenCalledTimes(0);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledTimes(1);
@@ -132,14 +132,14 @@ describe("Goal Processor Unit Tests", () => {
         await GoalProcessor.putGoal(mRequest, MOCK_RESPONSE);
         expect(goalApi.updateGoal).toHaveBeenCalledTimes(1);
         expect(goalApi.updateGoal).toHaveBeenCalledWith({
-            id: TEST_GOAL.id[0],
+            goal_id: TEST_GOAL.id[0],
             name: TEST_GOAL.name[0],
             description: TEST_GOAL.description[0],
-            goalType: TEST_GOAL.goalType,
-            isComplete: TEST_GOAL.isComplete,
-            tagId: TEST_GOAL.tagId,
-            dueDate: TEST_GOAL.dueDate,
-            completionTime: undefined,
+            goal_type: TEST_GOAL.goalType,
+            is_complete: TEST_GOAL.isComplete,
+            tag_id: TEST_GOAL.tagId,
+            due_date: TEST_GOAL.dueDate,
+            completion_time: undefined,
             expiration: undefined
         });
         expect(MOCK_RESPONSE.send).toHaveBeenCalledTimes(0);
@@ -160,14 +160,14 @@ describe("Goal Processor Unit Tests", () => {
         await GoalProcessor.putGoal(mRequest, MOCK_RESPONSE);
         expect(goalApi.updateGoal).toHaveBeenCalledTimes(1);
         expect(goalApi.updateGoal).toHaveBeenCalledWith({
-            id: TEST_GOAL.id[0],
+            goal_id: TEST_GOAL.id[0],
             name: TEST_GOAL.name[0],
             description: TEST_GOAL.description[0],
-            goalType: TEST_GOAL.goalType,
-            isComplete: TEST_GOAL.isComplete,
-            tagId: TEST_GOAL.tagId,
-            dueDate: TEST_GOAL.dueDate,
-            completionTime: undefined,
+            goal_type: TEST_GOAL.goalType,
+            is_complete: TEST_GOAL.isComplete,
+            tag_id: TEST_GOAL.tagId,
+            due_date: TEST_GOAL.dueDate,
+            completion_time: undefined,
             expiration: undefined
         });
         expect(MOCK_RESPONSE.sendStatus).toHaveBeenCalledTimes(0);
@@ -241,11 +241,11 @@ describe("Goal Processor Unit Tests", () => {
         expect(goalApi.addSubGoal).toHaveBeenCalledWith(TEST_SUB_GOAL.parentGoal[0], {
             name: TEST_SUB_GOAL.name[0],
             description: TEST_SUB_GOAL.description[0],
-            isComplete: TEST_SUB_GOAL.isComplete,
-            goalType: TEST_SUB_GOAL.goalType,
-            moduleId: TEST_SUB_GOAL.moduleId,
-            tagId: TEST_SUB_GOAL.tagId,
-            dueDate: TEST_SUB_GOAL.dueDate
+            is_complete: TEST_SUB_GOAL.isComplete,
+            goal_type: TEST_SUB_GOAL.goalType,
+            module_id: TEST_SUB_GOAL.moduleId,
+            tag_id: TEST_SUB_GOAL.tagId,
+            due_date: TEST_SUB_GOAL.dueDate
         });
         expect(MOCK_RESPONSE.send).toHaveBeenCalledTimes(0);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledTimes(1);
@@ -270,11 +270,11 @@ describe("Goal Processor Unit Tests", () => {
         expect(goalApi.addSubGoal).toHaveBeenCalledWith(TEST_SUB_GOAL.parentGoal[0], {
             name: TEST_SUB_GOAL.name[0],
             description: TEST_SUB_GOAL.description[0],
-            isComplete: TEST_SUB_GOAL.isComplete,
-            goalType: TEST_SUB_GOAL.goalType,
-            moduleId: TEST_SUB_GOAL.moduleId,
-            tagId: TEST_SUB_GOAL.tagId,
-            dueDate: TEST_SUB_GOAL.dueDate
+            is_complete: TEST_SUB_GOAL.isComplete,
+            goal_type: TEST_SUB_GOAL.goalType,
+            module_id: TEST_SUB_GOAL.moduleId,
+            tag_id: TEST_SUB_GOAL.tagId,
+            due_date: TEST_SUB_GOAL.dueDate
         });
         expect(MOCK_RESPONSE.json).toHaveBeenCalledTimes(0);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledTimes(1);

@@ -1,5 +1,5 @@
 import React from "react";
-import GoalEditor from "./GoalEditor";
+
 export function GoalListHeader() {
   return (
     <div className="flex flex-row transition-transform rounded  w-full  ">

@@ -2,15 +2,16 @@ import React from "react";
 import { useParams } from "react-router-dom";
 import Goals from "./Goals";
 import GoalItem from "./GoalItem";
-import useGoals from "../hooks/useGoals";
+import { useGoals } from "../hooks/useGoals";
 import { Goal } from "../../../types";
 import { GoalListHeader } from "./GoalListHeader";
 import TagCreator from "../../tags/components/TagCreator";
+import { useUser } from "../../login/hooks/useUser";
 
 const GoalParentContainer = () => {
-  const { id } = useParams();
-  const { data, isLoading, error } = useGoals(id as string);
-  console.log(data);
+  const { user } = useUser();
+  const { id: moduleId } = useParams();
+  const { data, isLoading, error } = useGoals(Number(moduleId));
 
   if (isLoading) {
     return <p className="text-black">Loading...</p>;
@@ -21,12 +22,13 @@ const GoalParentContainer = () => {
   }
   return (
     <div className="relative flex h-screen">
-      <Goals id={id}>
-        <div className="w-full flex flex-row-reverse"> <TagCreator/></div>
-       
+      <Goals id={Number(moduleId)}>
+        <div className="w-full flex flex-row-reverse">
+          <TagCreator accountId={user.id} />
+        </div>
         <GoalListHeader />
         {data?.map((goal: Goal) => (
-          <GoalItem key={goal.goal_id} id={id as string} goal={goal} />
+          <GoalItem key={goal.goal_id} id={Number(moduleId)} goal={goal} />
         ))}
       </Goals>
     </div>

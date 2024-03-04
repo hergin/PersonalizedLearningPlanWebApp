@@ -3,6 +3,7 @@ import { authenticateToken } from "../utils/token";
 import * as ProfileProcessor from "../controller/processors/profileProcessor";
 
 const profileRoutes = Router();
+profileRoutes.get('/get', authenticateToken, ProfileProcessor.getAllProfiles);
 profileRoutes.get('/get/:id', authenticateToken, ProfileProcessor.sendProfile);
 profileRoutes.post('/create', ProfileProcessor.postProfile);
 profileRoutes.put('/edit/:id', authenticateToken, ProfileProcessor.putProfile);

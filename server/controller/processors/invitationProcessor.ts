@@ -1,6 +1,5 @@
 import InvitationApi from "../api/invitationApi";
 import EmailService from "../../service/emailService";
-import MessageGenerator from "../../service/messageGenerator";
 import { InviteData, StatusCode, Subject } from "../../types";
 import { initializeErrorMap } from "../../utils/errorMessages";
 import { Request, Response } from "express";

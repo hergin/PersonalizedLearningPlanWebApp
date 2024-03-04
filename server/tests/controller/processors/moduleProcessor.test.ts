@@ -45,8 +45,8 @@ describe("Module Processor unit tests", () => {
         const mRequest = createMockRequest({
             name: TEST_MODULE.name,
             description: TEST_MODULE.description,
-            completion_percent: TEST_MODULE.completionPercent,
-            account_id: TEST_MODULE.accountId 
+            completionPercent: TEST_MODULE.completionPercent,
+            accountId: TEST_MODULE.accountId 
         });
         await ModuleProcessor.postModule(mRequest, MOCK_RESPONSE);
         expect(moduleApi.createModule).toHaveBeenCalledTimes(1);
@@ -69,8 +69,8 @@ describe("Module Processor unit tests", () => {
         const mRequest = createMockRequest({
             name: TEST_MODULE.name,
             description: TEST_MODULE.description,
-            completion_percent: TEST_MODULE.completionPercent,
-            account_id: TEST_MODULE.accountId 
+            completionPercent: TEST_MODULE.completionPercent,
+            accountId: TEST_MODULE.accountId 
         });
         await ModuleProcessor.postModule(mRequest, MOCK_RESPONSE);
         expect(moduleApi.createModule).toHaveBeenCalledTimes(1);

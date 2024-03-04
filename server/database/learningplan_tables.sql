@@ -4,7 +4,7 @@ CREATE TABLE ACCOUNT(
     email TEXT UNIQUE NOT NULL,
     account_password TEXT NOT NULL,
     refresh_token TEXT,
-    coach_id INT UNIQUE,
+    coach_id INT,
     CONSTRAINT valid_email 
     CHECK (email ~* '^[A-Za-z0-9._%-]+@[A-Za-z0-9.-]+[.][A-Za-z]+$')
 );
@@ -13,6 +13,7 @@ DROP TABLE IF EXISTS ACCOUNT_SETTINGS CASCADE;
 CREATE TABLE ACCOUNT_SETTINGS(
     id SERIAL PRIMARY KEY,
     receive_emails BOOLEAN DEFAULT TRUE,
+    allow_coach_invitations BOOLEAN DEFAULT TRUE,
     account_id INT NOT NULL,
     FOREIGN KEY (account_id) REFERENCES ACCOUNT(id)
         ON DELETE CASCADE ON UPDATE CASCADE

@@ -7,7 +7,7 @@ import { StatusCode } from "../../../types";
 import { FAKE_ERRORS, TEST_ACCOUNT } from "../global/mockValues";
 jest.mock("../../../parser/loginParser");
 
-describe('Login Functions', () => {
+describe('Login Api Unit Tests', () => {
     let loginAPI : LoginAPI;
     let parser : any;
 
@@ -140,5 +140,21 @@ describe('Login Functions', () => {
     it('delete account (error case)', async () => {
         parser.deleteAccount.mockRejectedValue(FAKE_ERRORS.badRequest);
         expect(await loginAPI.delete(TEST_ACCOUNT.id)).toEqual(StatusCode.BAD_REQUEST);
+    });
+
+    it('get understudies (pass case)', async () => {
+        parser.parseUnderstudies.mockResolvedValueOnce([TEST_ACCOUNT]);
+        const actual = await loginAPI.getUnderstudies(TEST_ACCOUNT.id);
+        expect(parser.parseUnderstudies).toHaveBeenCalledTimes(1);
+        expect(parser.parseUnderstudies).toHaveBeenCalledWith(TEST_ACCOUNT.id);
+        expect(actual).toEqual([TEST_ACCOUNT]);
+    });
+
+    it('get understudies (error case)', async () => {
+        parser.parseUnderstudies.mockRejectedValue(FAKE_ERRORS.badRequest);
+        const actual = await loginAPI.getUnderstudies(TEST_ACCOUNT.id);
+        expect(parser.parseUnderstudies).toHaveBeenCalledTimes(1);
+        expect(parser.parseUnderstudies).toHaveBeenCalledWith(TEST_ACCOUNT.id);
+        expect(actual).toEqual(StatusCode.BAD_REQUEST);
     });
 });
