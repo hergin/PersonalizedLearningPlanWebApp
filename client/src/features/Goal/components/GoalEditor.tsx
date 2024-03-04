@@ -1,8 +1,5 @@
 import * as React from "react";
 import { useState } from "react";
-import IconButton from "@mui/material/IconButton";
-import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import {
   Button,
@@ -11,89 +8,63 @@ import {
   DialogContent,
   DialogTitle,
   TextField,
+  Menu,
+  MenuItem,
+  IconButton
 } from "@mui/material";
-import { ApiClient } from "../../../hooks/ApiClient";
 import { useHotKeys } from "../../../hooks/useHotKeys";
-import { GoalEditorProps, GoalType } from "../../../types";
+import { Goal, GoalType } from "../../../types";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
+import { useGoalUpdater, useGoalRemover } from "../hooks/useGoals";
 
-export default function GoalEditor({
-  id,
-  dataName,
-  dataDescription,
-  dueDate,
-  goalType,
-}: GoalEditorProps) {
-  const queryClient = useQueryClient();
+interface GoalEditorProps {
+  goal: Goal,
+}
+
+export default function GoalEditor({goal}: GoalEditorProps) {
   const [anchorElGoal, setAnchorElGoal] = React.useState(null);
-  const open = Boolean(anchorElGoal);
-  const [dataNameLocal, setDataNameLocal] = useState(dataName);
-  const [dataDescriptionLocal, setDataDescriptionLocal] =
-    useState(dataDescription);
+  const [updatedGoal, setGoal] = useState<Goal>(goal);
   const [openModal, setOpenModal] = useState(false);
-  const [goalTypeNew, setGoalTypeNew] = useState(goalType);
-  const [dueDateNew, setDueDateNew] = useState<string | undefined>(
-    dayjs(dueDate).format("MM/DD/YYYY")
-  );
+  const { mutateAsync: updateGoal } = useGoalUpdater(goal.module_id);
+  const { mutateAsync: deleteGoal } = useGoalRemover(goal.module_id);
+  const { handleEnterPress } = useHotKeys();
+  const open = Boolean(anchorElGoal);
+  
   const handleClick = (event: any) => {
     setAnchorElGoal(event.currentTarget);
   };
+
   const handleOpenModal = () => {
-    setDataNameLocal(dataName);
-    setDataDescriptionLocal(dataDescription);
     setOpenModal(true);
     setAnchorElGoal(null); // Close the menu when the modal opens
   };
+
   const handleClose = () => {
     setAnchorElGoal(null);
   };
+
   const handleCloseModal = () => {
     setOpenModal(false);
   };
-  const { put, del } = ApiClient();
-  const { handleEnterPress } = useHotKeys();
 
   async function handleGoalEdit() {
-    console.log(`ID in handleGoalEdit: ${id}`);
-    console.log(dueDateNew + "dueDateNew");
-    try {
-      console.log(`ID in handleGoalEdit: ${id}`);
-      await put(`/goal/update/${id}`, {
-        name: dataNameLocal,
-        description: dataDescriptionLocal,
-        isComplete: false,
-        dueDate: dayjs(dueDateNew).toDate().toISOString(),
-        goalType: goalTypeNew,
-      });
-      queryClient.invalidateQueries({ queryKey: ["goals"] });
-      handleCloseModal();
-    } catch (error: any) {
-      console.error(error);
-      alert(error.response ? error.response.data : error);
-    }
+    await updateGoal(updatedGoal);
+    handleCloseModal();
   }
 
   function toggleGoalType(checked: boolean) {
     if (checked) {
-      setGoalTypeNew(GoalType.REPEATABLE);
+      setGoal({...updatedGoal, goal_type: GoalType.REPEATABLE});
     } else {
-      setGoalTypeNew(GoalType.TASK);
+      setGoal({...updatedGoal, goal_type: GoalType.TASK});
     }
   }
 
   async function handleGoalDelete() {
-    try {
-      const result = await del(`/goal/delete/${id}`);
-      console.log(result);
-      queryClient.invalidateQueries({ queryKey: ["goals"] });
-      handleClose();
-    } catch (error: any) {
-      console.error(error);
-      alert(error.message ? error.message : error);
-    }
+    await deleteGoal(goal.goal_id);
+    handleClose();
   }
 
   return (
@@ -129,8 +100,8 @@ export default function GoalEditor({
           <DialogTitle>Edit Object</DialogTitle>
           <DialogContent>
             <TextField
-              value={dataNameLocal}
-              onChange={(e) => setDataNameLocal(e.target.value)}
+              value={updatedGoal.name}
+              onChange={(e) => setGoal({...updatedGoal, name: e.target.value})}
               onKeyDown={(event) => {
                 handleEnterPress(event, handleGoalEdit);
               }}
@@ -138,8 +109,8 @@ export default function GoalEditor({
               margin="normal"
             />
             <TextField
-              value={dataDescriptionLocal}
-              onChange={(e) => setDataDescriptionLocal(e.target.value)}
+              value={updatedGoal.description}
+              onChange={(e) => setGoal({...updatedGoal, description: e.target.value})}
               onKeyDown={(event) => {
                 handleEnterPress(event, handleGoalEdit);
               }}
@@ -151,15 +122,15 @@ export default function GoalEditor({
               <div className="flex flex-row justify-center items-center">
                 <p className="font-headlineFont text-xl">Daily</p>
                 <Checkbox
-                  checked={goalTypeNew === GoalType.REPEATABLE}
+                  checked={updatedGoal.goal_type === GoalType.REPEATABLE}
                   onChange={(event) => toggleGoalType(event.target.checked)}
                 />
               </div>
               <DatePicker
                 label="Due Date"
-                value={dayjs(dueDateNew)}
+                value={dayjs(updatedGoal.due_date)}
                 onChange={(newDueDate) =>
-                  setDueDateNew(dayjs(newDueDate).format("MM/DD/YYYY"))
+                  setGoal({...updatedGoal, due_date: dayjs(newDueDate).format("MM/DD/YYYY")})
                 }
               />
             </div>

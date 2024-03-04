@@ -1,35 +1,24 @@
 import React, { useState } from "react";
 import Modal from "@mui/material/Modal";
-import { ApiClient } from "../../../hooks/ApiClient";
 import { useHotKeys } from "../../../hooks/useHotKeys";
-import { useQueryClient } from "@tanstack/react-query";
+import { useTagCreator } from "../hooks/useTags";
 import { MuiColorInput } from "mui-color-input";
-import { Button } from "@mui/material";
-import { useUser } from "../../login/hooks/useUser";
 
-function TagCreator() {
+interface TagCreatorProps {
+  accountId: number;
+}
+
+function TagCreator({ accountId }: TagCreatorProps) {
   const [tagName, setTagName] = useState("");
   const [tagColor, setTagColor] = useState("#000000");
-  const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
   const submitDisabled = tagName === "" || tagColor === "";
-  const { post } = ApiClient();
   const { handleEnterPress } = useHotKeys();
-  const user = useUser();
+  const { mutate: createTag } = useTagCreator();
+
 
   function handleTagCreation() {
-    try {
-      post("/tag/add", {
-        accountId: user.user.id,
-        name: tagName,
-        color: tagColor,
-      });
-      queryClient.invalidateQueries({ queryKey: ["tags"] });
-      console.log("Tag created");
-    } catch (error: any) {
-      console.error(error);
-      alert(error.message ? error.message : error);
-    }
+    createTag({name: tagName, color: tagColor, accountId});
     setOpen(false);
   }
 

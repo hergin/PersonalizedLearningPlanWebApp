@@ -7,31 +7,29 @@ import dayjs from "dayjs";
 interface GoalCreatorProps {
   getCollapseProps: any;
   sub_goal: Goal;
-  updateGoal: (goal: Goal, checked: boolean) => void;
+  updateGoal: (goal: Goal) => Promise<void>;
 }
+
 export function SubGoalsCollapsable({
   getCollapseProps,
   sub_goal,
   updateGoal,
 }: GoalCreatorProps) {
-  const [isComplete, setIsComplete] = useState(sub_goal.is_complete);
   const [progress, setProgress] = useState(0);
-  function handleToggle(checked: boolean) {
-    setIsComplete(checked);
-    updateGoal(sub_goal, checked);
-  }
+  
   useEffect(() => {
     // action on update of movies
-    if (isComplete) {
-      console.log(isComplete);
+    if (sub_goal.is_complete) {
+      console.log(sub_goal.is_complete);
       setProgress(1);
       console.log(progress + "Is this");
     } else {
-      console.log(isComplete);
+      console.log(sub_goal.is_complete);
       setProgress(0);
       console.log(progress + "Is this");
     }
-  }, [isComplete, progress]);
+  }, [sub_goal.is_complete, progress]);
+
   return (
     <>
       <div
@@ -56,17 +54,11 @@ export function SubGoalsCollapsable({
         </div>
         <div className="flex flex-col w-[15%] h-full justify-center p-3 items-center">
           <Checkbox
-            checked={isComplete}
-            onChange={(checked) => handleToggle(checked.target.checked)}
+            checked={sub_goal.is_complete}
+            onChange={async (event) => {await updateGoal({...sub_goal, is_complete: event.target.checked})}}
           />
         </div>
-        <GoalEditor
-          id={sub_goal.goal_id}
-          goalType={sub_goal.goal_type}
-          dataName={sub_goal.name}
-          dataDescription={sub_goal.description}
-          dueDate={sub_goal.due_date}
-        />
+        <GoalEditor goal={sub_goal} />
       </div>
     </>
   );

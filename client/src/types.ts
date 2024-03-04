@@ -13,14 +13,14 @@ export interface Module {
 export interface Goal {
   goal_id: number,
   name: string,
-  due_date?: string,
   description: string,
   goal_type: GoalType,
   is_complete: boolean,
-  moduleId?: number
-  sub_goals?: Goal[]
-  tag_name?: string
-  color?: string
+  module_id: number,
+  due_date?: string | null,
+  sub_goals?: Goal[],
+  tag_name?: string,
+  color?: string,
   feedback?: string
 }
 
@@ -43,6 +43,13 @@ export type Profile = {
 export type Settings = {
   receiveEmails: boolean,
   allowCoachInvitations: boolean
+}
+
+export type Tag = {
+  id?: number,
+  name: string,
+  color: string,
+  accountId: number
 }
 
 export type Understudy = {
@@ -82,19 +89,6 @@ export interface GoalHeaderProps {
   moduleID: string
 }
 
-export interface GoalEditorProps {
-  id: number,
-  dataName: string,
-  dataDescription: string,
-  dueDate?: string,
-  goalType: "todo" | "daily",
-}
-
-export interface GoalCreatorProps {
-  moduleID: string;
-  addGoal: (goal: Goal) => void;
-}
-
 export interface CreateProfileProps {
   username : string, 
   firstName : string, 
@@ -106,6 +100,25 @@ export interface CreateModuleProps {
   module_name: string,
   description: string,
   account_id: number
+}
+
+export interface CreateGoalProps {
+  name: string,
+  description: string,
+  goalType: GoalType,
+  isComplete: boolean,
+  moduleId: number,
+  dueDate?: string | null,
+  tagId?: number | null
+}
+
+export interface CreateSubGoalProps extends CreateGoalProps {
+  parentId: number
+}
+
+export interface UpdateFeedbackProps {
+  goal_id: number,
+  feedback: string
 }
 
 export const emptyUser: User = { id: -1, accessToken: "", refreshToken: "" };

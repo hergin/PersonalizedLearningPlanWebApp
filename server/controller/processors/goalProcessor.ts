@@ -41,11 +41,11 @@ async function putGoal(req: Request, res: Response) {
             goal_id: Number(req.params.id),
             name: req.body.name, 
             description: req.body.description,
-            goal_type: req.body.goalType, 
-            is_complete: req.body.isComplete,
-            due_date: req.body.dueDate,
-            tag_id: req.body.tagId, 
-            completion_time: req.body.completionTime, 
+            goal_type: req.body.goal_type, 
+            is_complete: req.body.is_complete,
+            due_date: req.body.due_date,
+            tag_id: req.body.tag_id, 
+            completion_time: req.body.completion_time, 
             expiration: req.body.expiration
     });
     if (resultingStatusCode !== StatusCode.OK) {
