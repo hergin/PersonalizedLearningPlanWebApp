@@ -1,6 +1,5 @@
 import express, { Request, Response } from "express";
 import cors from 'cors';
-
 import loginRoutes from "./routes/loginRoutes";
 import moduleRoutes from "./routes/moduleRoutes";
 import profileRoutes from "./routes/profileRoutes";
