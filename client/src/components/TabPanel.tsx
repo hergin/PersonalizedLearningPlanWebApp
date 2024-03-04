@@ -8,7 +8,7 @@ interface TabPanelProps extends PropsWithChildren {
 
 export default function TabPanel({children, value, index, style, ...other}: TabPanelProps) {
     return  (
-        <div role="tabpanel" hidden={value !== index} id={`vertical-tabpanel-${index}`} {...other}>
+        <div role="tabpanel" hidden={value !== index} id={`tabpanel-${index}`} {...other}>
             {value === index && (
                 <div className={style}>
                     {children}
