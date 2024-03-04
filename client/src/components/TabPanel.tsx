@@ -1,15 +1,16 @@
 import React, { PropsWithChildren } from "react";
 
 interface TabPanelProps extends PropsWithChildren {
-    index: number;
-    value: number;
+    index: number,
+    value: number,
+    style?: string
 }
 
-export default function TabPanel({children, value, index, ...other}: TabPanelProps) {
+export default function TabPanel({children, value, index, style, ...other}: TabPanelProps) {
     return  (
         <div role="tabpanel" hidden={value !== index} id={`vertical-tabpanel-${index}`} {...other}>
             {value === index && (
-                <div className="p-[2%] h-screen bg-[#F1F1F1]">
+                <div className={style}>
                     {children}
                 </div>
             )}

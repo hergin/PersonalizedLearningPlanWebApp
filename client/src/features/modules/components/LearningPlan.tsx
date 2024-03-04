@@ -1,21 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Tab, Tabs } from "@mui/material";
 import ModuleComponent from "./ModuleComponent";
-import TabPanel from "./TabPanel";
+import TabPanel from "../../../components/TabPanel";
 import { useUnderstudies } from "../../login/hooks/useUnderstudies";
 import { useAuth } from "../../../context/AuthContext";
 import { emptyUser, Understudy } from "../../../types";
-import DefaultProfilePicture from "../../../assets/Default_Profile_Picture.jpg";
+import ProfilePicture from "../../../components/ProfilePicture";
 
-function PlaceholderProfilePicture() {
-  return (
-    <img 
-      src={DefaultProfilePicture} 
-      alt="Profile Picture Here"
-      className="size-7 rounded-full"
-    />
-  );
-}
+const TABPANEL_STYLE = "p-[2%] h-screen bg-[#F1F1F1]";
 
 export default function LearningPlan() {
   const { user, setUser } = useAuth();
@@ -43,22 +35,25 @@ export default function LearningPlan() {
         value={currentTabIndex}
         onChange={(event: React.SyntheticEvent, newValue: number) => {setCurrentTabIndex(newValue)}}
         scrollButtons="auto"
-        className="p-4 mx-auto "
+        className="px-4 mx-4"
+        TabIndicatorProps={{
+          style: {
+            color: "black",
+          }
+        }}
       >
         {/* Icons will be replaced by actual profile pictures later on, but for now we're using placeholders. */}
-        <Tab label="You" value={user.id} icon={<PlaceholderProfilePicture />} iconPosition="start"/>
+        <Tab label="You" value={user.id} icon={<ProfilePicture style="size-7" />} />
         {understudyData?.map((understudy: Understudy) => (
           <Tab 
             key={`KEY-${understudy.account_id}`} 
             label={understudy.username} 
             value={understudy.account_id}
-            icon={<PlaceholderProfilePicture />}
-            iconPosition="start"
-            className=""
+            icon={<ProfilePicture style="size-7" />}
           />
         ))}
       </Tabs>
-      <TabPanel value={currentTabIndex} index={user.id}>
+      <TabPanel value={currentTabIndex} index={user.id} style={TABPANEL_STYLE}>
         <ModuleComponent accountId={user.id} />
       </TabPanel>
       {understudyData?.map((understudy: Understudy) => (
@@ -66,6 +61,7 @@ export default function LearningPlan() {
           key={`PANEL_KEY-${understudy.account_id}`} 
           value={currentTabIndex}
           index={understudy.account_id}
+          style={TABPANEL_STYLE}
         >
           <ModuleComponent accountId={understudy.account_id} />
         </TabPanel>

@@ -3,7 +3,6 @@ import { Link, useNavigate } from "react-router-dom";
 import { useUser } from "../features/login/hooks/useUser";
 import { ApiClient } from "../hooks/ApiClient";
 import { emptyUser } from "../types";
-import profilePicture from "../assets/Default_Profile_Picture.jpg";
 import DropDownMenu from "./dropDown/DropDownMenu";
 import DropDownItem from "./dropDown/DropDownItem";
 import DropDownCheckbox from "./dropDown/DropDownCheckbox";
@@ -12,6 +11,7 @@ import { AxiosError } from "axios";
 import { IoIosLogOut } from "react-icons/io";
 import { FaCaretUp } from "react-icons/fa";
 import { FaCaretDown } from "react-icons/fa";
+import ProfilePicture from "./ProfilePicture";
 
 const CLICKABLE_ELEMENT_STYLE = "hover:bg-[#820000] cursor-pointer duration-500";
 
@@ -38,7 +38,7 @@ const AccountButton = () => {
   if(user.id !== emptyUser.id) {
     // Fixed values need to be changed to adjust to smaller screens, but this is fine for now. -Tim
     return (
-      <ProfilePicture>
+      <AccountDropDown>
         <DropDownMenu absolutePosition="absolute top-[58px] w-[190px] translate-x-[-45%] translate-y-[20px]">
           {isLoading && <p>Loading...</p>}
           {error && <p>An error has occurred!</p>}
@@ -60,7 +60,7 @@ const AccountButton = () => {
           }
           <DropDownItem leftIcon={<IoIosLogOut className="size-6" />} onClick={handleLogout}>Logout</DropDownItem>
         </DropDownMenu>
-      </ProfilePicture>
+      </AccountDropDown>
     );
   } else {
     return (
@@ -72,15 +72,11 @@ const AccountButton = () => {
     );
   }
 
-  function ProfilePicture(props: PropsWithChildren) {
+  function AccountDropDown(props: PropsWithChildren) {
     return (
       <div>  
         <div className={`flex flex-row ${CLICKABLE_ELEMENT_STYLE} py-[5px] px-[8px] gap-[5px] items-center`} onClick={() => {setOpen(!open)}}>
-          <img
-            src={profilePicture}
-            alt="pfp here"
-            className="h-14 w-14 rounded-full"
-          />
+          <ProfilePicture style="size-14" />
           {open ? <FaCaretUp className="size-5" /> : <FaCaretDown className="size-5" />}
         </div>
         {open && props.children}

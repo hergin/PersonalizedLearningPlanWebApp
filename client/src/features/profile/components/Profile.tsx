@@ -6,6 +6,7 @@ import profilePicture from "../../../assets/Default_Profile_Picture.jpg";
 import { useProfile, useProfileUpdater } from "../hooks/useProfile";
 import { useHotKeys } from "../../../hooks/useHotKeys";
 import { emptyProfile, Profile } from "../../../types";
+import ProfilePicture from "../../../components/ProfilePicture";
 
 const STYLE = {
   containerHeight: "h-[50vh]",
@@ -78,11 +79,7 @@ function ProfileScreen() {
       <div
         className={`h-[calc(${STYLE.containerHeight} - 15)] ${STYLE.containerWidth} ${STYLE.borderValues} ${STYLE.flexColumn} items-center m-[10px] py-[25px] px-[10px] ${STYLE.defaultGap}`}
       >
-        <img
-          src={profilePicture}
-          alt="pfp here"
-          className="h-[10vh] w-[5vw] rounded-full"
-        />
+        <ProfilePicture style="size-15" />
         {editMode ? (
           <input
             id="username"
