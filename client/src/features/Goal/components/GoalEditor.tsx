@@ -1,5 +1,4 @@
-import * as React from "react";
-import { useState } from "react";
+import React, { useState } from "react";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import {
   Button,
@@ -24,17 +23,13 @@ interface GoalEditorProps {
 }
 
 export default function GoalEditor({goal}: GoalEditorProps) {
-  const [anchorElGoal, setAnchorElGoal] = React.useState(null);
+  const [anchorElGoal, setAnchorElGoal] = useState<Element | null>(null);
   const [updatedGoal, setGoal] = useState<Goal>(goal);
   const [openModal, setOpenModal] = useState(false);
   const { mutateAsync: updateGoal } = useGoalUpdater(goal.module_id);
   const { mutateAsync: deleteGoal } = useGoalRemover(goal.module_id);
   const { handleEnterPress } = useHotKeys();
   const open = Boolean(anchorElGoal);
-  
-  const handleClick = (event: any) => {
-    setAnchorElGoal(event.currentTarget);
-  };
 
   const handleOpenModal = () => {
     setOpenModal(true);
@@ -49,20 +44,12 @@ export default function GoalEditor({goal}: GoalEditorProps) {
     setOpenModal(false);
   };
 
-  async function handleGoalEdit() {
+  async function handleUpdateGoal() {
     await updateGoal(updatedGoal);
     handleCloseModal();
   }
 
-  function toggleGoalType(checked: boolean) {
-    if (checked) {
-      setGoal({...updatedGoal, goal_type: GoalType.REPEATABLE});
-    } else {
-      setGoal({...updatedGoal, goal_type: GoalType.TASK});
-    }
-  }
-
-  async function handleGoalDelete() {
+  async function handleDeleteGoal() {
     await deleteGoal(goal.goal_id);
     handleClose();
   }
@@ -75,7 +62,7 @@ export default function GoalEditor({goal}: GoalEditorProps) {
         aria-controls={open ? "long-menu" : undefined}
         aria-expanded={open ? "true" : undefined}
         aria-haspopup="true"
-        onClick={handleClick}
+        onClick={(event) => setAnchorElGoal(event.currentTarget)}
       >
         <MoreVertIcon />
       </IconButton>
@@ -91,7 +78,7 @@ export default function GoalEditor({goal}: GoalEditorProps) {
         <MenuItem key={"edit"} onClick={handleOpenModal}>
           Edit
         </MenuItem>
-        <MenuItem key={"delete"} onClick={handleGoalDelete}>
+        <MenuItem key={"delete"} onClick={handleDeleteGoal}>
           Delete
         </MenuItem>
       </Menu>
@@ -103,7 +90,7 @@ export default function GoalEditor({goal}: GoalEditorProps) {
               value={updatedGoal.name}
               onChange={(e) => setGoal({...updatedGoal, name: e.target.value})}
               onKeyDown={(event) => {
-                handleEnterPress(event, handleGoalEdit);
+                handleEnterPress(event, handleUpdateGoal);
               }}
               fullWidth
               margin="normal"
@@ -112,7 +99,7 @@ export default function GoalEditor({goal}: GoalEditorProps) {
               value={updatedGoal.description}
               onChange={(e) => setGoal({...updatedGoal, description: e.target.value})}
               onKeyDown={(event) => {
-                handleEnterPress(event, handleGoalEdit);
+                handleEnterPress(event, handleUpdateGoal);
               }}
               fullWidth
               multiline={true}
@@ -123,7 +110,7 @@ export default function GoalEditor({goal}: GoalEditorProps) {
                 <p className="font-headlineFont text-xl">Daily</p>
                 <Checkbox
                   checked={updatedGoal.goal_type === GoalType.REPEATABLE}
-                  onChange={(event) => toggleGoalType(event.target.checked)}
+                  onChange={(event) => setGoal({...goal, goal_type: event.target.checked ? GoalType.REPEATABLE : GoalType.TASK})}
                 />
               </div>
               <DatePicker
@@ -135,7 +122,7 @@ export default function GoalEditor({goal}: GoalEditorProps) {
               />
             </div>
             <div className="flex flex-row justify-center items-center pt-10">
-              <Button variant="contained" onClick={handleGoalEdit}>
+              <Button variant="contained" onClick={handleUpdateGoal}>
                 Save Changes
               </Button>
             </div>
