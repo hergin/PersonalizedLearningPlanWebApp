@@ -1,18 +1,18 @@
+import { AxiosError } from "axios";
+import { CreateInvitationProps } from "../../../types";
 import { ApiClient } from "../../../hooks/ApiClient";
-import { useUser } from "../../../hooks/useUser";
 
-export const ModuleApi = () => {
-  const { user } = useUser();
-  const { get, post } = ApiClient();
+export const InvitationApi = () => {
+const { post } = ApiClient();
 
-  async function fetchProfiles() {
+async function CreateInvitation(values: CreateInvitationProps) {
     try {
-      const data = await get(`/profile/get/${user.id}`);
-      return data;
-    } catch (error: any) {
+      await post("/invite/create", values);
+    } catch(error: unknown) {
       console.error(error);
-      alert(error.message ? error.message : error);
+      alert((error as AxiosError).message ? (error as AxiosError).message : error);
     }
   }
-return { fetchProfiles};
+    return { CreateInvitation };
 };
+

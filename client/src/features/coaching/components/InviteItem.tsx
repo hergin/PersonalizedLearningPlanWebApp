@@ -2,7 +2,7 @@ import React from "react";
 import { useInviteCreator } from "../hooks/useCoach";
 import { useUser } from "../../login/hooks/useUser";
 
-const UserItem = ({ name, id }: any) => {
+const InvitationItem = ({ name, id }: any) => {
   const { mutateAsync: createInvite } = useInviteCreator();
   const {user} = useUser();
 
@@ -35,4 +35,4 @@ const UserItem = ({ name, id }: any) => {
   );
 };
 
-export default UserItem;
+export default InvitationItem;
