@@ -4,10 +4,10 @@ import { useUser } from "../../login/hooks/useUser";
 
 const UserItem = ({ name, id }: any) => {
   const { mutateAsync: createInvite } = useInviteCreator();
-  const {user} = useUser();
+  const { user } = useUser();
 
   async function sendInvite() {
-    await createInvite({senderID: user.id, receiverID: id});
+    await createInvite({ senderID: user.id, receiverID: id });
     alert(`Invite sent to ${name} with id: ${id}!`);
   }
 
