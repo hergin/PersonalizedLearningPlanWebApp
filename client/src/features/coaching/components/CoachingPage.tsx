@@ -6,16 +6,32 @@ import InvitationItem from "./InviteItem";
 import { useCollapse } from "react-collapsed";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import { useFetchInvites } from "../hooks/useInvite";
+import { useUser } from "../../login/hooks/useUser";
+import { PublicUsers } from "../types";
 
 const CoachingPage = () => {
-  const { data: users, isLoading, isError } = useAllProfiles();
+  const { user } = useUser();
+  const {
+    data: users,
+    isLoading: profileLoading,
+    isError: profileError,
+  } = useAllProfiles();
+  const {
+    data: invites,
+    isLoading: inviteLoading,
+    isError: inviteError,
+  } = useFetchInvites(user.id);
   const [searchQuery, setSearchQuery] = useState("");
   const { getCollapseProps, getToggleProps, isExpanded } = useCollapse();
 
-  const filteredUsers = users?.filter((user: any) =>
+  const filteredUsers = users?.filter((user: PublicUsers) =>
     user.username.toLowerCase().includes(searchQuery.toLowerCase())
   );
-  console.log(users);
+
+  if (profileLoading) return <div>Loading...</div>;
+
+  if (profileError) return <div>Error...</div>;
   return (
     <div className="h-screen bg-[#F1F1F1]">
       <div className="w-full h-1/5 bg-[#8C1515] flex items-center justify-center px-[30%] flex-col">
@@ -40,22 +56,24 @@ const CoachingPage = () => {
             </span>
           </h1>
         </div>
-
-        <InvitationItem
-          name="John Doe"
-          id="1"
-          getCollapseProps={getCollapseProps}
-        />
+        {invites?.map((invite: any) => (
+          <InvitationItem
+            key={invite.account_id}
+            name={invite.username}
+            id={invite.account_id}
+            getCollapseProps={getCollapseProps}
+          />
+        ))}
       </div>
       <div className="w-full h-auto flex items-center justify-start gap-5 p-10 flex-col">
         <div className="w-[800px] h-auto flex">
           <h1 className="text-4xl">Users</h1>
         </div>
-        {filteredUsers?.map((user: any) => (
+        {filteredUsers?.map((user: PublicUsers) => (
           <UserItem
             key={user.account_id}
-            name={user.username}
-            id={user.account_id}
+            username={user.username}
+            account_id={user.account_id}
           />
         ))}
       </div>

@@ -95,9 +95,10 @@ export interface CreateProfileProps {
   lastName: string;
   account_id: number;
 }
+
 export interface CreateInvitationProps {
   senderId: number;
-  recipientId: string;
+  recipientId: number;
 }
 
 export interface CreateModuleProps {
