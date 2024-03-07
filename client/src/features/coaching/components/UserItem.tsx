@@ -7,7 +7,7 @@ const UserItem = ({ name, id }: any) => {
   const { user } = useUser();
 
   async function sendInvite() {
-    await createInvite({ senderID: user.id, receiverID: id });
+    await createInvite({ senderId: user.id, recipientId: id });
     alert(`Invite sent to ${name} with id: ${id}!`);
   }
 
