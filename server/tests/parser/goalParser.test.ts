@@ -268,7 +268,7 @@ describe('goal parser tests', () => {
             tag_id: tagId,
         });
         await parser.updateGoal({
-            id: goalID, 
+            goal_id: goalID, 
             name: TEST_DATA.goalNames[1], 
             description: TEST_DATA.goalDescriptions[1], 
             goal_type: GoalType.TASK, 
@@ -296,7 +296,7 @@ describe('goal parser tests', () => {
             tag_id: tagId,
         });
         await parser.updateGoal({
-            id: goalID, 
+            goal_id: goalID, 
             name: TEST_DATA.goalNames[1], 
             description: TEST_DATA.goalDescriptions[1], 
             goal_type: GoalType.TASK, 

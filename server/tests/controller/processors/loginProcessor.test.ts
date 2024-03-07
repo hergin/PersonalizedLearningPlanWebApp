@@ -178,4 +178,30 @@ describe("Login Processor unit tests", () => {
         expect(MOCK_RESPONSE.send).toHaveBeenCalledTimes(1);
         expect(MOCK_RESPONSE.send).toHaveBeenCalledWith(ERROR_MESSAGES.get(StatusCode.INTERNAL_SERVER_ERROR));
     });
+
+    it("get understudies (normal case)", async () => {
+        loginApi.getUnderstudies.mockResolvedValueOnce([TEST_ACCOUNT]);
+        const mRequest = createMockRequest({}, {id: TEST_ACCOUNT.id});
+        await LoginProcessor.getUnderstudies(mRequest, MOCK_RESPONSE);
+        expect(loginApi.getUnderstudies).toHaveBeenCalledTimes(1);
+        expect(loginApi.getUnderstudies).toHaveBeenCalledWith(TEST_ACCOUNT.id);
+        expect(MOCK_RESPONSE.send).toHaveBeenCalledTimes(0);
+        expect(MOCK_RESPONSE.status).toHaveBeenCalledTimes(1);
+        expect(MOCK_RESPONSE.status).toHaveBeenCalledWith(StatusCode.OK);
+        expect(MOCK_RESPONSE.json).toHaveBeenCalledTimes(1);
+        expect(MOCK_RESPONSE.json).toHaveBeenCalledWith([TEST_ACCOUNT]);
+    });
+
+    it("get understudies (error case)", async () => {
+        loginApi.getUnderstudies.mockResolvedValueOnce(StatusCode.CONNECTION_ERROR);
+        const mRequest = createMockRequest({}, {id: TEST_ACCOUNT.id});
+        await LoginProcessor.getUnderstudies(mRequest, MOCK_RESPONSE);
+        expect(loginApi.getUnderstudies).toHaveBeenCalledTimes(1);
+        expect(loginApi.getUnderstudies).toHaveBeenCalledWith(TEST_ACCOUNT.id);
+        expect(MOCK_RESPONSE.json).toHaveBeenCalledTimes(0);
+        expect(MOCK_RESPONSE.status).toHaveBeenCalledTimes(1);
+        expect(MOCK_RESPONSE.status).toHaveBeenCalledWith(StatusCode.CONNECTION_ERROR);
+        expect(MOCK_RESPONSE.send).toHaveBeenCalledTimes(1);
+        expect(MOCK_RESPONSE.send).toHaveBeenCalledWith(ERROR_MESSAGES.get(StatusCode.CONNECTION_ERROR));
+    });
 });

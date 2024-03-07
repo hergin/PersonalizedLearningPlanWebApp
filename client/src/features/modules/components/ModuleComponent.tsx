@@ -1,12 +1,18 @@
 import React, { useState } from "react";
 import CreationModal from "./CreationModal";
 import ModuleItem from "./ModuleItem";
-import { useModules } from "../hooks/useModules";
+import { useModules, useModuleUpdater, useModuleRemover } from "../hooks/useModules";
+import { Module } from "../../../types";
 
-const ModuleComponent = () => {
-  const { data: modules, isLoading, isError } = useModules();
-  console.log(modules);
-  const [open, setOpen] = useState(false);
+interface ModuleComponentProps {
+  accountId: number
+}
+
+const ModuleComponent = ({accountId}: ModuleComponentProps) => {
+  const { data: modules, isLoading, error } = useModules(accountId);
+  const { mutateAsync: updateModule } = useModuleUpdater();
+  const { mutateAsync: deleteModule } = useModuleRemover();
+  const [ open, setOpen ] = useState(false);
 
   function openModal() {
     setOpen(true);
@@ -17,11 +23,11 @@ const ModuleComponent = () => {
   }
   
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <div>Loading, please wait...</div>;
   }
 
-  if (isError) {
-    return <div>Error</div>;
+  if (error) {
+    return <div>An error has occurred. Please refresh the page and try again.</div>;
   }
 
   return (
@@ -29,9 +35,9 @@ const ModuleComponent = () => {
       {modules?.map((module: any) => (
         <ModuleItem
           key={module.module_id}
-          module={module}
-          editModule={() => console.log("edit")}
-          deleteModule={() => console.log("delete")}
+          module={{...module, id: module.module_id, name: module.module_name, completion: module.completion_percent}}
+          editModule={async (module: Module) => {await updateModule(module)}}
+          deleteModule={async (id: number) => {await deleteModule(id)}}
         />
       ))}
       <div className="flex flex-col transition-transform rounded border border-solid border-black w-[300px] h-[500px] duration-300 shadow-md hover:scale-105 hover:shadow-lg">
@@ -42,7 +48,7 @@ const ModuleComponent = () => {
           <h1>+</h1>
         </button>
         <CreationModal
-          addModule={() => console.log("add")}
+          accountId={accountId}
           modalTitle="Create a new module"
           open={open}
           closeModal={closeModal}

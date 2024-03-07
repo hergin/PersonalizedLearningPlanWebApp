@@ -5,16 +5,13 @@ import { SubGoalsCollapsable } from "./SubGoalsCollapsable";
 import { useCollapse } from "react-collapsed";
 import dayjs from "dayjs";
 import { Checkbox } from "@mui/material";
-import { ApiClient } from "../../../hooks/ApiClient";
-import { useQueryClient } from "@tanstack/react-query";
 import SubGoalCreator from "./SubGoalCreator";
 import GoalDescriptionModal from "./GoalDescriptionModal";
-import { AxiosError } from "axios";
-import useTags from "../../tags/hooks/useTags";
 import FeedbackCollapsable from "./FeedbackCollapsable";
+import { useGoalUpdater } from "../hooks/useGoals";
 
 interface GoalItemProps {
-  id: string;
+  id: number;
   goal: Goal;
 }
 
@@ -25,51 +22,22 @@ export default function GoalItem({ id, goal }: GoalItemProps) {
     getToggleProps: getFeedbackToggle,
     isExpanded: isFeedbackExpanded,
   } = useCollapse();
-  const queryClient = useQueryClient();
   const [progress, setProgress] = useState(0);
-  const [isComplete, setIsComplete] = useState(goal.is_complete);
   const [openDescription, setOpenDescription] = useState(false);
-  console.log(isComplete + " isComplete");
-  console.log(id + "id");
-  console.log(goal);
-  const { put } = ApiClient();
+  const { mutateAsync: updateGoal} = useGoalUpdater(goal.module_id);
 
-  function handleToggle(checked: boolean) {
-    setIsComplete(checked);
-    updateDatabase(goal, checked);
-  }
   useEffect(() => {
     // action on update of movies
-    if (isComplete) {
-      console.log(isComplete);
+    if (goal.is_complete) {
+      console.log(goal.is_complete);
       setProgress(1);
       console.log(progress + "Is this");
     } else {
-      console.log(isComplete);
+      console.log(goal.is_complete);
       setProgress(0);
       console.log(progress + "Is this");
     }
-  }, [isComplete, progress]);
-
-  async function updateDatabase(goal: Goal, checked: boolean) {
-    try {
-      console.log(`${goal.goal_id}`);
-      await put(`/goal/update/${goal.goal_id}`, {
-        name: goal.name,
-        description: goal.description,
-        goalType: goal.goal_type,
-        isComplete: checked,
-        moduleId: goal.moduleId,
-      });
-      queryClient.invalidateQueries({ queryKey: ["goals"] });
-      console.log("Database updated");
-      console.log();
-    } catch (error: unknown) {
-      const axiosError = error as AxiosError;
-      console.error(axiosError);
-      alert(axiosError.response ? axiosError.response.data : error);
-    }
-  }
+  }, [goal.is_complete, progress]);
 
   return (
     <div>
@@ -96,12 +64,11 @@ export default function GoalItem({ id, goal }: GoalItemProps) {
             )}
           </div>
           <div className="flex flex-col transition-transform w-[15%] h-full justify-center p-3 items-center">
-          
-            <p className={`text-[${goal.color}]`}>{goal.tag_name}</p>
+            <p className={`text-black`}>{goal.tag_name}</p>
           </div>
           <div className="flex flex-col transition-transform w-[15%] h-full justify-center p-3 items-center">
             <button {...getFeedbackToggle()} className="text-black">
-              +
+              {isFeedbackExpanded ? "-" : "+"}
             </button>
           </div>
           <div className="flex flex-col transition-transform w-[15%] h-full justify-center p-3 items-center">
@@ -111,18 +78,12 @@ export default function GoalItem({ id, goal }: GoalItemProps) {
               </button>
             ) : (
               <Checkbox
-                checked={isComplete}
-                onChange={(checked) => handleToggle(checked.target.checked)}
+                checked={goal.is_complete}
+                onChange={(checked) => updateGoal({...goal, is_complete: checked.target.checked})}
               />
             )}
           </div>
-          <GoalEditor
-            id={goal.goal_id}
-            goalType={goal.goal_type}
-            dataName={goal.name}
-            dataDescription={goal.description}
-            dueDate={goal.due_date}
-          />
+          <GoalEditor goal={goal} />
         </div>
         <FeedbackCollapsable
           getCollapsableProps={getFeedbackCollapsable}
@@ -134,10 +95,10 @@ export default function GoalItem({ id, goal }: GoalItemProps) {
             key={subGoal.goal_id}
             getCollapseProps={getCollapseProps}
             sub_goal={subGoal}
-            updateGoal={updateDatabase}
+            updateGoal={async (goal: Goal) => {await updateGoal(goal)}}
           />
         ))}
-        <SubGoalCreator moduleID={id} parent_id={goal.goal_id.toString()} />
+        <SubGoalCreator moduleID={id} parentId={goal.goal_id} />
         <GoalDescriptionModal
           goal={goal}
           open={openDescription}

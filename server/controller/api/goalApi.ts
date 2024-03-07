@@ -59,7 +59,7 @@ export default class GoalAPI {
     }
 
     async updateGoal(goal : Goal) {
-        if(!goal.id || isNaN(goal.id)) {
+        if(!goal.goal_id || isNaN(goal.goal_id)) {
             return StatusCode.BAD_REQUEST;
         }
         
@@ -70,7 +70,7 @@ export default class GoalAPI {
         try {
             await this.parser.updateGoal({...goal, due_date: dueDate});
             if (completionTime) {
-                await this.parser.updateGoalTimestamps(goal.id, completionTime, expiration);
+                await this.parser.updateGoalTimestamps(goal.goal_id, completionTime, expiration);
             }
             return StatusCode.OK;
         } catch (error: unknown) {

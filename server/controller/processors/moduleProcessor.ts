@@ -17,17 +17,17 @@ async function getAccountModules(req : Request, res : Response) {
 }
 
 async function postModule(req : Request, res : Response) {
-    console.log(`Received in post module: ${req.body.account_id}`);
+    console.log(`Received in post module: ${req.body.accountId}`);
     const moduleQuery = await moduleAPI.createModule({
         name: req.body.name, 
         description: req.body.description, 
-        completion: req.body.completion_percent, 
-        accountId: req.body.account_id,
-        coachId: req.body.coach_id
+        completion: req.body.completionPercent, 
+        accountId: req.body.accountId,
+        coachId: req.body.coachId
     });
     console.log(`Query Result: ${moduleQuery}`);
     if(moduleQuery as StatusCode in StatusCode) {
-        console.log(`Something went wrong while creating module for account ${req.body.account_id}.`);
+        console.log(`Something went wrong while creating module for account ${req.body.accountId}.`);
         res.status(moduleQuery as StatusCode).send(ERROR_MESSAGES.get(moduleQuery as StatusCode));
         return;
     }

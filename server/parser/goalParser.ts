@@ -61,10 +61,28 @@ export default class GoalParser extends DatabaseParser {
 
     async updateGoal(goal: Goal) {
         console.log("Inserting updated data into Goal...");
-        const query = this.#generateInsertQuery(goal);
+        const query = this.#generateUpdateQuery(goal);
         console.log(JSON.stringify(query));
         await this.updateDatabase(query);
         console.log("Goal data updated!");
+    }
+
+    #generateUpdateQuery(goal: Goal): Query {
+        var text = "UPDATE GOAL SET ";
+        var values : (string | number | boolean | Date | undefined)[] = [];
+        Object.entries(goal).forEach((goalElement) => {
+            const [variable, value] = goalElement;
+            if(variable === "goal_id" || value === undefined || Array.isArray(value) || value === "") return;
+            values.push(value);
+            text = text.concat(`${variable} = $${values.length}, `);
+        });
+        values.push(goal.goal_id);
+        const finalText = text.slice(0, text.length - 2).concat(` WHERE goal_id = $${values.length}`);
+        console.log(`Final Query: ${finalText}`);
+        return {
+            text: finalText,
+            values: values
+        }
     }
 
     async updateGoalFeedback(goalID: number, feedback: string) {

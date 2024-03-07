@@ -54,6 +54,7 @@ export const TEST_PROFILE = {
 export const TEST_SETTINGS = {
     id: 42,
     receiveEmails: true,
+    allowCoachInvitations: true,
     accountId: TEST_ACCOUNT.id
 }
 

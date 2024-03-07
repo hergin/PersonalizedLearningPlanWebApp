@@ -8,7 +8,7 @@ import { GoalType } from "../../../types";
 jest.mock("../../../parser/goalParser");
 
 
-describe('goal processor unit tests', () => {
+describe('Goal Api Unit Tests', () => {
     let goalAPI : GoalAPI;
     let parser : any;
 
@@ -164,7 +164,7 @@ describe('goal processor unit tests', () => {
         expect(parser.storeGoal).toHaveBeenCalledTimes(1);
         expect(parser.storeGoal).toHaveBeenCalledWith({
             ...testObject,
-            dueDate: "2025-01-01 23:59:59.000 "
+            due_date: "2025-01-01 23:59:59.000 "
         });
         expect(actual).toEqual({goal_id: TEST_GOAL.id[0]});
     });
@@ -208,7 +208,7 @@ describe('goal processor unit tests', () => {
     it('update goal (pass case)', async () => {
         parser.updateGoal.mockResolvedValueOnce();
         expect(await goalAPI.updateGoal({
-            id: TEST_GOAL.id[0],
+            goal_id: TEST_GOAL.id[0],
             name: TEST_GOAL.name[0], 
             description: TEST_GOAL.description[0], 
             goal_type: TEST_GOAL.goalType, 
@@ -219,7 +219,7 @@ describe('goal processor unit tests', () => {
     it('update goal (duplicate case)', async () => {
         parser.updateGoal.mockRejectedValue(FAKE_ERRORS.primaryKeyViolation);
         expect(await goalAPI.updateGoal({
-            id: TEST_GOAL.id[0],
+            goal_id: TEST_GOAL.id[0],
             name: TEST_GOAL.name[0], 
             description: TEST_GOAL.description[0], 
             goal_type: TEST_GOAL.goalType, 
@@ -230,7 +230,7 @@ describe('goal processor unit tests', () => {
     it('update goal (bad data case)', async () => {
         parser.updateGoal.mockRejectedValue(FAKE_ERRORS.badRequest);
         expect(await goalAPI.updateGoal({
-            id: TEST_GOAL.id[0],
+            goal_id: TEST_GOAL.id[0],
             name: TEST_GOAL.name[0], 
             description: TEST_GOAL.description[0], 
             goal_type: TEST_GOAL.goalType, 
@@ -241,7 +241,7 @@ describe('goal processor unit tests', () => {
     it('update goal (connection lost case)', async () => {
         parser.updateGoal.mockRejectedValue(FAKE_ERRORS.networkError);
         expect(await goalAPI.updateGoal({
-            id: TEST_GOAL.id[0],
+            goal_id: TEST_GOAL.id[0],
             name: TEST_GOAL.name[0], 
             description: TEST_GOAL.description[0], 
             goal_type: TEST_GOAL.goalType, 
@@ -252,7 +252,7 @@ describe('goal processor unit tests', () => {
     it('update goal (fatal error case)', async () => {
         parser.updateGoal.mockRejectedValue(FAKE_ERRORS.fatalServerError);
         expect(await goalAPI.updateGoal({
-            id: TEST_GOAL.id[0],
+            goal_id: TEST_GOAL.id[0],
             name: TEST_GOAL.name[0], 
             description: TEST_GOAL.description[0], 
             goal_type: TEST_GOAL.goalType, 

@@ -132,7 +132,7 @@ describe("Goal Processor Unit Tests", () => {
         await GoalProcessor.putGoal(mRequest, MOCK_RESPONSE);
         expect(goalApi.updateGoal).toHaveBeenCalledTimes(1);
         expect(goalApi.updateGoal).toHaveBeenCalledWith({
-            id: TEST_GOAL.id[0],
+            goal_id: TEST_GOAL.id[0],
             name: TEST_GOAL.name[0],
             description: TEST_GOAL.description[0],
             goal_type: TEST_GOAL.goalType,
@@ -160,7 +160,7 @@ describe("Goal Processor Unit Tests", () => {
         await GoalProcessor.putGoal(mRequest, MOCK_RESPONSE);
         expect(goalApi.updateGoal).toHaveBeenCalledTimes(1);
         expect(goalApi.updateGoal).toHaveBeenCalledWith({
-            id: TEST_GOAL.id[0],
+            goal_id: TEST_GOAL.id[0],
             name: TEST_GOAL.name[0],
             description: TEST_GOAL.description[0],
             goal_type: TEST_GOAL.goalType,

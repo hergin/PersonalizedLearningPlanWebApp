@@ -6,7 +6,7 @@ import { StatusCode } from "../../../types";
 import { FAKE_ERRORS, TEST_DASHBOARD } from "../global/mockValues";
 jest.mock("../../../parser/dashboardParser");
 
-describe('Dashboard Functions', () => {
+describe('Dashboard Api Unit Tests', () => {
     let parser : any;
     let dashboardAPI : DashboardAPI;
 

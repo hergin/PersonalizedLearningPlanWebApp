@@ -21,7 +21,7 @@ export enum Subject {
 }
 
 export type Goal = {
-    id?: number,
+    goal_id?: number,
     name: string,
     description: string,
     is_complete: boolean,
@@ -58,6 +58,7 @@ export type Module = {
 export type AccountSettings = {
     id?: number,
     receiveEmails: boolean,
+    allowCoachInvitations: boolean,
     accountId?: number
 }
 
