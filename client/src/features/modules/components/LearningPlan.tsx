@@ -12,7 +12,7 @@ const TABPANEL_STYLE = "p-[2%] h-screen bg-[#F1F1F1]";
 export default function LearningPlan() {
   const { user, setUser } = useAuth();
   const { data: understudyData, isLoading, error } = useUnderstudies(user.id);
-  const [ currentTabIndex, setCurrentTabIndex ] = useState(user.id);
+  const [currentTabIndex, setCurrentTabIndex] = useState(user.id);
 
   useEffect(() => {
     console.log(`Default screen: ${sessionStorage.getItem("user")}`);
@@ -21,33 +21,39 @@ export default function LearningPlan() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  if(isLoading) {
-    <p>Loading, please wait...</p>
+  if (isLoading) {
+    <p>Loading, please wait...</p>;
   }
 
-  if(error) {
-    <p>An error has occurred. Please try again.</p>
+  if (error) {
+    <p>An error has occurred. Please try again.</p>;
   }
 
   return (
     <div>
       <Tabs
         value={currentTabIndex}
-        onChange={(event: React.SyntheticEvent, newValue: number) => {setCurrentTabIndex(newValue)}}
+        onChange={(event: React.SyntheticEvent, newValue: number) => {
+          setCurrentTabIndex(newValue);
+        }}
         scrollButtons="auto"
         className="px-4 mx-4"
         TabIndicatorProps={{
           style: {
             color: "black",
-          }
+          },
         }}
       >
         {/* Icons will be replaced by actual profile pictures later on, but for now we're using placeholders. */}
-        <Tab label="You" value={user.id} icon={<ProfilePicture style="size-7" />} />
+        <Tab
+          label="You"
+          value={user.id}
+          icon={<ProfilePicture style="size-7" />}
+        />
         {understudyData?.map((understudy: Understudy) => (
-          <Tab 
-            key={`KEY-${understudy.account_id}`} 
-            label={understudy.username} 
+          <Tab
+            key={`KEY-${understudy.account_id}`}
+            label={understudy.username}
             value={understudy.account_id}
             icon={<ProfilePicture style="size-7" />}
           />
@@ -57,8 +63,8 @@ export default function LearningPlan() {
         <ModuleComponent accountId={user.id} />
       </TabPanel>
       {understudyData?.map((understudy: Understudy) => (
-        <TabPanel 
-          key={`PANEL_KEY-${understudy.account_id}`} 
+        <TabPanel
+          key={`PANEL_KEY-${understudy.account_id}`}
           value={currentTabIndex}
           index={understudy.account_id}
           style={TABPANEL_STYLE}
@@ -66,6 +72,6 @@ export default function LearningPlan() {
           <ModuleComponent accountId={understudy.account_id} />
         </TabPanel>
       ))}
-    </div> 
+    </div>
   );
 }

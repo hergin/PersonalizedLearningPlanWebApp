@@ -1,14 +1,15 @@
 import React from "react";
-import { useInviteCreator } from "../hooks/useCoach";
+import { useInviteCreator } from "../hooks/useInvite";
 import { useUser } from "../../login/hooks/useUser";
+import { PublicUsers } from "../types";
 
-const UserItem = ({ name, id }: any) => {
+const UserItem = ({ username, account_id }: PublicUsers) => {
   const { mutateAsync: createInvite } = useInviteCreator();
   const { user } = useUser();
 
   async function sendInvite() {
-    await createInvite({ senderID: user.id, receiverID: id });
-    alert(`Invite sent to ${name} with id: ${id}!`);
+    await createInvite({ senderID: user.id, receiverID: account_id });
+    alert(`Invite sent to ${name} with id: ${account_id}!`);
   }
 
   return (
@@ -20,7 +21,7 @@ const UserItem = ({ name, id }: any) => {
             alt="Avatar"
             className="w-20 h-20 rounded-full m-4"
           />
-          <h1 className="text-3xl text-black">{name}</h1>
+          <h1 className="text-3xl text-black">{username}</h1>
         </div>
         <div>
           <button
