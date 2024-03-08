@@ -5,10 +5,10 @@ import { CreateInvitationProps } from "../types";
 export const InvitationApi = () => {
   const { post, get } = ApiClient();
 
-  async function FetchInvitations(userID: number) {
+  async function FetchInvitations(id: number) {
     try {
-      const response = await get(`/invite/${userID}`);
-      return response.data;
+      const response = await get(`/invite/${id}`);
+      return response;
     } catch (error: unknown) {
       console.error(error);
       alert(
@@ -27,5 +27,28 @@ export const InvitationApi = () => {
       );
     }
   }
-  return { CreateInvitation, FetchInvitations };
+
+  async function AcceptInvitation({id, senderId, recipientId}: any) {
+    try {
+      await post(`/invite/accept/${id}`, {senderId, recipientId});
+    } catch (error: unknown) {
+      console.error(error);
+      alert(
+        (error as AxiosError).message ? (error as AxiosError).message : error
+      );
+    }
+  }
+  async function DeclineInvitation(id: number) {
+    try {
+      await post(`/invite/reject/${id}`, {});
+    } catch (error: unknown) {
+      console.error(error);
+      alert(
+        (error as AxiosError).message ? (error as AxiosError).message : error
+      );
+    }
+  }
+
+
+  return { CreateInvitation, FetchInvitations, AcceptInvitation, DeclineInvitation };
 };

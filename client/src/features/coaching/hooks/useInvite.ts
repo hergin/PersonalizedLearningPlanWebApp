@@ -24,3 +24,31 @@ export function useInviteCreator() {
     },
   });
 }
+
+export function useInviteAccepter() {
+  const queryClient = useQueryClient();
+  const { AcceptInvitation } = InvitationApi();
+
+  return useMutation({
+    mutationFn: async (invite: any) => {
+      await AcceptInvitation(invite);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["invites"] });
+    },
+  });
+}
+
+export function useInviteDecliner() {
+  const queryClient = useQueryClient();
+  const { DeclineInvitation } = InvitationApi();
+
+  return useMutation({
+    mutationFn: async (id: number) => {
+      await DeclineInvitation(id);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["invites"] });
+    },
+  });
+}

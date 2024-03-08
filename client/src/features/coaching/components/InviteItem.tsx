@@ -1,11 +1,18 @@
 import React from "react";
+import { useInviteAccepter, useInviteDecliner } from "../hooks/useInvite";
 
-const InvitationItem = ({ name, id, getCollapseProps }: any) => {
+const InvitationItem = ({ name, id, getCollapseProps, recipientId, senderId }: any) => {
+  const { mutateAsync: acceptInvite } = useInviteAccepter(); 
+  const { mutateAsync: declinetInvite } = useInviteDecliner(); 
+
+
   async function AcceptInvite() {
+    await acceptInvite({id, recipientId, senderId});
     alert(`Invite accpeted`);
   }
 
   async function DeclineInvite() {
+    await declinetInvite(id);
     alert(`Invite declined`);
   }
 
