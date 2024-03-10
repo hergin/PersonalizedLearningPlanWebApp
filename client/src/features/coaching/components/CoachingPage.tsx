@@ -22,8 +22,6 @@ const CoachingPage = () => {
     isLoading: inviteLoading,
     isError: inviteError,
   } = useFetchInvites(user.id);
-  console.log(invites.length);
-  console.log(invites);
   const [searchQuery, setSearchQuery] = useState("");
   const { getCollapseProps, getToggleProps, isExpanded } = useCollapse();
 
@@ -31,9 +29,9 @@ const CoachingPage = () => {
     publicUser.username.toLowerCase().includes(searchQuery.toLowerCase()) && publicUser.account_id !== user.id
   );
 
-  if (profileLoading) return <div>Loading...</div>;
+  if (profileLoading || inviteLoading) return <div>Loading...</div>;
 
-  if (profileError) return <div>Error...</div>;
+  if (profileError || inviteError) return <div>Error...</div>;
   return (
     <div className="min-h-screen bg-[#F1F1F1]">
       <div className="w-full h-auto bg-[#8C1515] flex items-center justify-center px-[30%] py-[2%] flex-col">
