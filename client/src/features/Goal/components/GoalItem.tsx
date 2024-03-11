@@ -24,20 +24,20 @@ export default function GoalItem({ id, goal }: GoalItemProps) {
   } = useCollapse();
   const [progress, setProgress] = useState(0);
   const [openDescription, setOpenDescription] = useState(false);
-  const { mutateAsync: updateGoal} = useGoalUpdater(goal.module_id);
+  const { mutateAsync: updateGoal } = useGoalUpdater(goal.module_id);
 
   useEffect(() => {
     // action on update of movies
     if (goal.is_complete) {
-      console.log(goal.is_complete);
+      goal.is_complete;
       setProgress(1);
-      console.log(progress + "Is this");
+      progress + "Is this";
     } else {
-      console.log(goal.is_complete);
+      goal.is_complete;
       setProgress(0);
-      console.log(progress + "Is this");
+      progress + "Is this";
     }
-    console.log(goal.color);
+    goal.color;
   }, [goal.color, goal.is_complete, progress]);
 
   return (
@@ -65,7 +65,9 @@ export default function GoalItem({ id, goal }: GoalItemProps) {
             )}
           </div>
           <div className="flex flex-col transition-transform w-[15%] h-full justify-center p-3 items-center">
-            <p className={`text-[#${goal.color?.slice(1, goal.color.length)}]`}>{goal.tag_name}</p>
+            <p className={`text-[#${goal.color?.slice(1, goal.color.length)}]`}>
+              {goal.tag_name}
+            </p>
           </div>
           <div className="flex flex-col transition-transform w-[15%] h-full justify-center p-3 items-center">
             <button {...getFeedbackToggle()} className="text-black">
@@ -80,7 +82,9 @@ export default function GoalItem({ id, goal }: GoalItemProps) {
             ) : (
               <Checkbox
                 checked={goal.is_complete}
-                onChange={(checked) => updateGoal({...goal, is_complete: checked.target.checked})}
+                onChange={(checked) =>
+                  updateGoal({ ...goal, is_complete: checked.target.checked })
+                }
               />
             )}
           </div>
@@ -96,7 +100,9 @@ export default function GoalItem({ id, goal }: GoalItemProps) {
             key={subGoal.goal_id}
             getCollapseProps={getCollapseProps}
             sub_goal={subGoal}
-            updateGoal={async (goal: Goal) => {await updateGoal(goal)}}
+            updateGoal={async (goal: Goal) => {
+              await updateGoal(goal);
+            }}
           />
         ))}
         <SubGoalCreator moduleID={id} parentId={goal.goal_id} />

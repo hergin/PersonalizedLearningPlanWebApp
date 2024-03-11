@@ -19,7 +19,7 @@ export const ApiClient = () => {
       }
       return config;
     },
-    (error) => Promise.reject(error),
+    (error) => Promise.reject(error)
   );
 
   api.interceptors.response.use(
@@ -31,7 +31,10 @@ export const ApiClient = () => {
         error.response &&
         error.response.status === 401
       ) {
-        const data = JSON.stringify({ id: user.id, refreshToken: user.refreshToken });
+        const data = JSON.stringify({
+          id: user.id,
+          refreshToken: user.refreshToken,
+        });
         try {
           const result = await api.post("/token", data);
           originalRequest.headers.Authorization = `Bearer ${result.data}`;
@@ -45,26 +48,26 @@ export const ApiClient = () => {
         }
       }
       return Promise.reject(error);
-    },
+    }
   );
 
-  const get = async (path : string) => {
+  const get = async (path: string) => {
     const response = await api.get(path);
     return response.data;
   };
 
-  const post = async (path : string, data : object) => {
+  const post = async (path: string, data: object) => {
     const response = await api.post(path, data);
-    console.log(response);
+    response;
     return response.data;
   };
 
-  const put = async (path : string, data : object) => {
+  const put = async (path: string, data: object) => {
     const response = await api.put(path, data);
     return response.data;
   };
 
-  const del = async (path : string) => {
+  const del = async (path: string) => {
     return await api.delete(path);
   };
 

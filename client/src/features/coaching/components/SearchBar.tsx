@@ -15,14 +15,13 @@ const SearchBar = ({searchQuery, setSearchQuery}: SearchBarProps) => {
         onChange={(e) => setSearchQuery(e.target.value)}
         className="text"
         label="Enter a user name"
-        variant="outlined"
+        variant="filled"
         placeholder="Search..."
         size="medium"
         sx={{
           backgroundColor: "white",
         }}
         fullWidth
-        color="primary"
       />
     </>
   );

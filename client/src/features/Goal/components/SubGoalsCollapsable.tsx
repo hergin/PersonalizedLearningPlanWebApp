@@ -16,17 +16,17 @@ export function SubGoalsCollapsable({
   updateGoal,
 }: GoalCreatorProps) {
   const [progress, setProgress] = useState(0);
-  
+
   useEffect(() => {
     // action on update of movies
     if (sub_goal.is_complete) {
-      console.log(sub_goal.is_complete);
+      sub_goal.is_complete;
       setProgress(1);
-      console.log(progress + "Is this");
+      progress + "Is this";
     } else {
-      console.log(sub_goal.is_complete);
+      sub_goal.is_complete;
       setProgress(0);
-      console.log(progress + "Is this");
+      progress + "Is this";
     }
   }, [sub_goal.is_complete, progress]);
 
@@ -55,7 +55,12 @@ export function SubGoalsCollapsable({
         <div className="flex flex-col w-[15%] h-full justify-center p-3 items-center">
           <Checkbox
             checked={sub_goal.is_complete}
-            onChange={async (event) => {await updateGoal({...sub_goal, is_complete: event.target.checked})}}
+            onChange={async (event) => {
+              await updateGoal({
+                ...sub_goal,
+                is_complete: event.target.checked,
+              });
+            }}
           />
         </div>
         <GoalEditor goal={sub_goal} />

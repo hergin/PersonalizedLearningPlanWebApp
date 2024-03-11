@@ -10,7 +10,7 @@ interface ModuleProps {
 }
 
 const ModuleItem = ({ module, editModule, deleteModule }: ModuleProps) => {
-  console.log(module);
+  module;
   return (
     <div className="flex flex-col transition-transform rounded border border-solid border-black w-[300px] h-[500px] duration-300 shadow-md hover:scale-105 hover:shadow-lg bg-white">
       <div className="flex">
