@@ -37,7 +37,8 @@ export default function GoalItem({ id, goal }: GoalItemProps) {
       setProgress(0);
       console.log(progress + "Is this");
     }
-  }, [goal.is_complete, progress]);
+    console.log(goal.color);
+  }, [goal.color, goal.is_complete, progress]);
 
   return (
     <div>
@@ -64,8 +65,7 @@ export default function GoalItem({ id, goal }: GoalItemProps) {
             )}
           </div>
           <div className="flex flex-col transition-transform w-[15%] h-full justify-center p-3 items-center">
-          
-            <p className={`text-[${goal.color}]`}>{goal.tag_name}</p>
+            <p className={`text-[#${goal.color?.slice(1, goal.color.length)}]`}>{goal.tag_name}</p>
           </div>
           <div className="flex flex-col transition-transform w-[15%] h-full justify-center p-3 items-center">
             <button {...getFeedbackToggle()} className="text-black">
