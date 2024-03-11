@@ -6,6 +6,11 @@ export default class ProfileParser extends DatabaseParser {
         super();
     }
 
+    async parseAllProfiles() {
+        console.log("Getting all public user data...");
+        return await this.parseDatabase("SELECT * FROM PUBLIC_USER_DATA");
+    }
+
     async parseProfile(accountId : number) {
         console.log("Getting profile...");
         const query = {

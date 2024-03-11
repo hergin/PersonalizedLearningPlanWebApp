@@ -1,15 +1,11 @@
 import { Pool } from "pg";
 import { join } from "path";
 import dotenv from "dotenv";
+import { Query } from "../types";
 
 dotenv.config({
     path: join(__dirname, ".env")
 });
-
-interface Query {
-    text: string,
-    values: (string | number | boolean | Date | undefined)[]
-}
 
 export default class DatabaseParser {
     pool : Pool;

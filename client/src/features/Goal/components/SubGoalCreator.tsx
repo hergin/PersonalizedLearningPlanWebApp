@@ -1,59 +1,34 @@
 import React, { useState } from "react";
 import Modal from "@mui/material/Modal";
-import { ApiClient } from "../../../hooks/ApiClient";
 import { useHotKeys } from "../../../hooks/useHotKeys";
 import { DatePicker } from "@mui/x-date-pickers";
-import { Checkbox } from "@mui/material";
+import { Checkbox, InputLabel, MenuItem, Select } from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { useQueryClient } from "@tanstack/react-query";
-import { GoalType } from "../../../types";
+import { GoalType, CreateSubGoalProps, Tag } from "../../../types";
+import { useUser } from "../../login/hooks/useUser";
+import { useTags } from "../../tags/hooks/useTags";
+import { useGoalCreator } from "../hooks/useGoals";
 
 interface GoalCreatorProps {
-  moduleID: string;
-  parent_id?: string;
+  moduleID: number;
+  parentId: number;
 }
 
-function SubGoalCreator({ moduleID, parent_id }: GoalCreatorProps) {
-  const [goalName, setGoalName] = useState("");
-  const [description, setDescription] = useState("");
-  const GoalTypes = {
-    TODO: "todo",
-    DAILY: "daily",
-  };
-  const [goalType, setGoalType] = useState(GoalTypes.TODO);
-  const queryClient = useQueryClient();
-  const [dueDate, setDueDate] = useState<Date | null>(null);
+function SubGoalCreator({ moduleID, parentId }: GoalCreatorProps) {
+  const [goal, setGoal] = useState<CreateSubGoalProps>({
+    name: "", description: "", goalType: GoalType.TASK, isComplete: false, moduleId: moduleID, parentId
+  });
+  const { user } = useUser();
+  const { data: tags } = useTags(user.id);
   const [open, setOpen] = useState(false);
-  const submitDisabled = goalName === "" || description === "";
-  const { post } = ApiClient();
+  const submitDisabled = goal.name === "" || goal.description === "";
   const { handleEnterPress } = useHotKeys();
-
+  const { mutateAsync: createGoal } = useGoalCreator(moduleID);
+  
   async function handleGoalCreation() {
-    try {
-      console.log(parent_id + "parent_id is here");
-      await post(`/goal/add/${parent_id}`, {
-        name: goalName,
-        description: description,
-        goalType: goalType as GoalType,
-        isComplete: false,
-        moduleId: moduleID,
-        dueDate: dueDate,
-      });
-      queryClient.invalidateQueries({ queryKey: ["goals"] });
-      console.log("Goal creation is not implemented yet.");
-      setOpen(false);
-    } catch (error: any) {
-      console.error(error);
-      alert(error.message ? error.message : error);
-    }
-  }
-  function changeType(checked: boolean) {
-    if (checked) {
-      setGoalType(GoalTypes.DAILY);
-    } else {
-      setGoalType(GoalTypes.TODO);
-    }
+    await createGoal(goal);
+    setOpen(false);
   }
 
   return (
@@ -80,40 +55,59 @@ function SubGoalCreator({ moduleID, parent_id }: GoalCreatorProps) {
                 name="module"
                 type="text"
                 placeholder="Goal Name"
-                value={goalName}
+                value={goal.name}
                 onChange={(event) => {
-                  setGoalName(event.target.value);
+                  setGoal({...goal, name: event.target.value});
                 }}
                 onKeyUp={(event) => {
                   handleEnterPress(event, handleGoalCreation, submitDisabled);
                 }}
                 required
               />
+
               <input
                 className="h-40 rounded text-base w-full border border-solid border-gray-300 px-2 "
                 name="module"
                 type="text"
                 placeholder="Goal Description"
-                value={description}
+                value={goal.description}
                 onChange={(event) => {
-                  setDescription(event.target.value);
+                  setGoal({...goal, description: event.target.value});
                 }}
                 onKeyUp={(event) => {
                   handleEnterPress(event, handleGoalCreation, submitDisabled);
                 }}
                 required
               />
-              <div className="w-full flex justify-between items-center px-20 ">
+              <div className="w-full flex justify-between items-center px-20 gap-4 ">
                 <div className="flex flex-row justify-center items-center">
                   <p className="font-headlineFont text-xl">Daily</p>
                   <Checkbox
-                    onChange={(event) => changeType(event.target.checked)}
+                    onChange={(event) => setGoal({...goal, goalType: event.target.checked ? GoalType.REPEATABLE : GoalType.TASK})}
                   />
+                </div>
+                <div className="flex flex-row items-center gap-2 ">
+                  <InputLabel id="simple-select-label">Tag</InputLabel>
+                  <Select
+                    value={goal.tagId}
+                    onChange={(event) => setGoal({...goal, tagId: Number(event.target.value)})}
+                    sx={{
+                      color: "black",
+                      width: 250,
+                      height: 50,
+                    }}
+                  >
+                    {tags?.map((tag: Tag) => (
+                      <MenuItem key={tag.id} value={tag.id}>
+                        {tag.name}
+                      </MenuItem>
+                    ))}
+                  </Select>
                 </div>
                 <DatePicker
                   label="Due Date"
-                  value={dueDate}
-                  onChange={(newDueDate) => setDueDate(newDueDate)}
+                  value={goal.dueDate}
+                  onChange={(newDueDate) => setGoal({...goal, dueDate: newDueDate})}
                 />
               </div>
               <button

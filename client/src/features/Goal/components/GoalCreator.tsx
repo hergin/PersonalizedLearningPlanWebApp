@@ -1,55 +1,39 @@
 import React, { useState } from "react";
 import Modal from "@mui/material/Modal";
-import { ApiClient } from "../../../hooks/ApiClient";
 import { useHotKeys } from "../../../hooks/useHotKeys";
 import { DatePicker } from "@mui/x-date-pickers";
-import { Checkbox } from "@mui/material";
+import { Checkbox, InputLabel, MenuItem, Select } from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { useQueryClient } from "@tanstack/react-query";
-import { GoalType } from "../../../types";
+import { CreateGoalProps, GoalType, Tag } from "../../../types";
+import { useTags } from "../../tags/hooks/useTags";
+import { useUser } from "../../login/hooks/useUser";
+import { useGoalCreator } from "../hooks/useGoals";
 
 interface GoalCreatorProps {
-  moduleID: string;
-  height?: string;
-  goalID?: string;
+  moduleId: number,
 }
 
-function GoalCreator({ moduleID, goalID, height }: GoalCreatorProps) {
-  const [goalName, setGoalName] = useState("");
-  const [description, setDescription] = useState("");
-  const [goalType, setGoalType] = useState(GoalType.TASK);
-  const queryClient = useQueryClient();
-  const [dueDate, setDueDate] = useState<Date | null>(null);
+function GoalCreator({ moduleId }: GoalCreatorProps) {
+  const [goal, setGoal] = useState<CreateGoalProps>({
+    name: "", description: "", goalType: GoalType.TASK, isComplete: false, moduleId: moduleId
+  });
+  const { user } = useUser();
+  const { data: tags } = useTags(user.id);
   const [open, setOpen] = useState(false);
-  const submitDisabled = goalName === "" || description === "";
-  const { post } = ApiClient();
+  const submitDisabled = goal.name === "" || goal.description === "";
   const { handleEnterPress } = useHotKeys();
+  const { mutateAsync: createGoal } = useGoalCreator(moduleId);
 
-  async function handleGoalCreation() {
-    try {
-      await post("/goal/add", {
-        name: goalName,
-        description: description,
-        goalType: goalType,
-        isComplete: false,
-        moduleId: moduleID,
-        dueDate: dueDate,
-        parentGoal: goalID,
-      });
-      queryClient.invalidateQueries({ queryKey: ["goals"] });
-      console.log("Goal creation is not implemented yet.");
-      setOpen(false);
-    } catch (error: any) {
-      console.error(error);
-      alert(error.message ? error.message : error);
-    }
+  async function handleCreation() {
+    await createGoal(goal);
+    setOpen(false);
   }
   function changeType(checked: boolean) {
     if (checked) {
-      setGoalType(GoalType.REPEATABLE);
+      setGoal({...goal, goalType: GoalType.REPEATABLE});
     } else {
-      setGoalType(GoalType.TASK);
+      setGoal({...goal, goalType: GoalType.TASK});
     }
   }
 
@@ -77,12 +61,12 @@ function GoalCreator({ moduleID, goalID, height }: GoalCreatorProps) {
                 name="module"
                 type="text"
                 placeholder="Goal Name"
-                value={goalName}
+                value={goal.name}
                 onChange={(event) => {
-                  setGoalName(event.target.value);
+                  setGoal({...goal, name: event.target.value});
                 }}
                 onKeyUp={(event) => {
-                  handleEnterPress(event, handleGoalCreation, submitDisabled);
+                  handleEnterPress(event, handleCreation, submitDisabled);
                 }}
                 required
               />
@@ -91,30 +75,49 @@ function GoalCreator({ moduleID, goalID, height }: GoalCreatorProps) {
                 name="module"
                 type="text"
                 placeholder="Goal Description"
-                value={description}
+                value={goal.description}
                 onChange={(event) => {
-                  setDescription(event.target.value);
+                  setGoal({...goal, description: event.target.value});
                 }}
                 onKeyUp={(event) => {
-                  handleEnterPress(event, handleGoalCreation, submitDisabled);
+                  handleEnterPress(event, handleCreation, submitDisabled);
                 }}
                 required
               />
-              <div className="w-full flex justify-between items-center px-20 ">
+              {/* <DropDownMenu absolutePosition={""} /> */}
+              <div className="w-full flex justify-between items-center px-20 gap-4 ">
                 <div className="flex flex-row justify-center items-center">
                   <p className="font-headlineFont text-xl">Daily</p>
                   <Checkbox
                     onChange={(event) => changeType(event.target.checked)}
                   />
                 </div>
+                <div className="flex flex-row items-center gap-2">
+                  <InputLabel id="simple-select-label">Tag</InputLabel>
+                  <Select
+                    value={goal.tagId}
+                    onChange={(event) => {setGoal({...goal, tagId: Number(event.target.value)})}}
+                    sx={{
+                      color: "black",
+                      width: 250,
+                      height: 50,
+                    }}
+                  >
+                    {tags?.map((tag: Tag) => (
+                      <MenuItem key={tag.id} value={tag.id}>
+                        {tag.name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </div>
                 <DatePicker
                   label="Due Date"
-                  value={dueDate}
-                  onChange={(newDueDate) => setDueDate(newDueDate)}
+                  value={goal.dueDate}
+                  onChange={(newDueDate) => setGoal({...goal, dueDate: newDueDate})}
                 />
               </div>
               <button
-                onClick={handleGoalCreation}
+                onClick={handleCreation}
                 disabled={submitDisabled}
                 className="w-6/12 h-10 border-1 border-solid border-gray-300 rounded px-2 text-base bg-element-base text-text-color hover:bg-[#820000] hover:cursor-pointer disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-element-base"
               >

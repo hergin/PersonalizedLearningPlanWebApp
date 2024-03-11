@@ -13,16 +13,14 @@ export default class SettingsParser extends DatabaseParser {
             text: "SELECT * FROM ACCOUNT_SETTINGS WHERE account_id = $1",
             values: [accountId]
         };
-        const result = await this.parseDatabase(query);
-        console.log(`Parsed in get account settings: ${JSON.stringify(result)}`);
-        return result;
+        return await this.parseDatabase(query);
     }
 
     async updateAccountSettings(accountId: number, settings: AccountSettings) {
         console.log(`Updating account ${accountId}'s settings...`);
         const query = {
-            text: "UPDATE ACCOUNT_SETTINGS SET receive_emails = $1 WHERE account_id = $2",
-            values: [settings.receiveEmails, accountId]
+            text: "UPDATE ACCOUNT_SETTINGS SET receive_emails = $1, allow_coach_invitations = $2 WHERE account_id = $3",
+            values: [settings.receiveEmails, settings.allowCoachInvitations, accountId]
         }
         await this.updateDatabase(query);
     }

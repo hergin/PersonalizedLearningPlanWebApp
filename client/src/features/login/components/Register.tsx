@@ -2,7 +2,7 @@ import React, { useState, ReactElement } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ApiClient } from "../../../hooks/ApiClient";
 import { useHotKeys } from "../../../hooks/useHotKeys";
-import { useUser } from "../../../hooks/useUser";
+import { useUser } from "../hooks/useUser";
 
 const TEXT_INPUT_STYLE_NORMAL =
   "h-10 rounded text-base w-full border border-solid border-gray-300 px-2 ";

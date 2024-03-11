@@ -15,7 +15,7 @@
     },
     "scripts": {
         "dev": "nodemon app.ts",
-        "test": "jest --testPathPattern=tests --detectOpenHandles --coverage",
+        "test": "jest --testPathPattern=tests --detectOpenHandles --coverage --watch",
         "lint": "eslint . --fix"
     },
     "eslintConfig": {
@@ -46,6 +46,7 @@
         "@types/jsonwebtoken": "^9.0.5",
         "@types/mocha": "^10.0.6",
         "@types/node-cron": "^3.0.11",
+        "@types/nodemailer": "^6.4.14",
         "@types/pg": "^8.10.9",
         "babel-jest": "^29.7.0",
         "node-cron": "^3.0.3",

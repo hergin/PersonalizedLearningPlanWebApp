@@ -14,32 +14,65 @@ export enum GoalType {
     REPEATABLE = "daily"
 }
 
+export enum Subject {
+    INVITATION = "Coach Invitation",
+    ACCEPTED = "Invitation Accepted!",
+    REJECTED = "Invitation Rejected!"
+}
+
 export type Goal = {
-    id?: number,
+    goal_id?: number,
     name: string,
     description: string,
-    isComplete: boolean,
-    goalType: GoalType,
-    moduleId?: number,
-    dueDate?: string,
-    completionTime?: string,
+    is_complete: boolean,
+    goal_type: GoalType,
+    module_id?: number,
+    tag_id?: number,
+    due_date?: string,
+    completion_time?: string,
     expiration?: string,
     feedback?: string,
     subGoals?: Goal[]
 }
 
 export type Profile = {
-    id: number,
+    id?: number,
     username: string,
     firstName: string,
     lastName: string,
+    accountId?: number,
     profilePicture?: string,
     jobTitle?: string,
     bio?: string
 }
 
+export type Module = {
+    id?: number,
+    name: string,
+    description: string,
+    completion: number
+    accountId?: number
+    coachId?: number
+}
+
 export type AccountSettings = {
     id?: number,
     receiveEmails: boolean,
+    allowCoachInvitations: boolean,
     accountId?: number
+}
+
+export type InviteData = {
+    id: number,
+    recipient_id: number,
+    recipient_email: string,
+    recipient_username: string,
+    sender_id: number,
+    sender_email: string,
+    sender_username: string
+}
+
+export interface Query {
+    text: string,
+    values: (string | number | boolean | Date | undefined)[]
 }

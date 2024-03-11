@@ -1,16 +1,12 @@
 import React, { useState, useEffect, useReducer } from "react";
 import { useNavigate } from "react-router-dom";
-import { useUser } from "../../../hooks/useUser";
+import { useUser } from "../../login/hooks/useUser";
 import { ApiClient } from "../../../hooks/ApiClient";
 import profilePicture from "../../../assets/Default_Profile_Picture.jpg";
-import useProfile from "../hooks/useProfile";
+import { useProfile, useProfileUpdater } from "../hooks/useProfile";
 import { useHotKeys } from "../../../hooks/useHotKeys";
 import { emptyProfile, Profile } from "../../../types";
-
-interface ProfileActionProps {
-  variable: string;
-  input: string | number;
-}
+import ProfilePicture from "../../../components/ProfilePicture";
 
 const STYLE = {
   containerHeight: "h-[50vh]",
@@ -26,112 +22,41 @@ const TEXT_ENTRY_STYLE = `flex flex-row ${STYLE.defaultGap} justify-between`;
 const VARIABLE_DISPLAY_STYLE = `flex flex-row ${STYLE.defaultGap} justify-between text-start`;
 const BUTTON_STYLE = `h-[40px] ${STYLE.borderValues} rounded px-[8px] text-[16px] bg-[#8C1515] text-white`;
 
-const PROFILE_VARIABLES = {
-  username: "username",
-  firstName: "first_name",
-  lastName: "last_name",
-  profilePicture: "profile_picture",
-  jobTitle: "job_title",
-  bio: "bio",
-};
-
-const PROFILE_ACTIONS = new Map();
-PROFILE_ACTIONS.set(
-  PROFILE_VARIABLES.username,
-  (profile: Profile, input: string) => {
-    return { ...profile, username: input };
-  }
-);
-PROFILE_ACTIONS.set(
-  PROFILE_VARIABLES.firstName,
-  (profile: Profile, input: string) => {
-    return { ...profile, firstName: input };
-  }
-);
-PROFILE_ACTIONS.set(
-  PROFILE_VARIABLES.lastName,
-  (profile: Profile, input: string) => {
-    return { ...profile, lastName: input };
-  }
-);
-PROFILE_ACTIONS.set(
-  PROFILE_VARIABLES.profilePicture,
-  (profile: Profile, input: string) => {
-    return { ...profile, profilePicture: input };
-  }
-);
-PROFILE_ACTIONS.set(
-  PROFILE_VARIABLES.jobTitle,
-  (profile: Profile, input: string) => {
-    return { ...profile, jobTitle: input };
-  }
-);
-PROFILE_ACTIONS.set(
-  PROFILE_VARIABLES.bio,
-  (profile: Profile, input: string) => {
-    return { ...profile, bio: input };
-  }
-);
-
-function updateProfile(profile: Profile, action: ProfileActionProps): Profile {
-  if (typeof action.input === "number") {
-    return {
-      ...profile,
-      id: action.input,
-    };
-  }
-
-  const actionFunction = PROFILE_ACTIONS.get(action.variable);
-  if (typeof actionFunction === "function") {
-    return actionFunction(profile, action.input);
-  }
-  return profile;
-}
-
 function ProfileScreen() {
-  const [profileState, dispatch] = useReducer(updateProfile, emptyProfile);
-  const [editMode, setEditMode] = useState(false);
+  const [editMode, setEditMode] = useState<boolean>(false);
   const navigate = useNavigate();
   const { user, removeUser } = useUser();
-  const { put, del } = ApiClient();
-  const { data: profileData, isLoading, error } = useProfile();
+  const { del } = ApiClient();
+  const { data: profileData, isLoading, error } = useProfile(user.id);
+  const { mutate: putProfile } = useProfileUpdater(user.id);
   const { handleEnterPress } = useHotKeys();
+  const [ profile, setProfile ] = useState<Profile>(emptyProfile);
 
   useEffect(() => {
     console.log("re-rendered...");
     if (isLoading || error) {
       return;
     }
-
-    for (const [key, value] of Object.entries(profileData)) {
-      console.log(`Profile data: ${value}`);
-      if (typeof value !== "number" && typeof value !== "string") {
-        break;
-      }
-      dispatch({ variable: key, input: value });
-    }
+    console.log(JSON.stringify(profileData));
+    setProfile({
+      id: profileData.profile_id,
+      username: profileData.username,
+      firstName: profileData.first_name,
+      lastName: profileData.last_name,
+      profilePicture: profileData.profile_picture,
+      jobTitle: profileData.job_title,
+      bio: profileData.bio
+    });
   }, [profileData, isLoading, error]);
 
   async function saveChanges() {
-    try {
-      await put(`/profile/edit/${profileState.id}`, {
-        username: profileState.username,
-        firstName: profileState.firstName,
-        lastName: profileState.lastName,
-        profilePicture: profileState.profilePicture,
-        jobTitle: profileState.jobTitle,
-        bio: profileState.bio,
-      });
-      setEditMode(false);
-    } catch (error: any) {
-      console.error(error);
-      alert(error.message ? error.message : error);
-    }
+    putProfile(profile);
+    setEditMode(false);
   }
 
   async function deleteAccount() {
     try {
-      await del(`/profile/delete/${profileState.id}`);
+      await del(`/profile/delete/${profile.id}`);
       await del(`/auth/delete/${user.id}`);
       removeUser();
       navigate("/#");
@@ -154,31 +79,27 @@ function ProfileScreen() {
       <div
         className={`h-[calc(${STYLE.containerHeight} - 15)] ${STYLE.containerWidth} ${STYLE.borderValues} ${STYLE.flexColumn} items-center m-[10px] py-[25px] px-[10px] ${STYLE.defaultGap}`}
       >
-        <img
-          src={profilePicture}
-          alt="pfp here"
-          className="h-[10vh] w-[5vw] rounded-full"
-        />
+        <ProfilePicture style="size-15" />
         {editMode ? (
           <input
             id="username"
             name="profile"
             type="text"
             placeholder="username"
-            value={profileState.username}
-            defaultValue={profileState.username}
+            value={profile.username}
+            defaultValue={profile.username}
             onKeyUp={(event) => {
               handleEnterPress(event, saveChanges);
             }}
             onChange={(event) => {
-              dispatch({
-                variable: PROFILE_VARIABLES.username,
-                input: event.target.value,
+              setProfile({
+                ...profile,
+                username: event.target.value,
               });
             }}
           />
         ) : (
-          <p className="text-[30px] mb-[10px]">{profileState.username}</p>
+          <p className="text-[30px] mb-[10px]">{profile.username}</p>
         )}
       </div>
       {editMode ? (
@@ -191,15 +112,15 @@ function ProfileScreen() {
               name="profile"
               type="text"
               placeholder="First Name"
-              value={profileState.firstName}
-              defaultValue={profileState.firstName}
+              value={profile.firstName}
+              defaultValue={profile.firstName}
               onKeyUp={(event) => {
                 handleEnterPress(event, saveChanges);
               }}
               onChange={(event) => {
-                dispatch({
-                  variable: PROFILE_VARIABLES.firstName,
-                  input: event.target.value,
+                setProfile({
+                  ...profile,
+                  firstName: event.target.value
                 });
               }}
             />
@@ -212,15 +133,15 @@ function ProfileScreen() {
               name="profile"
               type="text"
               placeholder="Last Name"
-              value={profileState.lastName}
-              defaultValue={profileState.lastName}
+              value={profile.lastName}
+              defaultValue={profile.lastName}
               onKeyUp={(event) => {
                 handleEnterPress(event, saveChanges);
               }}
               onChange={(event) => {
-                dispatch({
-                  variable: PROFILE_VARIABLES.lastName,
-                  input: event.target.value,
+                setProfile({
+                  ...profile,
+                  lastName: event.target.value,
                 });
               }}
             />
@@ -233,15 +154,15 @@ function ProfileScreen() {
               name="profile"
               type="text"
               placeholder="Job Title"
-              value={profileState.jobTitle}
-              defaultValue={profileState.jobTitle}
+              value={profile.jobTitle}
+              defaultValue={profile.jobTitle}
               onKeyUp={(event) => {
                 handleEnterPress(event, saveChanges);
               }}
               onChange={(event) => {
-                dispatch({
-                  variable: PROFILE_VARIABLES.jobTitle,
-                  input: event.target.value,
+                setProfile({
+                  ...profile,
+                  jobTitle: event.target.value,
                 });
               }}
             />
@@ -252,15 +173,15 @@ function ProfileScreen() {
             name="profile"
             type="textarea"
             placeholder="bio"
-            value={profileState.bio}
-            defaultValue={profileState.bio}
+            value={profile.bio}
+            defaultValue={profile.bio}
             onKeyUp={(event) => {
               handleEnterPress(event, saveChanges);
             }}
             onChange={(event) => {
-              dispatch({
-                variable: PROFILE_VARIABLES.bio,
-                input: event.target.value,
+              setProfile({
+                ...profile,
+                bio: event.target.value,
               });
             }}
             className={`${STYLE.aboutMeSize} px-[8px] text-[16px] ${STYLE.borderValues}`}
@@ -270,20 +191,20 @@ function ProfileScreen() {
         <div className={INFORMATION_CONTAINER_STYLE}>
           <div className={VARIABLE_DISPLAY_STYLE}>
             <p>First name:</p>
-            <p>{profileState.firstName ? profileState.firstName : ""}</p>
+            <p>{profile.firstName ? profile.firstName : ""}</p>
           </div>
           <div className={VARIABLE_DISPLAY_STYLE}>
             <p>Last name:</p>
-            <p>{profileState.lastName ? profileState.lastName : ""}</p>
+            <p>{profile.lastName ? profile.lastName : ""}</p>
           </div>
           <div className={VARIABLE_DISPLAY_STYLE}>
             <p>Job title:</p>
-            <p>{profileState.jobTitle ? profileState.jobTitle : ""}</p>
+            <p>{profile.jobTitle ? profile.jobTitle : ""}</p>
           </div>
           <p>About Me:</p>
           <br />
           <div className={`${STYLE.aboutMeSize}`}>
-            <p>{profileState.bio ? profileState.bio : ""}</p>
+            <p>{profile.bio ? profile.bio : ""}</p>
           </div>
         </div>
       )}

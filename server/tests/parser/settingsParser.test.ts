@@ -6,7 +6,8 @@ const TEST_DATA = {
     email: "testdummy@yahoo.com",
     password: "01010101010",
     refreshToken: "UTDefpAEyREXmgCkK04pL1SXK6jrB2tEc2ZyMbrFs61THq2y3bpRZOCj5RiPoZGa",
-    receive_emails: true
+    receive_emails: true,
+    allow_coach_invitations: true
 }
 
 describe('Settings Parser Unit Tests', () => {
@@ -48,35 +49,39 @@ describe('Settings Parser Unit Tests', () => {
     })
 
     it('get account settings (normal case)', async () => {
-        createAccountSettings();
+        const id = await getAccountSettingsID();
         const results = await parser.getAccountSettings(accountId);
         expect(results).toEqual([
             {
-                id: expect.any(Number),
+                id: id,
                 receive_emails: TEST_DATA.receive_emails,
+                allow_coach_invitations: TEST_DATA.allow_coach_invitations,
                 account_id: accountId
             }
         ]);
     });
 
-    async function createAccountSettings() {
-        await client.query({
-            text: "INSERT INTO ACCOUNT_SETTINGS(account_id) VALUES ($1)",
+    async function getAccountSettingsID(): Promise<number> {
+        const query = await client.query({
+            text: "SELECT id FROM ACCOUNT_SETTINGS WHERE account_id = $1",
             values: [accountId]
         });
+        return query.rows[0].id;
     }
 
     it('update account settings (normal case)', async () => {
-        createAccountSettings();
-        await parser.updateAccountSettings(accountId, {receiveEmails: !TEST_DATA.receive_emails});
+        const id = await getAccountSettingsID();
+        console.log(`Expected ID: ${id}`);
+        await parser.updateAccountSettings(accountId, {receiveEmails: !TEST_DATA.receive_emails, allowCoachInvitations: TEST_DATA.allow_coach_invitations});
         const results = await client.query({
             text: "SELECT * FROM ACCOUNT_SETTINGS WHERE account_id = $1",
             values: [accountId]
         });
         expect(results.rows).toEqual([
             {
-                id: expect.any(Number),
+                id: id,
                 receive_emails: !TEST_DATA.receive_emails,
+                allow_coach_invitations: TEST_DATA.allow_coach_invitations,
                 account_id: accountId
             }
         ]);

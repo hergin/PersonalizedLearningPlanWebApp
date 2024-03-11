@@ -2,6 +2,7 @@ export const mockParseParentGoals = jest.fn();
 export const mockStoreGoal = jest.fn();
 export const mockUpdateGoal = jest.fn();
 export const mockUpdateGoalTimestamps = jest.fn();
+export const mockUpdateGoalFeedback = jest.fn();
 export const mockDeleteGoal = jest.fn();
 export const mockParseGoalVariable = jest.fn();
 export const mockStoreSubGoal = jest.fn();
@@ -14,6 +15,7 @@ const mock = jest.fn().mockImplementation(() => {
         storeGoal : mockStoreGoal,
         updateGoal : mockUpdateGoal,
         updateGoalTimestamps : mockUpdateGoalTimestamps,
+        updateGoalFeedback: mockUpdateGoalFeedback,
         deleteGoal : mockDeleteGoal,
         parseGoalVariable : mockParseGoalVariable,
         storeSubGoal : mockStoreSubGoal,

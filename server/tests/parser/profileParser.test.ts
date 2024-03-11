@@ -74,24 +74,38 @@ describe('profile parser tests', () => {
             }
         ]);
     });
+
+    it('parse all profiles', async () => {
+        await createTestProfile();
+        const profileId = await getProfileID();
+        var actual = await parser.parseAllProfiles();
+        const testOnly = actual.filter(result => result.account_id === accountID);
+        expect(testOnly).toEqual([
+            {
+                account_id: accountID,
+                profile_id: profileId,
+                username: TEST_DATA.username
+            }
+        ]);
+    });
     
     it('parse profile', async () => {
-        createTestProfile();
+        await createTestProfile();
         var actual = await parser.parseProfile(accountID);
         expect(actual).toEqual({
-                profile_id: expect.any(Number),
-                username: TEST_DATA.username,
-                first_name: TEST_DATA.firstName, 
-                last_name: TEST_DATA.lastName,
-                profile_picture: null,
-                job_title: null,
-                bio: null,
-                account_id: accountID
+            profile_id: expect.any(Number),
+            username: TEST_DATA.username,
+            first_name: TEST_DATA.firstName, 
+            last_name: TEST_DATA.lastName,
+            profile_picture: null,
+            job_title: null,
+            bio: null,
+            account_id: accountID
         });
     });
 
     it('update profile', async () => {
-        createTestProfile();
+        await createTestProfile();
         const profileID = await getProfileID();
         await parser.updateProfile({
             id: profileID, 
@@ -120,17 +134,6 @@ describe('profile parser tests', () => {
         ]);
     });
 
-    it('delete profile', async () => {
-        createTestProfile();
-        const profileID = await getProfileID();
-        await parser.deleteProfile(profileID);
-        const actual = await client.query(
-            'SELECT * FROM PROFILE WHERE profile_id = $1',
-            [profileID]
-        );
-        expect(actual.rows).toEqual([]);
-    });
-
     async function getProfileID() {
         const query = {
             text: "SELECT profile_id FROM PROFILE WHERE account_id = $1",
@@ -139,4 +142,15 @@ describe('profile parser tests', () => {
         const result = await client.query(query);
         return result.rows[0].profile_id;
     }
+
+    it('delete profile', async () => {
+        await createTestProfile();
+        const profileID = await getProfileID();
+        await parser.deleteProfile(profileID);
+        const actual = await client.query(
+            'SELECT * FROM PROFILE WHERE profile_id = $1',
+            [profileID]
+        );
+        expect(actual.rows).toEqual([]);
+    });
 });
