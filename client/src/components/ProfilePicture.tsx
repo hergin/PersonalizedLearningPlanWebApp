@@ -2,8 +2,8 @@ import React from "react";
 import Default from "../assets/Default_Profile_Picture.jpg";
 
 interface ProfilePictureProps {
-    source?: string,
-    style?: string
+  source?: string,
+  style?: string
 }
 
 export default function ProfilePicture({source, style}: ProfilePictureProps) {
