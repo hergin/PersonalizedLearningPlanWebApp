@@ -6,7 +6,10 @@ import InvitationItem from "./InviteItem";
 import { useCollapse } from "react-collapsed";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import { useFetchInvites } from "../hooks/useInvite";
+import {
+  useFetchInvites,
+  useFetchPendingInvitations,
+} from "../hooks/useInvite";
 import { useUser } from "../../login/hooks/useUser";
 import { PublicUsers } from "../types";
 
@@ -22,11 +25,20 @@ const CoachingPage = () => {
     isLoading: inviteLoading,
     isError: inviteError,
   } = useFetchInvites(user.id);
+
+  const {
+    data: pendingInvites,
+    isLoading: pendingInviteLoading,
+    isError: pendingInviteError,
+  } = useFetchPendingInvitations(user.id);
+  console.log(pendingInvites);
   const [searchQuery, setSearchQuery] = useState("");
   const { getCollapseProps, getToggleProps, isExpanded } = useCollapse();
 
-  const filteredUsers = users?.filter((publicUser: PublicUsers) =>
-    publicUser.username.toLowerCase().includes(searchQuery.toLowerCase()) && publicUser.account_id !== user.id
+  const filteredUsers = users?.filter(
+    (publicUser: PublicUsers) =>
+      publicUser.username.toLowerCase().includes(searchQuery.toLowerCase()) &&
+      publicUser.account_id !== user.id
   );
 
   if (profileLoading || inviteLoading) return <div>Loading...</div>;
@@ -64,7 +76,6 @@ const CoachingPage = () => {
             getCollapseProps={getCollapseProps}
             recipientId={invite.recipient_id}
             senderId={invite.sender_id}
-
           />
         ))}
       </div>
@@ -77,6 +88,9 @@ const CoachingPage = () => {
             key={user.account_id}
             username={user.username}
             account_id={user.account_id}
+            isPending={pendingInvites?.some(
+              (invite: any) => invite.recipient_id === user.account_id
+            )}
           />
         ))}
       </div>
