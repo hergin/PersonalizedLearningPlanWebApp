@@ -124,10 +124,10 @@ describe("Goal Processor Unit Tests", () => {
         const mRequest = createMockRequest({
             name: TEST_GOAL.name[0],
             description: TEST_GOAL.description[0],
-            goalType: TEST_GOAL.goalType,
-            isComplete: TEST_GOAL.isComplete,
-            tagId: TEST_GOAL.tagId,
-            dueDate: TEST_GOAL.dueDate
+            goal_type: TEST_GOAL.goalType,
+            is_complete: TEST_GOAL.isComplete,
+            tag_id: TEST_GOAL.tagId,
+            due_date: TEST_GOAL.dueDate
         }, {id: TEST_GOAL.id[0]});
         await GoalProcessor.putGoal(mRequest, MOCK_RESPONSE);
         expect(goalApi.updateGoal).toHaveBeenCalledTimes(1);
@@ -152,10 +152,10 @@ describe("Goal Processor Unit Tests", () => {
         const mRequest = createMockRequest({
             name: TEST_GOAL.name[0],
             description: TEST_GOAL.description[0],
-            goalType: TEST_GOAL.goalType,
-            isComplete: TEST_GOAL.isComplete,
-            tagId: TEST_GOAL.tagId,
-            dueDate: TEST_GOAL.dueDate
+            goal_type: TEST_GOAL.goalType,
+            is_complete: TEST_GOAL.isComplete,
+            tag_id: TEST_GOAL.tagId,
+            due_date: TEST_GOAL.dueDate
         }, {id: TEST_GOAL.id[0]});
         await GoalProcessor.putGoal(mRequest, MOCK_RESPONSE);
         expect(goalApi.updateGoal).toHaveBeenCalledTimes(1);
