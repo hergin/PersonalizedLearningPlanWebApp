@@ -2,7 +2,6 @@ import React, { useState, useEffect, useReducer } from "react";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../../login/hooks/useUser";
 import { ApiClient } from "../../../hooks/ApiClient";
-import profilePicture from "../../../assets/Default_Profile_Picture.jpg";
 import { useProfile, useProfileUpdater } from "../hooks/useProfile";
 import { useHotKeys } from "../../../hooks/useHotKeys";
 import { emptyProfile, Profile } from "../../../types";
@@ -30,14 +29,14 @@ function ProfileScreen() {
   const { data: profileData, isLoading, error } = useProfile(user.id);
   const { mutate: putProfile } = useProfileUpdater(user.id);
   const { handleEnterPress } = useHotKeys();
-  const [ profile, setProfile ] = useState<Profile>(emptyProfile);
+  const [profile, setProfile] = useState<Profile>(emptyProfile);
 
   useEffect(() => {
-    console.log("re-rendered...");
+    ("re-rendered...");
     if (isLoading || error) {
       return;
     }
-    console.log(JSON.stringify(profileData));
+    JSON.stringify(profileData);
     setProfile({
       id: profileData.profile_id,
       username: profileData.username,
@@ -45,7 +44,7 @@ function ProfileScreen() {
       lastName: profileData.last_name,
       profilePicture: profileData.profile_picture,
       jobTitle: profileData.job_title,
-      bio: profileData.bio
+      bio: profileData.bio,
     });
   }, [profileData, isLoading, error]);
 
@@ -69,7 +68,7 @@ function ProfileScreen() {
     return <div>This is loading...</div>;
   }
   if (error) {
-    console.log(error);
+    error;
     return <div>This is an error</div>;
   }
   return (
@@ -120,7 +119,7 @@ function ProfileScreen() {
               onChange={(event) => {
                 setProfile({
                   ...profile,
-                  firstName: event.target.value
+                  firstName: event.target.value,
                 });
               }}
             />

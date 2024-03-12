@@ -11,6 +11,14 @@ export function useFetchInvites(userId: number) {
   });
 }
 
+export function useFetchPendingInvitations(userId: number) {
+  const { FetchPendingInvitations } = InvitationApi();
+  return useQuery({
+    queryFn: () => FetchPendingInvitations(userId),
+    queryKey: ["pendinginvites"],
+  });
+}
+
 export function useInviteCreator() {
   const queryClient = useQueryClient();
   const { CreateInvitation } = InvitationApi();
@@ -20,7 +28,7 @@ export function useInviteCreator() {
       await CreateInvitation(createdInvite);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["invites"] });
+      queryClient.invalidateQueries({ queryKey: ["pendinginvites"] });
     },
   });
 }

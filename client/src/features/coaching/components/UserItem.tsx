@@ -3,7 +3,7 @@ import { useInviteCreator } from "../hooks/useInvite";
 import { useUser } from "../../login/hooks/useUser";
 import { PublicUsers } from "../types";
 
-const UserItem = ({ username, account_id }: PublicUsers) => {
+const UserItem = ({ username, account_id, isPending }: PublicUsers) => {
   const { mutateAsync: createInvite } = useInviteCreator();
   const { user } = useUser();
 
@@ -25,8 +25,9 @@ const UserItem = ({ username, account_id }: PublicUsers) => {
         </div>
         <div>
           <button
-            className="bg-[#8C1515] text-white p-2 rounded-lg m-2"
+            className="bg-[#8C1515] text-white p-2 rounded-lg m-2 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-element-base"
             onClick={sendInvite}
+            disabled={isPending}
           >
             Send Invite
           </button>

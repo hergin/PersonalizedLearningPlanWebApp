@@ -17,6 +17,18 @@ export const InvitationApi = () => {
     }
   }
 
+  async function FetchPendingInvitations(id: number) {
+    try {
+      const response = await get(`/invite/pending/${id}`);
+      return response;
+    } catch (error: unknown) {
+      console.error(error);
+      alert(
+        (error as AxiosError).message ? (error as AxiosError).message : error
+      );
+    }
+  }
+
   async function CreateInvitation(values: CreateInvitationProps) {
     try {
       await post("/invite/create", values);
@@ -28,9 +40,9 @@ export const InvitationApi = () => {
     }
   }
 
-  async function AcceptInvitation({id, senderId, recipientId}: any) {
+  async function AcceptInvitation({ id, senderId, recipientId }: any) {
     try {
-      await post(`/invite/accept/${id}`, {senderId, recipientId});
+      await post(`/invite/accept/${id}`, { senderId, recipientId });
     } catch (error: unknown) {
       console.error(error);
       alert(
@@ -49,6 +61,11 @@ export const InvitationApi = () => {
     }
   }
 
-
-  return { CreateInvitation, FetchInvitations, AcceptInvitation, DeclineInvitation };
+  return {
+    CreateInvitation,
+    FetchInvitations,
+    AcceptInvitation,
+    DeclineInvitation,
+    FetchPendingInvitations,
+  };
 };
