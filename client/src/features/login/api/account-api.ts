@@ -1,7 +1,6 @@
 import { AxiosError } from "axios";
 import { ApiClient } from "../../../hooks/ApiClient";
 
-
 export const AccountApi = () => {
     const { get } = ApiClient();
 

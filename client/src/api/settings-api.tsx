@@ -11,8 +11,7 @@ export const SettingsApi = (accountId: number) => {
     }
 
     try {
-      const data = await get(`/settings/get/${accountId}`);
-      return data;
+      return await get(`/settings/get/${accountId}`);
     } catch (error: unknown) {
       const axiosError = error as AxiosError;
       console.error(axiosError);

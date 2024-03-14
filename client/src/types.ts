@@ -126,6 +126,19 @@ export interface UpdateFeedbackProps {
   feedback: string;
 }
 
+export interface LoginProps {
+  email: string,
+  password: string
+}
+
+export interface RegisterProps {
+  firstName: string,
+  lastName: string,
+  username: string,
+  email: string,
+  password: string
+}
+
 export const emptyUser: User = { id: -1, accessToken: "", refreshToken: "" };
 export const emptyProfile: Profile = {
   id: -1,
