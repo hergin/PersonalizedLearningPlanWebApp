@@ -36,7 +36,7 @@ export const ProfileApi = () => {
 
   async function UpdateProfile(profile: Profile) {
     try {
-      await put(`profile/update/${profile.id}`, profile);
+      await put(`profile/edit/${profile.id}`, profile);
     } catch(error: unknown) {
       console.error(JSON.stringify(error));
       alert((error as AxiosError).message ? (error as AxiosError).message : error);

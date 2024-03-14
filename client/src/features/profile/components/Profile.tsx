@@ -78,7 +78,7 @@ function ProfileScreen() {
       <div
         className={`h-[calc(${STYLE.containerHeight} - 15)] ${STYLE.containerWidth} ${STYLE.borderValues} ${STYLE.flexColumn} items-center m-[10px] py-[25px] px-[10px] ${STYLE.defaultGap}`}
       >
-        <ProfilePicture style="size-15" />
+        <ProfilePicture style="size-16" />
         {editMode ? (
           <input
             id="username"
@@ -98,7 +98,7 @@ function ProfileScreen() {
             }}
           />
         ) : (
-          <p className="text-[30px] mb-[10px]">{profile.username}</p>
+          <p className="text-[30px] mb-[0px]">{profile.username}</p>
         )}
       </div>
       {editMode ? (
