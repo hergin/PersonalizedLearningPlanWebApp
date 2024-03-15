@@ -12,21 +12,21 @@ import { IoIosLogOut } from "react-icons/io";
 import { FaCaretUp } from "react-icons/fa";
 import { FaCaretDown } from "react-icons/fa";
 import ProfilePicture from "./ProfilePicture";
+import { useLogoutService } from "../features/login/hooks/useAuth";
 
 const CLICKABLE_ELEMENT_STYLE = "hover:bg-[#820000] cursor-pointer duration-500";
 
 const AccountButton = () => {
   const [open, setOpen] = useState<boolean>(false);
-  const { user, removeUser } = useUser();
-  const { post } = ApiClient();
+  const { user } = useUser();
   const navigate = useNavigate();
   const { data, isLoading, error } = useSettings(user.id);
   const { mutate: updateSettings } = useSettingsMutation(user.id);
+  const { mutateAsync: logout } = useLogoutService();
 
   async function handleLogout() {
     try {
-      await post("/auth/logout", {id: user.id});
-      removeUser();
+      await logout();
       navigate("/#");
     } catch (error: unknown) {
       const axiosError = error as AxiosError;
@@ -64,9 +64,14 @@ const AccountButton = () => {
     );
   } else {
     return (
-      <div>
-        <Link to="/login" className="no-underline text-white font-headlineFont">
-          <button className={`flex flex-col justify-center items-center w-full no-underline text-2xl h-12 bg-transparent font-headlineFont border-none ${CLICKABLE_ELEMENT_STYLE} px-4`}>Login/Register</button>
+      <div data-testid="container">
+        <Link data-testid="loginLink" to="/login" className="no-underline text-white font-headlineFont">
+          <button 
+            data-testid="loginButton"
+            className={`flex flex-col justify-center items-center w-full no-underline text-2xl h-12 bg-transparent font-headlineFont border-none ${CLICKABLE_ELEMENT_STYLE} px-4`}
+          >
+            Login/Register
+          </button>
         </Link>
       </div>
     );

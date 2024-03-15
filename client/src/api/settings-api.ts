@@ -1,13 +1,13 @@
 import { AxiosError } from "axios";
 import { ApiClient } from "../hooks/ApiClient";
-import { emptyUser, Settings } from "../types";
+import { defaultSettings, emptyUser, Settings } from "../types";
 
-export const SettingsApi = (accountId: number) => {
+export const SettingsApi = () => {
   const { get, put } = ApiClient();
   
-  async function FetchSettings() {
+  async function FetchSettings(accountId: number) {
     if(accountId === emptyUser.id) {
-      return;
+      return [defaultSettings];
     }
 
     try {
@@ -19,7 +19,7 @@ export const SettingsApi = (accountId: number) => {
     }
   }
 
-  async function MutateSettings(settings: Settings) {
+  async function MutateSettings(accountId: number, settings: Settings) {
     if(accountId === emptyUser.id) {
       return;
     }

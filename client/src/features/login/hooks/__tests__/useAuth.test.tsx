@@ -1,6 +1,6 @@
 import React, { PropsWithChildren } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { useLoginService, useRegistrationService, useLogoutService } from "../../hooks/useAuth";
+import { useLoginService, useRegistrationService, useLogoutService } from "../useAuth";
 import { renderHook } from "@testing-library/react";
 import { AuthApi } from "../../api/auth-api";
 
