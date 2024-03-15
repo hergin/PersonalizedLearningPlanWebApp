@@ -88,10 +88,15 @@
             "\\.(css|scss)$": "identity-obj-proxy"
         },
         "transform": {
-            "^.+\\.m?[tj]sx?$": ["ts-jest"]
+            "^.+\\.m?[tj]sx?$": [
+                "ts-jest"
+            ]
         },
         "verbose": true,
-        "testPathIgnorePatterns": ["/node_modules/"]
+        "testPathIgnorePatterns": [
+            "/node_modules/"
+        ],
+        "testEnvironment": "node"
     },
     "babel": {
         "presets": [

@@ -1,13 +1,11 @@
 import React, { useState, PropsWithChildren } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useUser } from "../features/login/hooks/useUser";
-import { ApiClient } from "../hooks/ApiClient";
 import { emptyUser } from "../types";
 import DropDownMenu from "./dropDown/DropDownMenu";
 import DropDownItem from "./dropDown/DropDownItem";
 import DropDownCheckbox from "./dropDown/DropDownCheckbox";
 import { useSettings, useSettingsMutation } from "../hooks/useSettings";
-import { AxiosError } from "axios";
 import { IoIosLogOut } from "react-icons/io";
 import { FaCaretUp } from "react-icons/fa";
 import { FaCaretDown } from "react-icons/fa";
@@ -25,14 +23,8 @@ const AccountButton = () => {
   const { mutateAsync: logout } = useLogoutService();
 
   async function handleLogout() {
-    try {
-      await logout();
-      navigate("/#");
-    } catch (error: unknown) {
-      const axiosError = error as AxiosError;
-      console.error(axiosError);
-      alert(axiosError.response ? axiosError.response.data : error);
-    }
+    await logout();
+    navigate("/#");
   }
   
   if(user.id !== emptyUser.id) {
