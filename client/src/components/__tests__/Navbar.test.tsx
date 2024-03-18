@@ -1,4 +1,4 @@
-import React, { PropsWithChildren } from "react";
+import React from "react";
 import { BrowserRouter, Outlet, Routes, Route } from "react-router-dom";
 import { render, fireEvent } from "@testing-library/react";
 import Navbar from "../Navbar";
