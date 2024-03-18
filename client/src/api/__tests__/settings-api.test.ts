@@ -1,8 +1,8 @@
 import { SettingsApi } from "../settings-api";
 import { defaultSettings } from "../../types";
-import { ApiClient } from "../../hooks/ApiClient";
+import { useApiConnection } from "../../hooks/useApiConnection";
 import { AxiosError } from "axios";
-jest.mock("../../hooks/ApiClient");
+jest.mock("../../hooks/useApiConnection");
 
 const ERROR_MESSAGE = "You've been hacked!";
 
@@ -12,7 +12,7 @@ describe("Settings Api Unit Tests", () => {
     var mockAlert: any;
 
     beforeEach(() => {
-        clientHook = ApiClient();
+        clientHook = useApiConnection();
         mockError = jest.spyOn(global.console, 'error');
         mockAlert = jest.spyOn(window, 'alert');
     });

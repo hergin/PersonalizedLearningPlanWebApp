@@ -11,6 +11,6 @@ function ProtectedRoute() {
   ) : (
     <Navigate to="/login" replace state={{ from: location }} />
   );
-};
+}
 
 export default ProtectedRoute;

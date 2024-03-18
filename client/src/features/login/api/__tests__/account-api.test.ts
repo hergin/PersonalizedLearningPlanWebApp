@@ -1,9 +1,9 @@
 import AccountApi from "../account-api";
-import { ApiClient } from "../../../../hooks/ApiClient";
+import { useApiConnection } from "../../../../hooks/useApiConnection";
 import { AxiosError } from "axios";
 import { renderHook } from "@testing-library/react";
 
-jest.mock("../../../../hooks/ApiClient");
+jest.mock("../../../../hooks/useApiConnection");
 
 const TEST_UNDERSTUDY = {
     account_id: 1,
@@ -19,7 +19,7 @@ describe("AccountApi Unit Tests", () => {
     var mockAlert: any;
 
     beforeEach(() => {
-        apiClient = ApiClient();
+        apiClient = useApiConnection();
         mockError = jest.spyOn(global.console, 'error');
         mockAlert = jest.spyOn(window, 'alert');
     });

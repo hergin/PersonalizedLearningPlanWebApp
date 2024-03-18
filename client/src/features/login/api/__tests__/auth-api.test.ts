@@ -1,11 +1,11 @@
 import { renderHook } from "@testing-library/react";
 import { AuthApi } from "../auth-api";
 import { LoginProps } from "../../../../types";
-import { ApiClient } from "../../../../hooks/ApiClient";
+import { useApiConnection } from "../../../../hooks/useApiConnection";
 import { useUser } from "../../hooks/useUser";
 import { AxiosError } from "axios";
 
-jest.mock("../../../../hooks/ApiClient");
+jest.mock("../../../../hooks/useApiConnection");
 jest.mock("../../hooks/useUser");
 
 interface T {
@@ -35,7 +35,7 @@ describe("AuthApi Unit Tests", () => {
     var mockAlert: any;
 
     beforeEach(() => {
-        apiClient = ApiClient();
+        apiClient = useApiConnection();
         userHook = useUser();
         mockError = jest.spyOn(global.console, 'error');
         mockAlert = jest.spyOn(window, 'alert');

@@ -1,8 +1,8 @@
 import { AxiosError } from "axios";
-import { ApiClient } from "../../../hooks/ApiClient";
+import { useApiConnection } from "../../../hooks/useApiConnection";
 
 const AccountApi = () => {
-    const { get } = ApiClient();
+    const { get } = useApiConnection();
 
     const fetchUnderstudies = async (accountId: number) => {
         try {

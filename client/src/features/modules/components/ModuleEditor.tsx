@@ -11,7 +11,7 @@ import {
   DialogTitle,
   TextField,
 } from "@mui/material";
-import { ApiClient } from "../../../hooks/ApiClient";
+import { useApiConnection } from "../../../hooks/useApiConnection";
 import { useHotKeys } from "../../../hooks/useHotKeys";
 import { LongMenuProps } from "../../../types";
 import { useQueryClient } from "@tanstack/react-query";
@@ -47,7 +47,7 @@ const ModuleEditorButton = ({
   const handleCloseModal = () => {
     setOpenModal(false);
   };
-  const { del } = ApiClient();
+  const { del } = useApiConnection();
   const { handleEnterPress } = useHotKeys();
 
   async function handleModuleEdit() {

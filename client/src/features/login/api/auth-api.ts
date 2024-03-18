@@ -1,11 +1,11 @@
-import { ApiClient } from "../../../hooks/ApiClient";
+import { useApiConnection } from "../../../hooks/useApiConnection";
 import { useUser } from "../hooks/useUser";
 import { AxiosError } from "axios";
 import { RegisterProps } from "../../../types";
 
 export const AuthApi = () => {
     const { user, addUser, removeUser } = useUser();
-    const { post } = ApiClient();
+    const { post } = useApiConnection();
     
     const login = async (email: string, password: string) => {
         try {

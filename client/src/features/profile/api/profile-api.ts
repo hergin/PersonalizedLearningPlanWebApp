@@ -1,9 +1,9 @@
-import { ApiClient } from "../../../hooks/ApiClient";
+import { useApiConnection } from "../../../hooks/useApiConnection";
 import { Profile, CreateProfileProps } from "../../../types";
 import { AxiosError } from "axios";
 
 export const ProfileApi = () => {
-  const { get, post, put } = ApiClient();
+  const { get, post, put } = useApiConnection();
   
   async function FetchProfile(accountId: number) {
     try {

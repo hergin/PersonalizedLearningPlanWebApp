@@ -1,9 +1,9 @@
 import { AxiosError } from "axios";
-import { ApiClient } from "../hooks/ApiClient";
+import { useApiConnection } from "../hooks/useApiConnection";
 import { defaultSettings, emptyUser, Settings } from "../types";
 
 export const SettingsApi = () => {
-  const { get, put } = ApiClient();
+  const { get, put } = useApiConnection();
   
   async function FetchSettings(accountId: number) {
     if(accountId === emptyUser.id) {

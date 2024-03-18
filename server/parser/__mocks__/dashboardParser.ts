@@ -7,7 +7,7 @@ const mock = jest.fn().mockImplementation(() => {
         parseDashboard: mockParseDashboard,
         updateDashboard: mockUpdateDashboard,
         deleteDashboard: mockDeleteDashboard,
-    } 
+    }
 });
 
 export default mock;

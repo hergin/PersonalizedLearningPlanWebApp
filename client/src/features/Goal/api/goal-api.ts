@@ -1,9 +1,9 @@
-import { ApiClient } from "../../../hooks/ApiClient";
+import { useApiConnection } from "../../../hooks/useApiConnection";
 import { AxiosError } from "axios";
 import { Goal, CreateGoalProps, CreateSubGoalProps } from "../../../types";
 
 export const GoalApi = () => {
-  const { get, post, put, del } = ApiClient();
+  const { get, post, put, del } = useApiConnection();
   
   async function fetchGoals(moduleId: number) {
     try {
