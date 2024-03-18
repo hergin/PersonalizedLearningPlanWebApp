@@ -59,13 +59,13 @@ export default function LearningPlan() {
           />
         ))}
       </Tabs>
-      <TabPanel value={currentTabIndex} index={user.id} style={TABPANEL_STYLE}>
+      <TabPanel selectedValue={currentTabIndex} index={user.id} style={TABPANEL_STYLE}>
         <ModuleComponent accountId={user.id} />
       </TabPanel>
       {understudyData?.map((understudy: Understudy) => (
         <TabPanel
           key={`PANEL_KEY-${understudy.account_id}`}
-          value={currentTabIndex}
+          selectedValue={currentTabIndex}
           index={understudy.account_id}
           style={TABPANEL_STYLE}
         >
