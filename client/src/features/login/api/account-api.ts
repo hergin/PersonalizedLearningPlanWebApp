@@ -1,7 +1,7 @@
 import { AxiosError } from "axios";
 import { ApiClient } from "../../../hooks/ApiClient";
 
-export const AccountApi = () => {
+const AccountApi = () => {
     const { get } = ApiClient();
 
     const fetchUnderstudies = async (accountId: number) => {
@@ -15,3 +15,5 @@ export const AccountApi = () => {
 
     return {fetchUnderstudies};
 }
+
+export default AccountApi;

@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { AccountApi } from "../api/account-api";
+import AccountApi from "../api/account-api";
 
 export function useUnderstudies(accountId: number) {
     const { fetchUnderstudies } = AccountApi();

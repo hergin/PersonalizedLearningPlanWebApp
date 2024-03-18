@@ -1,13 +1,18 @@
 import React, {PropsWithChildren} from "react";
 
+const STATIC_STYLE = "border-[0.8px] border-solid border-[rgb(219, 219, 219)] p-[1rem] bg-element-base overflow-hidden font-headlineFont";
+
 interface DropDownMenuProps extends PropsWithChildren {
-    absolutePosition: string
+    style?: string
 }
 
-export default function DropDownMenu(props: DropDownMenuProps) {
+export default function DropDownMenu({style, children}: DropDownMenuProps) {
     return (  
-        <div className={`${props.absolutePosition} border-[0.8px] border-solid border-[rgb(219, 219, 219)] p-[1rem] bg-element-base overflow-hidden font-headlineFont`}>
-            {props.children}
+        <div
+            data-testid="container" 
+            className={`${STATIC_STYLE} ${style ? style : ""}`}
+        >
+            {children}
         </div>
     );
 }

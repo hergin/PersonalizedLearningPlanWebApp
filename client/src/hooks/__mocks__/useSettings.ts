@@ -1,2 +1,3 @@
-export const useSettings = jest.fn();
-export const useSettingsMutation = jest.fn();
+export const useSettingsMutation = jest.fn().mockImplementation(() => ({
+    mutateAsync: jest.fn(),
+}));

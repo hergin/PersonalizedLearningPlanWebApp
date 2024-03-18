@@ -1,6 +1,5 @@
 import React, { useState, PropsWithChildren } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useUser } from "../features/login/hooks/useUser";
 import { emptyUser } from "../types";
 import DropDownMenu from "./dropDown/DropDownMenu";
 import DropDownItem from "./dropDown/DropDownItem";
@@ -11,12 +10,13 @@ import { FaCaretUp } from "react-icons/fa";
 import { FaCaretDown } from "react-icons/fa";
 import ProfilePicture from "./ProfilePicture";
 import { useLogoutService } from "../features/login/hooks/useAuth";
+import { useAuth } from "../context/AuthContext";
 
 const CLICKABLE_ELEMENT_STYLE = "hover:bg-[#820000] cursor-pointer duration-500";
 
 const AccountButton = () => {
   const [open, setOpen] = useState<boolean>(false);
-  const { user } = useUser();
+  const { user } = useAuth();
   const navigate = useNavigate();
   const { data, isLoading, error } = useSettings(user.id);
   const { mutate: updateSettings } = useSettingsMutation(user.id);
@@ -31,7 +31,7 @@ const AccountButton = () => {
     // Fixed values need to be changed to adjust to smaller screens, but this is fine for now. -Tim
     return (
       <AccountDropDown>
-        <DropDownMenu absolutePosition="absolute top-[58px] w-[190px] translate-x-[-45%] translate-y-[20px]">
+        <DropDownMenu style="absolute top-[58px] w-[190px] translate-x-[-45%] translate-y-[20px]">
           {isLoading && <p>Loading...</p>}
           {error && <p>An error has occurred!</p>}
           {!isLoading && !error && 
@@ -69,14 +69,14 @@ const AccountButton = () => {
     );
   }
 
-  function AccountDropDown(props: PropsWithChildren) {
+  function AccountDropDown({children}: PropsWithChildren) {
     return (
       <div>  
         <div className={`flex flex-row ${CLICKABLE_ELEMENT_STYLE} py-[5px] px-[8px] gap-[5px] items-center`} onClick={() => {setOpen(!open)}}>
           <ProfilePicture style="size-14" />
           {open ? <FaCaretUp className="size-5" /> : <FaCaretDown className="size-5" />}
         </div>
-        {open && props.children}
+        {open && children}
       </div>
     );
   }

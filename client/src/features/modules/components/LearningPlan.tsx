@@ -15,7 +15,6 @@ export default function LearningPlan() {
   const [currentTabIndex, setCurrentTabIndex] = useState(user.id);
 
   useEffect(() => {
-    `Default screen: ${sessionStorage.getItem("user")}`;
     const currentUser: string | null = sessionStorage.getItem("user");
     setUser(currentUser ? JSON.parse(currentUser) : emptyUser);
     // eslint-disable-next-line react-hooks/exhaustive-deps

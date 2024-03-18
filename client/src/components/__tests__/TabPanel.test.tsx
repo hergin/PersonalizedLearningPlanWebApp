@@ -5,7 +5,7 @@ import { render } from "@testing-library/react";
 describe("Tab Panel Unit Tests", () => {
     afterEach(() => {
         jest.clearAllMocks();
-    })
+    });
     
     it("Tab Panel is hidden case", () => {
         const { getByTestId } = render(

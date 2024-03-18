@@ -1,7 +1,7 @@
 import React, { ReactElement } from "react";
 
-const AccountButton = (): ReactElement => {
-    return <></>
-}
+const AccountButton = jest.fn().mockImplementation((): ReactElement => {
+    return (<></>);
+});
 
 export default AccountButton;
