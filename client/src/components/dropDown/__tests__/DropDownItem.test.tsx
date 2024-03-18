@@ -9,7 +9,7 @@ describe("DropDownItem Unit Tests", () => {
                 Test Item
             </DropDownItem>
         );
-        const container = getByTestId("container");
+        const container = getByTestId("itemContainer");
         expect(container.childNodes.length).toEqual(1);
         expect(container.textContent).toEqual("Test Item");
     });
@@ -21,7 +21,7 @@ describe("DropDownItem Unit Tests", () => {
                 Test Item
             </DropDownItem>
         );
-        const container = getByTestId("container");
+        const container = getByTestId("itemContainer");
         expect(container.childNodes.length).toEqual(1);
         expect(container.textContent).toEqual("Test Item");
         fireEvent.click(container);
@@ -36,7 +36,7 @@ describe("DropDownItem Unit Tests", () => {
         );
         const leftIcon = getByAltText("leftIcon");
         expect(leftIcon).toBeDefined();
-        const container = getByTestId("container");
+        const container = getByTestId("itemContainer");
         expect(container.childNodes.length).toEqual(2);
         expect(container.textContent).toEqual("Test Item");
     });
@@ -49,7 +49,7 @@ describe("DropDownItem Unit Tests", () => {
         );
         const rightIcon = getByAltText("rightIcon");
         expect(rightIcon).toBeDefined();
-        const container = getByTestId("container");
+        const container = getByTestId("itemContainer");
         expect(container.childNodes.length).toEqual(2);
         expect(container.textContent).toEqual("Test Item");
     });
@@ -64,7 +64,7 @@ describe("DropDownItem Unit Tests", () => {
         expect(leftIcon).toBeDefined();
         const rightIcon = getByAltText("rightIcon");
         expect(rightIcon).toBeDefined();
-        const container = getByTestId("container");
+        const container = getByTestId("itemContainer");
         expect(container.childNodes.length).toEqual(3);
         expect(container.textContent).toEqual("Test Item");
     });
@@ -80,7 +80,7 @@ describe("DropDownItem Unit Tests", () => {
         expect(leftIcon).toBeDefined();
         const rightIcon = getByAltText("rightIcon");
         expect(rightIcon).toBeDefined();
-        const container = getByTestId("container");
+        const container = getByTestId("itemContainer");
         fireEvent.click(container);
         expect(mockOnClick).toHaveBeenCalledTimes(1);
         expect(container.childNodes.length).toEqual(3);

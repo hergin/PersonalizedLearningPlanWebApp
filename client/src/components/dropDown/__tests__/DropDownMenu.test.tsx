@@ -11,7 +11,7 @@ describe("DropDownMenu Unit Tests", () => {
         const { getByTestId } = render(
             <DropDownMenu>{TEXT_CONTENT}</DropDownMenu>
         );
-        const container = getByTestId("container");
+        const container = getByTestId("menuContainer");
         expect(container.classList.toString()).toEqual(STATIC_STYLE);
         expect(container.textContent).toEqual(TEXT_CONTENT);
     });
@@ -20,7 +20,7 @@ describe("DropDownMenu Unit Tests", () => {
         const { getByTestId } = render(
             <DropDownMenu style={ADDITIONAL_STYLING}>{TEXT_CONTENT}</DropDownMenu>
         );
-        const container = getByTestId("container");
+        const container = getByTestId("menuContainer");
         expect(container.classList.toString()).toEqual(`${STATIC_STYLE}${ADDITIONAL_STYLING}`);
         expect(container.textContent).toEqual(TEXT_CONTENT);
     });

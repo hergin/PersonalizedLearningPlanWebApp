@@ -9,7 +9,7 @@ interface DropDownMenuProps extends PropsWithChildren {
 export default function DropDownMenu({style, children}: DropDownMenuProps) {
     return (  
         <div
-            data-testid="container" 
+            data-testid="menuContainer" 
             className={`${STATIC_STYLE} ${style ? style : ""}`}
         >
             {children}

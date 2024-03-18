@@ -17,7 +17,7 @@ var mockUser = {};
 jest.mock("../../features/login/hooks/useUser", () => ({
     useUser: () => ({
         user: mockUser,
-    })
+    }),
 }));
 
 describe("Protected Route Unit Tests", () => {
