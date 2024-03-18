@@ -17,9 +17,13 @@ export default function AccountButton() {
     // Fixed values need to be changed to adjust to smaller screens, but this is fine for now. -Tim
     return (
       <div data-testid="profilePictureMenu">  
-        <div className={`${CLICKABLE_ELEMENT_STYLE} flex flex-row py-[5px] px-[8px] gap-[5px] items-center`} onClick={() => {setOpen(!open)}}>
+        <div 
+          data-testid="pictureButton"
+          className={`${CLICKABLE_ELEMENT_STYLE} flex flex-row py-[5px] px-[8px] gap-[5px] items-center`} 
+          onClick={() => {setOpen(!open)}}
+        >
           <ProfilePicture style="size-14" />
-          {open ? <FaCaretUp className="size-5" /> : <FaCaretDown className="size-5" />}
+          {open ? <FaCaretUp data-testid="caretDown" className="size-5" /> : <FaCaretDown data-testid="caretDown" className="size-5" />}
         </div>
         {open && <AccountMenu user={user} />}
       </div>

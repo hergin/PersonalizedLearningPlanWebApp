@@ -36,7 +36,6 @@ describe("AccountMenu Unit Tests", () => {
     });
 
     it("AccountMenu isLoading case.", () => {
-        const { mutateAsync } = logoutHook;
         const { getByTestId } = render(
             <BrowserRouter>
                 <Routes>
