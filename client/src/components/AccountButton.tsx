@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import { emptyUser } from "../types";
 import { FaCaretUp } from "react-icons/fa";
@@ -10,7 +10,7 @@ import AccountMenu from "./AccountMenu";
 const CLICKABLE_ELEMENT_STYLE = "hover:bg-[#820000] cursor-pointer duration-500";
 
 export default function AccountButton() {
-  const [open, setOpen] = useState<boolean>(false);
+  const [open, setOpen] = React.useState<boolean>(false);
   const { user } = useAuth();
   
   if(user.id !== emptyUser.id) {

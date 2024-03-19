@@ -2,7 +2,7 @@ import React, { PropsWithChildren } from "react";
 import { useUnderstudies } from "../useUnderstudies";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import AccountApi from "../../api/account-api";
-import { renderHook, waitFor } from "@testing-library/react";
+import { renderHook, waitFor, cleanup } from "@testing-library/react";
 
 jest.mock("../../api/account-api");
 
@@ -25,6 +25,7 @@ describe("useUnderstudies Unit Tests", () => {
     });
     
     afterEach(() => {
+        cleanup();
         jest.clearAllMocks();
     });
 

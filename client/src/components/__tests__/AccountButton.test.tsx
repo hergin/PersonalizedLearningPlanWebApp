@@ -1,9 +1,8 @@
 import React from "react";
 import { emptyUser } from "../../types";
 import AccountButton from "../AccountButton";
-import AccountMenu from "../AccountMenu";
-import { render, fireEvent } from "@testing-library/react";
-import { MemoryRouter, Route, Link, Routes } from "react-router-dom";
+import { render, cleanup } from "@testing-library/react";
+import { MemoryRouter, Route, Routes } from "react-router-dom";
 
 var mockUser = emptyUser;
 jest.mock("../../context/AuthContext", () => ({
@@ -15,13 +14,8 @@ jest.mock("../ProfilePicture");
 jest.mock("../AccountMenu");
 
 describe("Account Button Unit Tests", () => {
-    var mockMenu: any;
-    
-    beforeEach(() => {
-        mockMenu = AccountMenu;
-    });
-    
     afterEach(() => {
+        cleanup();
         jest.clearAllMocks();
     });
     
@@ -50,7 +44,9 @@ describe("Account Button Unit Tests", () => {
             </MemoryRouter>
         );
         expect(() => getByTestId("loginButtonContainer")).toThrow(expect.any(Error));
-        expect(getByTestId("profilePictureMenu")).toBeInTheDocument();
+        const menu = getByTestId("profilePictureMenu");
+        expect(menu).toBeInTheDocument();
+        expect(menu.childNodes.length).toEqual(1);
         expect(getByTestId("caretDown")).toBeInTheDocument();
         expect(() => getByTestId("caretUp")).toThrow(expect.any(Error));
     });
