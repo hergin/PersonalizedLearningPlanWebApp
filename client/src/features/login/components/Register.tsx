@@ -1,7 +1,7 @@
 import React, { useState, ReactElement } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useHotKeys } from "../../../hooks/useHotKeys";
-import { useRegistrationService } from "../hooks/useAuth";
+import { useRegistrationService } from "../hooks/useAccountServices";
 import { RegisterProps } from "../../../types";
 
 const TEXT_INPUT_STYLE_NORMAL =

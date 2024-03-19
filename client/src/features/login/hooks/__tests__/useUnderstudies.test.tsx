@@ -1,10 +1,10 @@
 import React, { PropsWithChildren } from "react";
 import { useUnderstudies } from "../useUnderstudies";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import AccountApi from "../../api/account-api";
+import UnderstudyApi from "../../api/understudy-api";
 import { renderHook, waitFor, cleanup } from "@testing-library/react";
 
-jest.mock("../../api/account-api");
+jest.mock("../../api/understudy-api");
 
 const TEST_UNDERSTUDY = {
     account_id: 1,
@@ -21,7 +21,7 @@ describe("useUnderstudies Unit Tests", () => {
     var accountApi: any;
 
     beforeEach(() => {
-        accountApi = AccountApi();
+        accountApi = UnderstudyApi();
     });
     
     afterEach(() => {

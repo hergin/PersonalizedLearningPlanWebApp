@@ -3,7 +3,7 @@ import AccountMenu from "../AccountMenu";
 import { render } from "@testing-library/react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { User, defaultSettings } from "../../types";
-import { useLogoutService } from "../../features/login/hooks/useAuth";
+import { useLogoutService } from "../../features/login/hooks/useAccountServices";
 
 var mockData: object | null = null;
 var mockIsLoading = true;
@@ -19,7 +19,7 @@ jest.mock("../../hooks/useSettings", () => ({
         mutateAsync: mockMutate,
     }),
 }));
-jest.mock("../../features/login/hooks/useAuth");
+jest.mock("../../features/login/hooks/useAccountServices");
 
 const mockUser: User = {id: 1, accessToken: "Access Token", refreshToken: "Refresh Token"};
 

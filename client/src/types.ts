@@ -139,6 +139,11 @@ export interface RegisterProps {
   password: string
 }
 
+export interface AccountDeletionProps {
+  accountId: number,
+  profileId: number
+}
+
 export const emptyUser: User = { id: -1, accessToken: "", refreshToken: "" };
 export const emptyProfile: Profile = {
   id: -1,

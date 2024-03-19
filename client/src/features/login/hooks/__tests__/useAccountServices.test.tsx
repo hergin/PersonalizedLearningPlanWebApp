@@ -1,10 +1,11 @@
 import React, { PropsWithChildren } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { useLoginService, useRegistrationService, useLogoutService } from "../useAuth";
+import { useLoginService, useRegistrationService, useLogoutService, useDeletionService } from "../useAccountServices";
 import { renderHook, cleanup } from "@testing-library/react";
-import { AuthApi } from "../../api/auth-api";
+import AccountApi from "../../api/account-api";
+import { AccountDeletionProps } from "../../../../types";
 
-jest.mock("../../api/auth-api");
+jest.mock("../../api/account-api");
 
 const mockInvalidateQueries = jest.fn();
 jest.mock("@tanstack/react-query", () => ({
@@ -27,7 +28,7 @@ describe("useAuth unit tests", () => {
     var authApi: any;
     
     beforeEach(() => {
-        authApi = AuthApi();
+        authApi = AccountApi();
     });
 
     afterEach(() => {
@@ -78,6 +79,17 @@ describe("useAuth unit tests", () => {
         await mutateAsync();
         expect(authApi.logout).toHaveBeenCalledTimes(1);
         expect(authApi.logout).toHaveBeenCalledWith();
+        expect(mockInvalidateQueries).toHaveBeenCalledTimes(1);
+        expect(mockInvalidateQueries).toHaveBeenCalledWith();
+    });
+
+    it("useDeletionService", async () => {
+        const mockDeletionValues: AccountDeletionProps = {accountId: 1, profileId: 1};
+        authApi.deleteAccount.mockReturnValue(Promise.resolve());
+        const { mutateAsync } = renderHook(() => useDeletionService(), { wrapper }).result.current;
+        await mutateAsync(mockDeletionValues);
+        expect(authApi.deleteAccount).toHaveBeenCalledTimes(1);
+        expect(authApi.deleteAccount).toHaveBeenCalledWith(mockDeletionValues.accountId, mockDeletionValues.profileId);
         expect(mockInvalidateQueries).toHaveBeenCalledTimes(1);
         expect(mockInvalidateQueries).toHaveBeenCalledWith();
     });

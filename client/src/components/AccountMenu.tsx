@@ -5,7 +5,7 @@ import DropDownMenu from "./dropDown/DropDownMenu";
 import DropDownItem from "./dropDown/DropDownItem";
 import DropDownCheckbox from "./dropDown/DropDownCheckbox";
 import { useSettings, useSettingsMutation } from "../hooks/useSettings";
-import { useLogoutService } from "../features/login/hooks/useAuth";
+import { useLogoutService } from "../features/login/hooks/useAccountServices";
 import { User } from "../types";
 
 interface AccountMenuProps {

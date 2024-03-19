@@ -9,3 +9,7 @@ export const useRegistrationService = () => ({
 export const useLogoutService = () => ({
     mutateAsync: jest.fn(),
 });
+
+export const useDeletionService = () => ({
+    mutateAsync: jest.fn()
+});

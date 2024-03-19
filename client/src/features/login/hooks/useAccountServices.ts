@@ -1,10 +1,10 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { AuthApi } from "../api/auth-api";
-import { LoginProps, RegisterProps } from "../../../types";
+import AccountApi from "../api/account-api";
+import { AccountDeletionProps, LoginProps, RegisterProps } from "../../../types";
 
 export function useLoginService() {
     const queryClient = useQueryClient();
-    const { login } = AuthApi();
+    const { login } = AccountApi();
 
     return useMutation({
         mutationFn: async (loginValues: LoginProps) => {await login(loginValues.email, loginValues.password)},
@@ -16,7 +16,7 @@ export function useLoginService() {
 
 export function useRegistrationService() {
     const queryClient = useQueryClient();
-    const { register } = AuthApi();
+    const { register } = AccountApi();
 
     return useMutation({
         mutationFn: async (registerValues: RegisterProps) => { await register(registerValues) },
@@ -28,7 +28,7 @@ export function useRegistrationService() {
 
 export function useLogoutService() {
     const queryClient = useQueryClient();
-    const { logout } = AuthApi();
+    const { logout } = AccountApi();
 
     return useMutation({
         mutationFn: async () => { await logout()},
@@ -36,4 +36,18 @@ export function useLogoutService() {
             queryClient.invalidateQueries();
         }
     });
+}
+
+export function useDeletionService() {
+    const queryClient = useQueryClient();
+    const { deleteAccount } = AccountApi();
+    
+    return useMutation({
+        mutationFn: async ({accountId, profileId}: AccountDeletionProps) => {
+            await deleteAccount(accountId, profileId)
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries();
+        }
+    })
 }
