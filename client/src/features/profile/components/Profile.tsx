@@ -7,18 +7,16 @@ import { startCase } from "lodash";
 import ProfilePicture from "../../../components/ProfilePicture";
 import { useAuth } from "../../../context/AuthContext";
 import ProfileEditor from "./ProfileEditor";
+import { Fab, Tooltip } from "@mui/material";
+import { HiOutlinePencil, HiTrash } from "react-icons/hi";
 
 const STYLE = {
-  containerHeight: "h-[50vh]",
-  containerWidth: "w-[30vw]",
-  aboutMeSize: "h-[25vh] w-[28vw]",
+  containerHeight: "h-[51vh]",
+  containerWidth: "w-[40vw]",
   borderValues: "border-[0.8px] border-solid border-[rgb(219, 219, 219)]",
-  defaultGap: "gap-[5px]",
+  defaultGap: "gap-1",
   flexColumn: "flex flex-col",
 };
-
-const INFORMATION_CONTAINER_STYLE = `${STYLE.containerHeight} ${STYLE.containerWidth} ${STYLE.borderValues} ${STYLE.flexColumn} justify-around content-normal p-[10px] mx-[40px] mt-[24px] ${STYLE.defaultGap} text-[24px]`;
-const BUTTON_STYLE = `h-[40px] ${STYLE.borderValues} rounded px-[8px] text-[16px] bg-[#8C1515] text-white`;
 
 export default function ProfileScreen() {
   const [editMode, setEditMode] = useState<boolean>(false);
@@ -76,9 +74,7 @@ export default function ProfileScreen() {
   }
 
   return (
-    <div
-      className={`h-[90vh] ${STYLE.flexColumn} justify-center items-center py-[10px] my-[20px] mx-[10px] ${STYLE.defaultGap}`}
-    >
+    <div className={`h-full ${STYLE.flexColumn} justify-center items-center my-2.5 mx-2.5 ${STYLE.defaultGap}`}>
       <ProfileEditor
         open={editMode} 
         accountId={user.id}
@@ -90,26 +86,29 @@ export default function ProfileScreen() {
         onCancel={() => {setEditMode(false)}}
       />
       <div
-        className={`h-[calc(${STYLE.containerHeight} - 15)] ${STYLE.containerWidth} ${STYLE.borderValues} ${STYLE.flexColumn} items-center m-[10px] py-[25px] px-[10px] ${STYLE.defaultGap}`}
+        className={`h-[calc(${STYLE.containerHeight} - 15)] ${STYLE.containerWidth} ${STYLE.borderValues} ${STYLE.flexColumn} items-center m-2.5 py-2 px-2.5 ${STYLE.defaultGap}`}
       >
         <ProfilePicture style="size-16" />
         <p className="text-[30px] mb-[0px]">{profile.username}</p>
       </div>
-      <div className={INFORMATION_CONTAINER_STYLE}>
+      <div className={`${STYLE.containerHeight} ${STYLE.containerWidth} ${STYLE.borderValues} ${STYLE.flexColumn} justify-around content-normal p-[10px] mx-[40px] mt-[24px] ${STYLE.defaultGap} text-2xl`}>
         {defaultDisplayElements}
         <p>About Me:</p>
-        <br />
-        <div className={`${STYLE.aboutMeSize}`}>
+        <div className={`text-lg ${STYLE.borderValues} p-2 m-2 h-4/5`}>
           <p>{profile.bio ? profile.bio : ""}</p>
         </div>
       </div>
-      <div className={`${STYLE.flexColumn} ${STYLE.defaultGap}`}>
-            <button className={BUTTON_STYLE} onClick={() => setEditMode(true)}>
-          Edit Profile
-        </button>
-        <button className={BUTTON_STYLE} onClick={onDeletion}>
-          Delete Account
-        </button>
+      <div className="w-11/12 flex flex-row flex-wrap justify-end gap-3">
+        <Tooltip title="Edit Profile" placement="top">
+          <Fab color="primary" onClick={() => setEditMode(true)} size="large">
+            <HiOutlinePencil className="size-6" />
+          </Fab>
+        </Tooltip>
+        <Tooltip title="Delete Account" placement="top">
+          <Fab color="primary" onClick={onDeletion}>
+            <HiTrash className="size-6" />
+          </Fab>
+        </Tooltip>
       </div>
     </div>
   );
