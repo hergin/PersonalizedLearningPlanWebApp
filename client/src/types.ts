@@ -31,13 +31,14 @@ export interface User {
 }
 
 export type Profile = {
-  id: number;
+  [key: string]: number | string;
+  id: number,
   username: string;
   firstName: string;
   lastName: string;
   profilePicture: string;
-  jobTitle?: string;
-  bio?: string;
+  jobTitle: string;
+  bio: string;
 };
 
 export type Settings = {
