@@ -1,6 +1,6 @@
 export {};
 
-import GoalParser from '../../parser/goalParser';
+import GoalParser from '../goalParser';
 import { Goal, GoalType } from '../../types';
 
 const TEST_DATA = {

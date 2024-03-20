@@ -1,6 +1,6 @@
 export {};
 
-import ProfileParser from '../../parser/profileParser';
+import ProfileParser from '../profileParser';
 
 const TEST_DATA = {
     email: "testdummy@yahoo.com",

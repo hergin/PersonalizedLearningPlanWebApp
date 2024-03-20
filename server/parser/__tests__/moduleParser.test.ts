@@ -1,7 +1,7 @@
 export { };
 
 import { GoalType } from '../../types';
-import ModuleParser from '../../parser/moduleParser';
+import ModuleParser from '../moduleParser';
 
 const TEST_DATA = {
     email: ["testdummy@yahoo.com", "example@outlook.com", "testCoach@gmail.com"],

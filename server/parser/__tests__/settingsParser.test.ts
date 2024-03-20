@@ -1,6 +1,6 @@
 export {};
 
-import SettingsParser from "../../parser/settingsParser";
+import SettingsParser from "../settingsParser";
 
 const TEST_DATA = {
     email: "testdummy@yahoo.com",

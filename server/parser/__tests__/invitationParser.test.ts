@@ -1,4 +1,4 @@
-import InvitationParser from "../../parser/invitationParser";
+import InvitationParser from "../invitationParser";
 import { StatusCode } from "../../types";
 
 const TEST_DATA = {

@@ -72,6 +72,13 @@ export type InviteData = {
     sender_username: string
 }
 
+export type Message = {
+    content: string,
+    date: string,
+    senderId: number,
+    recipientId: number
+}
+
 export interface Query {
     text: string,
     values: (string | number | boolean | Date | undefined)[]

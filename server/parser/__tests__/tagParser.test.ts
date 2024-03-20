@@ -1,4 +1,4 @@
-import TagParser from "../../parser/tagParser";
+import TagParser from "../tagParser";
 
 const TEST_DATA = {
     email: ["testdummy@yahoo.com", "example@outlook.com"],

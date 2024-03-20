@@ -1,6 +1,6 @@
 export {};
 
-import LoginParser from '../../parser/loginParser';
+import LoginParser from '../loginParser';
 
 const TEST_DATA = {
     email: ["testdummy@yahoo.com", "example@outlook.com", "foo@gmail.com", "chadthunder@gmail.com"],
