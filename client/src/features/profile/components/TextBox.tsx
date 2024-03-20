@@ -35,10 +35,11 @@ export default function TextBox({name, value, isTextArea, onEnterPress, onChange
                 error={required ? error : false}
                 helperText={error && required ? `Please enter your ${displayName.toLowerCase()}.` : ""}
                 multiline={isTextArea}
-                {...(isTextArea ? {rows: 2, maxRows: 4} : {})}
                 inputProps={{
-                    maxLength: isTextArea ? 500 : 50
+                    maxLength: isTextArea ? 500 : 50,
+                    "data-testid": `ID-${name}`
                 }}
+                {...(isTextArea ? {rows: 2} : {})}
             />
             {/* Input Props specifies a max character limit so no one enters an overly long field and cause us problems.*/}
         </div>
