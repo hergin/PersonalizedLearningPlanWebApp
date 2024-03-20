@@ -202,36 +202,20 @@ describe("Account Api Unit Tests", () => {
     it("Delete Account (normal case)", async () => {
         const { deleteAccount } = renderHook(AccountApi).result.current;
         apiClient.del.mockResolvedValue();
-        await deleteAccount(mockUser.id, mockProfileId);
-        expect(apiClient.del).toHaveBeenCalledTimes(2);
-        expect(apiClient.del).toHaveBeenNthCalledWith(1, `/profile/delete/${mockProfileId}`);
-        expect(apiClient.del).toHaveBeenNthCalledWith(2, `/auth/delete/${mockUser.id}`);
+        await deleteAccount(mockUser.id);
+        expect(apiClient.del).toHaveBeenCalledTimes(1);
+        expect(apiClient.del).toHaveBeenCalledWith(`/auth/delete/${mockUser.id}`);
         expect(userHook.removeUser).toHaveBeenCalledTimes(1);
         expect(mockErrorConsole).toHaveBeenCalledTimes(0);
         expect(mockAlert).toHaveBeenCalledTimes(0);
     });
 
-    it("Delete Account (Profile error case)", async () => {
+    it("Delete Account (error case)", async () => {
         const { deleteAccount } = renderHook(AccountApi).result.current;
         apiClient.del.mockRejectedValue(mockError);
-        await deleteAccount(mockUser.id, mockProfileId);
+        await deleteAccount(mockUser.id);
         expect(apiClient.del).toHaveBeenCalledTimes(1);
-        expect(apiClient.del).toHaveBeenCalledWith(`/profile/delete/${mockProfileId}`);
-        expect(userHook.removeUser).toHaveBeenCalledTimes(0);
-        expect(mockErrorConsole).toHaveBeenCalledTimes(1);
-        expect(mockErrorConsole).toHaveBeenCalledWith(mockError);
-        expect(mockAlert).toHaveBeenCalledTimes(1);
-        expect(mockAlert).toHaveBeenCalledWith(mockError.message);
-    });
-
-    it("Delete Account (Account error case)", async () => {
-        const { deleteAccount } = renderHook(AccountApi).result.current;
-        apiClient.del.mockResolvedValueOnce();
-        apiClient.del.mockRejectedValue(mockError);
-        await deleteAccount(mockUser.id, mockProfileId);
-        expect(apiClient.del).toHaveBeenCalledTimes(2);
-        expect(apiClient.del).toHaveBeenNthCalledWith(1, `/profile/delete/${mockProfileId}`);
-        expect(apiClient.del).toHaveBeenNthCalledWith(2, `/auth/delete/${mockUser.id}`);
+        expect(apiClient.del).toHaveBeenCalledWith(`/auth/delete/${mockUser.id}`);
         expect(userHook.removeUser).toHaveBeenCalledTimes(0);
         expect(mockErrorConsole).toHaveBeenCalledTimes(1);
         expect(mockErrorConsole).toHaveBeenCalledWith(mockError);
