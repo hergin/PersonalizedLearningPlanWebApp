@@ -1,15 +1,20 @@
+export const mockLoginMutateAsync = jest.fn();
+export const mockRegistrationMutateAsync = jest.fn();
+export const mockLogoutMutateAsync = jest.fn();
+export const mockDeletionMutateAsync = jest.fn();
+
 export const useLoginService = () => ({
-    mutateAsync: jest.fn(),
+    mutateAsync: mockLoginMutateAsync,
 });
 
 export const useRegistrationService = () => ({
-    mutateAsync: jest.fn(),
+    mutateAsync: mockRegistrationMutateAsync,
 });
 
 export const useLogoutService = () => ({
-    mutateAsync: jest.fn(),
+    mutateAsync: mockLogoutMutateAsync,
 });
 
 export const useDeletionService = () => ({
-    mutateAsync: jest.fn()
+    mutateAsync: mockDeletionMutateAsync
 });

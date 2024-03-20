@@ -57,7 +57,7 @@ export default function ProfileEditor({accountId, profile, open, onSave, onCance
             );
         }
         return result;
-    }, [newProfile, setNewProfile, saveChanges, handleEnterPress]);
+    }, [newProfile, disabled, setNewProfile, saveChanges, handleEnterPress]);
 
     return (
         <Modal

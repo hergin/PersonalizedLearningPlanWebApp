@@ -52,9 +52,8 @@ const AccountApi = () => {
         }
     }
 
-    const deleteAccount = async (accountId: number, profileId: number) => {
+    const deleteAccount = async (accountId: number) => {
         try {
-            await del(`/profile/delete/${profileId}`);
             await del(`/auth/delete/${accountId}`);
             removeUser();
         } catch(error: unknown) {
