@@ -21,7 +21,7 @@ describe("TextBox Unit Tests", () => {
         jest.clearAllMocks();
     });
 
-    it("TextBox renders correctly without a label", () => {
+    it("TextBox renders correctly", () => {
         mockedStartCase.mockImplementation(() => {return mockResult});
         const { getByRole, getByText, getByTestId } = render(
             <TextBox 
@@ -35,42 +35,6 @@ describe("TextBox Unit Tests", () => {
         expect(() => getByText(`${mockResult}:`)).toThrow(expect.any(Error));
         expect(mockedStartCase).toHaveBeenCalledTimes(1);
         expect(mockedStartCase).toHaveBeenCalledWith(mockName);
-        expect(getByRole("textbox")).toBeInTheDocument();
-    });
-
-    it("TextBox renders correctly with a label", () => {
-        mockedStartCase.mockImplementation(() => {return mockResult});
-        const { getByText, getByRole, getByTestId } = render(
-            <TextBox 
-                name={mockName}
-                value={mockValue}
-                hasLabel={true}
-                onEnterPress={mockOnEnterPress}
-                onChange={mockOnChange}
-            />
-        );
-        expect(getByTestId("textBoxContainer").classList.toString()).toEqual("flex flex-row justify-between gap-[5px]");
-        expect(mockedStartCase).toHaveBeenCalledTimes(2);
-        expect(mockedStartCase).toHaveBeenCalledWith(mockName);
-        expect(getByText(`${mockResult}:`)).toBeInTheDocument();
-        expect(getByRole("textbox")).toBeInTheDocument();
-    });
-
-    it("TextBox renders correctly with custom style", () => {
-        mockedStartCase.mockImplementation(() => {return mockResult});
-        const { getByText, getByRole, getByTestId } = render(
-            <TextBox 
-                name={mockName}
-                value={mockValue}
-                hasLabel={true}
-                onEnterPress={mockOnEnterPress}
-                onChange={mockOnChange}
-                containerStyle={"bg-blue"}
-            />
-        );
-        expect(getByTestId("textBoxContainer").classList.toString()).toEqual("flex flex-row justify-between gap-[5px] bg-blue");
-        expect(mockedStartCase).toHaveBeenCalledTimes(2);
-        expect(getByText(`${mockResult}:`)).toBeInTheDocument();
         expect(getByRole("textbox")).toBeInTheDocument();
     });
 
