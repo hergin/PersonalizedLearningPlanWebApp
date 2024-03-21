@@ -7,7 +7,6 @@ import dayjs from "dayjs";
 import { Checkbox } from "@mui/material";
 import SubGoalCreator from "./SubGoalCreator";
 import GoalDescriptionModal from "./GoalDescriptionModal";
-import FeedbackCollapsable from "./FeedbackCollapsable";
 import { useGoalUpdater } from "../hooks/useGoals";
 
 interface GoalItemProps {
@@ -17,11 +16,6 @@ interface GoalItemProps {
 
 export default function GoalItem({ id, goal }: GoalItemProps) {
   const { getCollapseProps, getToggleProps, isExpanded } = useCollapse();
-  const {
-    getCollapseProps: getFeedbackCollapsable,
-    getToggleProps: getFeedbackToggle,
-    isExpanded: isFeedbackExpanded,
-  } = useCollapse();
   const [progress, setProgress] = useState(0);
   const [openDescription, setOpenDescription] = useState(false);
   const { mutateAsync: updateGoal } = useGoalUpdater(goal.module_id);
