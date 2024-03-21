@@ -70,9 +70,7 @@ export default function GoalItem({ id, goal }: GoalItemProps) {
             </p>
           </div>
           <div className="flex flex-col transition-transform w-[15%] h-full justify-center p-3 items-center">
-            <button {...getFeedbackToggle()} className="text-black">
-              {isFeedbackExpanded ? "-" : "+"}
-            </button>
+
           </div>
           <div className="flex flex-col transition-transform w-[15%] h-full justify-center p-3 items-center">
             {goal.sub_goals?.length !== 0 ? (
@@ -90,11 +88,6 @@ export default function GoalItem({ id, goal }: GoalItemProps) {
           </div>
           <GoalEditor goal={goal} />
         </div>
-        <FeedbackCollapsable
-          getCollapsableProps={getFeedbackCollapsable}
-          feedback={goal.feedback}
-          id={goal.goal_id}
-        />
         {goal.sub_goals?.map((subGoal: Goal) => (
           <SubGoalsCollapsable
             key={subGoal.goal_id}

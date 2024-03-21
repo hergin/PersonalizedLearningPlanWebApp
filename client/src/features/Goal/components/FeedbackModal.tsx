@@ -1,6 +1,7 @@
-import { Modal } from "@mui/material";
+import { Button, Modal } from "@mui/material";
 import React, { useState } from "react";
 import { useFeedbackUpdater } from "../hooks/useGoals";
+import CloseIcon from "@mui/icons-material/Close";
 
 interface FeedbackModalProps {
   goal_id: number;
@@ -9,7 +10,12 @@ interface FeedbackModalProps {
   onClose: () => void;
 }
 
-const FeedbackModal = ({ onClose, open, goal_id, feedbackGoal }: FeedbackModalProps) => {
+const FeedbackModal = ({
+  onClose,
+  open,
+  goal_id,
+  feedbackGoal,
+}: FeedbackModalProps) => {
   const [feedback, setFeedback] = useState(feedbackGoal ? feedbackGoal : "");
   const { mutateAsync: updateFeedback } = useFeedbackUpdater(goal_id);
   async function handleFeedbackSubmit() {
@@ -25,11 +31,12 @@ const FeedbackModal = ({ onClose, open, goal_id, feedbackGoal }: FeedbackModalPr
     >
       <div className="bg-white w-2/4 flex flex-col items-center justify-start border border-black border-solid p-4 gap-5">
         <div className="flex flex-col w-full h-full overflow-hidden">
-          <div className="flex justify-between items-center p-4 border-b">
+          <div className="flex justify-between items-center border-b">
+            <h2 className="text-lg font-semibold"></h2>
             <h2 className="text-lg font-semibold">Feedback</h2>
-            <button onClick={onClose} className="text-sm font-semibold">
-              Close
-            </button>
+            <Button onClick={onClose}>
+              <CloseIcon />
+            </Button>
           </div>
           <textarea
             className="h-40 rounded text-base w-full border border-solid border-gray-300 p-2 resize-none"
