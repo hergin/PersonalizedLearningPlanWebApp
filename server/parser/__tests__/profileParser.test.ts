@@ -1,156 +1,80 @@
 export {};
 
 import ProfileParser from '../profileParser';
+import { Pool } from 'pg';
 
-const TEST_DATA = {
-    email: "testdummy@yahoo.com",
-    username: "test_dummy",
-    password: "01010101010",
-    refreshToken: "UTDefpAEyREXmgCkK04pL1SXK6jrB2tEc2ZyMbrFs61THq2y3bpRZOCj5RiPoZGa",
+jest.mock("pg");
+
+const TEST_PROFILE = {
+    profileId: 1,
+    username: "Xx_TestDummy_xX",
     firstName: "Test",
     lastName: "Dummy",
+    profilePicture: "",
     jobTitle: "Testing Dummy",
     bio: "...",
-    profilePicture: ""
+    accountId: 0,
 }
 
 describe('profile parser tests', () => {
     const parser = new ProfileParser();
-    var client : any;
-    var accountID : number;
+    var mockQuery : any;
 
     beforeEach(async () => {
-        client = await parser.pool.connect();
-        await client.query({
-            text: "INSERT INTO ACCOUNT(email, account_password) VALUES($1, $2)",
-            values: [TEST_DATA.email, TEST_DATA.password]
-        });
-        accountID = await getAccountID();
+        mockQuery = new Pool().query;
     });
-
-    async function getAccountID(): Promise<number> {
-        const queryResult = await client.query({
-            text: "SELECT id FROM ACCOUNT WHERE email = $1 AND account_password = $2",
-            values: [TEST_DATA.email, TEST_DATA.password]
-        });
-        return queryResult.rows[0].id;
-    }
-
-    async function createTestProfile() {
-        await client.query({
-            text: "INSERT INTO PROFILE(username, first_name, last_name, account_id) VALUES($1, $2, $3, $4)",
-            values: [TEST_DATA.username, TEST_DATA.firstName, TEST_DATA.lastName, accountID]
-        });
-    }
 
     afterEach(async () => {
-        await client.query(
-            "DELETE FROM ACCOUNT WHERE email = $1 AND account_password = $2",
-            [TEST_DATA.email, TEST_DATA.password]
-        );
-        client.release();
-    });
-
-    afterAll(async () => {
-        await parser.pool.end();
+        jest.clearAllMocks();
     });
 
     it('store profile', async () => {
-        await parser.storeProfile(TEST_DATA.username, TEST_DATA.firstName, TEST_DATA.lastName, accountID);
-        var query = await client.query(
-            "SELECT * FROM PROFILE WHERE username = $1 AND first_name = $2 AND last_name = $3 AND account_id = $4",
-            [TEST_DATA.username, TEST_DATA.firstName, TEST_DATA.lastName, accountID]
-        );
-        expect(query.rows).toEqual([
-            {
-                profile_id: expect.any(Number),
-                username: TEST_DATA.username, 
-                first_name: TEST_DATA.firstName, 
-                last_name: TEST_DATA.lastName,
-                profile_picture: null,
-                job_title: null,
-                bio: null,
-                account_id: accountID
-            }
-        ]);
+        mockQuery.mockResolvedValueOnce(undefined);
+        await parser.storeProfile(TEST_PROFILE.username, TEST_PROFILE.firstName, TEST_PROFILE.lastName, TEST_PROFILE.accountId);
+        expect(mockQuery).toHaveBeenCalledTimes(1);
+        expect(mockQuery).toHaveBeenCalledWith({
+            text: "INSERT INTO PROFILE(username, first_name, last_name, account_id) VALUES($1, $2, $3, $4)",
+            values: [TEST_PROFILE.username, TEST_PROFILE.firstName, TEST_PROFILE.lastName, TEST_PROFILE.accountId]
+        });
     });
 
     it('parse all profiles', async () => {
-        await createTestProfile();
-        const profileId = await getProfileID();
+        mockQuery.mockResolvedValueOnce({rows: [TEST_PROFILE, TEST_PROFILE]});
         var actual = await parser.parseAllProfiles();
-        const testOnly = actual.filter(result => result.account_id === accountID);
-        expect(testOnly).toEqual([
-            {
-                account_id: accountID,
-                profile_id: profileId,
-                username: TEST_DATA.username
-            }
-        ]);
+        expect(mockQuery).toHaveBeenCalledTimes(1);
+        expect(mockQuery).toHaveBeenCalledWith("SELECT * FROM PUBLIC_USER_DATA");
+        expect(actual).toEqual([TEST_PROFILE, TEST_PROFILE]);
     });
     
     it('parse profile', async () => {
-        await createTestProfile();
-        var actual = await parser.parseProfile(accountID);
-        expect(actual).toEqual({
-            profile_id: expect.any(Number),
-            username: TEST_DATA.username,
-            first_name: TEST_DATA.firstName, 
-            last_name: TEST_DATA.lastName,
-            profile_picture: null,
-            job_title: null,
-            bio: null,
-            account_id: accountID
+        mockQuery.mockResolvedValueOnce([TEST_PROFILE]);
+        var actual = await parser.parseProfile(TEST_PROFILE.accountId);
+        expect(mockQuery).toHaveBeenCalledTimes(1);
+        expect(mockQuery).toHaveBeenCalledWith({
+            text: "SELECT * FROM PROFILE WHERE account_id = $1",
+            values: [TEST_PROFILE.accountId]
         });
+        expect(actual).toEqual([TEST_PROFILE]);
     });
 
     it('update profile', async () => {
-        await createTestProfile();
-        const profileID = await getProfileID();
-        await parser.updateProfile({
-            id: profileID, 
-            username: TEST_DATA.username, 
-            firstName: TEST_DATA.firstName, 
-            lastName: TEST_DATA.lastName, 
-            profilePicture: TEST_DATA.profilePicture, 
-            jobTitle: TEST_DATA.jobTitle, 
-            bio: TEST_DATA.bio
-        });
-        var actual = await client.query(
-            "SELECT * FROM PROFILE WHERE profile_id = $1",
-            [profileID]
-        );
-        expect(actual.rows).toEqual([
-            {
-                profile_id: profileID,
-                username: TEST_DATA.username,
-                first_name: TEST_DATA.firstName,
-                last_name: TEST_DATA.lastName,
-                profile_picture: TEST_DATA.profilePicture,
-                job_title: TEST_DATA.jobTitle,
-                bio: TEST_DATA.bio,
-                account_id: accountID
-            }
-        ]);
+        const updatedBio = "updated";
+        mockQuery.mockResolvedValueOnce(undefined);
+        await parser.updateProfile({...TEST_PROFILE, bio: updatedBio});
+        expect(mockQuery).toHaveBeenCalledTimes(1);
+        expect(mockQuery).toHaveBeenCalledWith({
+            text: "UPDATE PROFILE SET username = $1, first_name = $2, last_name = $3, profile_picture = $4, job_title = $5, bio = $6 WHERE profile_id = $7",
+            values: [TEST_PROFILE.username, TEST_PROFILE.firstName, TEST_PROFILE.lastName, TEST_PROFILE.profilePicture, TEST_PROFILE.jobTitle, TEST_PROFILE.bio, TEST_PROFILE.profileId]
+        });        
     });
 
-    async function getProfileID() {
-        const query = {
-            text: "SELECT profile_id FROM PROFILE WHERE account_id = $1",
-            values: [accountID]
-        };
-        const result = await client.query(query);
-        return result.rows[0].profile_id;
-    }
-
     it('delete profile', async () => {
-        await createTestProfile();
-        const profileID = await getProfileID();
-        await parser.deleteProfile(profileID);
-        const actual = await client.query(
-            'SELECT * FROM PROFILE WHERE profile_id = $1',
-            [profileID]
-        );
-        expect(actual.rows).toEqual([]);
+        mockQuery.mockResolvedValueOnce(undefined);
+        await parser.deleteProfile(TEST_PROFILE.profileId);
+        expect(mockQuery).toHaveBeenCalledTimes(1);
+        expect(mockQuery).toHaveBeenCalledWith({
+            text: "DELETE FROM Profile WHERE profile_id = $1",
+            values: [TEST_PROFILE.profileId]
+        });
     });
 });

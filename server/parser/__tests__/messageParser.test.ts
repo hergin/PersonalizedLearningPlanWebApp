@@ -1,13 +1,7 @@
 import MessageParser from "../messageParser";
+import { Pool } from "pg";
 
-const mockQuery = jest.fn();
-jest.mock("pg", () => ({
-    Pool: jest.fn().mockImplementation(() => {
-        return {
-            query: mockQuery
-        }
-    }),
-}));
+jest.mock("pg");
 
 const TEST_SENDER = {
     id: 0,
@@ -30,6 +24,11 @@ const TEST_MESSAGE = {
 
 describe("Message Parser Unit Tests", () => {
     const parser = new MessageParser();
+    var mockQuery: any;
+
+    beforeEach(() => {
+        mockQuery = new Pool().query;
+    });
 
     afterEach(() => {
         jest.clearAllMocks();
