@@ -1,3 +1,4 @@
+import { Tooltip } from "@mui/material";
 import React from "react";
 import { Link } from "react-router-dom";
 import AccountButton from "./AccountButton";
@@ -39,14 +40,16 @@ const NavBar = () => {
             </Link>
           </li>
           <li className={LIST_ITEM_STYLE}>
-            <Link 
-              to="/#" 
-              className={LINK_STYLE}
-              data-testid="dashboardLink"
-            >
-              {" "}
-              Dashboard
-            </Link>
+            <Tooltip title="This feature is not yet available." placement="top">
+              <Link 
+                to="/#" 
+                className={LINK_STYLE}
+                data-testid="dashboardLink"
+              >
+                {" "}
+                Dashboard
+              </Link>
+            </Tooltip>
           </li>
           <li className={LIST_ITEM_STYLE}>
             <Link

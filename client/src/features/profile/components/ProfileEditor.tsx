@@ -27,6 +27,10 @@ export default function ProfileEditor({accountId, profile, open, onSave, onCance
         onSave(newProfile);
     }, [newProfile, updateProfile, onSave]);
 
+    const disabled = useMemo(() => {
+        return newProfile.username === "" || newProfile.firstName === "" || newProfile.lastName === "";
+    }, [newProfile]);
+
     const textBoxes = useMemo<ReactElement[]>(() => {
         const requiredFields: string[] = ["username", "firstName", "lastName"];
         const noTextInput: string[] = ["profilePicture"];
@@ -38,9 +42,10 @@ export default function ProfileEditor({accountId, profile, open, onSave, onCance
             
             result.push(
                 <TextBox
+                    key={`ID-${key}`}
                     name={key} 
                     value={value}
-                    onEnterPress={(event: React.KeyboardEvent) => handleEnterPress(event, saveChanges)}
+                    onEnterPress={(event: React.KeyboardEvent) => handleEnterPress(event, saveChanges, disabled)}
                     onChange={(event: React.ChangeEvent) => {
                         const editedProfile: Profile = {...newProfile};
                         editedProfile[key] = (event.target as HTMLInputElement).value;
@@ -52,11 +57,7 @@ export default function ProfileEditor({accountId, profile, open, onSave, onCance
             );
         }
         return result;
-    }, [newProfile, setNewProfile, saveChanges, handleEnterPress]);
-
-    const disabled = useMemo(() => {
-        return newProfile.username === "" || newProfile.firstName === "" || newProfile.lastName === "";
-    }, [newProfile]);
+    }, [newProfile, disabled, setNewProfile, saveChanges, handleEnterPress]);
 
     return (
         <Modal

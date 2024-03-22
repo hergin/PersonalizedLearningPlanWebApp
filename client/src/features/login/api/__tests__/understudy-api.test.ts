@@ -13,7 +13,7 @@ const TEST_UNDERSTUDY = {
 }
 const TEST_ERROR : AxiosError = {message: "I don't feel like querying right now. :("} as AxiosError;
 
-describe("AccountApi Unit Tests", () => {
+describe("Understudy Api Unit Tests", () => {
     var apiClient: any;
     var mockError: any;
     var mockAlert: any;

@@ -4,8 +4,6 @@ import ProfileScreen from "../Profile";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 jest.mock("../../../../components/ProfilePicture");
-jest.mock("../TextBox");
-jest.mock("../../../../hooks/useHotKeys");
 jest.mock("../../../login/hooks/useUser");
 jest.mock("../../../login/hooks/useAccountServices");
 jest.mock("../../hooks/useProfile");
