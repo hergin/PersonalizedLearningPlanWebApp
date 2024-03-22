@@ -40,7 +40,7 @@ async function postProfile(req : Request, res : Response) {
 }
 
 async function putProfile(req : Request, res : Response) {
-    console.log(`Data received in update profile: ${req.params.id}`);
+    console.log(`Data received in update profile: ${req.params.id} ${JSON.stringify(req.body)}`);
     const profileQuery = await profileAPI.updateProfile({
         id: parseInt(req.params.id), 
         username: req.body.username, 
