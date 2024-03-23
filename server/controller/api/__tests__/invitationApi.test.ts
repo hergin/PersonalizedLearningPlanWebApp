@@ -1,7 +1,7 @@
-import InvitationApi from "../../../controller/api/invitationApi";
+import InvitationApi from "../invitationApi";
 import InvitationParser from "../../../parser/invitationParser";
 import { StatusCode } from "../../../types";
-import { FAKE_ERRORS } from "../global/mockValues";
+import { FAKE_ERRORS } from "../../global/mockValues";
 jest.mock("../../../parser/invitationParser");
 
 const TEST_DATA = {

@@ -1,9 +1,9 @@
-import * as LoginProcessor from "../../../controller/processors/loginProcessor";
+import * as LoginProcessor from "../loginProcessor";
 import { StatusCode } from "../../../types";
-import LoginAPI from "../../../controller/api/loginApi";
+import LoginAPI from "../../api/loginApi";
 import { initializeErrorMap } from "../../../utils/errorMessages";
 import { generateAccessToken, generateRefreshToken } from "../../../utils/token";
-import { createMockRequest, MOCK_RESPONSE, TEST_ACCOUNT } from "../global/mockValues";
+import { createMockRequest, MOCK_RESPONSE, TEST_ACCOUNT } from "../../global/mockValues";
 
 jest.mock("../../../controller/api/loginAPI");
 jest.mock("../../../utils/token", () => ({

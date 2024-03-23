@@ -1,9 +1,9 @@
 export {};
 
-import SettingsApi from "../../../controller/api/settingsApi";
+import SettingsApi from "../settingsApi";
 import SettingsParser from "../../../parser/settingsParser";
 import { StatusCode } from "../../../types";
-import { FAKE_ERRORS, TEST_SETTINGS } from "../global/mockValues";
+import { FAKE_ERRORS, TEST_SETTINGS } from "../../global/mockValues";
 jest.mock("../../../parser/settingsParser");
 
 describe('Settings Api Unit Tests', () => {

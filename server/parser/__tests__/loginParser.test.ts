@@ -1,5 +1,3 @@
-export {};
-
 import LoginParser from '../loginParser';
 import { Pool } from "pg";
 
@@ -15,10 +13,10 @@ const TEST_ACCOUNT = {
 
 describe('login parser tests', () => {
     const parser = new LoginParser();
-    var mockQuery : any;
+    var mockQuery : jest.Mock<any, any, any>;
 
     beforeEach(async () => {
-        mockQuery = new Pool().query;
+        mockQuery = new Pool().query as jest.Mock<any, any, any>;
     });
 
     afterEach(async () => {

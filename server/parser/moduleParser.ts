@@ -64,6 +64,7 @@ export default class ModuleParser extends DatabaseParser {
 
     async runMaintenanceProcedures() {
         console.log("Executing module's maintenance procedures...");
-        return this.parseDatabase("CALL update_module_completion()");
+        await this.updateDatabase("CALL update_module_completion()");
+        console.log("Maintenance Procedures are complete!");
     }
 }

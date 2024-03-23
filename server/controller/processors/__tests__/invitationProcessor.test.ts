@@ -1,9 +1,9 @@
-import * as InvitationProcessor from "../../../controller/processors/invitationProcessor";
-import InvitationApi from "../../../controller/api/invitationApi";
+import * as InvitationProcessor from "../invitationProcessor";
+import InvitationApi from "../../api/invitationApi";
 import EmailService from "../../../service/emailService";
 import { StatusCode, Subject } from "../../../types";
 import { initializeErrorMap } from "../../../utils/errorMessages";
-import { createMockRequest, MOCK_RESPONSE, TEST_INVITE } from "../global/mockValues";
+import { createMockRequest, MOCK_RESPONSE, TEST_INVITE } from "../../global/mockValues";
 
 jest.mock("../../../controller/api/invitationApi");
 jest.mock("../../../service/emailService");

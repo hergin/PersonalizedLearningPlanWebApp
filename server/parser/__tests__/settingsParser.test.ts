@@ -1,89 +1,50 @@
 export {};
 
 import SettingsParser from "../settingsParser";
+import { Pool } from "pg";
 
-const TEST_DATA = {
-    email: "testdummy@yahoo.com",
-    password: "01010101010",
-    refreshToken: "UTDefpAEyREXmgCkK04pL1SXK6jrB2tEc2ZyMbrFs61THq2y3bpRZOCj5RiPoZGa",
+jest.mock("pg");
+
+const TEST_SETTINGS = {
+    id: 0,
     receive_emails: true,
-    allow_coach_invitations: true
-}
+    allow_coach_invitations: true,
+    account_id: 1,
+};
 
 describe('Settings Parser Unit Tests', () => {
     const parser = new SettingsParser();
-    var client: any;
-    var accountId: number;
-    
+    var mockQuery : jest.Mock<any, any, any>;
+
     beforeEach(async () => {
-        client = await parser.pool.connect();
-        createTestAccount();
-        accountId = await getAccountID();
+        mockQuery = new Pool().query as jest.Mock<any, any, any>;
     });
-
-    async function createTestAccount(): Promise<void> {
-        await client.query({
-            text: "INSERT INTO ACCOUNT(email, account_password) VALUES ($1, $2)",
-            values: [TEST_DATA.email, TEST_DATA.password]
-        });
-    }
-
-    async function getAccountID(): Promise<number> {
-        const queryResult = await client.query({
-            text: "SELECT id FROM ACCOUNT WHERE email = $1 AND account_password = $2",
-            values: [TEST_DATA.email, TEST_DATA.password]
-        });
-        return queryResult.rows[0].id;
-    }
 
     afterEach(async () => {
-        await client.query({
-            text: "DELETE FROM ACCOUNT WHERE id = $1",
-            values: [accountId]
-        });
-        await client.release();
+        jest.clearAllMocks();
     });
-
-    afterAll(async () => {
-        await parser.pool.end();
-    })
 
     it('get account settings (normal case)', async () => {
-        const id = await getAccountSettingsID();
-        const results = await parser.getAccountSettings(accountId);
-        expect(results).toEqual([
-            {
-                id: id,
-                receive_emails: TEST_DATA.receive_emails,
-                allow_coach_invitations: TEST_DATA.allow_coach_invitations,
-                account_id: accountId
-            }
-        ]);
+        mockQuery.mockResolvedValueOnce({rows: [TEST_SETTINGS]});
+        const results = await parser.getAccountSettings(TEST_SETTINGS.account_id);
+        expect(mockQuery).toHaveBeenCalledTimes(1);
+        expect(mockQuery).toHaveBeenCalledWith({
+            text: "SELECT * FROM ACCOUNT_SETTINGS WHERE account_id = $1",
+            values: [TEST_SETTINGS.account_id]
+        });
+        expect(results).toEqual([TEST_SETTINGS]);
     });
 
-    async function getAccountSettingsID(): Promise<number> {
-        const query = await client.query({
-            text: "SELECT id FROM ACCOUNT_SETTINGS WHERE account_id = $1",
-            values: [accountId]
-        });
-        return query.rows[0].id;
-    }
-
     it('update account settings (normal case)', async () => {
-        const id = await getAccountSettingsID();
-        console.log(`Expected ID: ${id}`);
-        await parser.updateAccountSettings(accountId, {receiveEmails: !TEST_DATA.receive_emails, allowCoachInvitations: TEST_DATA.allow_coach_invitations});
-        const results = await client.query({
-            text: "SELECT * FROM ACCOUNT_SETTINGS WHERE account_id = $1",
-            values: [accountId]
+        mockQuery.mockResolvedValueOnce(undefined);
+        await parser.updateAccountSettings(TEST_SETTINGS.account_id, {
+            receiveEmails: !TEST_SETTINGS.receive_emails, 
+            allowCoachInvitations: !TEST_SETTINGS.allow_coach_invitations
         });
-        expect(results.rows).toEqual([
-            {
-                id: id,
-                receive_emails: !TEST_DATA.receive_emails,
-                allow_coach_invitations: TEST_DATA.allow_coach_invitations,
-                account_id: accountId
-            }
-        ]);
+        expect(mockQuery).toHaveBeenCalledTimes(1);
+        expect(mockQuery).toHaveBeenCalledWith({
+            text: "UPDATE ACCOUNT_SETTINGS SET receive_emails = $1, allow_coach_invitations = $2 WHERE account_id = $3",
+            values: [!TEST_SETTINGS.receive_emails, !TEST_SETTINGS.allow_coach_invitations, TEST_SETTINGS.account_id]
+        });
     });
 });

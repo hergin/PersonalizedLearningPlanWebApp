@@ -1,8 +1,8 @@
-import * as GoalProcessor from "../../../controller/processors/goalProcessor";
-import GoalAPI from "../../../controller/api/goalApi";
+import * as GoalProcessor from "../goalProcessor";
+import GoalAPI from "../../api/goalApi";
 import { StatusCode } from "../../../types";
 import { initializeErrorMap } from "../../../utils/errorMessages";
-import { createMockRequest, MOCK_RESPONSE, TEST_GOAL, TEST_SUB_GOAL, TEST_TAG } from "../global/mockValues";
+import { createMockRequest, MOCK_RESPONSE, TEST_GOAL, TEST_SUB_GOAL, TEST_TAG } from "../../global/mockValues";
 
 jest.mock("../../../controller/api/goalApi");
 

@@ -24,10 +24,10 @@ const TEST_MESSAGE = {
 
 describe("Message Parser Unit Tests", () => {
     const parser = new MessageParser();
-    var mockQuery: any;
+    var mockQuery: jest.Mock<any, any, any>;
 
     beforeEach(() => {
-        mockQuery = new Pool().query;
+        mockQuery = new Pool().query as jest.Mock<any, any, any>;
     });
 
     afterEach(() => {

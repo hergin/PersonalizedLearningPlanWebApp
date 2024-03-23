@@ -3,7 +3,7 @@ import path from "path";
 require("dotenv").config({
     path: path.join("../../utils/", ".env"),
 });
-import { authenticateToken, generateAccessToken, generateRefreshToken } from '../../utils/token';
+import { authenticateToken, generateAccessToken, generateRefreshToken } from '../token';
 import jwt, { VerifyErrors, Jwt, JwtPayload, JsonWebTokenError } from "jsonwebtoken";
 import { StatusCode } from "../../types";
 import { Request, Response } from "express";

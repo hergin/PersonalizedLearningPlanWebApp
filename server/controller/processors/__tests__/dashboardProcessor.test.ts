@@ -1,8 +1,8 @@
-import * as DashboardProcessor from "../../../controller/processors/dashboardProcessor";
-import DashboardAPI from "../../../controller/api/dashboardApi";
+import * as DashboardProcessor from "../dashboardProcessor";
+import DashboardAPI from "../../api/dashboardApi";
 import { StatusCode } from "../../../types";
 import { initializeErrorMap } from "../../../utils/errorMessages";
-import { createMockRequest, MOCK_RESPONSE, TEST_DASHBOARD } from "../global/mockValues";
+import { createMockRequest, MOCK_RESPONSE, TEST_DASHBOARD } from "../../global/mockValues";
 
 jest.mock("../../../controller/api/dashboardApi");
 

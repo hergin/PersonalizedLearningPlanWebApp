@@ -1,9 +1,9 @@
 export {};
 
-import GoalAPI from "../../../controller/api/goalApi";
+import GoalAPI from "../goalApi";
 import GoalParser from "../../../parser/goalParser";
 import { StatusCode } from "../../../types";
-import { FAKE_ERRORS, TEST_GOAL, TEST_SUB_GOAL } from "../global/mockValues";
+import { FAKE_ERRORS, TEST_GOAL, TEST_SUB_GOAL } from "../../global/mockValues";
 import { GoalType } from "../../../types";
 jest.mock("../../../parser/goalParser");
 

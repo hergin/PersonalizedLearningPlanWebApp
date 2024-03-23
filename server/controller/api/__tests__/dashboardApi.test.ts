@@ -1,9 +1,9 @@
 export {};
 
-import DashboardAPI from "../../../controller/api/dashboardApi";
+import DashboardAPI from "../dashboardApi";
 import DashboardParser from "../../../parser/dashboardParser";
 import { StatusCode } from "../../../types";
-import { FAKE_ERRORS, TEST_DASHBOARD } from "../global/mockValues";
+import { FAKE_ERRORS, TEST_DASHBOARD } from "../../global/mockValues";
 jest.mock("../../../parser/dashboardParser");
 
 describe('Dashboard Api Unit Tests', () => {

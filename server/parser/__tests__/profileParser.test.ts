@@ -1,12 +1,10 @@
-export {};
-
 import ProfileParser from '../profileParser';
 import { Pool } from 'pg';
 
 jest.mock("pg");
 
 const TEST_PROFILE = {
-    profileId: 1,
+    id: 1,
     username: "Xx_TestDummy_xX",
     firstName: "Test",
     lastName: "Dummy",
@@ -18,10 +16,10 @@ const TEST_PROFILE = {
 
 describe('profile parser tests', () => {
     const parser = new ProfileParser();
-    var mockQuery : any;
+    var mockQuery : jest.Mock<any, any, any>;
 
     beforeEach(async () => {
-        mockQuery = new Pool().query;
+        mockQuery = new Pool().query as jest.Mock<any, any, any>;
     });
 
     afterEach(async () => {
@@ -47,14 +45,14 @@ describe('profile parser tests', () => {
     });
     
     it('parse profile', async () => {
-        mockQuery.mockResolvedValueOnce([TEST_PROFILE]);
+        mockQuery.mockResolvedValueOnce({rows: [TEST_PROFILE]});
         var actual = await parser.parseProfile(TEST_PROFILE.accountId);
         expect(mockQuery).toHaveBeenCalledTimes(1);
         expect(mockQuery).toHaveBeenCalledWith({
             text: "SELECT * FROM PROFILE WHERE account_id = $1",
             values: [TEST_PROFILE.accountId]
         });
-        expect(actual).toEqual([TEST_PROFILE]);
+        expect(actual).toEqual(TEST_PROFILE);
     });
 
     it('update profile', async () => {
@@ -64,17 +62,17 @@ describe('profile parser tests', () => {
         expect(mockQuery).toHaveBeenCalledTimes(1);
         expect(mockQuery).toHaveBeenCalledWith({
             text: "UPDATE PROFILE SET username = $1, first_name = $2, last_name = $3, profile_picture = $4, job_title = $5, bio = $6 WHERE profile_id = $7",
-            values: [TEST_PROFILE.username, TEST_PROFILE.firstName, TEST_PROFILE.lastName, TEST_PROFILE.profilePicture, TEST_PROFILE.jobTitle, TEST_PROFILE.bio, TEST_PROFILE.profileId]
+            values: [TEST_PROFILE.username, TEST_PROFILE.firstName, TEST_PROFILE.lastName, TEST_PROFILE.profilePicture, TEST_PROFILE.jobTitle, updatedBio, TEST_PROFILE.id]
         });        
     });
 
     it('delete profile', async () => {
         mockQuery.mockResolvedValueOnce(undefined);
-        await parser.deleteProfile(TEST_PROFILE.profileId);
+        await parser.deleteProfile(TEST_PROFILE.id);
         expect(mockQuery).toHaveBeenCalledTimes(1);
         expect(mockQuery).toHaveBeenCalledWith({
             text: "DELETE FROM Profile WHERE profile_id = $1",
-            values: [TEST_PROFILE.profileId]
+            values: [TEST_PROFILE.id]
         });
     });
 });

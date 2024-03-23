@@ -1,6 +1,6 @@
-import * as SettingsProcessor from "../../../controller/processors/settingsProcessor";
-import SettingsApi from "../../../controller/api/settingsApi";
-import { createMockRequest, MOCK_RESPONSE, TEST_SETTINGS } from "../global/mockValues";
+import * as SettingsProcessor from "../settingsProcessor";
+import SettingsApi from "../../api/settingsApi";
+import { createMockRequest, MOCK_RESPONSE, TEST_SETTINGS } from "../../global/mockValues";
 import { StatusCode } from "../../../types";
 import { initializeErrorMap } from "../../../utils/errorMessages";
 

@@ -1,10 +1,10 @@
 export {};
 
 import bcrypt from "bcryptjs";
-import LoginAPI from "../../../controller/api/loginApi";
+import LoginAPI from "../loginApi";
 import LoginParser from "../../../parser/loginParser";
 import { StatusCode } from "../../../types";
-import { FAKE_ERRORS, TEST_ACCOUNT } from "../global/mockValues";
+import { FAKE_ERRORS, TEST_ACCOUNT } from "../../global/mockValues";
 jest.mock("../../../parser/loginParser");
 
 describe('Login Api Unit Tests', () => {

@@ -1,9 +1,9 @@
 export {};
 
-import ProfileAPI from "../../../controller/api/profileApi";
+import ProfileAPI from "../profileApi";
 import ProfileParser from "../../../parser/profileParser";
 import { StatusCode } from "../../../types";
-import { FAKE_ERRORS, TEST_PROFILE, TEST_ACCOUNT } from "../global/mockValues";
+import { FAKE_ERRORS, TEST_PROFILE, TEST_ACCOUNT } from "../../global/mockValues";
 jest.mock("../../../parser/profileParser");
 
 describe('Profile Api Unit Tests', () => {

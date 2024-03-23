@@ -1,4 +1,4 @@
-import MessageGenerator from "../../service/messageGenerator";
+import MessageGenerator from "../messageGenerator";
 import { Subject, InviteData } from "../../types";
 
 const TEST_INVITE : InviteData = {

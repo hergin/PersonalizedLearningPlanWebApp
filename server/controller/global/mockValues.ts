@@ -1,4 +1,4 @@
-import { GoalType } from "../../../types";
+import { GoalType } from "../../types";
 
 export const FAKE_ERRORS = {
     badRequest: {code: '23514'},

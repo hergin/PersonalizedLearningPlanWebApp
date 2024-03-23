@@ -1,4 +1,4 @@
-import TagApi from "../../../controller/api/tagApi";
+import TagApi from "../tagApi";
 import { StatusCode } from "../../../types";
 import TagParser from "../../../parser/tagParser";
 jest.mock("../../../parser/tagParser");

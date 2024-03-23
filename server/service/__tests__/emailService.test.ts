@@ -1,7 +1,7 @@
 export {};
 
-import EmailService from "../../service/emailService";
-import MessageGenerator from "../../service/messageGenerator";
+import EmailService from "../emailService";
+import MessageGenerator from "../messageGenerator";
 import { InviteData, StatusCode, Subject } from "../../types";
 
 const sendMailMock = jest.fn(); 
@@ -10,7 +10,7 @@ jest.mock('nodemailer', () => ({
     sendMail: sendMailMock,
   })),
 }));
-jest.mock("../../service/messageGenerator");
+jest.mock("../messageGenerator");
 
 const TEST_DATA = {
     recipient: "example@gmail.com",
