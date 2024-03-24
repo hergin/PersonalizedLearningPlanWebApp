@@ -6,6 +6,10 @@ import { useProfile, useProfileUpdater } from "../hooks/useProfile";
 import { useHotKeys } from "../../../hooks/useHotKeys";
 import { emptyProfile, Profile } from "../../../types";
 import ProfilePicture from "../../../components/ProfilePicture";
+import { ToggleButton } from "@mui/material";
+import { useSettings, useSettingsMutation } from "../../../hooks/useSettings";
+
+import DropDownCheckbox from "../../../components/dropDown/DropDownCheckbox";
 
 const STYLE = {
   containerHeight: "h-[50vh]",
@@ -14,9 +18,10 @@ const STYLE = {
   borderValues: "border-[0.8px] border-solid border-[rgb(219, 219, 219)]",
   defaultGap: "gap-[5px]",
   flexColumn: "flex flex-col",
+  flexRow: "flex flex-row"
 };
 
-const INFORMATION_CONTAINER_STYLE = `${STYLE.containerHeight} ${STYLE.containerWidth} ${STYLE.borderValues} ${STYLE.flexColumn} justify-around content-normal p-[10px] mx-[40px] mt-[24px] ${STYLE.defaultGap} text-[24px]`;
+const INFORMATION_CONTAINER_STYLE = `${STYLE.containerHeight} ${STYLE.containerWidth} ${STYLE.flexColumn} justify-around content-normal p-[10px] mx-[40px] mt-[24px] ${STYLE.defaultGap} text-[24px]`;
 const TEXT_ENTRY_STYLE = `flex flex-row ${STYLE.defaultGap} justify-between`;
 const VARIABLE_DISPLAY_STYLE = `flex flex-row ${STYLE.defaultGap} justify-between text-start`;
 const BUTTON_STYLE = `h-[40px] ${STYLE.borderValues} rounded px-[8px] text-[16px] bg-[#8C1515] text-white`;
@@ -27,7 +32,10 @@ function ProfileScreen() {
   const { user, removeUser } = useUser();
   const { del } = ApiClient();
   const { data: profileData, isLoading, error } = useProfile(user.id);
+  const { data } = useSettings(user.id);
   const { mutate: putProfile } = useProfileUpdater(user.id);
+  const { mutate: updateSettings } = useSettingsMutation(user.id);
+  
   const { handleEnterPress } = useHotKeys();
   const [profile, setProfile] = useState<Profile>(emptyProfile);
 
@@ -53,6 +61,10 @@ function ProfileScreen() {
     setEditMode(false);
   }
 
+  function optToEmail() {
+    console.log("No email")
+  }
+
   async function deleteAccount() {
     try {
       await del(`/profile/delete/${profile.id}`);
@@ -72,13 +84,16 @@ function ProfileScreen() {
     return <div>This is an error</div>;
   }
   return (
-    <div
-      className={`h-[90vh] ${STYLE.flexColumn} justify-center items-center py-[10px] my-[20px] mx-[10px] ${STYLE.defaultGap}`}
+    <div className={` ${STYLE.flexRow} justify-center items-center py-[10px] my-[20px] mx-[10px] ${STYLE.defaultGap}`}
     >
+    <div
+      className={`h-[90vh] ${STYLE.flexColumn} justify-center items-center py-[10px] my-[20px] mx-[10px] ${STYLE.borderValues} ${STYLE.containerWidth}  ${STYLE.defaultGap}`}
+    >
+      {/* Profile Picture and email */}
       <div
-        className={`h-[calc(${STYLE.containerHeight} - 15)] ${STYLE.containerWidth} ${STYLE.borderValues} ${STYLE.flexColumn} items-center m-[10px] py-[25px] px-[10px] ${STYLE.defaultGap}`}
+        className={`h-[calc(${STYLE.containerHeight} - 15)] ${STYLE.containerWidth} ${STYLE.flexColumn} items-center m-[10px] py-[25px] px-[10px] ${STYLE.defaultGap}`}
       >
-        <ProfilePicture style="size-15" />
+        <ProfilePicture style="size-20" />
         {editMode ? (
           <input
             id="username"
@@ -101,6 +116,7 @@ function ProfileScreen() {
           <p className="text-[30px] mb-[10px]">{profile.username}</p>
         )}
       </div>
+      {/* This div is the editing mode of the profile commponent*/}
       {editMode ? (
         <div className={INFORMATION_CONTAINER_STYLE}>
           <div className={TEXT_ENTRY_STYLE}>
@@ -186,8 +202,12 @@ function ProfileScreen() {
             className={`${STYLE.aboutMeSize} px-[8px] text-[16px] ${STYLE.borderValues}`}
           />
         </div>
+        
       ) : (
+        
         <div className={INFORMATION_CONTAINER_STYLE}>
+          {/* This div is the normal mode of the profile commponent*/}
+
           <div className={VARIABLE_DISPLAY_STYLE}>
             <p>First name:</p>
             <p>{profile.firstName ? profile.firstName : ""}</p>
@@ -207,7 +227,8 @@ function ProfileScreen() {
           </div>
         </div>
       )}
-      <div className={`${STYLE.flexColumn} ${STYLE.defaultGap}`}>
+    </div>
+    <div className={`${STYLE.flexColumn} ${STYLE.defaultGap}`}>
         {editMode ? (
           <button className={BUTTON_STYLE} onClick={saveChanges}>
             Confirm
@@ -225,6 +246,18 @@ function ProfileScreen() {
         <button className={BUTTON_STYLE} onClick={deleteAccount}>
           Delete Account
         </button>
+        <DropDownCheckbox 
+          handleCheckToggle={(checked) => updateSettings({allowCoachInvitations: data[0].allow_coach_invitations, receiveEmails: checked})} 
+          checked={data[0].receive_emails}
+        >
+          Recieve Emails
+        </DropDownCheckbox>
+        <DropDownCheckbox 
+          handleCheckToggle={(checked) => updateSettings({receiveEmails: data[0].receive_emails, allowCoachInvitations: checked})} 
+          checked={data[0].allow_coach_invitations}
+        >
+          Participate In Coaching
+        </DropDownCheckbox>
       </div>
     </div>
   );

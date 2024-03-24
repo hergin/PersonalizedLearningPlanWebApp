@@ -42,22 +42,6 @@ const AccountButton = () => {
         <DropDownMenu absolutePosition="absolute top-[58px] w-[190px] translate-x-[-45%] translate-y-[20px]">
           {isLoading && <p>Loading...</p>}
           {error && <p>An error has occurred!</p>}
-          {!isLoading && !error && 
-            <div>
-              <DropDownCheckbox 
-                handleCheckToggle={(checked) => updateSettings({allowCoachInvitations: data[0].allow_coach_invitations, receiveEmails: checked})} 
-                checked={data[0].receive_emails}
-              >
-                Receives Email
-              </DropDownCheckbox>
-              <DropDownCheckbox 
-                handleCheckToggle={(checked) => updateSettings({receiveEmails: data[0].receive_emails, allowCoachInvitations: checked})} 
-                checked={data[0].allow_coach_invitations}
-              >
-                Allow Invites
-              </DropDownCheckbox>
-            </div>
-          }
           <DropDownItem leftIcon={<IoIosLogOut className="size-6" />} onClick={handleLogout}>Logout</DropDownItem>
         </DropDownMenu>
       </AccountDropDown>
