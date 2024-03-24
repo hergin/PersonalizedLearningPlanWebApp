@@ -11,11 +11,9 @@ interface ProfileEditorProps {
     accountId: number,
     profile: Profile,
     open: boolean,
-    onSave: (newProfile: Profile) => void,
+    onSave: () => void,
     onCancel: () => void
 }
-
-const DEFAULT_BORDER = "border-[0.8px] border-solid border-[rgb(219, 219, 219)]";
 
 export default function ProfileEditor({accountId, profile, open, onSave, onCancel}: ProfileEditorProps) {
     const [newProfile, setNewProfile] = useState<Profile>({...profile});
@@ -23,8 +21,9 @@ export default function ProfileEditor({accountId, profile, open, onSave, onCance
     const { handleEnterPress } = useHotKeys();
 
     const saveChanges = useCallback(async () => {
+        console.log(`Profile: ${JSON.stringify(newProfile)}`);
         await updateProfile(newProfile);
-        onSave(newProfile);
+        onSave();
     }, [newProfile, updateProfile, onSave]);
 
     const disabled = useMemo(() => {
@@ -65,7 +64,7 @@ export default function ProfileEditor({accountId, profile, open, onSave, onCance
           open={open}
           onClose={onCancel}
         >
-            <div className={`bg-white w-2/4 flex flex-col items-center justify-start p-4 gap-5 ${DEFAULT_BORDER}`}>
+            <div className={`bg-white w-2/4 flex flex-col items-center justify-start p-4 gap-5 border-[0.8px] border-solid border-[rgb(219, 219, 219)]`}>
                 <div className="w-full flex justify-center border-b border-black">
                     <h1 className="font-headlineFont text-5xl pb-2">Edit Profile</h1>
                 </div>

@@ -16,7 +16,6 @@ interface ProfileDisplayProps {
 }
 
 export default function ProfileDisplay({profile}: ProfileDisplayProps) {
-    
     const defaultDisplayElements = useMemo<ReactElement[]>(() => {
         const result: ReactElement[] = [];
         const nonDefaultElements: string[] = ["username", "profilePicture", "bio"];

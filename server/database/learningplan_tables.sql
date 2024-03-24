@@ -9,6 +9,20 @@ CREATE TABLE ACCOUNT(
     CHECK (email ~* '^[A-Za-z0-9._%-]+@[A-Za-z0-9.-]+[.][A-Za-z]+$')
 );
 
+DROP TABLE IF EXISTS PROFILE CASCADE;
+CREATE TABLE PROFILE(
+    profile_id SERIAL PRIMARY KEY,
+    username TEXT NOT NULL,
+    first_name TEXT NOT NULL,
+    last_name TEXT NOT NULL,
+    profile_picture TEXT,
+    job_title TEXT,
+    bio TEXT,
+    account_id INT UNIQUE NOT NULL,
+    FOREIGN KEY (account_id) REFERENCES ACCOUNT(id)
+        ON DELETE CASCADE ON UPDATE CASCADE
+);
+
 DROP TABLE IF EXISTS ACCOUNT_SETTINGS CASCADE;
 CREATE TABLE ACCOUNT_SETTINGS(
     id SERIAL PRIMARY KEY,
@@ -29,20 +43,6 @@ CREATE TABLE TAG(
         ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT valid_hex_code
     CHECK (color IS NULL OR COLOR ~* '^#[a-f0-9]{2}[a-f0-9]{2}[a-f0-9]{2}$')
-);
-
-DROP TABLE IF EXISTS PROFILE CASCADE;
-CREATE TABLE PROFILE(
-    profile_id SERIAL PRIMARY KEY,
-    username TEXT NOT NULL,
-    first_name TEXT NOT NULL,
-    last_name TEXT NOT NULL,
-    profile_picture TEXT,
-    job_title TEXT,
-    bio TEXT,
-    account_id INT NOT NULL,
-    FOREIGN KEY (account_id) REFERENCES ACCOUNT(id)
-        ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 DROP TABLE IF EXISTS MODULE CASCADE;

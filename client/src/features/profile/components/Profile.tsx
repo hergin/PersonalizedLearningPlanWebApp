@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useProfile } from "../hooks/useProfile";
-import { emptyProfile, Profile } from "../../../types";
 import { useAuth } from "../../../context/AuthContext";
 import { Fab, Tooltip } from "@mui/material";
 import { HiOutlinePencil, HiTrash } from "react-icons/hi";
@@ -11,25 +10,8 @@ import ProfileDisplay from "./ProfileDisplay";
 export default function ProfileScreen() {
   const [isWarningOpen, setIsWarningOpen] = useState<boolean>(false);
   const [editMode, setEditMode] = useState<boolean>(false);
-  const [profile, setProfile] = useState<Profile>(emptyProfile);
   const { user } = useAuth();
   const { data: profileData, isLoading, error } = useProfile(user.id);
-
-  useEffect(() => {
-    if (isLoading || error) {
-      return;
-    }
-
-    setProfile({
-      id: profileData.profile_id,
-      username: profileData.username,
-      firstName: profileData.first_name,
-      lastName: profileData.last_name,
-      profilePicture: profileData.profile_picture,
-      jobTitle: profileData.job_title,
-      bio: profileData.bio,
-    });
-  }, [profileData, isLoading, error]);
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -44,11 +26,16 @@ export default function ProfileScreen() {
       <ProfileEditor
         open={editMode} 
         accountId={user.id}
-        profile={profile}
-        onSave={(newProfile: Profile) => {
-          setProfile(newProfile);
-          setEditMode(false);
+        profile={{
+          id: profileData.profile_id,
+          username: profileData.username,
+          firstName: profileData.first_name,
+          lastName: profileData.last_name,
+          profilePicture: profileData.profile_picture,
+          jobTitle: profileData.job_title,
+          bio: profileData.bio
         }}
+        onSave={() => {setEditMode(false);}}
         onCancel={() => {setEditMode(false)}}
       />
       <AccountDeletionWarning 
@@ -56,7 +43,15 @@ export default function ProfileScreen() {
         accountId={user.id} 
         onClose={() => setIsWarningOpen(false)}
       />
-      <ProfileDisplay profile={profile} />
+      <ProfileDisplay profile={{
+        id: profileData.profile_id,
+        username: profileData.username,
+        firstName: profileData.first_name,
+        lastName: profileData.last_name,
+        profilePicture: profileData.profile_picture,
+        jobTitle: profileData.job_title,
+        bio: profileData.bio
+      }} />
       <div className="w-11/12 flex flex-row flex-wrap justify-end gap-3">
         <Tooltip title="Edit Profile" placement="top">
             <Fab color="primary" onClick={() => setEditMode(true)} size="large">

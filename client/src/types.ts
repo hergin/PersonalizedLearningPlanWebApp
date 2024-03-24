@@ -141,15 +141,6 @@ export interface RegisterProps {
 }
 
 export const emptyUser: User = { id: -1, accessToken: "", refreshToken: "" };
-export const emptyProfile: Profile = {
-  id: -1,
-  username: "",
-  firstName: "",
-  lastName: "",
-  profilePicture: "",
-  jobTitle: "",
-  bio: "",
-};
 export const defaultSettings = {
   receiveEmails: true,
   allowCoachInvitations: true,
