@@ -2,15 +2,15 @@ import React, { PropsWithChildren } from "react";
 
 interface TabPanelProps extends PropsWithChildren {
     index: number,
-    value: number,
+    selectedValue: number,
     style?: string
 }
 
-export default function TabPanel({children, value, index, style, ...other}: TabPanelProps) {
+export default function TabPanel({children, selectedValue: value, index, style, ...other}: TabPanelProps) {
     return  (
-        <div role="tabpanel" hidden={value !== index} id={`tabpanel-${index}`} {...other}>
+        <div data-testid="container" role="tabpanel" hidden={value !== index} id={`tabpanel-${index}`} {...other}>
             {value === index && (
-                <div className={style}>
+                <div data-testid="tabContent" className={style}>
                     {children}
                 </div>
             )}

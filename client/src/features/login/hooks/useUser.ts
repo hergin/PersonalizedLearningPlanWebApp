@@ -9,7 +9,6 @@ export const useUser = () => {
 
   useEffect(() => {
     const currentUser = getItem("user");
-    currentUser;
     if (currentUser) {
       addUser(JSON.parse(currentUser));
     }

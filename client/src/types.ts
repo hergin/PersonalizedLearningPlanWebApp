@@ -31,13 +31,14 @@ export interface User {
 }
 
 export type Profile = {
-  id: number;
+  [key: string]: number | string;
+  id: number,
   username: string;
   firstName: string;
   lastName: string;
   profilePicture: string;
-  jobTitle?: string;
-  bio?: string;
+  jobTitle: string;
+  bio: string;
 };
 
 export type Settings = {
@@ -126,16 +127,20 @@ export interface UpdateFeedbackProps {
   feedback: string;
 }
 
+export interface LoginProps {
+  email: string,
+  password: string
+}
+
+export interface RegisterProps {
+  firstName: string,
+  lastName: string,
+  username: string,
+  email: string,
+  password: string
+}
+
 export const emptyUser: User = { id: -1, accessToken: "", refreshToken: "" };
-export const emptyProfile: Profile = {
-  id: -1,
-  username: "",
-  firstName: "",
-  lastName: "",
-  profilePicture: "",
-  jobTitle: "",
-  bio: "",
-};
 export const defaultSettings = {
   receiveEmails: true,
   allowCoachInvitations: true,

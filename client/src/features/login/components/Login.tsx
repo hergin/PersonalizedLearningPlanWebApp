@@ -1,38 +1,25 @@
 import React, { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { ApiClient } from "../../../hooks/ApiClient";
-import { useUser } from "../hooks/useUser";
 import { useHotKeys } from "../../../hooks/useHotKeys";
 import { IconButton, InputAdornment, TextField } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { useLoginService } from "../hooks/useAccountServices";
 
 const LoginScreen = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
   const location = useLocation();
-  const { addUser } = useUser();
-  const { post } = ApiClient();
   const { handleEnterPress } = useHotKeys();
   const buttonDisabled = email === "" || password === "";
   const [showPassword, setShowPassword] = useState(false);
   const handleClickShowPassword = () => setShowPassword(!showPassword);
+  const { mutateAsync: login, error } = useLoginService();
 
   async function handleLogin() {
-    try {
-      const response = await post("/auth/login", { email, password });
-      addUser({
-        id: response.id,
-        accessToken: response.accessToken,
-        refreshToken: response.refreshToken,
-      });
-      // Redirects if user came from another page.
-      location.state?.from
-        ? navigate(location.state.from)
-        : navigate("/LearningPlan");
-    } catch (error: any) {
-      console.error(error);
-      alert(error.response ? error.response.data : error);
+    await login({email: email, password: password});
+    if(!error) {
+      location.state?.from ? navigate(location.state.from) : navigate("/LearningPlan");
     }
   }
 

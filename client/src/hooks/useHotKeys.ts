@@ -1,10 +1,11 @@
+import React from "react";
+
 export const useHotKeys = () => {
   const handleEnterPress = (
-    event: any,
+    event: React.KeyboardEvent,
     action: () => void,
     submissionDisabled?: boolean
   ) => {
-    `Key detected: ${event.key}`;
     if (event.key === "Enter" && !submissionDisabled) {
       action();
     }

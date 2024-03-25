@@ -49,5 +49,6 @@ export default class ProfileParser extends DatabaseParser {
             values: [profile_id]
         };
         await this.updateDatabase(query);
+        console.log("Profile successfully deleted!");
     }
 }

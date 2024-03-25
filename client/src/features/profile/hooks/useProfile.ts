@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { ProfileApi } from "../api/profile-api";
+import ProfileApi from "../api/profile-api";
 import { CreateProfileProps, Profile } from "../../../types";
 
 export function useProfile(accountId: number) {

@@ -8,18 +8,19 @@ interface DropDownCheckboxProps extends PropsWithChildren {
     rightIcon?: ReactElement
 }
 
-export default function DropDownCheckbox(props: DropDownCheckboxProps) {
+export default function DropDownCheckbox({checked, leftIcon, rightIcon, handleCheckToggle, children}: DropDownCheckboxProps) {
     return (
         <div className={`h-[50px] p-[0.5rem] flex items-center gap-0`}>
-            {props.leftIcon && <span className="icon-button">{props.leftIcon}</span>}
+            {leftIcon && <span className="icon-button">{leftIcon}</span>}
             <Checkbox
+                data-testid="checkbox"
                 className="size-10"
-                checked={props.checked}
-                onChange={(event) => props.handleCheckToggle(event.target.checked)}
+                checked={checked}
+                onChange={(event) => handleCheckToggle(event.target.checked)}
                 color="secondary"
             />
-            <p className={"truncate"}>{props.children}</p>
-            {props.rightIcon && <span className="icon-button">{props.rightIcon}</span>}
+            <p data-testid="text" className={"truncate"}>{children}</p>
+            {rightIcon && <span className="icon-button">{rightIcon}</span>}
         </div>
     );
 }

@@ -1,8 +1,8 @@
 import React, { useState, ReactElement } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { ApiClient } from "../../../hooks/ApiClient";
 import { useHotKeys } from "../../../hooks/useHotKeys";
-import { useUser } from "../hooks/useUser";
+import { useRegistrationService } from "../hooks/useAccountServices";
+import { RegisterProps } from "../../../types";
 
 const TEXT_INPUT_STYLE_NORMAL =
   "h-10 rounded text-base w-full border border-solid border-gray-300 px-2 ";
@@ -10,44 +10,29 @@ const TEXT_INPUT_STYLE_ERROR =
   "h-10 rounded text-base w-full border border-solid border-red-700 px-2";
 
 const Register = () => {
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("");
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const [registerValues, setRegisterValues] = useState<RegisterProps>({
+    email: "", password: "", firstName: "", lastName: "", username: ""
+  });
   const navigate = useNavigate();
-  const { post } = ApiClient();
   const { handleEnterPress } = useHotKeys();
-  const { addUser } = useUser();
   const [passwordErrors, setPasswordErrors] = useState<ReactElement[]>([]);
+  const { mutateAsync: register, error } = useRegistrationService();
   const submitDisabled =
-    firstName === "" ||
-    lastName === "" ||
-    email === "" ||
-    username === "" ||
-    password === "" ||
+    registerValues.firstName === "" ||
+    registerValues.lastName === "" ||
+    registerValues.email === "" ||
+    registerValues.username === "" ||
+    registerValues.password === "" ||
     passwordErrors.length !== 0;
 
   async function handleRegistration() {
-    if (!email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
+    if (!registerValues.email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
       alert("Your email must be valid.");
       return;
     }
-
-    try {
-      await post("/auth/register", { email, password });
-      const response = await post("/auth/login", {email, password});
-      addUser({
-        id: response.id,
-        accessToken: response.accessToken,
-        refreshToken: response.refreshToken,
-      });
-      await post("/profile/create", { username, firstName, lastName, account_id: response.id});
-      // Redirects back to home page after creating an account
+    await register(registerValues);
+    if(!error) {
       navigate("/");
-    } catch (error: any) {
-      console.error(error);
-      alert(error.response ? error.response.data : error);
     }
   }
 
@@ -88,9 +73,12 @@ const Register = () => {
               className={TEXT_INPUT_STYLE_NORMAL}
               placeholder="First Name"
               type="text"
-              value={firstName}
+              value={registerValues.firstName}
               onChange={(input) => {
-                setFirstName(input.target.value);
+                setRegisterValues({
+                  ...registerValues,
+                  firstName: input.target.value
+                });
               }}
               onKeyUp={(event) => {
                 handleEnterPress(event, handleRegistration, submitDisabled);
@@ -103,9 +91,12 @@ const Register = () => {
               className={TEXT_INPUT_STYLE_NORMAL}
               placeholder="Last Name"
               type="text"
-              value={lastName}
+              value={registerValues.lastName}
               onChange={(input) => {
-                setLastName(input.target.value);
+                setRegisterValues({
+                  ...registerValues,
+                  lastName: input.target.value
+                });
               }}
               onKeyUp={(event) => {
                 handleEnterPress(event, handleRegistration, submitDisabled);
@@ -118,9 +109,12 @@ const Register = () => {
               className={TEXT_INPUT_STYLE_NORMAL}
               placeholder="Email"
               type="text"
-              value={email}
+              value={registerValues.email}
               onChange={(input) => {
-                setEmail(input.target.value);
+                setRegisterValues({
+                  ...registerValues,
+                  email: input.target.value
+                });
               }}
               onKeyUp={(event) => {
                 handleEnterPress(event, handleRegistration, submitDisabled);
@@ -133,9 +127,12 @@ const Register = () => {
               className={TEXT_INPUT_STYLE_NORMAL}
               placeholder="Username"
               type="text"
-              value={username}
+              value={registerValues.username}
               onChange={(input) => {
-                setUsername(input.target.value);
+                setRegisterValues({
+                  ...registerValues,
+                  username: input.target.value
+                });
               }}
               onKeyUp={(event) => {
                 handleEnterPress(event, handleRegistration, submitDisabled);
@@ -152,9 +149,12 @@ const Register = () => {
               }
               placeholder="Password"
               type="password"
-              value={password}
+              value={registerValues.password}
               onChange={(input) => {
-                setPassword(input.target.value);
+                setRegisterValues({
+                  ...registerValues,
+                  password: input.target.value
+                });
                 validatePassword(input.target.value);
               }}
               onKeyUp={(event) => {

@@ -1,9 +1,9 @@
-import { ApiClient } from "../../../hooks/ApiClient";
+import { useApiConnection } from "../../../hooks/useApiConnection";
 import { AxiosError } from "axios";
 import { Tag } from "../../../types";
 
 export const TagApi = () => {
-  const { get, post, del } = ApiClient();
+  const { get, post, del } = useApiConnection();
   
   async function fetchTags(accountID: number) {
     try {

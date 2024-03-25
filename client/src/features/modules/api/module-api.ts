@@ -1,9 +1,9 @@
-import { ApiClient } from "../../../hooks/ApiClient";
+import { useApiConnection } from "../../../hooks/useApiConnection";
 import { AxiosError } from "axios";
 import { CreateModuleProps, Module } from "../../../types";
 
 export const ModuleApi = () => {
-  const { get, post, put, del } = ApiClient();
+  const { get, post, put, del } = useApiConnection();
 
   async function fetchModules(userId: number) {
     try {
