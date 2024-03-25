@@ -1,8 +1,10 @@
 import GoalParser from '../goalParser';
 import { Pool } from 'pg';
-import { Goal, GoalType } from '../../types';
+import { generateInsertQuery, generateUpdateQuery } from '../../utils/queryGenerator';
+import { Goal, GoalType, Query } from '../../types';
 
 jest.mock("pg");
+jest.mock("../../utils/queryGenerator");
 
 const mockModuleId = 0;
 const mockTagId = 69;
@@ -52,76 +54,31 @@ const mockGoalId = 0;
 describe('goal parser tests', () => {
     var parser = new GoalParser();
     var mockQuery: jest.Mock<any, any, any>;
+    var mockGenerateInsertQuery: jest.Mock<any, any, any>;
+    var mockGenerateUpdateQuery: jest.Mock<any, any, any>;
 
     beforeEach(async () => {
         mockQuery = new Pool().query as jest.Mock<any, any, any>;
+        mockGenerateInsertQuery = generateInsertQuery as jest.Mock<any, any, any>;
+        mockGenerateUpdateQuery = generateUpdateQuery as jest.Mock<any, any, any>;
     });
 
     afterEach(async () => {
         jest.clearAllMocks();
     });
     
-    it('store goal (no due date nor tag id)', async () => {
+    it('store goal', async () => {
         const mockGoal: Goal = {...TEST_GOAL[0]};
-        mockQuery.mockResolvedValueOnce(undefined);
-        mockQuery.mockResolvedValueOnce({rows: [{goal_id: mockGoal.goal_id}]});
-        const result = await parser.storeGoal(mockGoal);
-        expect(mockQuery).toHaveBeenCalledTimes(2);
-        expect(mockQuery).toHaveBeenNthCalledWith(1, {
+        const mockInsertQuery: Query = {
             text: "INSERT INTO GOAL(name, description, is_complete, goal_type, module_id) VALUES ($1, $2, $3, $4, $5)",
             values: [mockGoal.name, mockGoal.description, mockGoal.is_complete, mockGoal.goal_type, mockGoal.module_id]
-        });
-        expect(mockQuery).toHaveBeenNthCalledWith(2, {
-            text: "SELECT goal_id FROM GOAL WHERE name = $1 AND description = $2 AND module_id = $3",
-            values: [mockGoal.name, mockGoal.description, mockGoal.module_id]
-        });
-        expect(result).toEqual([{goal_id: mockGoal.goal_id}]);
-    });
-
-    it('store goal (with due date, no tag id)', async () => {
-        const mockGoal: Goal = {...TEST_GOAL[1]};
+        };
+        mockGenerateInsertQuery.mockReturnValue(mockInsertQuery);
         mockQuery.mockResolvedValueOnce(undefined);
         mockQuery.mockResolvedValueOnce({rows: [{goal_id: mockGoal.goal_id}]});
         const result = await parser.storeGoal(mockGoal);
         expect(mockQuery).toHaveBeenCalledTimes(2);
-        expect(mockQuery).toHaveBeenNthCalledWith(1, {
-            text: "INSERT INTO GOAL(name, description, is_complete, goal_type, module_id, due_date) VALUES ($1, $2, $3, $4, $5, $6)",
-            values: [mockGoal.name, mockGoal.description, mockGoal.is_complete, mockGoal.goal_type, mockGoal.module_id, mockGoal.due_date]
-        });
-        expect(mockQuery).toHaveBeenNthCalledWith(2, {
-            text: "SELECT goal_id FROM GOAL WHERE name = $1 AND description = $2 AND module_id = $3",
-            values: [mockGoal.name, mockGoal.description, mockGoal.module_id]
-        });
-        expect(result).toEqual([{goal_id: mockGoal.goal_id}]);
-    });
-
-    it('store goal (with tag id, no due date)', async () => {
-        const mockGoal: Goal = {...TEST_GOAL[2]};
-        mockQuery.mockResolvedValueOnce(undefined);
-        mockQuery.mockResolvedValueOnce({rows: [{goal_id: mockGoal.goal_id}]});
-        const result = await parser.storeGoal(mockGoal);
-        expect(mockQuery).toHaveBeenCalledTimes(2);
-        expect(mockQuery).toHaveBeenNthCalledWith(1, {
-            text: "INSERT INTO GOAL(name, description, is_complete, goal_type, module_id, tag_id) VALUES ($1, $2, $3, $4, $5, $6)",
-            values: [mockGoal.name, mockGoal.description, mockGoal.is_complete, mockGoal.goal_type, mockGoal.module_id, mockGoal.tag_id]
-        });
-        expect(mockQuery).toHaveBeenNthCalledWith(2, {
-            text: "SELECT goal_id FROM GOAL WHERE name = $1 AND description = $2 AND module_id = $3",
-            values: [mockGoal.name, mockGoal.description, mockGoal.module_id]
-        });
-        expect(result).toEqual([{goal_id: mockGoal.goal_id}]);
-    });
-
-    it('store goal (with tag id and due date)', async () => {
-        const mockGoal: Goal = {...TEST_GOAL[3]};
-        mockQuery.mockResolvedValueOnce(undefined);
-        mockQuery.mockResolvedValueOnce({rows: [{goal_id: mockGoal.goal_id}]});
-        const result = await parser.storeGoal(mockGoal);
-        expect(mockQuery).toHaveBeenCalledTimes(2);
-        expect(mockQuery).toHaveBeenNthCalledWith(1, {
-            text: "INSERT INTO GOAL(name, description, is_complete, goal_type, module_id, tag_id, due_date) VALUES ($1, $2, $3, $4, $5, $6, $7)",
-            values: [mockGoal.name, mockGoal.description, mockGoal.is_complete, mockGoal.goal_type, mockGoal.module_id, mockGoal.tag_id, mockGoal.due_date]
-        });
+        expect(mockQuery).toHaveBeenNthCalledWith(1, mockInsertQuery);
         expect(mockQuery).toHaveBeenNthCalledWith(2, {
             text: "SELECT goal_id FROM GOAL WHERE name = $1 AND description = $2 AND module_id = $3",
             values: [mockGoal.name, mockGoal.description, mockGoal.module_id]
@@ -152,72 +109,17 @@ describe('goal parser tests', () => {
         expect(result).toEqual([{module_id: mockModuleId}]);
     });
 
-    it('update goal (no due date nor tag id)', async () => {
+    it('update goal', async () => {
         const mockGoal: Goal = {...TEST_GOAL[0], name: "updated name"};
-        mockQuery.mockResolvedValueOnce(undefined);
-        await parser.updateGoal(mockGoal);
-        expect(mockQuery).toHaveBeenCalledTimes(1);
-        expect(mockQuery).toHaveBeenCalledWith({
+        const mockUpdateQuery: Query = {
             text: "UPDATE GOAL SET name = $1, description = $2, is_complete = $3, goal_type = $4, module_id = $5 WHERE goal_id = $6",
             values: [mockGoal.name, mockGoal.description,  mockGoal.is_complete, mockGoal.goal_type, mockGoal.module_id, mockGoal.goal_id]
-        });
-    });
-
-    it('update goal (with due date, but no tag id)', async () => {
-        const mockGoal: Goal = {...TEST_GOAL[1], description: "updated description"};
+        };
+        mockGenerateUpdateQuery.mockReturnValueOnce(mockUpdateQuery);
         mockQuery.mockResolvedValueOnce(undefined);
         await parser.updateGoal(mockGoal);
         expect(mockQuery).toHaveBeenCalledTimes(1);
-        expect(mockQuery).toHaveBeenCalledWith({
-            text: "UPDATE GOAL SET name = $1, description = $2, is_complete = $3, goal_type = $4, module_id = $5, due_date = $6 WHERE goal_id = $7",
-            values: [mockGoal.name, mockGoal.description,  mockGoal.is_complete, mockGoal.goal_type, mockGoal.module_id, mockGoal.due_date, mockGoal.goal_id]
-        });
-    });
-
-    it('update goal (with tag id, but no due date)', async () => {
-        const mockGoal: Goal = {...TEST_GOAL[2], goal_type: GoalType.REPEATABLE};
-        mockQuery.mockResolvedValueOnce(undefined);
-        await parser.updateGoal(mockGoal);
-        expect(mockQuery).toHaveBeenCalledTimes(1);
-        expect(mockQuery).toHaveBeenCalledWith({
-            text: "UPDATE GOAL SET name = $1, description = $2, is_complete = $3, goal_type = $4, module_id = $5, tag_id = $6 WHERE goal_id = $7",
-            values: [mockGoal.name, mockGoal.description,  mockGoal.is_complete, mockGoal.goal_type, mockGoal.module_id, mockGoal.tag_id, mockGoal.goal_id]
-        });
-    });
-
-    it('update goal (with tag id and due date)', async () => {
-        const mockGoal: Goal = {...TEST_GOAL[3], is_complete: true};
-        mockQuery.mockResolvedValueOnce(undefined);
-        await parser.updateGoal(mockGoal);
-        expect(mockQuery).toHaveBeenCalledTimes(1);
-        expect(mockQuery).toHaveBeenCalledWith({
-            text: "UPDATE GOAL SET name = $1, description = $2, is_complete = $3, goal_type = $4, module_id = $5, tag_id = $6, due_date = $7 WHERE goal_id = $8",
-            values: [mockGoal.name, mockGoal.description,  mockGoal.is_complete, mockGoal.goal_type, mockGoal.module_id, mockGoal.tag_id, mockGoal.due_date, mockGoal.goal_id]
-        });
-    });
-
-    it('update goal timestamps (completion time only)', async () => {
-        const mockGoal: Goal = {...TEST_GOAL[0], completion_time: TEST_DATES.completionTime};
-        if(!mockGoal.completion_time) throw new Error("completion time was null!");
-        mockQuery.mockResolvedValueOnce(undefined);
-        await parser.updateGoalTimestamps(mockGoalId, mockGoal.completion_time);
-        expect(mockQuery).toHaveBeenCalledTimes(1);
-        expect(mockQuery).toHaveBeenCalledWith({
-            text: "UPDATE GOAL SET completion_time = $1 WHERE goal_id = $2",
-            values: [mockGoal.completion_time, mockGoalId]
-        });
-    });
-
-    it('update goal timestamps (completion time and expiration)', async () => {
-        const mockGoal: Goal = {...TEST_GOAL[0], completion_time: TEST_DATES.completionTime, expiration: TEST_DATES.distantFutureDate};
-        if(!mockGoal.completion_time || !mockGoal.expiration) throw new Error("Goal id or completion time was null!");
-        mockQuery.mockResolvedValueOnce(undefined);
-        await parser.updateGoalTimestamps(mockGoalId, mockGoal.completion_time, mockGoal.expiration);
-        expect(mockQuery).toHaveBeenCalledTimes(1);
-        expect(mockQuery).toHaveBeenCalledWith({
-            text: "UPDATE GOAL SET completion_time = $1, expiration = $3 WHERE goal_id = $2",
-            values: [mockGoal.completion_time, mockGoalId, mockGoal.expiration]
-        });
+        expect(mockQuery).toHaveBeenCalledWith(mockUpdateQuery);
     });
 
     it('update goal feedback', async () => {

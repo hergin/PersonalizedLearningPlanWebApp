@@ -67,17 +67,12 @@ describe("Message Parser Unit Tests", () => {
         const messageId = [{id: 1}];
         mockQuery.mockResolvedValueOnce(undefined);
         mockQuery.mockResolvedValueOnce({rows: messageId});
-        const result = await parser.storeMessage(TEST_MESSAGE);
-        expect(mockQuery).toHaveBeenCalledTimes(2);
-        expect(mockQuery).toHaveBeenNthCalledWith(1, {
+        await parser.storeMessage(TEST_MESSAGE);
+        expect(mockQuery).toHaveBeenCalledTimes(1);
+        expect(mockQuery).toHaveBeenCalledWith({
             text: "INSERT INTO MESSAGE(content, date, sender_id, recipient_id) VALUES ($1, $2, $3, $4, $5)",
             values: [TEST_MESSAGE.content, TEST_MESSAGE.date, TEST_MESSAGE.senderId, TEST_MESSAGE.recipientId]
         });
-        expect(mockQuery).toHaveBeenNthCalledWith(2, {
-            text: "SELECT id FROM MESSAGE WHERE content = $1 AND date = $2 AND sender_id = $3 AND recipient_id = $4",
-            values: [TEST_MESSAGE.content, TEST_MESSAGE.date, TEST_MESSAGE.senderId, TEST_MESSAGE.recipientId]
-        });
-        expect(result).toEqual(messageId);
     });
 
     it("deleteMessage", async () => {

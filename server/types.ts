@@ -86,6 +86,11 @@ export type Message = {
     recipientId: number
 }
 
+export type Chat = {
+    sentMessages: Message[],
+    receivedMessages: Message[]
+}
+
 export interface Query {
     text: string,
     values: (string | number | boolean | Date | undefined)[]

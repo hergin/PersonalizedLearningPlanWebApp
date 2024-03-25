@@ -30,11 +30,11 @@ describe('Profile Api Unit Tests', () => {
     });
 
     it('get all profiles (normal case)', async() => {
-        parser.parseAllProfiles.mockResolvedValueOnce([{account_id: TEST_ACCOUNT.id, profile_id: TEST_PROFILE.id, username: TEST_PROFILE.username}]);
+        parser.parseAllProfiles.mockResolvedValueOnce([{account_id: TEST_ACCOUNT.id, profile_id: TEST_PROFILE.profileId, username: TEST_PROFILE.username}]);
         const actual = await profileAPI.getAllProfiles();
         expect(parser.parseAllProfiles).toHaveBeenCalledTimes(1);
         expect(parser.parseAllProfiles).toHaveBeenCalledWith();
-        expect(actual).toEqual([{account_id: TEST_ACCOUNT.id, profile_id: TEST_PROFILE.id, username: TEST_PROFILE.username}]);
+        expect(actual).toEqual([{account_id: TEST_ACCOUNT.id, profile_id: TEST_PROFILE.profileId, username: TEST_PROFILE.username}]);
     });
 
     it('get all profiles (error case)', async () => {
@@ -62,9 +62,10 @@ describe('Profile Api Unit Tests', () => {
     });
 
     it('update profile (pass case)', async () => {
+        if(!TEST_PROFILE.profileId) throw new Error("Profile Id was null!");
         parser.updateProfile.mockResolvedValueOnce();
         expect(await profileAPI.updateProfile({
-            profileId: TEST_PROFILE.id,
+            profileId: TEST_PROFILE.profileId,
             username: TEST_PROFILE.username, 
             firstName: TEST_PROFILE.firstName, 
             lastName: TEST_PROFILE.lastName, 
@@ -75,9 +76,10 @@ describe('Profile Api Unit Tests', () => {
     });
 
     it('update profile (error case)', async () => {
+        if(!TEST_PROFILE.profileId) throw new Error("Profile Id was null!");
         parser.updateProfile.mockRejectedValue(FAKE_ERRORS.networkError);
         expect(await profileAPI.updateProfile({
-            profileId: TEST_PROFILE.id,
+            profileId: TEST_PROFILE.profileId,
             username: TEST_PROFILE.username, 
             firstName: TEST_PROFILE.firstName, 
             lastName: TEST_PROFILE.lastName, 
@@ -88,27 +90,32 @@ describe('Profile Api Unit Tests', () => {
     });
 
     it('delete profile (pass case)', async () => {
+        if(!TEST_PROFILE.profileId) throw new Error("Profile Id was null!");
         parser.deleteProfile.mockResolvedValueOnce();
-        expect(await profileAPI.deleteProfile(TEST_PROFILE.id)).toEqual(StatusCode.OK);
+        expect(await profileAPI.deleteProfile(TEST_PROFILE.profileId)).toEqual(StatusCode.OK);
     });
 
     it('delete profile (duplicate case)', async () => {
+        if(!TEST_PROFILE.profileId) throw new Error("Profile Id was null!");
         parser.deleteProfile.mockRejectedValue(FAKE_ERRORS.primaryKeyViolation);
-        expect(await profileAPI.deleteProfile(TEST_PROFILE.id)).toEqual(StatusCode.CONFLICT);
+        expect(await profileAPI.deleteProfile(TEST_PROFILE.profileId)).toEqual(StatusCode.CONFLICT);
     });
 
     it('delete profile (bad data case)', async () => {
+        if(!TEST_PROFILE.profileId) throw new Error("Profile Id was null!");
         parser.deleteProfile.mockRejectedValue(FAKE_ERRORS.badRequest);
-        expect(await profileAPI.deleteProfile(TEST_PROFILE.id)).toEqual(StatusCode.BAD_REQUEST);
+        expect(await profileAPI.deleteProfile(TEST_PROFILE.profileId)).toEqual(StatusCode.BAD_REQUEST);
     });
 
     it('delete profile (connection lost case)', async () => {
+        if(!TEST_PROFILE.profileId) throw new Error("Profile Id was null!");
         parser.deleteProfile.mockRejectedValue(FAKE_ERRORS.networkError);
-        expect(await profileAPI.deleteProfile(TEST_PROFILE.id)).toEqual(StatusCode.CONNECTION_ERROR);
+        expect(await profileAPI.deleteProfile(TEST_PROFILE.profileId)).toEqual(StatusCode.CONNECTION_ERROR);
     });
 
     it('delete profile (fatal error case)', async () => {
+        if(!TEST_PROFILE.profileId) throw new Error("Profile Id was null!");
         parser.deleteProfile.mockRejectedValue(FAKE_ERRORS.fatalServerError);
-        expect(await profileAPI.deleteProfile(TEST_PROFILE.id)).toEqual(StatusCode.INTERNAL_SERVER_ERROR);
+        expect(await profileAPI.deleteProfile(TEST_PROFILE.profileId)).toEqual(StatusCode.INTERNAL_SERVER_ERROR);
     });
 });

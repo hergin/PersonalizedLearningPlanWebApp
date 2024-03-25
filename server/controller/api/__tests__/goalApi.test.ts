@@ -22,6 +22,7 @@ describe('Goal Api Unit Tests', () => {
     });
     
     it('get goals (normal case)', async () => {
+        if(!TEST_GOAL.moduleId) throw new Error("Module id is undefined!");
         parser.parseParentGoals.mockResolvedValueOnce([
             {
                 goal_id: TEST_GOAL.id[0], name: TEST_GOAL.name[0], description: TEST_GOAL.description[0], goal_type: TEST_GOAL.goalType, 
@@ -129,11 +130,13 @@ describe('Goal Api Unit Tests', () => {
     });
 
     it('get goals (network error case)', async () => {
+        if(!TEST_GOAL.moduleId) throw new Error("Module id is undefined!");
         parser.parseParentGoals.mockRejectedValue(FAKE_ERRORS.networkError);
         expect(await goalAPI.getGoals(TEST_GOAL.moduleId)).toEqual(StatusCode.CONNECTION_ERROR);
     });
 
     it('get goals (fatal server error case)', async () => {
+        if(!TEST_GOAL.moduleId) throw new Error("Module id is undefined!");
         parser.parseParentGoals.mockRejectedValue(FAKE_ERRORS.fatalServerError);
         expect(await goalAPI.getGoals(TEST_GOAL.moduleId)).toEqual(StatusCode.INTERNAL_SERVER_ERROR);
     });

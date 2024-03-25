@@ -68,10 +68,7 @@ export default class GoalAPI {
         const expiration : string | undefined = this.#convertToPostgresTimestamp(goal.expiration);
 
         try {
-            await this.parser.updateGoal({...goal, due_date: dueDate});
-            if (completionTime) {
-                await this.parser.updateGoalTimestamps(goal.goal_id, completionTime, expiration);
-            }
+            await this.parser.updateGoal({...goal, due_date: dueDate, completion_time: completionTime, expiration: expiration});
             return StatusCode.OK;
         } catch (error: unknown) {
             return this.errorCodeInterpreter.getStatusCode(error as DatabaseError);

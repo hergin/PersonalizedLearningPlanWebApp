@@ -1,7 +1,10 @@
 import DatabaseParser from "./databaseParser";
-import { Goal, Query } from "../types";
+import { generateInsertQuery, generateUpdateQuery } from "../utils/queryGenerator";
+import { Goal, Query, Table } from "../types";
 
 export default class GoalParser extends DatabaseParser {
+    tableName: Table = Table.GOAL;
+    
     constructor() {
         super();
     }
@@ -28,7 +31,7 @@ export default class GoalParser extends DatabaseParser {
 
     async storeGoal(goal: Goal) {
         console.log("Storing Goal...");
-        const query = this.generateInsertQuery(goal);
+        const query = generateInsertQuery(goal, this.tableName);
         await this.updateDatabase(query);
         console.log("Goal Stored! Now returning id...");
         const idQuery = {
@@ -37,52 +40,13 @@ export default class GoalParser extends DatabaseParser {
         };
         return this.parseDatabase(idQuery);
     }
-    
-    private generateInsertQuery(goal: Goal): Query {
-        var beginningText = "INSERT INTO GOAL(";
-        var endingText = "VALUES (";
-        var values : (string | number | boolean | Date | undefined)[] = [];
-        Object.entries(goal).forEach((goalElement) => {
-            const [variable, value] = goalElement;
-            if(value === undefined || Array.isArray(value) || value === "") return;
-            beginningText = beginningText.concat(`${variable}, `);
-            values.push(value);
-            endingText = endingText.concat(`$${values.length}, `);
-        });
-        beginningText = beginningText.slice(0, beginningText.length - 2).concat(") ");
-        endingText = endingText.slice(0, endingText.length - 2).concat(")");
-        const finalText = beginningText.concat(endingText);
-        console.log(`Final Query: ${finalText}`);
-        return {
-            text: finalText,
-            values: values
-        };
-    }
 
     async updateGoal(goal: Goal) {
         console.log("Inserting updated data into Goal...");
-        const query = this.generateUpdateQuery(goal);
+        const query = generateUpdateQuery(goal, this.tableName, "goal_id");
         console.log(JSON.stringify(query));
         await this.updateDatabase(query);
         console.log("Goal data updated!");
-    }
-
-    private generateUpdateQuery(goal: Goal): Query {
-        var text = "UPDATE GOAL SET ";
-        var values : (string | number | boolean | Date | undefined)[] = [];
-        Object.entries(goal).forEach((goalElement) => {
-            const [variable, value] = goalElement;
-            if(variable === "goal_id" || value === undefined || Array.isArray(value) || value === "") return;
-            values.push(value);
-            text = text.concat(`${variable} = $${values.length}, `);
-        });
-        values.push(goal.goal_id);
-        const finalText = text.slice(0, text.length - 2).concat(` WHERE goal_id = $${values.length}`);
-        console.log(`Final Query: ${finalText}`);
-        return {
-            text: finalText,
-            values: values
-        };
     }
 
     async updateGoalFeedback(goalID: number, feedback: string) {
@@ -92,17 +56,6 @@ export default class GoalParser extends DatabaseParser {
             values: [feedback, goalID]
         };
         await this.updateDatabase(query);
-    }
-
-    async updateGoalTimestamps(goalID: number, completionTime: string, expiration?: string) {
-        console.log("Inserting timestamp values into Goal...");
-        const queryString = `UPDATE GOAL SET completion_time = $1${expiration ? `, expiration = $3` : ""} WHERE goal_id = $2`;
-        const query = {
-            text: queryString,
-            values: expiration ? [completionTime, goalID, expiration] : [completionTime, goalID]
-        };
-        await this.updateDatabase(query);
-        console.log("Timestamps updated!");
     }
 
     async deleteGoal(goalID: number) {
