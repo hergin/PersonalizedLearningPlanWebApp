@@ -36,6 +36,14 @@ export default class MessageParser extends DatabaseParser {
         await this.updateDatabase(query);
     }
 
+    async editMessage(id: number, content: string, date: string) {
+        const query = {
+            text: "UPDATE MESSAGE SET content = $1, last_edited = $2 WHERE id = $3",
+            values: [content, date, id]
+        };
+        await this.updateDatabase(query);
+    }
+
     async deleteMessage(id: number): Promise<void> {
         const query = {
             text: "DELETE FROM MESSAGE WHERE ID = $1",

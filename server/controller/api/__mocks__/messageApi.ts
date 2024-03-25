@@ -1,6 +1,7 @@
 export const mockGetAllSentMessages = jest.fn();
 export const mockGetChatMessages = jest.fn();
 export const mockSendMessage = jest.fn();
+export const mockEditMessage = jest.fn();
 export const mockDeleteMessage = jest.fn();
 
 const mock = jest.fn().mockImplementation(() => {
@@ -8,6 +9,7 @@ const mock = jest.fn().mockImplementation(() => {
         getAllSentMessages: mockGetAllSentMessages,
         getChatMessages: mockGetChatMessages,
         sendMessage: mockSendMessage,
+        editMessage: mockEditMessage,
         deleteMessage: mockDeleteMessage
     }
 });

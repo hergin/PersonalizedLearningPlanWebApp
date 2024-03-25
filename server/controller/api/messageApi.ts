@@ -37,6 +37,15 @@ export default class MessageApi {
         }
     }
 
+    async editMessage(id: number, content: string, date: string): Promise<StatusCode> {
+        try {
+            await this.parser.editMessage(id, content, date);
+            return StatusCode.OK;
+        } catch(error: unknown) {
+            return this.errorCodeInterpreter.getStatusCode(error as DatabaseError);
+        }
+    }
+
     async deleteMessage(id: number): Promise<StatusCode> {
         try {
             await this.parser.deleteMessage(id);

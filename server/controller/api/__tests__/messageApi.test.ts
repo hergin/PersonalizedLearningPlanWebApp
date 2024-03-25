@@ -83,6 +83,26 @@ describe("Message Api Unit Tests", () => {
         expect(status).toEqual(StatusCode.BAD_REQUEST);
     });
 
+    it("Edit Message (normal case)", async () => {
+        const mockContent = "Edited."
+        const mockDate = "2025-01-01T23:59:59.000Z";
+        parser.editMessage.mockResolvedValueOnce(undefined);
+        const status = await api.editMessage(mockMessageId, mockContent, mockDate);
+        expect(parser.editMessage).toHaveBeenCalledTimes(1);
+        expect(parser.editMessage).toHaveBeenCalledWith(mockMessageId, mockContent, mockDate);
+        expect(status).toEqual(StatusCode.OK);
+    });
+
+    it("Edit Message (error case)", async () => {
+        const mockContent = "Edited."
+        const mockDate = "2025-01-01T23:59:59.000Z";
+        parser.editMessage.mockRejectedValue(FAKE_ERRORS.fatalServerError);
+        const status = await api.editMessage(mockMessageId, mockContent, mockDate);
+        expect(parser.editMessage).toHaveBeenCalledTimes(1);
+        expect(parser.editMessage).toHaveBeenCalledWith(mockMessageId, mockContent, mockDate);
+        expect(status).toEqual(StatusCode.INTERNAL_SERVER_ERROR);
+    });
+
     it("Delete Message (normal case)", async () => {
         parser.deleteMessage.mockResolvedValueOnce(undefined);
         const status = await api.deleteMessage(mockMessageId);

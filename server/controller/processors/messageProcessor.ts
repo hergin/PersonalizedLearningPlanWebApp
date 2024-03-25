@@ -44,6 +44,17 @@ export async function postMessage(req: Request, res: Response) {
     res.sendStatus(StatusCode.OK);
 }
 
+export async function putMessage(req: Request, res: Response) {
+    console.log(`Data received in put message: ${req.params.id} ${JSON.stringify(req.body)}`);
+    const query = await messageApi.editMessage(Number(req.params.id), req.body.content, req.body.date);
+    if(query !== StatusCode.OK) {
+        console.log(`Failed to edit message with id ${req.params.id}`);
+        res.status(query).send(ERROR_MESSAGES.get(query));
+        return;
+    }
+    res.sendStatus(StatusCode.OK);
+}
+
 export async function deleteMessage(req: Request, res: Response) {
     console.log(`Id received in delete message: ${req.params.id}`);
     const query = await messageApi.deleteMessage(Number(req.params.id));

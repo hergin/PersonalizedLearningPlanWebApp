@@ -103,6 +103,7 @@ CREATE TABLE MESSAGE(
     id SERIAL PRIMARY KEY,
     content TEXT,
     date TIMESTAMP WITH TIME ZONE,
+    last_edited TIMESTAMP WITH TIME ZONE,
     recipient_id INT,
     sender_id INT,
     FOREIGN KEY (recipient_id) REFERENCES ACCOUNT(id)

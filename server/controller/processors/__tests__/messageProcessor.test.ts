@@ -109,6 +109,31 @@ describe("Message Processor Unit Tests", () => {
         expect(MOCK_RESPONSE.send).toHaveBeenCalledWith(ERROR_MESSAGES.get(StatusCode.FORBIDDEN));
     });
 
+    it("Put Message (normal case)", async () => {
+        api.editMessage.mockResolvedValueOnce(StatusCode.OK);
+        const mRequest = createMockRequest({content: TEST_MESSAGE[0].content, date: TEST_MESSAGE[0].date}, {id: mockMessageId});
+        await MessageProcessor.putMessage(mRequest, MOCK_RESPONSE);
+        expect(api.editMessage).toHaveBeenCalledTimes(1);
+        expect(api.editMessage).toHaveBeenCalledWith(mockMessageId, TEST_MESSAGE[0].content, TEST_MESSAGE[0].date);
+        expect(MOCK_RESPONSE.status).toHaveBeenCalledTimes(0);
+        expect(MOCK_RESPONSE.send).toHaveBeenCalledTimes(0);
+        expect(MOCK_RESPONSE.sendStatus).toHaveBeenCalledTimes(1);
+        expect(MOCK_RESPONSE.sendStatus).toHaveBeenCalledWith(StatusCode.OK);
+    });
+
+    it("Put Message (error case)", async () => {
+        api.editMessage.mockResolvedValueOnce(StatusCode.GONE);
+        const mRequest = createMockRequest({content: TEST_MESSAGE[0].content, date: TEST_MESSAGE[0].date}, {id: mockMessageId});
+        await MessageProcessor.putMessage(mRequest, MOCK_RESPONSE);
+        expect(api.editMessage).toHaveBeenCalledTimes(1);
+        expect(api.editMessage).toHaveBeenCalledWith(mockMessageId, TEST_MESSAGE[0].content, TEST_MESSAGE[0].date);
+        expect(MOCK_RESPONSE.sendStatus).toHaveBeenCalledTimes(0);
+        expect(MOCK_RESPONSE.status).toHaveBeenCalledTimes(1);
+        expect(MOCK_RESPONSE.status).toHaveBeenCalledWith(StatusCode.GONE);
+        expect(MOCK_RESPONSE.send).toHaveBeenCalledTimes(1);
+        expect(MOCK_RESPONSE.send).toHaveBeenCalledWith(ERROR_MESSAGES.get(StatusCode.GONE));
+    });
+
     it("Delete Message (normal case)", async () => {
         api.deleteMessage.mockResolvedValueOnce(StatusCode.OK);
         const mRequest = createMockRequest({}, {id: mockMessageId});

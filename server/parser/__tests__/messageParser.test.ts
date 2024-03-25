@@ -34,7 +34,7 @@ describe("Message Parser Unit Tests", () => {
         jest.clearAllMocks();
     });
 
-    it("parse All Sent Messages From", async () => {
+    it("Parse All Sent Messages From", async () => {
         mockQuery.mockResolvedValueOnce({rows: [TEST_MESSAGE]});
         const result = await parser.parseAllMessagesFrom(TEST_SENDER.id);
         expect(mockQuery).toHaveBeenCalledTimes(1);
@@ -45,7 +45,7 @@ describe("Message Parser Unit Tests", () => {
         expect(result).toEqual([TEST_MESSAGE]);
     });
 
-    it("parseChat", async () => {
+    it("Parse Chat", async () => {
         const mockResultOne = {rows: [{
             ...TEST_MESSAGE,
             username: TEST_SENDER.username,
@@ -74,7 +74,7 @@ describe("Message Parser Unit Tests", () => {
         });
     });
 
-    it("storeMessage", async () => {
+    it("Store Message", async () => {
         const messageId = [{id: 1}];
         mockQuery.mockResolvedValueOnce(undefined);
         mockQuery.mockResolvedValueOnce({rows: messageId});
@@ -86,7 +86,20 @@ describe("Message Parser Unit Tests", () => {
         });
     });
 
-    it("deleteMessage", async () => {
+    it("Edit Message", async () => {
+        const mockMessageId = 1;
+        const mockContent = "Edited Message";
+        const mockDate = "2025-01-01T23:59:59.000Z";
+        mockQuery.mockResolvedValueOnce(undefined);
+        await parser.editMessage(mockMessageId, mockContent, mockDate);
+        expect(mockQuery).toHaveBeenCalledTimes(1);
+        expect(mockQuery).toHaveBeenCalledWith({
+            text: "UPDATE MESSAGE SET content = $1, last_edited = $2 WHERE id = $3",
+            values: [mockContent, mockDate, mockMessageId]
+        });
+    });
+
+    it("Delete Message", async () => {
         const messageId = 1;
         mockQuery.mockResolvedValueOnce(undefined);
         await parser.deleteMessage(messageId);
