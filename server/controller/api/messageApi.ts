@@ -12,6 +12,14 @@ export default class MessageApi {
         this.errorCodeInterpreter = new ErrorCodeInterpreter();
     }
 
+    async getAllSentMessages(id: number): Promise<Message[] | StatusCode> {
+        try {
+            return await this.parser.parseAllMessagesFrom(id);
+        } catch(error: unknown) {
+            return this.errorCodeInterpreter.getStatusCode(error as DatabaseError);
+        }
+    }
+
     async getChatMessages(accountId: number, recipientId: number): Promise<Chat | StatusCode> {
         try {
             return await this.parser.parseChat(accountId, recipientId);

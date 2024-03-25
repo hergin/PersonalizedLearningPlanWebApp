@@ -35,6 +35,22 @@ describe("Message Api Unit Tests", () => {
         jest.clearAllMocks();
     });
 
+    it("Get All Sent Messages (normal case)", async () => {
+        parser.parseAllMessagesFrom.mockResolvedValueOnce([TEST_MESSAGE[0]]);
+        const result = await api.getAllSentMessages(mockSenderId);
+        expect(parser.parseAllMessagesFrom).toHaveBeenCalledTimes(1);
+        expect(parser.parseAllMessagesFrom).toHaveBeenCalledWith(mockSenderId);
+        expect(result).toEqual([TEST_MESSAGE[0]]);
+    });
+
+    it("Get All Sent Messages (error case)", async () => {
+        parser.parseAllMessagesFrom.mockRejectedValue(FAKE_ERRORS.networkError);
+        const result = await api.getAllSentMessages(mockSenderId);
+        expect(parser.parseAllMessagesFrom).toHaveBeenCalledTimes(1);
+        expect(parser.parseAllMessagesFrom).toHaveBeenCalledWith(mockSenderId);
+        expect(result).toEqual(StatusCode.CONNECTION_ERROR);
+    });
+
     it("Get Chat Messages (normal case)", async () => {
         parser.parseChat.mockResolvedValueOnce({sentMessages: [TEST_MESSAGE[0]], receivedMessages: [TEST_MESSAGE[1]]});
         const result = await api.getChatMessages(mockSenderId, mockRecipientId);
@@ -43,7 +59,7 @@ describe("Message Api Unit Tests", () => {
         expect(result).toEqual({sentMessages: [TEST_MESSAGE[0]], receivedMessages: [TEST_MESSAGE[1]]});
     });
 
-    it("Get Chat Messages (database error case)", async () => {
+    it("Get Chat Messages (error case)", async () => {
         parser.parseChat.mockRejectedValue(FAKE_ERRORS.primaryKeyViolation);
         const result = await api.getChatMessages(mockSenderId, mockRecipientId);
         expect(parser.parseChat).toHaveBeenCalledTimes(1);

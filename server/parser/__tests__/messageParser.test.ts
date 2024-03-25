@@ -34,6 +34,17 @@ describe("Message Parser Unit Tests", () => {
         jest.clearAllMocks();
     });
 
+    it("parse All Sent Messages From", async () => {
+        mockQuery.mockResolvedValueOnce({rows: [TEST_MESSAGE]});
+        const result = await parser.parseAllMessagesFrom(TEST_SENDER.id);
+        expect(mockQuery).toHaveBeenCalledTimes(1);
+        expect(mockQuery).toHaveBeenCalledWith({
+            text: "SELECT * FROM MESSAGE WHERE sender_id = $1",
+            values: [TEST_SENDER.id]
+        });
+        expect(result).toEqual([TEST_MESSAGE]);
+    });
+
     it("parseChat", async () => {
         const mockResultOne = {rows: [{
             ...TEST_MESSAGE,

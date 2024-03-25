@@ -6,13 +6,21 @@ export default class MessageParser extends DatabaseParser {
         super();
     }
 
+    async parseAllMessagesFrom(id: number): Promise<Message[]> {
+        const query = {
+            text: "SELECT * FROM MESSAGE WHERE sender_id = $1",
+            values: [id]
+        };
+        return await this.parseDatabase(query);
+    }
+
     async parseChat(accountId: number, recipientId: number): Promise<Chat> {
-        const sentMessages = await this.parseMessages(accountId, recipientId);
-        const receivedMessages = await this.parseMessages(recipientId, accountId);
+        const sentMessages = await this.parseSentMessages(accountId, recipientId);
+        const receivedMessages = await this.parseSentMessages(recipientId, accountId);
         return {sentMessages, receivedMessages};
     }
 
-    async parseMessages(senderId: number, recipientId: number): Promise<Message[]> {
+    async parseSentMessages(senderId: number, recipientId: number): Promise<Message[]> {
         const query = {
             text: "SELECT * FROM MESSAGE_DATA WHERE sender_id = $1 AND recipient_id = $2",
             values: [senderId, recipientId]
