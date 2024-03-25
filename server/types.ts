@@ -20,6 +20,13 @@ export enum Subject {
     REJECTED = "Invitation Rejected!"
 }
 
+export enum Table {
+    GOAL = "GOAL",
+    PROFILE = "PROFILE",
+    MODULE = "MODULE",
+    MESSAGE = "MESSAGE"
+}
+
 export type Goal = {
     goal_id?: number,
     name: string,
@@ -36,7 +43,7 @@ export type Goal = {
 }
 
 export type Profile = {
-    id?: number,
+    profileId?: number,
     username: string,
     firstName: string,
     lastName: string,

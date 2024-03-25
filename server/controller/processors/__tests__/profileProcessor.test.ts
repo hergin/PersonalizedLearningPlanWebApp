@@ -20,7 +20,7 @@ describe("Profile Processor unit tests", () => {
 
     it("get all profiles (normal case)", async () => {
         profileApi.getAllProfiles.mockResolvedValueOnce([
-            {account_id: TEST_ACCOUNT.id, profile_id: TEST_PROFILE.id, username: TEST_PROFILE.username}
+            {account_id: TEST_ACCOUNT.id, profile_id: TEST_PROFILE.profileId, username: TEST_PROFILE.username}
         ]);
         const mRequest = createMockRequest({}, {});
         await ProfileProcessor.getAllProfiles(mRequest, MOCK_RESPONSE);
@@ -31,7 +31,7 @@ describe("Profile Processor unit tests", () => {
         expect(MOCK_RESPONSE.status).toHaveBeenCalledWith(StatusCode.OK);
         expect(MOCK_RESPONSE.json).toHaveBeenCalledTimes(1);
         expect(MOCK_RESPONSE.json).toHaveBeenCalledWith([
-            {account_id: TEST_ACCOUNT.id, profile_id: TEST_PROFILE.id, username: TEST_PROFILE.username}
+            {account_id: TEST_ACCOUNT.id, profile_id: TEST_PROFILE.profileId, username: TEST_PROFILE.username}
         ]);
     });
 
@@ -100,7 +100,7 @@ describe("Profile Processor unit tests", () => {
 
     it("put profile (correct case)", async () => {
         profileApi.updateProfile.mockResolvedValueOnce(StatusCode.OK);
-        const mRequest = createMockRequest(TEST_PROFILE, {id: TEST_PROFILE.id});
+        const mRequest = createMockRequest(TEST_PROFILE, {id: TEST_PROFILE.profileId});
         await ProfileProcessor.putProfile(mRequest, MOCK_RESPONSE);
         expect(profileApi.updateProfile).toHaveBeenCalledTimes(1);
         expect(profileApi.updateProfile).toHaveBeenCalledWith(TEST_PROFILE);
@@ -111,7 +111,7 @@ describe("Profile Processor unit tests", () => {
 
     it("put profile (error case)", async () => {
         profileApi.updateProfile.mockResolvedValueOnce(StatusCode.CONNECTION_ERROR);
-        const mRequest = createMockRequest(TEST_PROFILE, {id: TEST_PROFILE.id});
+        const mRequest = createMockRequest(TEST_PROFILE, {id: TEST_PROFILE.profileId});
         await ProfileProcessor.putProfile(mRequest, MOCK_RESPONSE);
         expect(profileApi.updateProfile).toHaveBeenCalledTimes(1);
         expect(profileApi.updateProfile).toHaveBeenCalledWith(TEST_PROFILE);
@@ -124,10 +124,10 @@ describe("Profile Processor unit tests", () => {
 
     it("delete profile (normal case)", async () => {
         profileApi.deleteProfile.mockResolvedValueOnce(StatusCode.OK);
-        const mRequest = createMockRequest({}, {id: TEST_PROFILE.id});
+        const mRequest = createMockRequest({}, {id: TEST_PROFILE.profileId});
         await ProfileProcessor.deleteProfile(mRequest, MOCK_RESPONSE);
         expect(profileApi.deleteProfile).toHaveBeenCalledTimes(1);
-        expect(profileApi.deleteProfile).toHaveBeenCalledWith(TEST_PROFILE.id);
+        expect(profileApi.deleteProfile).toHaveBeenCalledWith(TEST_PROFILE.profileId);
         expect(MOCK_RESPONSE.send).toHaveBeenCalledTimes(0);
         expect(MOCK_RESPONSE.sendStatus).toHaveBeenCalledTimes(1);
         expect(MOCK_RESPONSE.sendStatus).toHaveBeenCalledWith(StatusCode.OK);
@@ -135,10 +135,10 @@ describe("Profile Processor unit tests", () => {
 
     it("delete profile (error case)", async () => {
         profileApi.deleteProfile.mockResolvedValueOnce(StatusCode.FORBIDDEN);
-        const mRequest = createMockRequest({}, {id: TEST_PROFILE.id});
+        const mRequest = createMockRequest({}, {id: TEST_PROFILE.profileId});
         await ProfileProcessor.deleteProfile(mRequest, MOCK_RESPONSE);
         expect(profileApi.deleteProfile).toHaveBeenCalledTimes(1);
-        expect(profileApi.deleteProfile).toHaveBeenCalledWith(TEST_PROFILE.id);
+        expect(profileApi.deleteProfile).toHaveBeenCalledWith(TEST_PROFILE.profileId);
         expect(MOCK_RESPONSE.sendStatus).toHaveBeenCalledTimes(0);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledTimes(1);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledWith(StatusCode.FORBIDDEN);

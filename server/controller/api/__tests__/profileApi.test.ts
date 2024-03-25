@@ -64,7 +64,7 @@ describe('Profile Api Unit Tests', () => {
     it('update profile (pass case)', async () => {
         parser.updateProfile.mockResolvedValueOnce();
         expect(await profileAPI.updateProfile({
-            id: TEST_PROFILE.id,
+            profileId: TEST_PROFILE.id,
             username: TEST_PROFILE.username, 
             firstName: TEST_PROFILE.firstName, 
             lastName: TEST_PROFILE.lastName, 
@@ -77,7 +77,7 @@ describe('Profile Api Unit Tests', () => {
     it('update profile (error case)', async () => {
         parser.updateProfile.mockRejectedValue(FAKE_ERRORS.networkError);
         expect(await profileAPI.updateProfile({
-            id: TEST_PROFILE.id,
+            profileId: TEST_PROFILE.id,
             username: TEST_PROFILE.username, 
             firstName: TEST_PROFILE.firstName, 
             lastName: TEST_PROFILE.lastName, 

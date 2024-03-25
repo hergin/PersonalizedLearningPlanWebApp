@@ -1,4 +1,4 @@
-import { GoalType } from "../../types";
+import { Profile, GoalType, Module, Goal } from "../../types";
 
 export const FAKE_ERRORS = {
     badRequest: {code: '23514'},
@@ -41,8 +41,8 @@ export const TEST_ACCOUNT = {
     refreshToken: "refresh please",
 }
 
-export const TEST_PROFILE = {
-    id: 12,
+export const TEST_PROFILE: Profile = {
+    profileId: 12,
     username: "Xx_testdummy_xX",
     firstName: "Test",
     lastName: "Dummy",
@@ -67,14 +67,14 @@ export const TEST_TAG = {
 
 export const TEST_DASHBOARD = {
     id: 541,
-    profileId: TEST_PROFILE.id
+    profileId: TEST_PROFILE.profileId
 }
 
-export const TEST_MODULE = {
+export const TEST_MODULE: Module = {
     id: 2377,
     name: "School",
     description: "Get better grades in school.",
-    completionPercent: 0,
+    completion: 0,
     accountId: TEST_ACCOUNT.id,
     coachId: 12
 }
