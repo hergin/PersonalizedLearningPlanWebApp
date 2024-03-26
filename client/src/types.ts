@@ -60,6 +60,13 @@ export type Understudy = {
   coach_id: number;
 };
 
+export type Message = {
+  content: string,
+  date: string,
+  senderId: number,
+  recipientId: number
+};
+
 export interface ModuleCreatorProps {
   accountId: number;
   modalTitle: string;
