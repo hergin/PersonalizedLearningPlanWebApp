@@ -116,3 +116,39 @@ $$ LANGUAGE PLPGSQL;
 CREATE OR REPLACE TRIGGER trigger_set_last_edited
 AFTER UPDATE OF content ON MESSAGE FOR EACH ROW
 EXECUTE FUNCTION set_last_edited();
+
+-- Automatically set a completion time and then a expiration date based on the GoalType given after is_complete is set to true.
+CREATE OR REPLACE FUNCTION set_goal_timestamps()
+RETURNS TRIGGER AS $$
+    BEGIN
+        IF NEW.is_complete IS TRUE THEN
+            NEW.completion_time = CURRENT_TIMESTAMP;
+            IF NEW.goal_type != "todo" THEN
+                CASE NEW.goal_type
+                WHEN "daily" THEN NEW.expiration = CURRENT_TIMESTAMP + INTERVAL '24 hours';
+                WHEN "weekly" THEN NEW.expiration = CURRENT_TIMESTAMP + INTERVAL '1 week';
+                WHEN "yearly" THEN NEW.expiration = CURRENT_TIMESTAMP + INTERVAL '1 year';
+                ELSE RAISE NOTICE 'Unknown Goal Type.';
+                END CASE;
+            END IF;
+        END IF;
+        RETURN NEW;
+    END;
+$$ LANGUAGE PLPGSQL;
+
+CREATE OR REPLACE TRIGGER trigger_set_expiration
+AFTER UPDATE OF is_complete ON GOAL FOR EACH ROW
+EXECUTE FUNCTION set_goal_timestamps();
+
+-- Automatically delete sub goals when their parent goal is deleted.
+CREATE OR REPLACE FUNCTION delete_sub_goals()
+RETURNS TRIGGER AS $$
+    BEGIN
+        DELETE FROM GOAL WHERE parent_goal = OLD.id;
+        RETURN NEW;
+    END;
+$$ LANGUAGE PLPGSQL;
+
+CREATE OR REPLACE TRIGGER trigger_delete_sub_goals
+AFTER DELETE ON GOAL FOR EACH ROW
+EXECUTE FUNCTION delete_sub_goals();
