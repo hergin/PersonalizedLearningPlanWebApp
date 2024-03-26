@@ -142,15 +142,15 @@ describe('Goal Api Unit Tests', () => {
     });
 
     it('create goal (correct case without due date)', async () => {
-        parser.storeGoal.mockResolvedValueOnce({goal_id: TEST_GOAL.id[0]});
-        var actual = await goalAPI.createGoal({
+        parser.storeGoal.mockResolvedValueOnce({});
+        const actual = await goalAPI.createGoal({
             name: TEST_GOAL.name[0], 
             description: TEST_GOAL.description[0], 
             goal_type: TEST_GOAL.goalType, 
             is_complete: TEST_GOAL.isComplete, 
             module_id: TEST_GOAL.moduleId}
         );
-        expect(actual).toEqual({goal_id: TEST_GOAL.id[0]});
+        expect(actual).toEqual(StatusCode.OK);
     });
 
     it('create goal (correct case with due date)', async () => {
@@ -162,14 +162,14 @@ describe('Goal Api Unit Tests', () => {
             module_id: TEST_GOAL.moduleId,
             due_date: TEST_GOAL.dueDate
         }
-        parser.storeGoal.mockResolvedValueOnce({goal_id: TEST_GOAL.id[0]});
-        var actual = await goalAPI.createGoal(testObject);
+        parser.storeGoal.mockResolvedValueOnce({});
+        const actual = await goalAPI.createGoal(testObject);
         expect(parser.storeGoal).toHaveBeenCalledTimes(1);
         expect(parser.storeGoal).toHaveBeenCalledWith({
             ...testObject,
             due_date: "2025-01-01 23:59:59.000 "
         });
-        expect(actual).toEqual({goal_id: TEST_GOAL.id[0]});
+        expect(actual).toEqual(StatusCode.OK);
     });
 
     it('create goal (primary key violation case)', async () => {

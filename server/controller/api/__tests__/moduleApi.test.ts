@@ -77,26 +77,26 @@ describe('Module Api Unit Tests', () => {
     });
 
     it('create module (correct case)', async () => {
-        parser.storeModule.mockResolvedValueOnce({module_id: TEST_MODULE.id});
-        var actual = await moduleAPI.createModule({
+        parser.storeModule.mockResolvedValueOnce({});
+        const actual = await moduleAPI.createModule({
             name: TEST_MODULE.name, 
             description: TEST_MODULE.description, 
             completion: TEST_MODULE.completion, 
             accountId: TEST_MODULE.accountId
         });
-        expect(actual).toEqual({module_id: TEST_MODULE.id});
+        expect(actual).toEqual(StatusCode.OK);
     });
 
     it('create module with coach (correct case)', async () => {
-        parser.storeModule.mockResolvedValueOnce({ module_id: TEST_MODULE.id });
-        var actual = await moduleAPI.createModule({
+        parser.storeModule.mockResolvedValueOnce({});
+        const actual = await moduleAPI.createModule({
             name: TEST_MODULE.name, 
             description: TEST_MODULE.description, 
             completion: TEST_MODULE.completion, 
             accountId: TEST_MODULE.accountId, 
             coachId: TEST_MODULE.coachId
         });
-        expect(actual).toEqual({ module_id: TEST_MODULE.id });
+        expect(actual).toEqual(StatusCode.OK);
     });
 
     it('create module (primary key violation case)', async () => {

@@ -33,12 +33,6 @@ export default class GoalParser extends DatabaseParser {
         console.log("Storing Goal...");
         const query = generateInsertQuery(goal, this.tableName);
         await this.updateDatabase(query);
-        console.log("Goal Stored! Now returning id...");
-        const idQuery = {
-            text: "SELECT goal_id FROM GOAL WHERE name = $1 AND description = $2 AND module_id = $3",
-            values: [goal.name, goal.description, goal.module_id]
-        };
-        return this.parseDatabase(idQuery);
     }
 
     async updateGoal(goal: Goal) {

@@ -41,7 +41,7 @@ describe("Module Processor unit tests", () => {
     });
 
     it("create module (normal case)", async () => {
-        moduleApi.createModule.mockResolvedValueOnce({id: TEST_MODULE.id});
+        moduleApi.createModule.mockResolvedValueOnce(StatusCode.OK);
         const mRequest = createMockRequest({
             name: TEST_MODULE.name,
             description: TEST_MODULE.description,
@@ -57,11 +57,10 @@ describe("Module Processor unit tests", () => {
             accountId: TEST_MODULE.accountId,
             coachId: undefined
         });
+        expect(MOCK_RESPONSE.status).toHaveBeenCalledTimes(0);
         expect(MOCK_RESPONSE.send).toHaveBeenCalledTimes(0);
-        expect(MOCK_RESPONSE.status).toHaveBeenCalledTimes(1);
-        expect(MOCK_RESPONSE.status).toHaveBeenCalledWith(StatusCode.OK);
-        expect(MOCK_RESPONSE.json).toHaveBeenCalledTimes(1);
-        expect(MOCK_RESPONSE.json).toHaveBeenCalledWith({id: TEST_MODULE.id});
+        expect(MOCK_RESPONSE.sendStatus).toHaveBeenCalledTimes(1);
+        expect(MOCK_RESPONSE.sendStatus).toHaveBeenCalledWith(StatusCode.OK);
     });
 
     it("create module (error case)", async () => {
@@ -81,7 +80,7 @@ describe("Module Processor unit tests", () => {
             accountId: TEST_MODULE.accountId,
             coachId: undefined
         });
-        expect(MOCK_RESPONSE.json).toHaveBeenCalledTimes(0);
+        expect(MOCK_RESPONSE.sendStatus).toHaveBeenCalledTimes(0);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledTimes(1);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledWith(StatusCode.CONFLICT);
         expect(MOCK_RESPONSE.send).toHaveBeenCalledTimes(1);

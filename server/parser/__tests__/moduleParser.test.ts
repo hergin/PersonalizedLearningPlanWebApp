@@ -25,46 +25,34 @@ describe('module parser', () => {
     });
 
     it('store module (without coach)', async () => {
-        mockQuery.mockResolvedValueOnce(undefined);
         mockQuery.mockResolvedValueOnce({rows: [{module_id: TEST_MODULE.id}]})
-        const result = await parser.storeModule({
+        await parser.storeModule({
             name: TEST_MODULE.name,
             description: TEST_MODULE.description, 
             completion: TEST_MODULE.completion, 
             accountId: TEST_MODULE.accountId,
         });
-        expect(mockQuery).toHaveBeenCalledTimes(2);
-        expect(mockQuery).toHaveBeenNthCalledWith(1, {
+        expect(mockQuery).toHaveBeenCalledTimes(1);
+        expect(mockQuery).toHaveBeenCalledWith({
             text: "INSERT INTO Module(module_name, description, completion_percent, account_id) VALUES($1, $2, $3, $4)",
             values: [TEST_MODULE.name, TEST_MODULE.description, TEST_MODULE.completion, TEST_MODULE.accountId]
         });
-        expect(mockQuery).toHaveBeenNthCalledWith(2, {
-            text: "SELECT module_id FROM MODULE WHERE module_name = $1 AND description = $2 AND account_id = $3",
-            values: [TEST_MODULE.name, TEST_MODULE.description, TEST_MODULE.accountId]
-        });
-        expect(result).toEqual({module_id: TEST_MODULE.id});
     });
 
     it('store module (with coach)', async () => {
-        mockQuery.mockResolvedValueOnce(undefined);
         mockQuery.mockResolvedValueOnce({rows: [{module_id: TEST_MODULE.id}]})
-        const result = await parser.storeModule({
+        await parser.storeModule({
             name: TEST_MODULE.name,
             description: TEST_MODULE.description, 
             completion: TEST_MODULE.completion, 
             accountId: TEST_MODULE.accountId,
             coachId: TEST_MODULE.coachId
         });
-        expect(mockQuery).toHaveBeenCalledTimes(2);
-        expect(mockQuery).toHaveBeenNthCalledWith(1, {
+        expect(mockQuery).toHaveBeenCalledTimes(1);
+        expect(mockQuery).toHaveBeenCalledWith({
             text: "INSERT INTO Module(module_name, description, completion_percent, account_id, coach_id) VALUES($1, $2, $3, $4, $5)",
             values: [TEST_MODULE.name, TEST_MODULE.description, TEST_MODULE.completion, TEST_MODULE.accountId, TEST_MODULE.coachId]
         });
-        expect(mockQuery).toHaveBeenNthCalledWith(2, {
-            text: "SELECT module_id FROM MODULE WHERE module_name = $1 AND description = $2 AND account_id = $3",
-            values: [TEST_MODULE.name, TEST_MODULE.description, TEST_MODULE.accountId]
-        });
-        expect(result).toEqual({module_id: TEST_MODULE.id});
     });
 
     it('parse modules (with account id)', async () => {
