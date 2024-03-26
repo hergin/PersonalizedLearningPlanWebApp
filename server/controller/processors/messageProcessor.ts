@@ -32,7 +32,6 @@ export async function postMessage(req: Request, res: Response) {
     console.log(`Data received in post message: ${req.body.senderId} ${req.body.recipientId}`);
     const query = await messageApi.sendMessage({
         content: req.body.content,
-        date: req.body.date,
         senderId: req.body.senderId,
         recipientId: req.body.recipientId
     });
@@ -46,7 +45,7 @@ export async function postMessage(req: Request, res: Response) {
 
 export async function putMessage(req: Request, res: Response) {
     console.log(`Data received in put message: ${req.params.id} ${JSON.stringify(req.body)}`);
-    const query = await messageApi.editMessage(Number(req.params.id), req.body.content, req.body.date);
+    const query = await messageApi.editMessage(Number(req.params.id), req.body.content);
     if(query !== StatusCode.OK) {
         console.log(`Failed to edit message with id ${req.params.id}`);
         res.status(query).send(ERROR_MESSAGES.get(query));

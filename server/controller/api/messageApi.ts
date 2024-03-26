@@ -37,9 +37,9 @@ export default class MessageApi {
         }
     }
 
-    async editMessage(id: number, content: string, date: string): Promise<StatusCode> {
+    async editMessage(id: number, content: string): Promise<StatusCode> {
         try {
-            await this.parser.editMessage(id, content, date);
+            await this.parser.editMessage(id, content);
             return StatusCode.OK;
         } catch(error: unknown) {
             return this.errorCodeInterpreter.getStatusCode(error as DatabaseError);

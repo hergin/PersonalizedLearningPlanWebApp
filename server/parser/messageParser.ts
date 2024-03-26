@@ -30,16 +30,16 @@ export default class MessageParser extends DatabaseParser {
 
     async storeMessage(message: Message): Promise<void> {
         const query = {
-            text: "INSERT INTO MESSAGE(content, date, sender_id, recipient_id) VALUES ($1, $2, $3, $4, $5)",
-            values: [message.content, message.date, message.senderId, message.recipientId]
+            text: "INSERT INTO MESSAGE(content, sender_id, recipient_id) VALUES ($1, $2, $3)",
+            values: [message.content, message.senderId, message.recipientId]
         };
         await this.updateDatabase(query);
     }
 
-    async editMessage(id: number, content: string, date: string) {
+    async editMessage(id: number, content: string) {
         const query = {
-            text: "UPDATE MESSAGE SET content = $1, last_edited = $2 WHERE id = $3",
-            values: [content, date, id]
+            text: "UPDATE MESSAGE SET content = $1 WHERE id = $2",
+            values: [content, id]
         };
         await this.updateDatabase(query);
     }

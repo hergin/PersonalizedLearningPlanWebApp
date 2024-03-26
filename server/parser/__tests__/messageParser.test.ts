@@ -81,21 +81,20 @@ describe("Message Parser Unit Tests", () => {
         await parser.storeMessage(TEST_MESSAGE);
         expect(mockQuery).toHaveBeenCalledTimes(1);
         expect(mockQuery).toHaveBeenCalledWith({
-            text: "INSERT INTO MESSAGE(content, date, sender_id, recipient_id) VALUES ($1, $2, $3, $4, $5)",
-            values: [TEST_MESSAGE.content, TEST_MESSAGE.date, TEST_MESSAGE.senderId, TEST_MESSAGE.recipientId]
+            text: "INSERT INTO MESSAGE(content, sender_id, recipient_id) VALUES ($1, $2, $3)",
+            values: [TEST_MESSAGE.content, TEST_MESSAGE.senderId, TEST_MESSAGE.recipientId]
         });
     });
 
     it("Edit Message", async () => {
         const mockMessageId = 1;
         const mockContent = "Edited Message";
-        const mockDate = "2025-01-01T23:59:59.000Z";
         mockQuery.mockResolvedValueOnce(undefined);
-        await parser.editMessage(mockMessageId, mockContent, mockDate);
+        await parser.editMessage(mockMessageId, mockContent);
         expect(mockQuery).toHaveBeenCalledTimes(1);
         expect(mockQuery).toHaveBeenCalledWith({
-            text: "UPDATE MESSAGE SET content = $1, last_edited = $2 WHERE id = $3",
-            values: [mockContent, mockDate, mockMessageId]
+            text: "UPDATE MESSAGE SET content = $1 WHERE id = $2",
+            values: [mockContent, mockMessageId]
         });
     });
 

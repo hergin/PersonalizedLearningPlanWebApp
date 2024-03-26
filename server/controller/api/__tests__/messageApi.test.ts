@@ -11,13 +11,11 @@ const mockRecipientId = 1;
 const TEST_MESSAGE: Message[] = [
     {
         content: "Hello, how are you doing today?",
-        date: "",
         senderId: mockSenderId,
         recipientId: mockRecipientId
     },
     {
         content: "Pretty good, how about you?",
-        date: "",
         senderId: mockRecipientId,
         recipientId: mockSenderId
     }
@@ -85,21 +83,19 @@ describe("Message Api Unit Tests", () => {
 
     it("Edit Message (normal case)", async () => {
         const mockContent = "Edited."
-        const mockDate = "2025-01-01T23:59:59.000Z";
         parser.editMessage.mockResolvedValueOnce(undefined);
-        const status = await api.editMessage(mockMessageId, mockContent, mockDate);
+        const status = await api.editMessage(mockMessageId, mockContent);
         expect(parser.editMessage).toHaveBeenCalledTimes(1);
-        expect(parser.editMessage).toHaveBeenCalledWith(mockMessageId, mockContent, mockDate);
+        expect(parser.editMessage).toHaveBeenCalledWith(mockMessageId, mockContent);
         expect(status).toEqual(StatusCode.OK);
     });
 
     it("Edit Message (error case)", async () => {
         const mockContent = "Edited."
-        const mockDate = "2025-01-01T23:59:59.000Z";
         parser.editMessage.mockRejectedValue(FAKE_ERRORS.fatalServerError);
-        const status = await api.editMessage(mockMessageId, mockContent, mockDate);
+        const status = await api.editMessage(mockMessageId, mockContent);
         expect(parser.editMessage).toHaveBeenCalledTimes(1);
-        expect(parser.editMessage).toHaveBeenCalledWith(mockMessageId, mockContent, mockDate);
+        expect(parser.editMessage).toHaveBeenCalledWith(mockMessageId, mockContent);
         expect(status).toEqual(StatusCode.INTERNAL_SERVER_ERROR);
     });
 

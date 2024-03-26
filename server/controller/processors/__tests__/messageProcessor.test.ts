@@ -13,13 +13,11 @@ const mockRecipientId = 1;
 const TEST_MESSAGE: Message[] = [
     {
         content: "Hi!",
-        date: "",
         senderId: mockSenderId,
         recipientId: mockRecipientId
     },
     {
         content: "How are you??",
-        date: "",
         senderId: mockRecipientId,
         recipientId: mockSenderId
     }
@@ -111,10 +109,10 @@ describe("Message Processor Unit Tests", () => {
 
     it("Put Message (normal case)", async () => {
         api.editMessage.mockResolvedValueOnce(StatusCode.OK);
-        const mRequest = createMockRequest({content: TEST_MESSAGE[0].content, date: TEST_MESSAGE[0].date}, {id: mockMessageId});
+        const mRequest = createMockRequest({content: TEST_MESSAGE[0].content}, {id: mockMessageId});
         await MessageProcessor.putMessage(mRequest, MOCK_RESPONSE);
         expect(api.editMessage).toHaveBeenCalledTimes(1);
-        expect(api.editMessage).toHaveBeenCalledWith(mockMessageId, TEST_MESSAGE[0].content, TEST_MESSAGE[0].date);
+        expect(api.editMessage).toHaveBeenCalledWith(mockMessageId, TEST_MESSAGE[0].content);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledTimes(0);
         expect(MOCK_RESPONSE.send).toHaveBeenCalledTimes(0);
         expect(MOCK_RESPONSE.sendStatus).toHaveBeenCalledTimes(1);
@@ -123,10 +121,10 @@ describe("Message Processor Unit Tests", () => {
 
     it("Put Message (error case)", async () => {
         api.editMessage.mockResolvedValueOnce(StatusCode.GONE);
-        const mRequest = createMockRequest({content: TEST_MESSAGE[0].content, date: TEST_MESSAGE[0].date}, {id: mockMessageId});
+        const mRequest = createMockRequest({content: TEST_MESSAGE[0].content}, {id: mockMessageId});
         await MessageProcessor.putMessage(mRequest, MOCK_RESPONSE);
         expect(api.editMessage).toHaveBeenCalledTimes(1);
-        expect(api.editMessage).toHaveBeenCalledWith(mockMessageId, TEST_MESSAGE[0].content, TEST_MESSAGE[0].date);
+        expect(api.editMessage).toHaveBeenCalledWith(mockMessageId, TEST_MESSAGE[0].content);
         expect(MOCK_RESPONSE.sendStatus).toHaveBeenCalledTimes(0);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledTimes(1);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledWith(StatusCode.GONE);

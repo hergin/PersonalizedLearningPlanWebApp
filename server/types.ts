@@ -81,7 +81,6 @@ export type InviteData = {
 
 export type Message = {
     content: string,
-    date: string,
     senderId: number,
     recipientId: number
 }
