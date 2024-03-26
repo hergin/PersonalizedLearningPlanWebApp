@@ -62,7 +62,6 @@ export type Understudy = {
 
 export type Message = {
   content: string,
-  date: string,
   senderId: number,
   recipientId: number
 };
