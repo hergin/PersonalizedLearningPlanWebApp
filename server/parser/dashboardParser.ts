@@ -30,6 +30,6 @@ export default class DashboardParser extends DatabaseParser {
             text: "DELETE FROM Dashboard WHERE dashboard_id = $1",
             values: [dashboard_id]
         };
-        return await this.parseDatabase(query);
+        await this.updateDatabase(query);
     }
 }

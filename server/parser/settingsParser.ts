@@ -21,7 +21,7 @@ export default class SettingsParser extends DatabaseParser {
         const query = {
             text: "UPDATE ACCOUNT_SETTINGS SET receive_emails = $1, allow_coach_invitations = $2 WHERE account_id = $3",
             values: [settings.receiveEmails, settings.allowCoachInvitations, accountId]
-        }
+        };
         await this.updateDatabase(query);
     }
 }

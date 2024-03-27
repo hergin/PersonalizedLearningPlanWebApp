@@ -36,7 +36,7 @@ export default class ProfileParser extends DatabaseParser {
         console.log("Inserting new data into profile...");
         const query = {
             text: "UPDATE PROFILE SET username = $1, first_name = $2, last_name = $3, profile_picture = $4, job_title = $5, bio = $6 WHERE profile_id = $7",
-            values: [profile.username, profile.firstName, profile.lastName, profile.profilePicture, profile.jobTitle, profile.bio, profile.id]
+            values: [profile.username, profile.firstName, profile.lastName, profile.profilePicture, profile.jobTitle, profile.bio, profile.profileId]
         };
         await this.updateDatabase(query);
         console.log("Profile data saved!");
@@ -49,6 +49,5 @@ export default class ProfileParser extends DatabaseParser {
             values: [profile_id]
         };
         await this.updateDatabase(query);
-        console.log("Profile successfully deleted!");
     }
 }

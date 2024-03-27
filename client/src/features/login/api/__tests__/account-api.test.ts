@@ -23,7 +23,6 @@ const TEST_DATA = {
     lastName: "Dummy",
     username: "Xx_TestDummy_xX",
 };
-const mockProfileId = 0;
 const mockError: AxiosError = {message: "I'm in your walls."} as AxiosError;
 
 describe("Account Api Unit Tests", () => {

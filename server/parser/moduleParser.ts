@@ -8,19 +8,13 @@ export default class ModuleParser extends DatabaseParser {
 
     async storeModule(module: Module) {
         console.log("Storing Module...");
-        const storingQuery = {
+        const query = {
             text: `INSERT INTO Module(module_name, description, completion_percent, account_id${module.coachId ? `, coach_id` : ""}) VALUES($1, $2, $3, $4${module.coachId ? `, $5` : ""})`,
             values: module.coachId ? [module.name, module.description, module.completion, module.accountId, module.coachId] : 
             [module.name, module.description, module.completion, module.accountId]
         };
-        await this.updateDatabase(storingQuery);
+        await this.updateDatabase(query);
         console.log("Module Stored!");
-        const idQuery = {
-            text: "SELECT module_id FROM MODULE WHERE module_name = $1 AND description = $2 AND account_id = $3",
-            values: [module.name, module.description, module.accountId]
-        };
-        const result = await this.parseDatabase(idQuery);
-        return result[0];
     }
 
     async parseModules(account_id: number) {
@@ -64,6 +58,7 @@ export default class ModuleParser extends DatabaseParser {
 
     async runMaintenanceProcedures() {
         console.log("Executing module's maintenance procedures...");
-        return this.parseDatabase("CALL update_module_completion()");
+        await this.updateDatabase("CALL update_module_completion()");
+        console.log("Maintenance Procedures are complete!");
     }
 }

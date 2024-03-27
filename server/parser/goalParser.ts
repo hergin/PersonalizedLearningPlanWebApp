@@ -1,7 +1,10 @@
 import DatabaseParser from "./databaseParser";
-import { Goal, Query } from "../types";
+import { generateInsertQuery, generateUpdateQuery } from "../utils/queryGenerator";
+import { Goal, Query, Table } from "../types";
 
 export default class GoalParser extends DatabaseParser {
+    tableName: Table = Table.GOAL;
+    
     constructor() {
         super();
     }
@@ -28,91 +31,35 @@ export default class GoalParser extends DatabaseParser {
 
     async storeGoal(goal: Goal) {
         console.log("Storing Goal...");
-        const query = this.#generateInsertQuery(goal);
+        const query = generateInsertQuery(goal, this.tableName);
         await this.updateDatabase(query);
-        console.log("Goal Stored! Now returning id...");
-        const idQuery = {
-            text: "SELECT goal_id FROM GOAL WHERE name = $1 AND description = $2 AND module_id = $3",
-            values: [goal.name, goal.description, goal.module_id]
-        }
-        return this.parseDatabase(idQuery);
-    }
-    
-    #generateInsertQuery(goal: Goal): Query {
-        var beginningText = "INSERT INTO GOAL(";
-        var endingText = "VALUES (";
-        var values : (string | number | boolean | Date | undefined)[] = [];
-        Object.entries(goal).forEach((goalElement) => {
-            const [variable, value] = goalElement;
-            if(value === undefined || Array.isArray(value) || value === "") return;
-            beginningText = beginningText.concat(`${variable}, `);
-            values.push(value);
-            endingText = endingText.concat(`$${values.length}, `);
-        });
-        beginningText = beginningText.slice(0, beginningText.length - 2).concat(") ");
-        endingText = endingText.slice(0, endingText.length - 2).concat(") ");
-        const finalText = beginningText.concat(endingText);
-        console.log(`Final Query: ${finalText}`);
-        return {
-            text: finalText,
-            values: values
-        }
     }
 
     async updateGoal(goal: Goal) {
         console.log("Inserting updated data into Goal...");
-        const query = this.#generateUpdateQuery(goal);
+        const query = generateUpdateQuery(goal, this.tableName, "goal_id");
         console.log(JSON.stringify(query));
         await this.updateDatabase(query);
         console.log("Goal data updated!");
     }
 
-    #generateUpdateQuery(goal: Goal): Query {
-        var text = "UPDATE GOAL SET ";
-        var values : (string | number | boolean | Date | undefined)[] = [];
-        Object.entries(goal).forEach((goalElement) => {
-            const [variable, value] = goalElement;
-            if(variable === "goal_id" || value === undefined || Array.isArray(value) || value === "") return;
-            values.push(value);
-            text = text.concat(`${variable} = $${values.length}, `);
-        });
-        values.push(goal.goal_id);
-        const finalText = text.slice(0, text.length - 2).concat(` WHERE goal_id = $${values.length}`);
-        console.log(`Final Query: ${finalText}`);
-        return {
-            text: finalText,
-            values: values
-        }
-    }
-
     async updateGoalFeedback(goalID: number, feedback: string) {
         console.log(`Updating feedback on goal ${goalID}`);
         const query = {
-            text: `UPDATE GOAL SET feedback = $1 WHERE goal_id = $2`,
+            text: "UPDATE GOAL SET feedback = $1 WHERE goal_id = $2",
             values: [feedback, goalID]
         };
         await this.updateDatabase(query);
     }
 
-    async updateGoalTimestamps(goalID: number, completionTime: string, expiration?: string) {
-        console.log("Inserting timestamp values into Goal...");
-        const queryString = `UPDATE GOAL SET completion_time = $1${expiration ? `, expiration = $3` : ""} WHERE goal_id = $2`;
-        const query = {
-            text: queryString,
-            values: expiration ? [completionTime, goalID, expiration] : [completionTime, goalID]
-        };
-        await this.updateDatabase(query);
-        console.log("Timestamps updated!");
-    }
-
     async deleteGoal(goalID: number) {
         console.log("Deleting Goal...");
         const query1 = {
-            text: "DELETE FROM Goal WHERE parent_goal = $1",
+            text: "DELETE FROM GOAL WHERE parent_goal = $1",
             values: [goalID]
         };
         const query2 = {
-            text: "DELETE FROM Goal WHERE goal_id = $1",
+            text: "DELETE FROM GOAL WHERE goal_id = $1",
             values: [goalID]
         };
         await this.updateDatabase(query1);
@@ -131,19 +78,18 @@ export default class GoalParser extends DatabaseParser {
 
     async storeSubGoal(parentGoalID: number, goal: Goal) {
         console.log("Storing sub goal...");
-        const text = `INSERT INTO goal(name, description, goal_type, is_complete, module_id, tag_id, parent_goal${goal.due_date ? ", due_date" : ""}) VALUES ($1, $2, $3, $4, $5, $6, $7${goal.due_date ? `, $8` : ""})`;
+        const text = `INSERT INTO GOAL(name, description, goal_type, is_complete, module_id, tag_id, parent_goal${goal.due_date ? ", due_date" : ""}) VALUES ($1, $2, $3, $4, $5, $6, $7${goal.due_date ? `, $8` : ""})`;
         const query = {
             text: text,
             values: goal.due_date ? [goal.name, goal.description, goal.goal_type, goal.is_complete, goal.module_id, goal.tag_id, parentGoalID, goal.due_date] :
                 [goal.name, goal.description, goal.goal_type, goal.is_complete, goal.module_id, goal.tag_id, parentGoalID]
         };
-        console.log(JSON.stringify(query));
         await this.updateDatabase(query);
         console.log("Sub goal stored! Now returning id...");
         const idQuery = {
             text: "SELECT goal_id FROM GOAL WHERE name = $1 AND description = $2 AND parent_goal = $3",
             values: [goal.name, goal.description, parentGoalID]
-        }
+        };
         return this.parseDatabase(idQuery);
     }
 
@@ -155,11 +101,12 @@ export default class GoalParser extends DatabaseParser {
             WHERE g.due_date IS NOT NULL AND g.is_complete IS FALSE AND s.receive_emails IS TRUE AND g.due_date <= (CURRENT_TIMESTAMP + INTERVAL '24 hours') AND g.due_date > CURRENT_TIMESTAMP;
         `;
         const result = await this.parseDatabase(query);
+        console.log(result);
         // I have no idea why, but I keep getting duplicates when retrieving test values specifically.
-        return this.#getRidOfDuplicates(result);
+        return this.getRidOfDuplicates(result);
     }
 
-    async #getRidOfDuplicates(result: any[]): Promise<any[]> {
+    private async getRidOfDuplicates(result: any[]): Promise<any[]> {
         const previousGoals : number[] = []; 
         const filtered = result.filter((element) => {
             const result : boolean = !previousGoals.includes(element.id);

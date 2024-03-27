@@ -98,7 +98,19 @@ CREATE TABLE INVITATION(
         ON DELETE CASCADE ON UPDATE CASCADE
 );
 
--- This will eliminate the possibility that an id from these tables will match a status code.
-ALTER SEQUENCE IF EXISTS ACCOUNT_id_seq RESTART WITH 600;
-ALTER SEQUENCE IF EXISTS MODULE_module_id_seq RESTART WITH 600;
-ALTER SEQUENCE IF EXISTS GOAL_goal_id_seq RESTART WITH 600;
+DROP TABLE IF EXISTS MESSAGE CASCADE;
+CREATE TABLE MESSAGE(
+    id SERIAL PRIMARY KEY,
+    content TEXT,
+    date TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    last_edited TIMESTAMP WITH TIME ZONE,
+    recipient_id INT,
+    sender_id INT,
+    FOREIGN KEY (recipient_id) REFERENCES ACCOUNT(id)
+        ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (sender_id) REFERENCES ACCOUNT(id)
+        ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+-- This will eliminate the possibility that the account id will match a status code and cause issues.
+ALTER SEQUENCE IF EXISTS ACCOUNT_id_seq RESTART WITH 1000;

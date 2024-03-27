@@ -20,6 +20,13 @@ export enum Subject {
     REJECTED = "Invitation Rejected!"
 }
 
+export enum Table {
+    GOAL = "GOAL",
+    PROFILE = "PROFILE",
+    MODULE = "MODULE",
+    MESSAGE = "MESSAGE"
+}
+
 export type Goal = {
     goal_id?: number,
     name: string,
@@ -36,7 +43,7 @@ export type Goal = {
 }
 
 export type Profile = {
-    id?: number,
+    profileId?: number,
     username: string,
     firstName: string,
     lastName: string,
@@ -70,6 +77,17 @@ export type InviteData = {
     sender_id: number,
     sender_email: string,
     sender_username: string
+}
+
+export type Message = {
+    content: string,
+    senderId: number,
+    recipientId: number
+}
+
+export type Chat = {
+    sentMessages: Message[],
+    receivedMessages: Message[]
 }
 
 export interface Query {
