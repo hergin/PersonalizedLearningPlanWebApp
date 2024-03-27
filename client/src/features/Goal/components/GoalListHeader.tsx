@@ -14,10 +14,10 @@ export function GoalListHeader() {
         <p className="text-[#888888] headlineFont">Tag</p>
       </div>
       <div className="flex flex-col transition-transform w-[15%] h-full justify-center p-3 items-center">
-        <p className="text-[#888888] headlineFont">Feedback</p>
+        <p className="text-[#888888] headlineFont">SubGoal</p>
       </div>
       <div className="flex flex-col transition-transform w-[15%] h-full justify-center p-3 items-center">
-        <p className="text-[#888888] headlineFont">SubGoal</p>
+        <p className="text-[#888888] headlineFont">Complete</p>
       </div>
       <div className="flex flex-col transition-transform w-[1.5%] h-full justify-center p-3 items-center">
         <p className="text-black"></p>
