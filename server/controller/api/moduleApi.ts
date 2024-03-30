@@ -12,7 +12,7 @@ export default class ModuleAPI {
         this.errorCodeInterpreter = new ErrorCodeInterpreter();
     }
 
-    async getModules(accountId : number) {
+    async getModules(accountId : number): Promise<Module[] | StatusCode> {
         try {
             const modules = await this.parser.parseModules(accountId);
             console.log(`Parsed modules: \n${JSON.stringify(modules)}`);
@@ -22,15 +22,16 @@ export default class ModuleAPI {
         }
     }
 
-    async createModule(module: Module): Promise<number | StatusCode> {
+    async createModule(module: Module): Promise<StatusCode> {
         try {
-            return await this.parser.storeModule(module);
+            await this.parser.storeModule(module);
+            return StatusCode.OK;
         } catch (error: unknown) {
             return this.errorCodeInterpreter.getStatusCode(error as DatabaseError);
         }
     }
 
-    async updateModule(module: Module) {
+    async updateModule(module: Module): Promise<StatusCode> {
         if(!module.id) {
             return StatusCode.BAD_REQUEST;
         }
@@ -43,7 +44,7 @@ export default class ModuleAPI {
         }
     }
 
-    async deleteModule(moduleID: number) {
+    async deleteModule(moduleID: number): Promise<StatusCode> {
         try {
             await this.parser.deleteModule(moduleID);
             return StatusCode.OK;

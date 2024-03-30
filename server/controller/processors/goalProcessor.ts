@@ -18,7 +18,7 @@ async function getModuleGoals(req: Request, res: Response) {
 
 async function postGoal(req: Request, res: Response) {
     console.log(req.body);
-    const goalQuery = await goalAPI.createGoal({
+    const status = await goalAPI.createGoal({
         name: req.body.name,
         description: req.body.description,
         goal_type: req.body.goalType,
@@ -27,12 +27,12 @@ async function postGoal(req: Request, res: Response) {
         tag_id: req.body.tagId,
         due_date: req.body.dueDate
     });
-    if (typeof goalQuery !== "object") {
+    if (status !== StatusCode.OK) {
         console.log("Something went wrong while creating module.");
-        res.status(goalQuery).send(ERROR_MESSAGES.get(goalQuery));
+        res.status(status).send(ERROR_MESSAGES.get(status));
         return;
     }
-    res.status(StatusCode.OK).json(goalQuery);
+    res.sendStatus(StatusCode.OK);
 }
 
 async function putGoal(req: Request, res: Response) {

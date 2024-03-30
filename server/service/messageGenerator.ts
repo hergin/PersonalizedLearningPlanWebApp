@@ -23,10 +23,10 @@ export default class MessageGenerator {
     messageMap : Map<Subject, string>;
     
     constructor() {
-        this.messageMap = this.#generateMessageMap();
+        this.messageMap = this.generateMessageMap();
     }
 
-    #generateMessageMap(): Map<Subject, string> {
+    private generateMessageMap(): Map<Subject, string> {
         const map = new Map<Subject, string>();
         map.set(Subject.INVITATION, PREMADE_MESSAGES[0]);
         map.set(Subject.ACCEPTED, PREMADE_MESSAGES[1]);
@@ -39,10 +39,10 @@ export default class MessageGenerator {
         if(!messageTemplate) {
             throw new Error("The given subject has no unknown premade message.");
         }
-        return this.#insertValues(messageTemplate, data);
+        return this.insertValues(messageTemplate, data);
     }
 
-    #insertValues(template: string, data?: InviteData): string {
+    private insertValues(template: string, data?: InviteData): string {
         if(data) {
             template = template.replace(RECIPIENT_IDENTIFIER, data.recipient_username);
             template = template.replace(SENDER_IDENTIFIER, data.sender_username);

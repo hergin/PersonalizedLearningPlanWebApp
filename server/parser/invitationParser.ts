@@ -41,7 +41,7 @@ export default class InvitationParser extends DatabaseParser {
         const query = {
             text: "INSERT INTO INVITATION(sender_id, recipient_id) VALUES($1, $2)",
             values: [senderId, recipientId]
-        }
+        };
         await this.updateDatabase(query);
     }
 
@@ -49,7 +49,7 @@ export default class InvitationParser extends DatabaseParser {
         const updateCoachQuery = {
             text: "UPDATE ACCOUNT SET coach_id = $1 WHERE id = $2",
             values: [recipientId, senderId]
-        }
+        };
         await this.updateDatabase(updateCoachQuery);
         return await this.deleteInvite(inviteId);
     }

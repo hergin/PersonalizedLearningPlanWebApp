@@ -65,6 +65,7 @@ RETURNS SETOF goal_with_tag AS $$
     END;
 $$ LANGUAGE PLPGSQL;
 
+-- Automatically create the account settings row when an account is created.
 CREATE OR REPLACE FUNCTION create_new_user()
 RETURNS TRIGGER AS $$
     BEGIN
@@ -73,11 +74,11 @@ RETURNS TRIGGER AS $$
     END;
 $$ LANGUAGE PLPGSQL;
 
--- Automatically create the account settings row when an account is created.
 CREATE OR REPLACE TRIGGER trigger_create_new_user
 AFTER INSERT ON ACCOUNT FOR EACH ROW
 EXECUTE FUNCTION create_new_user();
 
+-- When a profile is created, automatically create a new Dashboard for the newly created profile.
 CREATE OR REPLACE FUNCTION create_new_profile()
 RETURNS TRIGGER AS $$
     BEGIN
@@ -86,11 +87,11 @@ RETURNS TRIGGER AS $$
     END;
 $$ LANGUAGE PLPGSQL;
 
--- When a profile is created, automatically create a new Dashboard for the newly created profile.
 CREATE OR REPLACE TRIGGER trigger_create_new_profile
 AFTER INSERT ON PROFILE FOR EACH ROW
 EXECUTE FUNCTION create_new_profile();
 
+-- Automatically update module's completion percent when data is inserted or updated from Goal.
 CREATE OR REPLACE FUNCTION calculate_new_module_completion()
 RETURNS TRIGGER AS $$
     BEGIN
@@ -99,7 +100,19 @@ RETURNS TRIGGER AS $$
     END;
 $$ LANGUAGE PLPGSQL;
 
--- Automatically update module's completion percent when data is inserted or updated from Goal.
 CREATE OR REPLACE TRIGGER trigger_calculate_new_module_completion
 AFTER INSERT OR UPDATE OF is_complete OR DELETE ON GOAL FOR EACH ROW
 EXECUTE FUNCTION calculate_new_module_completion();
+
+-- Automatically set last edited with current timestamp if message content has an update.
+CREATE OR REPLACE FUNCTION set_last_edited()
+RETURNS TRIGGER AS $$
+    BEGIN
+        NEW.last_edited = CURRENT_TIMESTAMP;
+        RETURN NEW;
+    END;
+$$ LANGUAGE PLPGSQL;
+
+CREATE OR REPLACE TRIGGER trigger_set_last_edited
+AFTER UPDATE OF content ON MESSAGE FOR EACH ROW
+EXECUTE FUNCTION set_last_edited();

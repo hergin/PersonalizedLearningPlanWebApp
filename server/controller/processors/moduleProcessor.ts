@@ -18,20 +18,19 @@ async function getAccountModules(req : Request, res : Response) {
 
 async function postModule(req : Request, res : Response) {
     console.log(`Received in post module: ${req.body.accountId}`);
-    const moduleQuery = await moduleAPI.createModule({
+    const status = await moduleAPI.createModule({
         name: req.body.name, 
         description: req.body.description, 
         completion: req.body.completionPercent, 
         accountId: req.body.accountId,
         coachId: req.body.coachId
     });
-    console.log(`Query Result: ${moduleQuery}`);
-    if(moduleQuery as StatusCode in StatusCode) {
+    if(status !== StatusCode.OK) {
         console.log(`Something went wrong while creating module for account ${req.body.accountId}.`);
-        res.status(moduleQuery as StatusCode).send(ERROR_MESSAGES.get(moduleQuery as StatusCode));
+        res.status(status as StatusCode).send(ERROR_MESSAGES.get(status as StatusCode));
         return;
     }
-    res.status(StatusCode.OK).json(moduleQuery);
+    res.sendStatus(StatusCode.OK);
 }
 
 async function putModule(req : Request, res : Response) {

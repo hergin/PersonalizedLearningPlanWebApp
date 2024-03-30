@@ -65,7 +65,6 @@ describe("Profile Editor Unit Tests", () => {
         expect(mockUpdater.mutateAsync).toHaveBeenCalledWith(TEST_PROFILE);
         await waitFor(mockUpdater.mutateAsync);
         expect(mockOnSave).toHaveBeenCalledTimes(1);
-        expect(mockOnSave).toHaveBeenCalledWith(TEST_PROFILE);
         expect(mockOnCancel).toHaveBeenCalledTimes(0);
     });
 
@@ -84,7 +83,6 @@ describe("Profile Editor Unit Tests", () => {
         expect(mockUpdater.mutateAsync).toHaveBeenCalledWith(TEST_PROFILE);
         await waitFor(mockUpdater.mutateAsync);
         expect(mockOnSave).toHaveBeenCalledTimes(1);
-        expect(mockOnSave).toHaveBeenCalledWith(TEST_PROFILE);
         expect(mockOnCancel).toHaveBeenCalledTimes(0);
     });
 

@@ -10,7 +10,7 @@ export default class TagParser extends DatabaseParser {
         const query = {
             text: "SELECT tag_id AS id, tag_name AS name, color, account_id FROM TAG WHERE account_id = $1",
             values: [accountId]
-        }
+        };
         return this.parseDatabase(query);
     }
 
@@ -19,7 +19,7 @@ export default class TagParser extends DatabaseParser {
         const query = {
             text: "INSERT INTO TAG(tag_name, color, account_id) VALUES ($1, $2, $3)",
             values: [name, color, accountId]
-        }
+        };
         await this.updateDatabase(query);
     }
 
