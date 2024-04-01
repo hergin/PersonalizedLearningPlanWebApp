@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { authenticateToken } from "../utils/token";
+import { authenticateToken } from "../authentication/tokenAuth";
 import * as InvitationProcessor from "../controller/processors/invitationProcessor";
 
 const inviteRoutes = Router();

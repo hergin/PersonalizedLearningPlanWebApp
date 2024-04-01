@@ -12,6 +12,7 @@ const AccountApi = () => {
             const response = await post("/auth/login", {email, password});
             addUser({
                 id: response.id,
+                role: response.role,
                 accessToken: response.accessToken,
                 refreshToken: response.refreshToken,
             });
@@ -27,6 +28,7 @@ const AccountApi = () => {
             const response = await post("/auth/login", {email: registerValues.email, password: registerValues.password});
             addUser({
                 id: response.id,
+                role: response.role,
                 accessToken: response.accessToken,
                 refreshToken: response.refreshToken,
             });

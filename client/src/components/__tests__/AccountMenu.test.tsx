@@ -2,7 +2,7 @@ import React from "react";
 import AccountMenu from "../AccountMenu";
 import { render } from "@testing-library/react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { User, defaultSettings } from "../../types";
+import { User, defaultSettings, Role } from "../../types";
 import { useLogoutService } from "../../features/login/hooks/useAccountServices";
 
 var mockData: object | null = null;
@@ -21,7 +21,7 @@ jest.mock("../../hooks/useSettings", () => ({
 }));
 jest.mock("../../features/login/hooks/useAccountServices");
 
-const mockUser: User = {id: 1, accessToken: "Access Token", refreshToken: "Refresh Token"};
+const mockUser: User = {id: 1, role: Role.BASIC, accessToken: "Access Token", refreshToken: "Refresh Token"};
 
 describe("AccountMenu Unit Tests", () => {
     const elementIds = ["loadingText", "errorText", "dropDownContainer", "itemContainer"];

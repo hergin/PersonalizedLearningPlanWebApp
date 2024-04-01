@@ -10,8 +10,11 @@ export enum StatusCode {
 }
 
 export enum GoalType {
-    TASK = "todo",
-    REPEATABLE = "daily"
+    ONCE = "todo",
+    DAILY = "daily",
+    WEEKLY = "weekly",
+    MONTHLY = "monthly",
+    
 }
 
 export enum Subject {
@@ -25,6 +28,17 @@ export enum Table {
     PROFILE = "PROFILE",
     MODULE = "MODULE",
     MESSAGE = "MESSAGE"
+}
+
+export enum Role {
+    ADMIN = "admin",
+    COACH = "coach",
+    BASIC = "basic", 
+}
+
+export type LoginProps = {
+    id: number,
+    role: Role
 }
 
 export type Goal = {

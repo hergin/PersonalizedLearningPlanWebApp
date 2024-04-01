@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { authenticateToken } from "../utils/token";
+import { authenticateToken } from "../authentication/tokenAuth";
 import * as ProfileProcessor from "../controller/processors/profileProcessor";
 
 const profileRoutes = Router();

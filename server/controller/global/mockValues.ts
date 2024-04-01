@@ -1,4 +1,4 @@
-import { Profile, GoalType, Module, Goal } from "../../types";
+import { Profile, GoalType, Module, Goal, Role } from "../../types";
 
 export const FAKE_ERRORS = {
     badRequest: {code: '23514'},
@@ -39,6 +39,7 @@ export const TEST_ACCOUNT = {
     password: "09122001",
     accessToken: "1234567890",
     refreshToken: "refresh please",
+    role: Role.BASIC,
 }
 
 export const TEST_PROFILE: Profile = {

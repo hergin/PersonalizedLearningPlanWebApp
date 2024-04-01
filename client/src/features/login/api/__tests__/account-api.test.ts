@@ -1,6 +1,6 @@
 import { renderHook } from "@testing-library/react";
 import AccountApi from "../account-api";
-import { LoginProps } from "../../../../types";
+import { LoginProps, Role } from "../../../../types";
 import { useApiConnection } from "../../../../hooks/useApiConnection";
 import { useUser } from "../../hooks/useUser";
 import { AxiosError } from "axios";
@@ -15,7 +15,7 @@ interface T {
     account_id: number
 }
 
-const mockUser = {id: 1, accessToken: "access token", refreshToken: "refresh token"};
+const mockUser = {id: 1, role: Role.BASIC, accessToken: "access token", refreshToken: "refresh token"};
 const TEST_DATA = {
     email: "example@gmail.com",
     password: "clever password",

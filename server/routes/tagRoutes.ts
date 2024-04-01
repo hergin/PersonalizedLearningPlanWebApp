@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { authenticateToken } from "../utils/token";
+import { authenticateToken } from "../authentication/tokenAuth";
 import * as TagProcessor from "../controller/processors/tagProcessor";
 
 const tagRoute = Router();

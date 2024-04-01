@@ -1,8 +1,8 @@
 import LoginAPI from "../api/loginApi";
 import { Request, Response } from "express";
 import { initializeErrorMap } from "../../utils/errorMessages";
-import { generateAccessToken, generateRefreshToken } from "../../utils/token";
-import { StatusCode } from "../../types";
+import { generateAccessToken, generateRefreshToken } from "../../authentication/tokenAuth";
+import { LoginProps, StatusCode } from "../../types";
 
 const loginAPI = new LoginAPI();
 const ERROR_MESSAGES = initializeErrorMap();
@@ -10,20 +10,21 @@ const ERROR_MESSAGES = initializeErrorMap();
 async function verifyLogin(req: Request, res: Response) {
     console.log(`Received in login: ${JSON.stringify(req.body)}`);
     const loginQuery = await loginAPI.verifyLogin(req.body.email, req.body.password);
-    if(loginQuery in StatusCode) {
+    if(loginQuery as StatusCode in StatusCode) {
         console.log(`Login verification failed with status code: ${loginQuery}`);
-        res.status(loginQuery).send(ERROR_MESSAGES.get(loginQuery));
+        res.status(loginQuery as StatusCode).send(ERROR_MESSAGES.get(loginQuery));
         return;
     }
     const accessToken = generateAccessToken(req.body.email);
     const refreshToken = generateRefreshToken(req.body.email);
-    const tokenQuery = await loginAPI.setToken(loginQuery, refreshToken);
+    const tokenQuery = await loginAPI.setToken((loginQuery as LoginProps).id, refreshToken);
     if(tokenQuery !== StatusCode.OK) {
         console.log(`Storing token failed with status code: ${tokenQuery}`);
         res.status(tokenQuery).send(ERROR_MESSAGES.get(tokenQuery));
         return;
     }
-    res.status(StatusCode.OK).json({id: loginQuery, accessToken, refreshToken});
+    const loginProps : LoginProps = loginQuery as LoginProps;
+    res.status(StatusCode.OK).json({id: loginProps.id, role: loginProps.role, accessToken, refreshToken});
 }
 
 async function verifyToken(req : Request, res : Response) {

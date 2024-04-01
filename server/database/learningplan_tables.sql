@@ -1,3 +1,5 @@
+DROP TYPE IF EXISTS SITE_ROLE CASCADE;
+CREATE TYPE SITE_ROLE AS ENUM ('admin', 'coach', 'basic');
 DROP TABLE IF EXISTS ACCOUNT CASCADE;
 CREATE TABLE ACCOUNT(
     id SERIAL PRIMARY KEY,
@@ -5,6 +7,7 @@ CREATE TABLE ACCOUNT(
     account_password TEXT NOT NULL,
     refresh_token TEXT,
     coach_id INT,
+    site_role SITE_ROLE DEFAULT 'basic',
     CONSTRAINT valid_email 
     CHECK (email ~* '^[A-Za-z0-9._%-]+@[A-Za-z0-9.-]+[.][A-Za-z]+$')
 );
@@ -12,12 +15,12 @@ CREATE TABLE ACCOUNT(
 DROP TABLE IF EXISTS PROFILE CASCADE;
 CREATE TABLE PROFILE(
     profile_id SERIAL PRIMARY KEY,
-    username TEXT NOT NULL,
-    first_name TEXT NOT NULL,
-    last_name TEXT NOT NULL,
+    username VARCHAR(50) NOT NULL,
+    first_name VARCHAR(50) NOT NULL,
+    last_name VARCHAR(50) NOT NULL,
     profile_picture TEXT,
-    job_title TEXT,
-    bio TEXT,
+    job_title VARCHAR(50),
+    bio VARCHAR(500),
     account_id INT UNIQUE NOT NULL,
     FOREIGN KEY (account_id) REFERENCES ACCOUNT(id)
         ON DELETE CASCADE ON UPDATE CASCADE
@@ -28,7 +31,7 @@ CREATE TABLE ACCOUNT_SETTINGS(
     id SERIAL PRIMARY KEY,
     receive_emails BOOLEAN DEFAULT TRUE,
     allow_coach_invitations BOOLEAN DEFAULT TRUE,
-    account_id INT NOT NULL,
+    account_id INT UNIQUE NOT NULL,
     FOREIGN KEY (account_id) REFERENCES ACCOUNT(id)
         ON DELETE CASCADE ON UPDATE CASCADE
 );
@@ -38,7 +41,7 @@ CREATE TABLE TAG(
     tag_id SERIAL PRIMARY KEY,
     tag_name TEXT,
     color VARCHAR(7),
-    account_id INT,
+    account_id INT NOT NULL,
     FOREIGN KEY (account_id) REFERENCES ACCOUNT(id)
         ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT valid_hex_code
@@ -50,9 +53,8 @@ CREATE TABLE MODULE(
     module_id SERIAL PRIMARY KEY,
     module_name TEXT,
     description TEXT,
-    completion_percent INT,
-    account_id INT,
-    coach_id INT,
+    completion_percent INT DEFAULT 100,
+    account_id NOT NULL INT,
     FOREIGN KEY (account_id) REFERENCES ACCOUNT(id)
         ON DELETE CASCADE ON UPDATE CASCADE
 );
@@ -62,11 +64,11 @@ DROP TYPE IF EXISTS GOAL_TYPE CASCADE;
 CREATE TYPE GOAL_TYPE AS ENUM ('todo', 'daily', 'weekly', 'monthly', 'yearly');
 CREATE TABLE GOAL(
     goal_id SERIAL PRIMARY KEY,
-    name TEXT,
-    description TEXT,
+    name TEXT NOT NULL,
+    description TEXT NOT NULL,
     goal_type GOAL_TYPE NOT NULL,
-    is_complete BOOLEAN,
-    module_id INT,
+    is_complete BOOLEAN DEFAULT 'false',
+    module_id INT NOT NULL,
     due_date TIMESTAMP WITH TIME ZONE,
     completion_time TIMESTAMP WITH TIME ZONE,
     expiration TIMESTAMP WITH TIME ZONE,
@@ -90,8 +92,8 @@ CREATE TABLE DASHBOARD(
 DROP TABLE IF EXISTS INVITATION CASCADE;
 CREATE TABLE INVITATION(
     id SERIAL PRIMARY KEY,
-    recipient_id INT,
-    sender_id INT,
+    recipient_id INT NOT NULL,
+    sender_id INT NOT NULL,
     FOREIGN KEY (recipient_id) REFERENCES ACCOUNT(id)
         ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY (sender_id) REFERENCES ACCOUNT(id)
@@ -104,8 +106,8 @@ CREATE TABLE MESSAGE(
     content TEXT,
     date TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     last_edited TIMESTAMP WITH TIME ZONE,
-    recipient_id INT,
-    sender_id INT,
+    recipient_id INT NOT NULL,
+    sender_id INT NOT NULL,
     FOREIGN KEY (recipient_id) REFERENCES ACCOUNT(id)
         ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY (sender_id) REFERENCES ACCOUNT(id)
