@@ -1,6 +1,6 @@
 import { Router } from "express";
 import * as loginProcessor from "../controller/processors/loginProcessor";
-import { authenticateToken } from "../authentication/tokenAuth";
+import { authenticateToken } from '../middleware/authentication';
 
 const loginRoutes = Router();
 loginRoutes.post('/login', loginProcessor.verifyLogin);

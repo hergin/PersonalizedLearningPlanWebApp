@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { authenticateToken } from "../authentication/tokenAuth";
+import { authenticateToken } from '../middleware/authentication';
 import * as ModuleProcessor from "../controller/processors/moduleProcessor";
 
 const moduleRoutes = Router();

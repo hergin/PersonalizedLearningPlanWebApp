@@ -5,7 +5,7 @@ const TEST_GOAL : Goal = {
     name: "Do homework",
     description: "Do your homework",
     is_complete: false,
-    goal_type: GoalType.TASK,
+    goal_type: GoalType.ONCE,
 };
 
 const TEST_PROFILE: Profile = {

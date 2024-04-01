@@ -203,7 +203,7 @@ describe('Goal Api Unit Tests', () => {
             description: TEST_GOAL.description[0], 
             is_complete: TEST_GOAL.isComplete, 
             module_id: TEST_GOAL.moduleId,
-            goal_type: GoalType.REPEATABLE
+            goal_type: GoalType.DAILY
         });
         expect(actual).toEqual(StatusCode.INTERNAL_SERVER_ERROR);
     });

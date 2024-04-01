@@ -1,7 +1,7 @@
 import LoginAPI from "../api/loginApi";
 import { Request, Response } from "express";
 import { initializeErrorMap } from "../../utils/errorMessages";
-import { generateAccessToken, generateRefreshToken } from "../../authentication/tokenAuth";
+import { generateAccessToken, generateRefreshToken } from "../../utils/tokenGenerator";
 import { LoginProps, StatusCode } from "../../types";
 
 const loginAPI = new LoginAPI();

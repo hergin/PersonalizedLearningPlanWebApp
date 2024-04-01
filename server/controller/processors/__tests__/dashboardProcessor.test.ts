@@ -13,7 +13,7 @@ describe("dashboard processor unit tests", () => {
     
     afterEach(() => {
         jest.clearAllMocks();
-    })
+    });
 
     it("get dashboard (normal case)", async () => {
         dashboardApi.getDashboard.mockResolvedValueOnce(TEST_DASHBOARD);
