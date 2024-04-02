@@ -21,7 +21,7 @@ jest.mock("../../hooks/useSettings", () => ({
 }));
 jest.mock("../../features/login/hooks/useAccountServices");
 
-const mockUser: User = {id: 1, role: Role.BASIC, accessToken: "Access Token", refreshToken: "Refresh Token"};
+const mockUser: User = {id: 1, role: "basic", accessToken: "Access Token", refreshToken: "Refresh Token"};
 
 describe("AccountMenu Unit Tests", () => {
     const elementIds = ["loadingText", "errorText", "dropDownContainer", "itemContainer"];

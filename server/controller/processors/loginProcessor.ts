@@ -1,8 +1,8 @@
 import LoginAPI from "../api/loginApi";
 import { Request, Response } from "express";
 import { initializeErrorMap } from "../../utils/errorMessages";
-import { generateAccessToken, generateRefreshToken } from "../../utils/tokenGenerator";
-import { LoginProps, StatusCode } from "../../types";
+import { generateAccessToken, generateRefreshToken } from "../../middleware/tokenHandler";
+import { AuthProps, StatusCode } from "../../types";
 
 const loginAPI = new LoginAPI();
 const ERROR_MESSAGES = initializeErrorMap();
@@ -17,13 +17,13 @@ async function verifyLogin(req: Request, res: Response) {
     }
     const accessToken = generateAccessToken(req.body.email);
     const refreshToken = generateRefreshToken(req.body.email);
-    const tokenQuery = await loginAPI.setToken((loginQuery as LoginProps).id, refreshToken);
+    const tokenQuery = await loginAPI.setToken((loginQuery as AuthProps).id, refreshToken);
     if(tokenQuery !== StatusCode.OK) {
         console.log(`Storing token failed with status code: ${tokenQuery}`);
         res.status(tokenQuery).send(ERROR_MESSAGES.get(tokenQuery));
         return;
     }
-    const loginProps : LoginProps = loginQuery as LoginProps;
+    const loginProps : AuthProps = loginQuery as AuthProps;
     res.status(StatusCode.OK).json({id: loginProps.id, role: loginProps.role, accessToken, refreshToken});
 }
 

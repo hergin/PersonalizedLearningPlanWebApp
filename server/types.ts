@@ -14,7 +14,6 @@ export enum GoalType {
     DAILY = "daily",
     WEEKLY = "weekly",
     MONTHLY = "monthly",
-    
 }
 
 export enum Subject {
@@ -30,16 +29,21 @@ export enum Table {
     MESSAGE = "MESSAGE"
 }
 
-export enum Role {
-    ADMIN = "admin",
-    COACH = "coach",
-    BASIC = "basic", 
-}
+const roles = {
+    ADMIN: "admin",
+    COACH: "coach",
+    BASIC: "basic", 
+} as const;
+export type Role = (typeof roles)[keyof typeof roles];
 
-export type LoginProps = {
+export type AuthProps = {
     id: number,
     role: Role
-}
+};
+
+export type RequestWithAuth = Request & {
+    auth: AuthProps
+};
 
 export type Goal = {
     goal_id?: number,

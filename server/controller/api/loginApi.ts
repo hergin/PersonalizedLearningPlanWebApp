@@ -1,6 +1,6 @@
 import bcrypt from "bcryptjs";
 import LoginParser from "../../parser/loginParser";
-import { Role, LoginProps, StatusCode } from "../../types";
+import { Role, AuthProps, StatusCode } from "../../types";
 import { ErrorCodeInterpreter } from "./errorCodeInterpreter";
 import { DatabaseError } from "pg";
 
@@ -13,7 +13,7 @@ export default class LoginAPI {
       this.errorCodeInterpreter = new ErrorCodeInterpreter();
     }
 
-    async verifyLogin(email : string, password : string): Promise<LoginProps | StatusCode> {
+    async verifyLogin(email : string, password : string): Promise<AuthProps | StatusCode> {
         try {
             const login = await this.parser.retrieveLogin(email);
             if(login.length === 0) return StatusCode.GONE;

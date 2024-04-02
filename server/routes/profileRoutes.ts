@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { authenticateToken } from '../middleware/authentication';
+import { authenticateToken } from '../middleware/authMiddleware';
 import * as ProfileProcessor from "../controller/processors/profileProcessor";
 
 const profileRoutes = Router();

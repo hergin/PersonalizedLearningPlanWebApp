@@ -35,7 +35,7 @@ describe("Account Button Unit Tests", () => {
     });
 
     it("Logged in case.", () => {
-        mockUser = {id: 1, role: Role.BASIC, accessToken: "Access Token", refreshToken: "Refresh Token"};
+        mockUser = {id: 1, role: "basic", accessToken: "Access Token", refreshToken: "Refresh Token"};
         const { getByTestId } = render(
             <MemoryRouter>
                 <Routes>

@@ -15,7 +15,7 @@ interface T {
     account_id: number
 }
 
-const mockUser = {id: 1, role: Role.BASIC, accessToken: "access token", refreshToken: "refresh token"};
+const mockUser = {id: 1, role: "basic", accessToken: "access token", refreshToken: "refresh token"};
 const TEST_DATA = {
     email: "example@gmail.com",
     password: "clever password",

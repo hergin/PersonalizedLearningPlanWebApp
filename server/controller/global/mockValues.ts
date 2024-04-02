@@ -39,7 +39,7 @@ export const TEST_ACCOUNT = {
     password: "09122001",
     accessToken: "1234567890",
     refreshToken: "refresh please",
-    role: Role.BASIC,
+    role: "basic",
 }
 
 export const TEST_PROFILE: Profile = {

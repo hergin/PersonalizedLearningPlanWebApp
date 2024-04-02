@@ -55,7 +55,7 @@ CREATE TABLE MODULE(
     module_name TEXT,
     description TEXT,
     completion_percent INT DEFAULT 100,
-    account_id NOT NULL INT,
+    account_id INT NOT NULL,
     FOREIGN KEY (account_id) REFERENCES ACCOUNT(id)
         ON DELETE CASCADE ON UPDATE CASCADE
 );

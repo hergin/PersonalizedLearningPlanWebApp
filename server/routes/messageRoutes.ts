@@ -1,6 +1,6 @@
 import { Router } from "express";
 import * as MessageProcessor from "../controller/processors/messageProcessor";
-import { authenticateToken } from '../middleware/authentication';
+import { authenticateToken } from '../middleware/authMiddleware';
 
 const messageRoutes = Router();
 messageRoutes.get("/:id", authenticateToken, MessageProcessor.getAllSentMessages);

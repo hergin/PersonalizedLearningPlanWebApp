@@ -10,7 +10,7 @@ const TEST_ACCOUNT = {
     password: "01010101010",
     refreshToken: "UTDefpAEyREXmgCkK04pL1SXK6jrB2tEc2ZyMbrFs61THq2y3bpRZOCj5RiPoZGa",
     coachId: 2,
-    role: Role.BASIC,
+    role: "basic",
 };
 
 describe('login parser tests', () => {

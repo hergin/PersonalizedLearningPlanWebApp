@@ -153,7 +153,7 @@ export interface RegisterProps {
   password: string
 }
 
-export const emptyUser: User = { id: -1, role: Role.BASIC, accessToken: "", refreshToken: "" };
+export const emptyUser: User = { id: -1, role: "basic", accessToken: "", refreshToken: "" };
 export const defaultSettings = {
   receiveEmails: true,
   allowCoachInvitations: true,

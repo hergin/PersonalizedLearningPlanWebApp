@@ -2,11 +2,11 @@ import * as LoginProcessor from "../loginProcessor";
 import { StatusCode } from "../../../types";
 import LoginAPI from "../../api/loginApi";
 import { initializeErrorMap } from "../../../utils/errorMessages";
-import { generateAccessToken, generateRefreshToken } from "../../../utils/tokenGenerator";
+import { generateAccessToken, generateRefreshToken } from "../../../middleware/tokenHandler";
 import { createMockRequest, MOCK_RESPONSE, TEST_ACCOUNT } from "../../global/mockValues";
 
 jest.mock("../../../controller/api/loginAPI");
-jest.mock("../../../utils/tokenGenerator", () => ({
+jest.mock("../../../middleware/tokenHandler", () => ({
     generateAccessToken: jest.fn().mockReturnValue("1234567890"),
     generateRefreshToken: jest.fn().mockReturnValue("refresh please"),
 }));
