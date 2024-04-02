@@ -1,6 +1,6 @@
 import DatabaseParser from "./databaseParser";
 import { generateInsertQuery, generateUpdateQuery } from "../utils/queryGenerator";
-import { Goal, Query, Table } from "../types";
+import { Goal, Table } from "../types";
 
 export default class GoalParser extends DatabaseParser {
     tableName: Table = Table.GOAL;

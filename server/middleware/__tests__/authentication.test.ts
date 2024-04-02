@@ -2,10 +2,6 @@ import { authenticateToken, authenticateRole } from "../authentication";
 import { verify, VerifyErrors, Jwt, JwtPayload, JsonWebTokenError } from "jsonwebtoken";
 import { Response, Request } from "express";
 import { Role, StatusCode } from "../../types";
-import dotenv from "dotenv";
-
-// These unit tests shouldn't depend on this, but for now, they do.
-dotenv.config({ path: "../../utils/.env" });
 
 const mockNext = jest.fn();
 const mockSendStatus = jest.fn();
@@ -52,18 +48,18 @@ describe("Authentication Unit Tests", () => {
     });
 
     it('Authenticate Token (wrong token case)', () => {
-        const wrongToken : string = 'Bearer this is a wrong token';
+        const wrongToken : string = 'this-is-a-wrong-token';
         mockVerify.mockImplementation((token, secretOrPublicKey, options, callback) => {
             return (callback as (any : VerifyErrors | null, result : Jwt | JwtPayload | string | null) => void)(new JsonWebTokenError("Wrong token..."), null);
         });
         const mockRequest = {
             headers: {
-                'authorization': wrongToken,
+                'authorization': `Bearer: ${wrongToken}`,
             }
         } as any as Request;
         authenticateToken(mockRequest, mockResponse, mockNext);
         expect(mockVerify).toHaveBeenCalledTimes(1);
-        expect(mockVerify).toHaveBeenCalledWith(wrongToken, process.env.ACCESS_TOKEN_SECRET!, undefined);
+        expect(mockVerify).toHaveBeenCalledWith(wrongToken, process.env.ACCESS_TOKEN_SECRET!, undefined, expect.any(Function));
         expect(mockSendStatus).toHaveBeenCalledTimes(1);
         expect(mockSendStatus).toHaveBeenCalledWith(StatusCode.FORBIDDEN);
         expect(mockNext).toHaveBeenCalledTimes(0);
@@ -83,7 +79,7 @@ describe("Authentication Unit Tests", () => {
         expect(mockNext).toHaveBeenCalledTimes(1);
     });
 
-    it("Authenticate Role (normal case)", () => {
+    it("Authenticate Role (wrong role case)", () => {
         const callback = authenticateRole(Role.ADMIN);
         const mockRequest = {
             body: {
@@ -99,5 +95,3 @@ describe("Authentication Unit Tests", () => {
         expect(mockSend).toHaveBeenCalledWith("You aren't authorized to be here.");
     });
 });
-
-

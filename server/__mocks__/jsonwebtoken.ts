@@ -1,8 +1,5 @@
-const mockSign = jest.fn();
-const mockVerify = jest.fn();
-
-export const sign = mockSign;
-export const verify = mockVerify;
+export const sign = jest.fn();
+export const verify = jest.fn();
 
 export const JsonWebTokenError = jest.fn().mockImplementation(() => {
     return {};
@@ -11,7 +8,8 @@ export const JsonWebTokenError = jest.fn().mockImplementation(() => {
 const mock = () => ({
     ...jest.requireActual,
     sign, 
-    verify
+    verify,
+    JsonWebTokenError,
 });
 
 export default mock;

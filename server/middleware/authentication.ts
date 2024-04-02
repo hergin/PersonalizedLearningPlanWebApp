@@ -27,5 +27,5 @@ export function authenticateRole(role : Role) {
             return res.status(StatusCode.UNAUTHORIZED).send("You aren't authorized to be here.");
         }
         next();
-    }
+    };
 }
