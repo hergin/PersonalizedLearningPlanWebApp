@@ -22,8 +22,7 @@ async function postModule(req : Request, res : Response) {
         name: req.body.name, 
         description: req.body.description, 
         completion: req.body.completionPercent, 
-        accountId: req.body.accountId,
-        coachId: req.body.coachId
+        accountId: req.body.accountId
     });
     if(status !== StatusCode.OK) {
         console.log(`Something went wrong while creating module for account ${req.body.accountId}.`);
@@ -40,7 +39,6 @@ async function putModule(req : Request, res : Response) {
         name: req.body.name, 
         description: req.body.description, 
         completion: req.body.completion,
-        coachId: req.body.coach_id
     });
     if(moduleQuery !== StatusCode.OK) {
         console.log("Something went wrong while editing a module.");

@@ -3,11 +3,12 @@ export enum GoalType {
   REPEATABLE = "daily",
 }
 
-export enum Role {
-  ADMIN = "admin",
-  COACH = "coach",
-  BASIC = "basic",
-}
+const roles = {
+  ADMIN: "admin",
+  COACH: "coach",
+  BASIC: "basic", 
+} as const;
+export type Role = (typeof roles)[keyof typeof roles];
 
 export interface Module {
   id: number;

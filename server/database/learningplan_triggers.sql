@@ -56,12 +56,12 @@ RETURNS TRIGGER AS $$
     BEGIN
         IF NEW.is_complete IS TRUE THEN
             NEW.completion_time = CURRENT_TIMESTAMP;
-            IF NEW.goal_type != "todo" THEN
+            IF NEW.goal_type != 'todo' THEN
                 CASE NEW.goal_type
-                WHEN "daily" THEN NEW.expiration = CURRENT_TIMESTAMP + INTERVAL '24 hours';
-                WHEN "weekly" THEN NEW.expiration = CURRENT_TIMESTAMP + INTERVAL '1 week';
-                WHEN "monthly" THEN NEW.expiration = CURRENT_TIMESTAMP + INTERVAL '1 month';
-                WHEN "yearly" THEN NEW.expiration = CURRENT_TIMESTAMP + INTERVAL '1 year';
+                WHEN 'daily' THEN NEW.expiration = CURRENT_TIMESTAMP + INTERVAL '24 hours';
+                WHEN 'weekly' THEN NEW.expiration = CURRENT_TIMESTAMP + INTERVAL '1 week';
+                WHEN 'monthly' THEN NEW.expiration = CURRENT_TIMESTAMP + INTERVAL '1 month';
+                WHEN 'yearly' THEN NEW.expiration = CURRENT_TIMESTAMP + INTERVAL '1 year';
                 ELSE RAISE NOTICE 'Unknown Goal Type.';
                 END CASE;
             END IF;

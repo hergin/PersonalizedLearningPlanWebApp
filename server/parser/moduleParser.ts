@@ -9,9 +9,8 @@ export default class ModuleParser extends DatabaseParser {
     async storeModule(module: Module) {
         console.log("Storing Module...");
         const query = {
-            text: `INSERT INTO Module(module_name, description, completion_percent, account_id${module.coachId ? `, coach_id` : ""}) VALUES($1, $2, $3, $4${module.coachId ? `, $5` : ""})`,
-            values: module.coachId ? [module.name, module.description, module.completion, module.accountId, module.coachId] : 
-            [module.name, module.description, module.completion, module.accountId]
+            text: 'INSERT INTO Module(module_name, description, completion_percent, account_id) VALUES($1, $2, $3, $4)',
+            values: [module.name, module.description, module.completion, module.accountId]
         };
         await this.updateDatabase(query);
         console.log("Module Stored!");
@@ -20,7 +19,7 @@ export default class ModuleParser extends DatabaseParser {
     async parseModules(account_id: number) {
         console.log("Getting Module...");
         const query = {
-            text: "SELECT * FROM Module WHERE account_id = $1 OR coach_id = $1",
+            text: "SELECT * FROM Module WHERE account_id = $1",
             values: [account_id]
         };
         return this.parseDatabase(query);
@@ -29,9 +28,8 @@ export default class ModuleParser extends DatabaseParser {
     async updateModule(module: Module) {
         console.log("Inserting updated data into Module...");
         const query = {
-            text: `UPDATE MODULE SET module_name = $1, description = $2, completion_percent = $3${module.coachId ? `, coach_id = $5` : ""} WHERE module_id = $4`,
-            values: module.coachId ? [module.name, module.description, module.completion, module.id, module.coachId] : 
-            [module.name, module.description, module.completion, module.id]
+            text: "UPDATE MODULE SET module_name = $1, description = $2, completion_percent = $3 WHERE module_id = $4",
+            values: [module.name, module.description, module.completion, module.id]
         };
         await this.updateDatabase(query);
         console.log("Module data updated!");

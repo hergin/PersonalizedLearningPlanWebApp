@@ -42,7 +42,6 @@ export default class GoalAPI {
 
     async createGoal(goal: Goal): Promise<StatusCode> {
         const dueDate : string | undefined = this.convertToPostgresTimestamp(goal.due_date);
-
         try {
             await this.parser.storeGoal({
                 ...goal,

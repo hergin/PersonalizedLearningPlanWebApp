@@ -12,7 +12,7 @@ export function generateAccessToken(authProps: User): string {
     if(!process.env.ACCESS_TOKEN_SECRET) {
         throw new EnvError('ACCESS_TOKEN_SECRET', __dirname);
     }
-    return sign(authProps, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '24h'});
+    return sign(authProps, process.env.ACCESS_TOKEN_SECRET);
 }
 
 export function generateRefreshToken(authProps: User): string {

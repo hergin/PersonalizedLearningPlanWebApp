@@ -74,7 +74,6 @@ export type Module = {
     description: string,
     completion: number
     accountId?: number
-    coachId?: number
 }
 
 export type AccountSettings = {
