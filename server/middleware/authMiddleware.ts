@@ -47,13 +47,3 @@ export function authenticateRole(role : Role) {
         next();
     };
 }
-
-export function authenticatePermission(object: Object, permission: (user: User, object: Object) => boolean) {
-    return (req: Request, res: Response, next: NextFunction) => {
-        const allowed = permission({id: req.body.userId, role: req.body.role}, object);
-        if(!allowed) {
-            return res.status(StatusCode.UNAUTHORIZED).send(unauthorizedMessage);
-        }
-        next();
-    }
-}

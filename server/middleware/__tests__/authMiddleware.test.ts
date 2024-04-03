@@ -1,4 +1,4 @@
-import { authenticateToken, authenticateRole, authenticatePermission } from "../authMiddleware";
+import { authenticateToken, authenticateRole } from "../authMiddleware";
 import { verify, VerifyErrors, JsonWebTokenError } from "jsonwebtoken";
 import { Response, Request } from "express";
 import { StatusCode } from "../../types";
@@ -136,38 +136,6 @@ describe("Authentication Unit Tests", () => {
                 role: "basic",
             }
         } as any as Request;
-        callback(mockRequest, mockResponse, mockNext);
-        expect(mockSendStatus).toHaveBeenCalledTimes(0);
-        expect(mockNext).toHaveBeenCalledTimes(0);
-        expect(mockStatus).toHaveBeenCalledTimes(1);
-        expect(mockStatus).toHaveBeenCalledWith(StatusCode.UNAUTHORIZED);
-        expect(mockSend).toHaveBeenCalledTimes(1);
-        expect(mockSend).toHaveBeenCalledWith("You aren't authorized to be here.");
-    });
-
-    it("Authenticate Permission (normal case)", () => {
-        const mockPermission = jest.fn().mockReturnValue(true);
-        const mockRequest = {
-            body: {
-                role: "basic",
-            }
-        } as any as Request;
-        const callback = authenticatePermission({}, mockPermission);
-        callback(mockRequest, mockResponse, mockNext);
-        expect(mockSendStatus).toHaveBeenCalledTimes(0);
-        expect(mockStatus).toHaveBeenCalledTimes(0);
-        expect(mockSend).toHaveBeenCalledTimes(0);
-        expect(mockNext).toHaveBeenCalledTimes(1);
-    });
-
-    it("Authenticate Permission (no permission case)", () => {
-        const mockPermission = jest.fn().mockReturnValue(false);
-        const mockRequest = {
-            body: {
-                role: "basic",
-            }
-        } as any as Request;
-        const callback = authenticatePermission({}, mockPermission);
         callback(mockRequest, mockResponse, mockNext);
         expect(mockSendStatus).toHaveBeenCalledTimes(0);
         expect(mockNext).toHaveBeenCalledTimes(0);
