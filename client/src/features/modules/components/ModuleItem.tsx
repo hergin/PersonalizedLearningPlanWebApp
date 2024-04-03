@@ -37,7 +37,6 @@ const ModuleItem = ({ module, editModule, deleteModule }: ModuleProps) => {
           {module.completion === 100 ? "Completed" : "In progress"}
         </p>
         <p className="text-2xl">{module.description}</p>
-        <p className="text-2xl">{module.description}</p>
       </Link>
     </div>
   );

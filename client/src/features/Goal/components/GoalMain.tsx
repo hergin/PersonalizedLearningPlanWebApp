@@ -11,8 +11,8 @@ import { useUser } from "../../login/hooks/useUser";
 const GoalParentContainer = () => {
   const { user } = useUser();
   const { id: moduleId } = useParams();
-  const { data, isLoading, error } = useGoals(Number(moduleId));
-
+  const { data: goals, isLoading, error } = useGoals(Number(moduleId));
+  console.log("goals", goals);
   if (isLoading) {
     return <p className="text-black">Loading...</p>;
   }
@@ -26,8 +26,8 @@ const GoalParentContainer = () => {
         <div className="w-full flex flex-row-reverse">
           <TagCreator accountId={user.id} />
         </div>
-        <GoalListHeader />
-        {data?.map((goal: Goal) => (
+        {goals?.length === 0 ? null : <GoalListHeader />}
+        {goals?.map((goal: Goal) => (
           <GoalItem key={goal.goal_id} id={Number(moduleId)} goal={goal} />
         ))}
       </Goals>
