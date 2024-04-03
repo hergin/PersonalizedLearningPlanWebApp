@@ -22,12 +22,13 @@ export enum Subject {
     REJECTED = "Invitation Rejected!"
 }
 
-export enum Table {
-    GOAL = "GOAL",
-    PROFILE = "PROFILE",
-    MODULE = "MODULE",
-    MESSAGE = "MESSAGE"
-}
+const tables = {
+    GOAL: "GOAL",
+    PROFILE: "PROFILE",
+    MODULE: "MODULE",
+    MESSAGE: "MESSAGE"
+} as const;
+export type Table = (typeof tables)[keyof typeof tables];
 
 const roles = {
     ADMIN: "admin",
@@ -36,13 +37,9 @@ const roles = {
 } as const;
 export type Role = (typeof roles)[keyof typeof roles];
 
-export type AuthProps = {
+export type User = {
     id: number,
     role: Role
-};
-
-export type RequestWithAuth = Request & {
-    auth: AuthProps
 };
 
 export type Goal = {

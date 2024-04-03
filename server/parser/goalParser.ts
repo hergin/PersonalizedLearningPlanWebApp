@@ -3,7 +3,7 @@ import { generateInsertQuery, generateUpdateQuery } from "../utils/queryGenerato
 import { Goal, Table } from "../types";
 
 export default class GoalParser extends DatabaseParser {
-    tableName: Table = Table.GOAL;
+    tableName: Table = "GOAL";
     
     constructor() {
         super();

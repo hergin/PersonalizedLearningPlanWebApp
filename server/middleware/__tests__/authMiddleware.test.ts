@@ -1,8 +1,10 @@
-import { authenticateToken, authenticateRole } from "../authMiddleware";
+import { authenticateToken, authenticateRole, authenticatePermission } from "../authMiddleware";
 import { verify, VerifyErrors, JsonWebTokenError } from "jsonwebtoken";
 import { Response, Request } from "express";
 import { StatusCode } from "../../types";
 import { jwtDecode } from "jwt-decode";
+import EnvError from "../../utils/envError";
+import { resolve } from "path";
 
 jest.mock("jsonwebtoken");
 jest.mock("jwt-decode", () => ({
@@ -44,7 +46,8 @@ describe("Authentication Unit Tests", () => {
                 'authorization': 'Bearer 4206966'
             }
         } as any as Request;
-        expect(() => authenticateToken(mockRequest, mockResponse, mockNext)).toThrow(new Error(".env value 'ACCESS_TOKEN_SECRET' not found."));
+        expect(() => authenticateToken(mockRequest, mockResponse, mockNext)).toThrow(
+            new EnvError('ACCESS_TOKEN_SECRET', resolve("./middleware")));
         expect(mockSendStatus).toHaveBeenCalledTimes(1);
         expect(mockSendStatus).toHaveBeenCalledWith(StatusCode.INTERNAL_SERVER_ERROR);
         expect(mockNext).toHaveBeenCalledTimes(0);
@@ -133,6 +136,38 @@ describe("Authentication Unit Tests", () => {
                 role: "basic",
             }
         } as any as Request;
+        callback(mockRequest, mockResponse, mockNext);
+        expect(mockSendStatus).toHaveBeenCalledTimes(0);
+        expect(mockNext).toHaveBeenCalledTimes(0);
+        expect(mockStatus).toHaveBeenCalledTimes(1);
+        expect(mockStatus).toHaveBeenCalledWith(StatusCode.UNAUTHORIZED);
+        expect(mockSend).toHaveBeenCalledTimes(1);
+        expect(mockSend).toHaveBeenCalledWith("You aren't authorized to be here.");
+    });
+
+    it("Authenticate Permission (normal case)", () => {
+        const mockPermission = jest.fn().mockReturnValue(true);
+        const mockRequest = {
+            body: {
+                role: "basic",
+            }
+        } as any as Request;
+        const callback = authenticatePermission({}, mockPermission);
+        callback(mockRequest, mockResponse, mockNext);
+        expect(mockSendStatus).toHaveBeenCalledTimes(0);
+        expect(mockStatus).toHaveBeenCalledTimes(0);
+        expect(mockSend).toHaveBeenCalledTimes(0);
+        expect(mockNext).toHaveBeenCalledTimes(1);
+    });
+
+    it("Authenticate Permission (no permission case)", () => {
+        const mockPermission = jest.fn().mockReturnValue(false);
+        const mockRequest = {
+            body: {
+                role: "basic",
+            }
+        } as any as Request;
+        const callback = authenticatePermission({}, mockPermission);
         callback(mockRequest, mockResponse, mockNext);
         expect(mockSendStatus).toHaveBeenCalledTimes(0);
         expect(mockNext).toHaveBeenCalledTimes(0);
