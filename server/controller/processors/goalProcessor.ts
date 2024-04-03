@@ -1,17 +1,23 @@
 import GoalAPI from "../api/goalApi";
+import EmailService from "../../service/emailService";
 import { StatusCode } from "../../types";
 import { initializeErrorMap } from "../../utils/errorMessages";
 import { Request, Response } from "express";
+import ModuleAPI from "../api/moduleApi";
+import LoginAPI from "../api/loginApi";
 
 const goalAPI = new GoalAPI();
+const moduleAPI = new ModuleAPI();
+const loginAPI = new LoginAPI();
 const ERROR_MESSAGES = initializeErrorMap();
+const emailService = new EmailService();
 
 async function getModuleGoals(req: Request, res: Response) {
     console.log(`Received in get goals: ${req.params.id}`);
     const goalQuery = await goalAPI.getGoals(parseInt(req.params.id));
     if (typeof goalQuery !== "object") {
-      res.status(goalQuery).send(ERROR_MESSAGES.get(goalQuery));
-      return;
+        res.status(goalQuery).send(ERROR_MESSAGES.get(goalQuery));
+        return;
     }
     res.status(StatusCode.OK).json(goalQuery);
 }
@@ -38,15 +44,15 @@ async function postGoal(req: Request, res: Response) {
 async function putGoal(req: Request, res: Response) {
     console.log(`Received in update goal: ${req.params.id}`);
     const resultingStatusCode = await goalAPI.updateGoal({
-            goal_id: Number(req.params.id),
-            name: req.body.name, 
-            description: req.body.description,
-            goal_type: req.body.goal_type, 
-            is_complete: req.body.is_complete,
-            due_date: req.body.due_date,
-            tag_id: req.body.tag_id, 
-            completion_time: req.body.completion_time, 
-            expiration: req.body.expiration
+        goal_id: Number(req.params.id),
+        name: req.body.name,
+        description: req.body.description,
+        goal_type: req.body.goal_type,
+        is_complete: req.body.is_complete,
+        due_date: req.body.due_date,
+        tag_id: req.body.tag_id,
+        completion_time: req.body.completion_time,
+        expiration: req.body.expiration
     });
     if (resultingStatusCode !== StatusCode.OK) {
         console.log(`Updating goal failed for goal ${req.params.id} with status code ${resultingStatusCode}`);
@@ -64,14 +70,21 @@ async function putGoalFeedback(req: Request, res: Response) {
         return;
     }
     res.sendStatus(StatusCode.OK);
+    const goal = await goalAPI.getGoalById(Number(req.params.id))
+    const goals = JSON.stringify(goal);
+    const module = await moduleAPI.getModuleById(Number(goals.replace("[{\"module_id\":", "").replace("}]", "")))
+    const modules = JSON.stringify(module);
+    const account = await loginAPI.getAccountById(Number(modules.replace("[{\"account_id\":", "").replace("}]", "")));
+    const email = JSON.stringify(account);
+    emailService.sendEmail(email.replace("[{\"email\":\"", "").replace("\"}]", ""), "Feedback", req.body.feedback);
 }
 
 async function deleteGoal(req: Request, res: Response) {
     console.log(`Received in delete goal: ${req.params.id}`);
     const goalQuery = await goalAPI.deleteGoal(parseInt(req.params.id));
     if (goalQuery !== StatusCode.OK) {
-      res.status(goalQuery).send(ERROR_MESSAGES.get(goalQuery));
-      return;
+        res.status(goalQuery).send(ERROR_MESSAGES.get(goalQuery));
+        return;
     }
     res.sendStatus(StatusCode.OK);
 }
@@ -80,8 +93,8 @@ async function getGoalVariable(req: Request, res: Response) {
     console.log(`Received in get goal variable: ${req.params.id} ${req.params.variable}`);
     const variableQuery = await goalAPI.getGoalVariable(parseInt(req.params.id), req.params.variable);
     if (typeof variableQuery !== "object") {
-      res.status(variableQuery).send(ERROR_MESSAGES.get(variableQuery));
-      return;
+        res.status(variableQuery).send(ERROR_MESSAGES.get(variableQuery));
+        return;
     }
     res.status(StatusCode.OK).json(variableQuery);
 }
@@ -98,10 +111,10 @@ async function postSubGoal(req: Request, res: Response) {
         due_date: req.body.dueDate
     });
     if (typeof goalQuery !== "object") {
-      res.status(goalQuery).send(ERROR_MESSAGES.get(goalQuery));
-      return;
+        res.status(goalQuery).send(ERROR_MESSAGES.get(goalQuery));
+        return;
     }
     res.status(StatusCode.OK).json(goalQuery);
 }
 
-export {getModuleGoals, postGoal, putGoal, putGoalFeedback, deleteGoal, getGoalVariable, postSubGoal};
+export { getModuleGoals, postGoal, putGoal, putGoalFeedback, deleteGoal, getGoalVariable, postSubGoal };
