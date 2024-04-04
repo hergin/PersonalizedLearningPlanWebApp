@@ -76,8 +76,7 @@ export const TEST_MODULE: Module = {
     name: "School",
     description: "Get better grades in school.",
     completion: 0,
-    accountId: TEST_ACCOUNT.id,
-    coachId: 12
+    accountId: TEST_ACCOUNT.id
 }
 
 export const TEST_GOAL = {

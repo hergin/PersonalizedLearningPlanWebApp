@@ -92,8 +92,7 @@ describe("Module Processor unit tests", () => {
         const mRequest = createMockRequest({
             name: TEST_MODULE.name,
             description: TEST_MODULE.description,
-            completion: TEST_MODULE.completion,
-            coach_id: TEST_MODULE.coachId
+            completion: TEST_MODULE.completion
         }, {id: TEST_MODULE.id});
         await ModuleProcessor.putModule(mRequest, MOCK_RESPONSE);
         expect(moduleApi.updateModule).toHaveBeenCalledTimes(1);
@@ -101,8 +100,7 @@ describe("Module Processor unit tests", () => {
             id: TEST_MODULE.id, 
             name: TEST_MODULE.name, 
             description: TEST_MODULE.description, 
-            completion: TEST_MODULE.completion, 
-            coachId: TEST_MODULE.coachId
+            completion: TEST_MODULE.completion
         });
         expect(MOCK_RESPONSE.send).toHaveBeenCalledTimes(0);
         expect(MOCK_RESPONSE.sendStatus).toHaveBeenCalledTimes(1);
@@ -114,8 +112,7 @@ describe("Module Processor unit tests", () => {
         const mRequest = createMockRequest({
             name: TEST_MODULE.name,
             description: TEST_MODULE.description,
-            completion: TEST_MODULE.completion,
-            coach_id: TEST_MODULE.coachId
+            completion: TEST_MODULE.completion
         }, {id: TEST_MODULE.id});
         await ModuleProcessor.putModule(mRequest, MOCK_RESPONSE);
         expect(moduleApi.updateModule).toHaveBeenCalledTimes(1);
@@ -123,8 +120,7 @@ describe("Module Processor unit tests", () => {
             id: TEST_MODULE.id, 
             name: TEST_MODULE.name, 
             description: TEST_MODULE.description, 
-            completion: TEST_MODULE.completion, 
-            coachId: TEST_MODULE.coachId
+            completion: TEST_MODULE.completion
         });
         expect(MOCK_RESPONSE.sendStatus).toHaveBeenCalledTimes(0);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledTimes(1);

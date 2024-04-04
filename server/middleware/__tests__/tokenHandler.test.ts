@@ -34,7 +34,7 @@ describe('Token Handler Unit Tests', () => {
         mockSign.mockReturnValue(mockToken);
         const result = generateAccessToken(mockAuthProps);
         expect(mockSign).toHaveBeenCalledTimes(1);
-        expect(mockSign).toHaveBeenCalledWith(mockAuthProps, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '24h'});
+        expect(mockSign).toHaveBeenCalledWith(mockAuthProps, process.env.ACCESS_TOKEN_SECRET);
         expect(result).toEqual(mockToken);
     });
 

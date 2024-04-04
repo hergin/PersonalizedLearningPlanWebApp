@@ -42,6 +42,13 @@ export type User = {
     role: Role
 };
 
+export type UserData = {
+    id: number,
+    email: string,
+    profile_id: number,
+    username: string
+};
+
 export type Goal = {
     goal_id?: number,
     name: string,

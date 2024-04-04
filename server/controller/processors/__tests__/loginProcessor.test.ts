@@ -33,9 +33,9 @@ describe("Login Processor unit tests", () => {
         expect(loginApi.verifyLogin).toHaveBeenCalledWith(TEST_ACCOUNT.email, TEST_ACCOUNT.password);
         expect(MOCK_RESPONSE.send).toHaveBeenCalledTimes(0);
         expect(generateAccessToken).toHaveBeenCalledTimes(1);
-        expect(generateAccessToken).toHaveBeenCalledWith(TEST_ACCOUNT.email);
+        expect(generateAccessToken).toHaveBeenCalledWith({id: TEST_ACCOUNT.id, role: TEST_ACCOUNT.role});
         expect(generateRefreshToken).toHaveBeenCalledTimes(1);
-        expect(generateRefreshToken).toHaveBeenCalledWith(TEST_ACCOUNT.email);
+        expect(generateRefreshToken).toHaveBeenCalledWith({id: TEST_ACCOUNT.id, role: TEST_ACCOUNT.role});
         expect(loginApi.setToken).toHaveBeenCalledTimes(1);
         expect(loginApi.setToken).toHaveBeenCalledWith(TEST_ACCOUNT.id, TEST_ACCOUNT.refreshToken);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledTimes(1);
@@ -72,9 +72,9 @@ describe("Login Processor unit tests", () => {
         expect(loginApi.verifyLogin).toHaveBeenCalledTimes(1);
         expect(loginApi.verifyLogin).toHaveBeenCalledWith(TEST_ACCOUNT.email, TEST_ACCOUNT.password);
         expect(generateAccessToken).toHaveBeenCalledTimes(1);
-        expect(generateAccessToken).toHaveBeenCalledWith(TEST_ACCOUNT.email);
+        expect(generateAccessToken).toHaveBeenCalledWith({id: TEST_ACCOUNT.id, role: TEST_ACCOUNT.role});
         expect(generateRefreshToken).toHaveBeenCalledTimes(1);
-        expect(generateRefreshToken).toHaveBeenCalledWith(TEST_ACCOUNT.email);
+        expect(generateRefreshToken).toHaveBeenCalledWith({id: TEST_ACCOUNT.id, role: TEST_ACCOUNT.role});
         expect(loginApi.setToken).toHaveBeenCalledTimes(1);
         expect(loginApi.setToken).toHaveBeenCalledWith(TEST_ACCOUNT.id, TEST_ACCOUNT.refreshToken);
         expect(MOCK_RESPONSE.json).toHaveBeenCalledTimes(0);

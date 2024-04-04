@@ -21,7 +21,7 @@ describe('Module Api Unit Tests', () => {
     });
 
     it('get module (correct case)', async () => {
-        if(!TEST_MODULE.accountId || !TEST_MODULE.coachId) throw new Error("Module or Coach Id was null!");
+        if(!TEST_MODULE.accountId) throw new Error("Module Id was null!");
         parser.parseModules.mockResolvedValueOnce([
           {module_id: TEST_MODULE.id, module_name: TEST_MODULE.name, description: TEST_MODULE.description, 
                 completion_percent: TEST_MODULE.completion, account_id: TEST_MODULE.accountId}
@@ -33,33 +33,17 @@ describe('Module Api Unit Tests', () => {
     });
 
     it('get module with coach (correct case)', async () => {
-        if(!TEST_MODULE.accountId || !TEST_MODULE.coachId) throw new Error("Module or Coach Id was null!");
+        if(!TEST_MODULE.accountId) throw new Error("Module Id was null!");
         parser.parseModules.mockResolvedValueOnce([
             {
                 module_id: TEST_MODULE.id, module_name: TEST_MODULE.name, description: TEST_MODULE.description,
-                completion_percent: TEST_MODULE.completion, account_id: TEST_MODULE.accountId, coach_id: TEST_MODULE.coachId
+                completion_percent: TEST_MODULE.completion, account_id: TEST_MODULE.accountId
             }
         ]);
         expect(await moduleAPI.getModules(TEST_MODULE.accountId)).toEqual([
             {
                 module_id: TEST_MODULE.id, module_name: TEST_MODULE.name, description: TEST_MODULE.description,
-                completion_percent: TEST_MODULE.completion, account_id: TEST_MODULE.accountId, coach_id: TEST_MODULE.coachId
-            }
-        ]);
-    });
-
-    it('get module by coach (correct case)', async () => {
-        if(!TEST_MODULE.accountId || !TEST_MODULE.coachId) throw new Error("Module or Coach Id was null!");
-        parser.parseModules.mockResolvedValueOnce([
-            {
-                module_id: TEST_MODULE.id, module_name: TEST_MODULE.name, description: TEST_MODULE.description,
-                completion_percent: TEST_MODULE.completion, account_id: TEST_MODULE.accountId, coach_id: TEST_MODULE.coachId
-            }
-        ]);
-        expect(await moduleAPI.getModules(TEST_MODULE.coachId)).toEqual([
-            {
-                module_id: TEST_MODULE.id, module_name: TEST_MODULE.name, description: TEST_MODULE.description,
-                completion_percent: TEST_MODULE.completion, account_id: TEST_MODULE.accountId, coach_id: TEST_MODULE.coachId
+                completion_percent: TEST_MODULE.completion, account_id: TEST_MODULE.accountId
             }
         ]);
     });
@@ -93,8 +77,7 @@ describe('Module Api Unit Tests', () => {
             name: TEST_MODULE.name, 
             description: TEST_MODULE.description, 
             completion: TEST_MODULE.completion, 
-            accountId: TEST_MODULE.accountId, 
-            coachId: TEST_MODULE.coachId
+            accountId: TEST_MODULE.accountId
         });
         expect(actual).toEqual(StatusCode.OK);
     });
@@ -150,8 +133,7 @@ describe('Module Api Unit Tests', () => {
             id: TEST_MODULE.id, 
             name: TEST_MODULE.name, 
             description: TEST_MODULE.description, 
-            completion: TEST_MODULE.completion, 
-            coachId: TEST_MODULE.coachId
+            completion: TEST_MODULE.completion
         })).toEqual(StatusCode.OK);
     });
 

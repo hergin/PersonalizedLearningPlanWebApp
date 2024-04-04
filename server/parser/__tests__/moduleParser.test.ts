@@ -24,7 +24,7 @@ describe('module parser', () => {
         jest.clearAllMocks();
     });
 
-    it('store module (without coach)', async () => {
+    it('store module', async () => {
         mockQuery.mockResolvedValueOnce({rows: [{module_id: TEST_MODULE.id}]})
         await parser.storeModule({
             name: TEST_MODULE.name,
@@ -39,60 +39,18 @@ describe('module parser', () => {
         });
     });
 
-    it('store module (with coach)', async () => {
-        mockQuery.mockResolvedValueOnce({rows: [{module_id: TEST_MODULE.id}]})
-        await parser.storeModule({
-            name: TEST_MODULE.name,
-            description: TEST_MODULE.description, 
-            completion: TEST_MODULE.completion, 
-            accountId: TEST_MODULE.accountId,
-            coachId: TEST_MODULE.coachId
-        });
-        expect(mockQuery).toHaveBeenCalledTimes(1);
-        expect(mockQuery).toHaveBeenCalledWith({
-            text: "INSERT INTO Module(module_name, description, completion_percent, account_id, coach_id) VALUES($1, $2, $3, $4, $5)",
-            values: [TEST_MODULE.name, TEST_MODULE.description, TEST_MODULE.completion, TEST_MODULE.accountId, TEST_MODULE.coachId]
-        });
-    });
-
-    it('parse modules (with account id)', async () => {
+    it('parse modules', async () => {
         mockQuery.mockResolvedValueOnce({rows: [TEST_MODULE]});
         var actual = await parser.parseModules(TEST_MODULE.accountId);
         expect(mockQuery).toHaveBeenCalledTimes(1);
         expect(mockQuery).toHaveBeenCalledWith({
-            text: "SELECT * FROM Module WHERE account_id = $1 OR coach_id = $1",
+            text: "SELECT * FROM Module WHERE account_id = $1",
             values: [TEST_MODULE.accountId]
         });
         expect(actual).toEqual([TEST_MODULE]);
     });
 
-    it('parse modules (with coach id)', async () => {
-        mockQuery.mockResolvedValueOnce({rows: [TEST_MODULE]});
-        var actual = await parser.parseModules(TEST_MODULE.coachId);
-        expect(mockQuery).toHaveBeenCalledTimes(1);
-        expect(mockQuery).toHaveBeenCalledWith({
-            text: "SELECT * FROM Module WHERE account_id = $1 OR coach_id = $1",
-            values: [TEST_MODULE.coachId]
-        });
-        expect(actual).toEqual([TEST_MODULE]);
-    });
-
-    it('update module (without coach id)', async () => {
-        mockQuery.mockResolvedValueOnce(undefined);
-        const updatedName = "updated";
-        await parser.updateModule({
-            ...TEST_MODULE,
-            name: updatedName,
-            coachId: undefined
-        });
-        expect(mockQuery).toHaveBeenCalledTimes(1);
-        expect(mockQuery).toHaveBeenCalledWith({
-            text: "UPDATE MODULE SET module_name = $1, description = $2, completion_percent = $3 WHERE module_id = $4",
-            values: [updatedName, TEST_MODULE.description, TEST_MODULE.completion, TEST_MODULE.id]
-        });
-    });
-
-    it('update module (with coach id)', async () => {
+    it('update module', async () => {
         mockQuery.mockResolvedValueOnce(undefined);
         const updatedName = "updated";
         await parser.updateModule({
@@ -101,8 +59,8 @@ describe('module parser', () => {
         });
         expect(mockQuery).toHaveBeenCalledTimes(1);
         expect(mockQuery).toHaveBeenCalledWith({
-            text: "UPDATE MODULE SET module_name = $1, description = $2, completion_percent = $3, coach_id = $5 WHERE module_id = $4",
-            values: [updatedName, TEST_MODULE.description, TEST_MODULE.completion, TEST_MODULE.id, TEST_MODULE.coachId]
+            text: "UPDATE MODULE SET module_name = $1, description = $2, completion_percent = $3 WHERE module_id = $4",
+            values: [updatedName, TEST_MODULE.description, TEST_MODULE.completion, TEST_MODULE.id]
         });
     });
 
