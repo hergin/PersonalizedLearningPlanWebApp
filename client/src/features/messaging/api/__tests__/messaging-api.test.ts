@@ -1,37 +1,36 @@
 import MessagingApi from "../messaging-api";
 import { useApiConnection } from "../../../../hooks/useApiConnection";
-import { Message } from "../../../../types";
-import { AxiosError } from "axios";
+import { CreatedMessage } from "../../../../types";
+import { throwServerError } from "../../../../utils/errorHandlers";
 
 jest.mock("../../../../hooks/useApiConnection");
+jest.mock("../../../../utils/errorHandlers");
 
 const mockMessageId = -1;
 const mockSenderId = 0;
 const mockRecipientId = 1;
-const TEST_MESSAGE: Message[] = [
+const TEST_MESSAGE: CreatedMessage[] = [
     {
         content: "Hello! How are you?",
-        senderId: mockSenderId,
+        sender_id: mockSenderId,
         recipientId: mockRecipientId,
     },
     {
         content: "Good! And you?",
-        senderId: mockRecipientId,
+        sender_id: mockRecipientId,
         recipientId: mockSenderId
     }
 ];
-const mockError: AxiosError = {message: "I'm in your walls."} as AxiosError;
+const mockError = {message: "I'm in your walls."};
 
 describe("Message Api Unit Tests", () => {
     const { getMessagesBetween, sendMessage, editMessage, deleteMessage } = MessagingApi();
     var apiClient: any;
-    var mockErrorConsole: any;
-    var mockAlert: any;
+    var mockThrowServerError: jest.Mock;
 
     beforeEach(() => {
         apiClient = useApiConnection();
-        mockErrorConsole = jest.spyOn(global.console, 'error');
-        mockAlert = jest.spyOn(window, 'alert');
+        mockThrowServerError = throwServerError as jest.Mock;
     });
 
     afterEach(() => {
@@ -41,8 +40,7 @@ describe("Message Api Unit Tests", () => {
     it("Get Messages Between (normal case)", async () => {
         apiClient.get.mockResolvedValueOnce({sentMessages: [TEST_MESSAGE[0]], receivedMessages: [TEST_MESSAGE[1]]});
         const result = await getMessagesBetween(mockSenderId, mockRecipientId);
-        expect(mockErrorConsole).toHaveBeenCalledTimes(0);
-        expect(mockAlert).toHaveBeenCalledTimes(0);
+        expect(mockThrowServerError).toHaveBeenCalledTimes(0);
         expect(apiClient.get).toHaveBeenCalledTimes(1);
         expect(apiClient.get).toHaveBeenCalledWith(`/message/${mockSenderId}/${mockRecipientId}`);
         expect(result).toEqual({sentMessages: [TEST_MESSAGE[0]], receivedMessages: [TEST_MESSAGE[1]]});
@@ -53,20 +51,17 @@ describe("Message Api Unit Tests", () => {
         const result = await getMessagesBetween(mockSenderId, mockRecipientId);
         expect(apiClient.get).toHaveBeenCalledTimes(1);
         expect(apiClient.get).toHaveBeenCalledWith(`/message/${mockSenderId}/${mockRecipientId}`);
-        expect(mockErrorConsole).toHaveBeenCalledTimes(1);
-        expect(mockErrorConsole).toHaveBeenCalledWith(mockError);
-        expect(mockAlert).toHaveBeenCalledTimes(1);
-        expect(mockAlert).toHaveBeenCalledWith(mockError.message);
+        expect(mockThrowServerError).toHaveBeenCalledTimes(1);
+        expect(mockThrowServerError).toHaveBeenCalledWith(mockError);
         expect(result).toBeUndefined();
     });
 
     it("Send Message (normal case)", async () => {
         apiClient.post.mockResolvedValueOnce({});
         await sendMessage(TEST_MESSAGE[0]);
+        expect(mockThrowServerError).toHaveBeenCalledTimes(0);
         expect(apiClient.post).toHaveBeenCalledTimes(1);
         expect(apiClient.post).toHaveBeenCalledWith("/message/send", TEST_MESSAGE[0]);
-        expect(mockErrorConsole).toHaveBeenCalledTimes(0);
-        expect(mockAlert).toHaveBeenCalledTimes(0);
     });
 
     it("Send Message (error case)", async () => {
@@ -74,20 +69,17 @@ describe("Message Api Unit Tests", () => {
         await sendMessage(TEST_MESSAGE[0]);
         expect(apiClient.post).toHaveBeenCalledTimes(1);
         expect(apiClient.post).toHaveBeenCalledWith("/message/send", TEST_MESSAGE[0]);
-        expect(mockErrorConsole).toHaveBeenCalledTimes(1);
-        expect(mockErrorConsole).toHaveBeenCalledWith(mockError);
-        expect(mockAlert).toHaveBeenCalledTimes(1);
-        expect(mockAlert).toHaveBeenCalledWith(mockError.message);
+        expect(mockThrowServerError).toHaveBeenCalledTimes(1);
+        expect(mockThrowServerError).toHaveBeenCalledWith(mockError);
     });
 
     it("Edit Message (normal case)", async () => {
         const mockContent = "Updated message!";
         apiClient.put.mockResolvedValueOnce({});
         await editMessage(mockMessageId, mockContent);
+        expect(mockThrowServerError).toHaveBeenCalledTimes(0);
         expect(apiClient.put).toHaveBeenCalledTimes(1);
         expect(apiClient.put).toHaveBeenCalledWith(`/message/edit/${mockMessageId}`, {content: mockContent});
-        expect(mockErrorConsole).toHaveBeenCalledTimes(0);
-        expect(mockAlert).toHaveBeenCalledTimes(0);
     });
 
     it("Edit Message (error case)", async () => {
@@ -96,19 +88,16 @@ describe("Message Api Unit Tests", () => {
         await editMessage(mockMessageId, mockContent);
         expect(apiClient.put).toHaveBeenCalledTimes(1);
         expect(apiClient.put).toHaveBeenCalledWith(`/message/edit/${mockMessageId}`, {content: mockContent});
-        expect(mockErrorConsole).toHaveBeenCalledTimes(1);
-        expect(mockErrorConsole).toHaveBeenCalledWith(mockError);
-        expect(mockAlert).toHaveBeenCalledTimes(1);
-        expect(mockAlert).toHaveBeenCalledWith(mockError.message);
+        expect(mockThrowServerError).toHaveBeenCalledTimes(1);
+        expect(mockThrowServerError).toHaveBeenCalledWith(mockError);
     });
 
     it("Delete Message (normal case)", async () => {
         apiClient.del.mockResolvedValueOnce({});
         await deleteMessage(mockMessageId);
+        expect(mockThrowServerError).toHaveBeenCalledTimes(0);
         expect(apiClient.del).toHaveBeenCalledTimes(1);
         expect(apiClient.del).toHaveBeenCalledWith(`/message/delete/${mockMessageId}`);
-        expect(mockErrorConsole).toHaveBeenCalledTimes(0);
-        expect(mockAlert).toHaveBeenCalledTimes(0);
     });
 
     it("Delete Message (error case)", async () => {
@@ -116,9 +105,7 @@ describe("Message Api Unit Tests", () => {
         await deleteMessage(mockMessageId);
         expect(apiClient.del).toHaveBeenCalledTimes(1);
         expect(apiClient.del).toHaveBeenCalledWith(`/message/delete/${mockMessageId}`);
-        expect(mockErrorConsole).toHaveBeenCalledTimes(1);
-        expect(mockErrorConsole).toHaveBeenCalledWith(mockError);
-        expect(mockAlert).toHaveBeenCalledTimes(1);
-        expect(mockAlert).toHaveBeenCalledWith(mockError.message);
+        expect(mockThrowServerError).toHaveBeenCalledTimes(1);
+        expect(mockThrowServerError).toHaveBeenCalledWith(mockError);
     });
 });

@@ -1,16 +1,14 @@
 import React from "react";
-import { useInviteCreator } from "../hooks/useInvite";
+import { useInviteCreator } from "../hooks/useInvites";
 import { useUser } from "../../login/hooks/useUser";
 import { PublicUsers } from "../types";
+import { Link } from "react-router-dom";
+
+const BUTTON_STYLE = "bg-[#8C1515] text-white p-2 rounded-lg m-2 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-element-base";
 
 const UserItem = ({ username, account_id, isPending }: PublicUsers) => {
   const { mutateAsync: createInvite } = useInviteCreator();
   const { user } = useUser();
-
-  async function sendInvite() {
-    await createInvite({ senderId: user.id, recipientId: account_id });
-    alert(`Invite sent to ${name} with id: ${account_id}!`);
-  }
 
   return (
     <>
@@ -25,12 +23,19 @@ const UserItem = ({ username, account_id, isPending }: PublicUsers) => {
         </div>
         <div>
           <button
-            className="bg-[#8C1515] text-white p-2 rounded-lg m-2 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-element-base"
-            onClick={sendInvite}
+            className={BUTTON_STYLE}
+            onClick={async () => {await createInvite({ senderId: user.id, recipientId: account_id })}}
             disabled={isPending}
           >
             Send Invite
           </button>
+          <Link to={`/chat/${account_id}`}>
+            <button
+              className={BUTTON_STYLE}
+            >
+              Message
+            </button>
+          </Link>
         </div>
       </div>
     </>

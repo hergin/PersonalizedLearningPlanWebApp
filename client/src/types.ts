@@ -68,11 +68,24 @@ export type Understudy = {
   coach_id: number;
 };
 
-export type Message = {
+export type CreatedMessage = {
   content: string,
-  senderId: number,
-  recipientId: number
+  sender_id: number,
+  recipient_id: number
 };
+
+export type Message = CreatedMessage & {
+  id: number,
+  date: string,
+  last_edited: string,
+  username: string,
+  profile_picture: string,
+};
+
+export type Chat = {
+  sentMessages: Message[],
+  recipientMessages: Message[],
+}
 
 export interface ModuleCreatorProps {
   accountId: number;

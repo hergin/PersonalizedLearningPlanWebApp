@@ -12,6 +12,7 @@ import { AuthProvider } from "./context/AuthContext";
 import { MuiThemeProvider } from "./context/MuiThemeContext";
 import GoalParentContainer from "./features/Goal/components/GoalMain";
 import CoachingPage from "./features/coaching/components/CoachingPage";
+import Chat from "./features/messaging/components/Chat";
 
 const queryClient = new QueryClient();
 
@@ -29,6 +30,7 @@ function App() {
                   <Route path="/profile" element={<ProfileScreen />} />
                   <Route path="/goals/:id" element={<GoalParentContainer />} />
                   <Route path="/coaching" element={<CoachingPage />} />
+                  <Route path="/chat/:id" element={<Chat />} />
                 </Route>
                 <Route path="/login" element={<LoginScreen />} />
                 <Route path="/register" element={<Register />} />

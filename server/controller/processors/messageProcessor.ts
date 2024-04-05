@@ -18,8 +18,8 @@ export async function getAllSentMessages(req: Request, res: Response) {
 }
 
 export async function getMessagesBetween(req: Request, res: Response) {
-    console.log(`Data received in getMessagesBetween: ${req.params.id} ${req.params.recipientId}`);
-    const query = await messageApi.getChatMessages(Number(req.params.id), Number(req.params.recipientId));
+    console.log(`Data received in getMessagesBetween: ${req.params.id} ${req.params.receivedId}`);
+    const query = await messageApi.getChatMessages(Number(req.params.id), Number(req.params.receivedId));
     if(query as StatusCode in StatusCode) {
         console.log(`Failed to get messages between users ${req.params.id} ${req.params.recipientId}!`);
         res.status(query as StatusCode).send(ERROR_MESSAGES.get(query));

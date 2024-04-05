@@ -1,5 +1,5 @@
 import React from "react";
-import { useInviteAccepter, useInviteDecliner } from "../hooks/useInvite";
+import { useInviteAccepter, useInviteDecliner } from "../hooks/useInvites";
 
 const InvitationItem = ({ name, id, getCollapseProps, recipientId, senderId }: any) => {
   const { mutateAsync: acceptInvite } = useInviteAccepter(); 

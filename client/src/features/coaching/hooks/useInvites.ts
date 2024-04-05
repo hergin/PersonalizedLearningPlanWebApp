@@ -1,5 +1,4 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-
 import { InvitationApi } from "../api/invite-api";
 import { CreateInvitationProps } from "../types";
 

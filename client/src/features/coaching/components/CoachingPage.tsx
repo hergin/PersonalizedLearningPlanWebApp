@@ -9,7 +9,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import {
   useFetchInvites,
   useFetchPendingInvitations,
-} from "../hooks/useInvite";
+} from "../hooks/useInvites";
 import { useUser } from "../../login/hooks/useUser";
 import { PublicUsers } from "../types";
 
@@ -41,9 +41,10 @@ const CoachingPage = () => {
       publicUser.account_id !== user.id
   );
 
-  if (profileLoading || inviteLoading) return <div>Loading...</div>;
+  if (profileLoading || inviteLoading || pendingInviteLoading) return <div>Loading...</div>;
 
-  if (profileError || inviteError) return <div>Error...</div>;
+  if (profileError || inviteError || pendingInviteError) return <div>Error...</div>;
+
   return (
     <div className="min-h-screen bg-[#F1F1F1]">
       <div className="w-full h-auto bg-[#8C1515] flex items-center justify-center px-[30%] py-[2%] flex-col">
