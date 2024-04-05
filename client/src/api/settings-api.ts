@@ -1,6 +1,6 @@
-import { AxiosError } from "axios";
 import { useApiConnection } from "../hooks/useApiConnection";
 import { defaultSettings, emptyUser, Settings } from "../types";
+import { throwServerError } from "../utils/errorHandlers";
 
 export const SettingsApi = () => {
   const { get, put } = useApiConnection();
@@ -13,9 +13,8 @@ export const SettingsApi = () => {
     try {
       return await get(`/settings/get/${accountId}`);
     } catch (error: unknown) {
-      const axiosError = error as AxiosError;
-      console.error(axiosError);
-      alert(axiosError.response ? axiosError.response.data : error);
+      throwServerError(error);
+      return [defaultSettings];
     }
   }
 
@@ -27,9 +26,7 @@ export const SettingsApi = () => {
     try {
       await put(`/settings/update/${accountId}`, settings);
     } catch(error: unknown) {
-      const axiosError = error as AxiosError;
-      console.error(axiosError);
-      alert(axiosError.response ? axiosError.response.data : error);
+      throwServerError(error);
     }
   }
 

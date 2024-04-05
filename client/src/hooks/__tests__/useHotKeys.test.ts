@@ -1,3 +1,4 @@
+import React from "react";
 import { useHotKeys } from "../useHotKeys";
 
 describe("useHotKeys Unit Tests", () => {
@@ -9,17 +10,17 @@ describe("useHotKeys Unit Tests", () => {
     });
     
     it("handleEnterPress (normal case)", () => {
-        handleEnterPress({key: "Enter"}, mockAction);
+        handleEnterPress({key: "Enter"} as React.KeyboardEvent, mockAction);
         expect(mockAction).toHaveBeenCalledTimes(1);
     });
 
     it("handleEnterPress (not enter case)", () => {
-        handleEnterPress({key: "Not Enter"}, mockAction);
+        handleEnterPress({key: "Not Enter"} as React.KeyboardEvent, mockAction);
         expect(mockAction).toHaveBeenCalledTimes(0);
     });
 
     it("handleEnterPress (submission disabled case)", () => {
-        handleEnterPress({key: "Enter"}, mockAction, true);
+        handleEnterPress({key: "Enter"} as React.KeyboardEvent, mockAction, true);
         expect(mockAction).toHaveBeenCalledTimes(0);
     });
 });
