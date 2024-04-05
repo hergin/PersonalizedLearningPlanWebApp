@@ -6,6 +6,7 @@ import { HiOutlinePencil, HiTrash } from "react-icons/hi";
 import ProfileEditor from "./ProfileEditor";
 import AccountDeletionWarning from "./AccountDeletionWarning";
 import ProfileDisplay from "./ProfileDisplay";
+import DropDownCheckbox from "../../../components/dropDown/DropDownCheckbox";
 
 export default function ProfileScreen() {
   const [isWarningOpen, setIsWarningOpen] = useState<boolean>(false);
@@ -38,6 +39,18 @@ export default function ProfileScreen() {
         onSave={() => {setEditMode(false);}}
         onCancel={() => {setEditMode(false)}}
       />
+      <DropDownCheckbox 
+          handleCheckToggle={(checked) => updateSettings({allowCoachInvitations: data[0].allow_coach_invitations, receiveEmails: checked})} 
+          checked={data[0].receive_emails}
+        >
+          Recieve Emails
+        </DropDownCheckbox>
+        <DropDownCheckbox 
+          handleCheckToggle={(checked) => updateSettings({receiveEmails: data[0].receive_emails, allowCoachInvitations: checked})} 
+          checked={data[0].allow_coach_invitations}
+        >
+          Participate In Coaching
+        </DropDownCheckbox>
       <AccountDeletionWarning 
         open={isWarningOpen} 
         accountId={user.id} 
