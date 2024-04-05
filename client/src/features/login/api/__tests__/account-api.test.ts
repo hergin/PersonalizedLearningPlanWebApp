@@ -3,17 +3,11 @@ import AccountApi from "../account-api";
 import { LoginProps, Role } from "../../../../types";
 import { useApiConnection } from "../../../../hooks/useApiConnection";
 import { useUser } from "../../hooks/useUser";
-import { AxiosError } from "axios";
+import { throwServerError } from "../../../../utils/errorHandlers";
 
 jest.mock("../../../../hooks/useApiConnection");
 jest.mock("../../hooks/useUser");
-
-interface T {
-    firstName: string,
-    lastName: string,
-    username: string,
-    account_id: number
-}
+jest.mock("../../../../utils/errorHandlers");
 
 const mockUser = {id: 1, role: "basic", accessToken: "access token", refreshToken: "refresh token"};
 const TEST_DATA = {
@@ -23,19 +17,17 @@ const TEST_DATA = {
     lastName: "Dummy",
     username: "Xx_TestDummy_xX",
 };
-const mockError: AxiosError = {message: "I'm in your walls."} as AxiosError;
+const mockError = {message: "I'm in your walls."};
 
 describe("Account Api Unit Tests", () => {
     var apiClient: any;
     var userHook: any;
-    var mockErrorConsole: any;
-    var mockAlert: any;
+    var mockServerThrower: jest.Mock<any, any, any>;
 
     beforeEach(() => {
         apiClient = useApiConnection();
         userHook = useUser();
-        mockErrorConsole = jest.spyOn(global.console, 'error');
-        mockAlert = jest.spyOn(window, 'alert');
+        mockServerThrower = throwServerError as jest.Mock;
     });
     
     afterEach(() => {
@@ -50,8 +42,7 @@ describe("Account Api Unit Tests", () => {
         expect(apiClient.post).toHaveBeenCalledWith("/auth/login", {email: TEST_DATA.email, password: TEST_DATA.password});
         expect(userHook.addUser).toHaveBeenCalledTimes(1);
         expect(userHook.addUser).toHaveBeenCalledWith(mockUser);
-        expect(mockErrorConsole).toHaveBeenCalledTimes(0);
-        expect(mockAlert).toHaveBeenCalledTimes(0);
+        expect(mockServerThrower).toHaveBeenCalledTimes(0);
     });
 
     it("login (error case)", async () => {
@@ -61,14 +52,18 @@ describe("Account Api Unit Tests", () => {
         expect(apiClient.post).toHaveBeenCalledTimes(1);
         expect(apiClient.post).toHaveBeenCalledWith("/auth/login", {email: TEST_DATA.email, password: TEST_DATA.password});
         expect(userHook.addUser).toHaveBeenCalledTimes(0);
-        expect(mockErrorConsole).toHaveBeenCalledTimes(1);
-        expect(mockErrorConsole).toHaveBeenCalledWith(mockError);
-        expect(mockAlert).toHaveBeenCalledTimes(1);
-        expect(mockAlert).toHaveBeenCalledWith(mockError.message);
+        expect(mockServerThrower).toHaveBeenCalledTimes(1);
+        expect(mockServerThrower).toHaveBeenCalledWith(mockError);
     });
 
     it("register (normal case)", async () => {
         const { register } = renderHook(AccountApi).result.current;
+        type T = {
+            firstName: string,
+            lastName: string,
+            username: string,
+            account_id: number
+        };
         apiClient.post.mockImplementation((path: string, data: LoginProps | T) => {
             var values;
             switch(path) {
@@ -104,8 +99,7 @@ describe("Account Api Unit Tests", () => {
         expect(apiClient.post).toHaveBeenCalledTimes(3);
         expect(userHook.addUser).toHaveBeenCalledTimes(1);
         expect(userHook.addUser).toHaveBeenCalledWith(mockUser);
-        expect(mockErrorConsole).toHaveBeenCalledTimes(0);
-        expect(mockAlert).toHaveBeenCalledTimes(0);
+        expect(mockServerThrower).toHaveBeenCalledTimes(0);
     });
 
     it("register (registration error case)", async () => {
@@ -121,10 +115,8 @@ describe("Account Api Unit Tests", () => {
         expect(apiClient.post).toHaveBeenCalledTimes(1);
         expect(apiClient.post).toHaveBeenCalledWith("/auth/register", {email: TEST_DATA.email, password: TEST_DATA.password});
         expect(userHook.addUser).toHaveBeenCalledTimes(0);
-        expect(mockErrorConsole).toHaveBeenCalledTimes(1);
-        expect(mockErrorConsole).toHaveBeenCalledWith(mockError);
-        expect(mockAlert).toHaveBeenCalledTimes(1);
-        expect(mockAlert).toHaveBeenCalledWith(mockError.message);
+        expect(mockServerThrower).toHaveBeenCalledTimes(1);
+        expect(mockServerThrower).toHaveBeenCalledWith(mockError);
     });
 
     it("register (login error case)", async () => {
@@ -141,10 +133,8 @@ describe("Account Api Unit Tests", () => {
         expect(apiClient.post).toHaveBeenCalledTimes(2);
         expect(apiClient.post).toHaveBeenLastCalledWith("/auth/login", {email: TEST_DATA.email, password: TEST_DATA.password});
         expect(userHook.addUser).toHaveBeenCalledTimes(0);
-        expect(mockErrorConsole).toHaveBeenCalledTimes(1);
-        expect(mockErrorConsole).toHaveBeenCalledWith(mockError);
-        expect(mockAlert).toHaveBeenCalledTimes(1);
-        expect(mockAlert).toHaveBeenCalledWith(mockError.message);
+        expect(mockServerThrower).toHaveBeenCalledTimes(1);
+        expect(mockServerThrower).toHaveBeenCalledWith(mockError);
     });
 
     it("register (profile creation error case)", async () => {
@@ -168,10 +158,8 @@ describe("Account Api Unit Tests", () => {
         });
         expect(userHook.addUser).toHaveBeenCalledTimes(1);
         expect(userHook.addUser).toHaveBeenCalledWith(mockUser);
-        expect(mockErrorConsole).toHaveBeenCalledTimes(1);
-        expect(mockErrorConsole).toHaveBeenCalledWith(mockError);
-        expect(mockAlert).toHaveBeenCalledTimes(1);
-        expect(mockAlert).toHaveBeenCalledWith(mockError.message);
+        expect(mockServerThrower).toHaveBeenCalledTimes(1);
+        expect(mockServerThrower).toHaveBeenCalledWith(mockError);
     });
 
     it("logout (normal case)", async () => {
@@ -181,8 +169,7 @@ describe("Account Api Unit Tests", () => {
         expect(apiClient.post).toHaveBeenCalledTimes(1);
         expect(apiClient.post).toHaveBeenCalledWith("/auth/logout", {id: mockUser.id});
         expect(userHook.removeUser).toHaveBeenCalledTimes(1);
-        expect(mockErrorConsole).toHaveBeenCalledTimes(0);
-        expect(mockAlert).toHaveBeenCalledTimes(0);
+        expect(mockServerThrower).toHaveBeenCalledTimes(0);
     });
 
     it("logout (error case)", async () => {
@@ -192,10 +179,8 @@ describe("Account Api Unit Tests", () => {
         expect(apiClient.post).toHaveBeenCalledTimes(1);
         expect(apiClient.post).toHaveBeenCalledWith("/auth/logout", {id: mockUser.id});
         expect(userHook.removeUser).toHaveBeenCalledTimes(0);
-        expect(mockErrorConsole).toHaveBeenCalledTimes(1);
-        expect(mockErrorConsole).toHaveBeenCalledWith(mockError);
-        expect(mockAlert).toHaveBeenCalledTimes(1);
-        expect(mockAlert).toHaveBeenCalledWith(mockError.message);
+        expect(mockServerThrower).toHaveBeenCalledTimes(1);
+        expect(mockServerThrower).toHaveBeenCalledWith(mockError);
     });
 
     it("Delete Account (normal case)", async () => {
@@ -205,8 +190,7 @@ describe("Account Api Unit Tests", () => {
         expect(apiClient.del).toHaveBeenCalledTimes(1);
         expect(apiClient.del).toHaveBeenCalledWith(`/auth/delete/${mockUser.id}`);
         expect(userHook.removeUser).toHaveBeenCalledTimes(1);
-        expect(mockErrorConsole).toHaveBeenCalledTimes(0);
-        expect(mockAlert).toHaveBeenCalledTimes(0);
+        expect(mockServerThrower).toHaveBeenCalledTimes(0);
     });
 
     it("Delete Account (error case)", async () => {
@@ -216,9 +200,7 @@ describe("Account Api Unit Tests", () => {
         expect(apiClient.del).toHaveBeenCalledTimes(1);
         expect(apiClient.del).toHaveBeenCalledWith(`/auth/delete/${mockUser.id}`);
         expect(userHook.removeUser).toHaveBeenCalledTimes(0);
-        expect(mockErrorConsole).toHaveBeenCalledTimes(1);
-        expect(mockErrorConsole).toHaveBeenCalledWith(mockError);
-        expect(mockAlert).toHaveBeenCalledTimes(1);
-        expect(mockAlert).toHaveBeenCalledWith(mockError.message);
+        expect(mockServerThrower).toHaveBeenCalledTimes(1);
+        expect(mockServerThrower).toHaveBeenCalledWith(mockError);
     });
 });
