@@ -21,7 +21,7 @@ const mockRecipientId = 2;
 const mockMessage: CreatedMessage = {
     content: "Oh, hi!",
     sender_id: mockAccountId,
-    recipientId: mockRecipientId,
+    recipient_id: mockRecipientId,
 };
 
 describe("Use Messages Unit Tests", () => {

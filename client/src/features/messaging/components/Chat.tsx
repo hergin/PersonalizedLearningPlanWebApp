@@ -46,7 +46,7 @@ export default function Chat() {
 
     return (
         <div className="flex flex-col size-full p-5 gap-5">
-            <div className="overflow-y-auto w-11/12 h- self-center">
+            <div className="overflow-y-auto w-11/12 min-h-96 mt-5 self-center">
                 {messageElements}
             </div>
             <div>
