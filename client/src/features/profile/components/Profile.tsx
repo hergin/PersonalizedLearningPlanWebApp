@@ -7,12 +7,15 @@ import ProfileEditor from "./ProfileEditor";
 import AccountDeletionWarning from "./AccountDeletionWarning";
 import ProfileDisplay from "./ProfileDisplay";
 import DropDownCheckbox from "../../../components/dropDown/DropDownCheckbox";
+import { useSettingsMutation } from "../../../hooks/useSettings";
 
 export default function ProfileScreen() {
   const [isWarningOpen, setIsWarningOpen] = useState<boolean>(false);
   const [editMode, setEditMode] = useState<boolean>(false);
   const { user } = useAuth();
+  const { mutate: updateSettings } = useSettingsMutation(user.id);
   const { data: profileData, isLoading, error } = useProfile(user.id);
+
 
   if (isLoading) {
     return <div>Loading...</div>;
