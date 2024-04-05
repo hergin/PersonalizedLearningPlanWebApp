@@ -1,4 +1,4 @@
-export const mockGetAllProfiles = jest.fn();
+export const mockGetAllCoachProfiles = jest.fn();
 export const mockGetProfile = jest.fn();
 export const mockCreateProfile = jest.fn();
 export const mockUpdateProfile = jest.fn();
@@ -7,7 +7,7 @@ export const mockGetUserData = jest.fn();
 
 const mock = jest.fn().mockImplementation(() => {
     return {
-        getAllProfiles: mockGetAllProfiles,
+        getAllCoachProfiles: mockGetAllCoachProfiles,
         getProfile: mockGetProfile,
         createProfile: mockCreateProfile,
         updateProfile: mockUpdateProfile,

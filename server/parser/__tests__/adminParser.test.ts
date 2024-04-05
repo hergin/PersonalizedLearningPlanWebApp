@@ -1,5 +1,6 @@
 import AdminParser from "../adminParser";
 import { Pool } from "pg";
+import { Role } from "../../types";
 
 jest.mock("pg");
 
@@ -7,6 +8,7 @@ const mockAccountId = 0;
 const mockUserData = {
     id: mockAccountId,
     email: "testdummy@outlook.com",
+    role: "basic",
     profile_id: 1,
     username: "Xx_TestDummy_xX"
 }
@@ -42,13 +44,14 @@ describe("Admin Parser Unit Tests", () => {
         expect(result).toEqual([mockUserData]);
     });
 
-    it("Set Account As Coach", async () => {
+    it("Set Account As Role", async () => {
         mockQuery.mockResolvedValueOnce({});
-        const result = await parser.setAccountAsCoach(mockAccountId);
+        const mockRole: Role = "coach";
+        await parser.setAccountAsRole(mockAccountId, mockRole);
         expect(mockQuery).toHaveBeenCalledTimes(1);
         expect(mockQuery).toHaveBeenCalledWith({
             text: "UPDATE ACCOUNT SET role = $1 WHERE id = $2",
-            values: ["coach", mockAccountId]
+            values: [mockRole, mockAccountId]
         });
     });
 });

@@ -14,7 +14,7 @@ const mockUserData = {
     email: "testdummy@outlook.com",
     profile_id: 1,
     username: "Xx_TestDummy_xX"
-}
+};
 
 describe("Admin Processor Unit Tests", () => {
     const adminApi: any = new AdminApi();
@@ -76,11 +76,11 @@ describe("Admin Processor Unit Tests", () => {
     });
 
     it("Post Account Role (normal case)", async () => {
-        adminApi.setAccountToCoach.mockResolvedValueOnce(StatusCode.OK);
+        adminApi.setAccountToRole.mockResolvedValueOnce(StatusCode.OK);
         const mRequest = createMockRequest({id: mockAccountId, newRole: mockRole});
         await AdminProcessor.postAccountRole(mRequest, MOCK_RESPONSE);
-        expect(adminApi.setAccountToCoach).toHaveBeenCalledTimes(1);
-        expect(adminApi.setAccountToCoach).toHaveBeenCalledWith(mockAccountId);
+        expect(adminApi.setAccountToRole).toHaveBeenCalledTimes(1);
+        expect(adminApi.setAccountToRole).toHaveBeenCalledWith(mockAccountId, mockRole);
         expect(MOCK_RESPONSE.sendStatus).toHaveBeenCalledTimes(1);
         expect(MOCK_RESPONSE.sendStatus).toHaveBeenCalledWith(StatusCode.OK);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledTimes(0);
@@ -88,11 +88,11 @@ describe("Admin Processor Unit Tests", () => {
     });
 
     it("Post Account Role (error case)", async () => {
-        adminApi.setAccountToCoach.mockResolvedValueOnce(StatusCode.CONNECTION_ERROR);
+        adminApi.setAccountToRole.mockResolvedValueOnce(StatusCode.CONNECTION_ERROR);
         const mRequest = createMockRequest({id: mockAccountId, newRole: mockRole});
         await AdminProcessor.postAccountRole(mRequest, MOCK_RESPONSE);
-        expect(adminApi.setAccountToCoach).toHaveBeenCalledTimes(1);
-        expect(adminApi.setAccountToCoach).toHaveBeenCalledWith(mockAccountId);
+        expect(adminApi.setAccountToRole).toHaveBeenCalledTimes(1);
+        expect(adminApi.setAccountToRole).toHaveBeenCalledWith(mockAccountId, mockRole);
         expect(MOCK_RESPONSE.sendStatus).toHaveBeenCalledTimes(0);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledTimes(1);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledWith(StatusCode.CONNECTION_ERROR);

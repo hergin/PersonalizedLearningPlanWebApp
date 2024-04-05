@@ -19,12 +19,11 @@ export default class AdminParser extends DatabaseParser {
         });
     }
 
-    async setAccountAsCoach(accountId: number) {
+    async setAccountAsRole(accountId: number, role: Role) {
         console.log("Setting account as coach...");
-        const coachRole : Role = "coach";
         return await this.parseDatabase({
             text: "UPDATE ACCOUNT SET role = $1 WHERE id = $2",
-            values: [coachRole, accountId]
+            values: [role, accountId]
         });
     }
 }

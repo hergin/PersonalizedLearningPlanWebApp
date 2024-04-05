@@ -1,18 +1,18 @@
 import AdminApi from "../adminApi";
 import AdminParser from "../../../parser/adminParser";
-import { mockAdminParser } from "../../../parser/__mocks__/adminParser";
 import { FAKE_ERRORS } from "../../global/mockValues";
 import { StatusCode } from "../../../types";
 
 jest.mock("../../../parser/adminParser");
 
 const mockAccountId = 0;
+const mockRole = "coach";
 const mockUserData = {
     id: mockAccountId,
     email: "testdummy@outlook.com",
     profile_id: 1,
     username: "Xx_TestDummy_xX"
-}
+};
 
 describe("Admin Api", () => {
     const api = new AdminApi();
@@ -59,18 +59,18 @@ describe("Admin Api", () => {
     });
 
     it("Set Account To Coach (normal case)", async () => {
-        parser.setAccountAsCoach.mockResolvedValueOnce({});
-        const result = await api.setAccountToCoach(mockAccountId);
-        expect(parser.setAccountAsCoach).toHaveBeenCalledTimes(1);
-        expect(parser.setAccountAsCoach).toHaveBeenCalledWith(mockAccountId);
+        parser.setAccountAsRole.mockResolvedValueOnce({});
+        const result = await api.setAccountToRole(mockAccountId, mockRole);
+        expect(parser.setAccountAsRole).toHaveBeenCalledTimes(1);
+        expect(parser.setAccountAsRole).toHaveBeenCalledWith(mockAccountId, mockRole);
         expect(result).toEqual(StatusCode.OK);
     });
 
     it("Set Account To Coach (error case)", async () => {
-        parser.setAccountAsCoach.mockRejectedValue(FAKE_ERRORS.badRequest);
-        const result = await api.setAccountToCoach(mockAccountId);
-        expect(parser.setAccountAsCoach).toHaveBeenCalledTimes(1);
-        expect(parser.setAccountAsCoach).toHaveBeenCalledWith(mockAccountId);
+        parser.setAccountAsRole.mockRejectedValue(FAKE_ERRORS.badRequest);
+        const result = await api.setAccountToRole(mockAccountId, mockRole);
+        expect(parser.setAccountAsRole).toHaveBeenCalledTimes(1);
+        expect(parser.setAccountAsRole).toHaveBeenCalledWith(mockAccountId, mockRole);
         expect(result).toEqual(StatusCode.BAD_REQUEST);
     });
 });
