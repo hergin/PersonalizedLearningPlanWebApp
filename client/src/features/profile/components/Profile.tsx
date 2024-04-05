@@ -43,18 +43,6 @@ export default function ProfileScreen() {
         onSave={() => {setEditMode(false);}}
         onCancel={() => {setEditMode(false)}}
       />
-      <DropDownCheckbox 
-          handleCheckToggle={(checked) => updateSettings({allowCoachInvitations: data[0].allow_coach_invitations, receiveEmails: checked})} 
-          checked={data[0].receive_emails}
-        >
-          Recieve Emails
-        </DropDownCheckbox>
-        <DropDownCheckbox 
-          handleCheckToggle={(checked) => updateSettings({receiveEmails: data[0].receive_emails, allowCoachInvitations: checked})} 
-          checked={data[0].allow_coach_invitations}
-        >
-          Participate In Coaching
-        </DropDownCheckbox>
       <AccountDeletionWarning 
         open={isWarningOpen} 
         accountId={user.id} 
@@ -69,6 +57,18 @@ export default function ProfileScreen() {
         jobTitle: profileData.job_title,
         bio: profileData.bio
       }} />
+      <DropDownCheckbox 
+          handleCheckToggle={(checked) => updateSettings({allowCoachInvitations: data[0].allow_coach_invitations, receiveEmails: checked})} 
+          checked={data[0].receive_emails}
+        >
+          Recieve Emails
+        </DropDownCheckbox>
+        <DropDownCheckbox 
+          handleCheckToggle={(checked) => updateSettings({receiveEmails: data[0].receive_emails, allowCoachInvitations: checked})} 
+          checked={data[0].allow_coach_invitations}
+        >
+          Participate In Coaching
+        </DropDownCheckbox>
       <div className="w-11/12 flex flex-row flex-wrap justify-end gap-3">
         <Tooltip title="Edit Profile" placement="top">
             <Fab color="primary" onClick={() => setEditMode(true)} size="large">
