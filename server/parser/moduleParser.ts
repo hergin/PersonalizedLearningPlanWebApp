@@ -24,6 +24,14 @@ export default class ModuleParser extends DatabaseParser {
         };
         return this.parseDatabase(query);
     }
+    async parseModuleById(module_id: number) {
+        console.log("Getting Module...");
+        const query = {
+            text: "SELECT account_id FROM Module WHERE module_id = $1",
+            values: [module_id]
+        };
+        return this.parseDatabase(query);
+    }
 
     async updateModule(module: Module) {
         console.log("Inserting updated data into Module...");

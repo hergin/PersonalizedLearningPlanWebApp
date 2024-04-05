@@ -4,7 +4,7 @@ import { Goal, Table } from "../types";
 
 export default class GoalParser extends DatabaseParser {
     tableName: Table = "GOAL";
-    
+
     constructor() {
         super();
     }
@@ -14,6 +14,14 @@ export default class GoalParser extends DatabaseParser {
         const query = {
             text: "SELECT * FROM get_goals($1) where parent_goal is null",
             values: [moduleId]
+        };
+        return this.parseDatabase(query);
+    }
+    async parseGoalById(goalId: number) {
+        console.log("Getting Goal...");
+        const query = {
+            text: "SELECT module_id FROM Goal where goal_id = $1",
+            values: [goalId]
         };
         return this.parseDatabase(query);
     }
@@ -107,12 +115,12 @@ export default class GoalParser extends DatabaseParser {
     }
 
     private async getRidOfDuplicates(result: any[]): Promise<any[]> {
-        const previousGoals : number[] = []; 
+        const previousGoals: number[] = [];
         const filtered = result.filter((element) => {
-            const result : boolean = !previousGoals.includes(element.id);
-            if(result) previousGoals.push(element.id);
+            const result: boolean = !previousGoals.includes(element.id);
+            if (result) previousGoals.push(element.id);
             return result;
-        });    
+        });
         return filtered;
     }
 

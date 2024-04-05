@@ -14,14 +14,14 @@ export default class GoalAPI {
     }
 
     async getGoals(moduleId: number): Promise<Goal[] | StatusCode> {
-        if(isNaN(moduleId)) {
+        if (isNaN(moduleId)) {
             return StatusCode.BAD_REQUEST;
         }
-        
+
         try {
             const parentGoals = await this.parser.parseParentGoals(moduleId);
             for (const goal of parentGoals) {
-                const subGoals : Goal[] = await this.getSubGoals(goal.goal_id);
+                const subGoals: Goal[] = await this.getSubGoals(goal.goal_id);
                 if (subGoals?.length !== undefined && subGoals?.length !== 0) {
                     goal.sub_goals = subGoals;
                 } else {
@@ -35,13 +35,27 @@ export default class GoalAPI {
         }
     }
 
+    async getGoalById(goalId: number): Promise<Goal[] | StatusCode> {
+        if (isNaN(goalId)) {
+            return StatusCode.BAD_REQUEST;
+        }
+        try {
+            const goal = await this.parser.parseGoalById(goalId);
+            console.log(goal);
+            return goal;
+        } catch (error: unknown) {
+            return this.errorCodeInterpreter.getStatusCode(error as DatabaseError);
+        }
+    }
+
     async getSubGoals(goalID: number): Promise<Goal[]> {
         const subGoals = await this.parser.parseSubGoals(goalID);
         return subGoals;
     }
 
     async createGoal(goal: Goal): Promise<StatusCode> {
-        const dueDate : string | undefined = this.convertToPostgresTimestamp(goal.due_date);
+        const dueDate: string | undefined = this.convertToPostgresTimestamp(goal.due_date);
+
         try {
             await this.parser.storeGoal({
                 ...goal,
@@ -53,21 +67,21 @@ export default class GoalAPI {
         }
     }
 
-    private convertToPostgresTimestamp(time : string | undefined): string | undefined {
+    private convertToPostgresTimestamp(time: string | undefined): string | undefined {
         return time?.replace('T', ' ').replace('Z', ' ');
     }
 
-    async updateGoal(goal : Goal): Promise<StatusCode> {
-        if(!goal.goal_id || isNaN(goal.goal_id)) {
+    async updateGoal(goal: Goal): Promise<StatusCode> {
+        if (!goal.goal_id || isNaN(goal.goal_id)) {
             return StatusCode.BAD_REQUEST;
         }
-        
-        const dueDate : string | undefined = this.convertToPostgresTimestamp(goal.due_date);
-        const completionTime : string | undefined = this.convertToPostgresTimestamp(goal.completion_time);
-        const expiration : string | undefined = this.convertToPostgresTimestamp(goal.expiration);
+
+        const dueDate: string | undefined = this.convertToPostgresTimestamp(goal.due_date);
+        const completionTime: string | undefined = this.convertToPostgresTimestamp(goal.completion_time);
+        const expiration: string | undefined = this.convertToPostgresTimestamp(goal.expiration);
 
         try {
-            await this.parser.updateGoal({...goal, due_date: dueDate, completion_time: completionTime, expiration: expiration});
+            await this.parser.updateGoal({ ...goal, due_date: dueDate, completion_time: completionTime, expiration: expiration });
             return StatusCode.OK;
         } catch (error: unknown) {
             return this.errorCodeInterpreter.getStatusCode(error as DatabaseError);
@@ -75,20 +89,20 @@ export default class GoalAPI {
     }
 
     async updateGoalFeedback(goalId: number, feedback: string): Promise<StatusCode> {
-        if(isNaN(goalId)) {
+        if (isNaN(goalId)) {
             return StatusCode.BAD_REQUEST;
         }
-        
+
         try {
             await this.parser.updateGoalFeedback(goalId, feedback);
             return StatusCode.OK;
-        } catch(error: unknown) {
+        } catch (error: unknown) {
             return this.errorCodeInterpreter.getStatusCode(error as DatabaseError);
         }
     }
 
     async deleteGoal(goalId: number): Promise<StatusCode> {
-        if(isNaN(goalId)) {
+        if (isNaN(goalId)) {
             return StatusCode.BAD_REQUEST;
         }
 
@@ -101,10 +115,10 @@ export default class GoalAPI {
     }
 
     async getGoalVariable(goalId: number, variable: string) {
-        if(isNaN(goalId)) {
+        if (isNaN(goalId)) {
             return StatusCode.BAD_REQUEST;
         }
-        
+
         try {
             const result = await this.parser.parseGoalVariable(goalId, variable);
             return result;
@@ -114,10 +128,10 @@ export default class GoalAPI {
     }
 
     async addSubGoal(parentGoalId: number, goal: Goal): Promise<StatusCode> {
-        if(isNaN(parentGoalId)) {
+        if (isNaN(parentGoalId)) {
             return StatusCode.BAD_REQUEST;
         }
-        
+
         try {
             console.log(`In addSubGoal: ${JSON.stringify(goal)}`);
             await this.parser.storeSubGoal(parentGoalId, goal);
