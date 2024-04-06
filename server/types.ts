@@ -10,8 +10,10 @@ export enum StatusCode {
 }
 
 export enum GoalType {
-    TASK = "todo",
-    REPEATABLE = "daily"
+    ONCE = "todo",
+    DAILY = "daily",
+    WEEKLY = "weekly",
+    MONTHLY = "monthly",
 }
 
 export enum Subject {
@@ -20,12 +22,32 @@ export enum Subject {
     REJECTED = "Invitation Rejected!"
 }
 
-export enum Table {
-    GOAL = "GOAL",
-    PROFILE = "PROFILE",
-    MODULE = "MODULE",
-    MESSAGE = "MESSAGE"
-}
+const tables = {
+    GOAL: "GOAL",
+    PROFILE: "PROFILE",
+    MODULE: "MODULE",
+    MESSAGE: "MESSAGE"
+} as const;
+export type Table = (typeof tables)[keyof typeof tables];
+
+const roles = {
+    ADMIN: "admin",
+    COACH: "coach",
+    BASIC: "basic", 
+} as const;
+export type Role = (typeof roles)[keyof typeof roles];
+
+export type User = {
+    id: number,
+    role: Role
+};
+
+export type UserData = {
+    id: number,
+    email: string,
+    profile_id: number,
+    username: string
+};
 
 export type Goal = {
     goal_id?: number,
@@ -59,7 +81,6 @@ export type Module = {
     description: string,
     completion: number
     accountId?: number
-    coachId?: number
 }
 
 export type AccountSettings = {

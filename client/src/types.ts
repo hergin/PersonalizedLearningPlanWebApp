@@ -3,6 +3,13 @@ export enum GoalType {
   REPEATABLE = "daily",
 }
 
+const roles = {
+  ADMIN: "admin",
+  COACH: "coach",
+  BASIC: "basic", 
+} as const;
+export type Role = (typeof roles)[keyof typeof roles];
+
 export interface Module {
   id: number;
   name: string;
@@ -26,6 +33,7 @@ export interface Goal {
 
 export interface User {
   id: number;
+  role: Role;
   accessToken: string;
   refreshToken: string;
 }
@@ -146,7 +154,7 @@ export interface RegisterProps {
   password: string
 }
 
-export const emptyUser: User = { id: -1, accessToken: "", refreshToken: "" };
+export const emptyUser: User = { id: -1, role: "basic", accessToken: "", refreshToken: "" };
 export const defaultSettings = {
   receiveEmails: true,
   allowCoachInvitations: true,

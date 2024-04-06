@@ -11,7 +11,8 @@
         "forceConsistentCasingInFileNames": true,
         "allowSyntheticDefaultImports": true,
         "esModuleInterop": true,
-        "lib": ["es5", "es6", "dom"]
+        "lib": ["es5", "es6", "dom"],
+        "skipDefaultLibCheck": true
     },
     "typeRoots": [
         "../custom_typing",

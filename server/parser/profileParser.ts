@@ -6,9 +6,9 @@ export default class ProfileParser extends DatabaseParser {
         super();
     }
 
-    async parseAllProfiles() {
+    async parseCoachProfiles() {
         console.log("Getting all public user data...");
-        return await this.parseDatabase("SELECT * FROM PUBLIC_USER_DATA");
+        return await this.parseDatabase("SELECT * FROM COACH_DATA");
     }
 
     async parseProfile(accountId : number) {

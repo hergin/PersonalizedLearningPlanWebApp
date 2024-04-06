@@ -1,5 +1,5 @@
 import React from "react";
-import { emptyUser } from "../../types";
+import { emptyUser, Role } from "../../types";
 import AccountButton from "../AccountButton";
 import { render, cleanup } from "@testing-library/react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
@@ -35,7 +35,7 @@ describe("Account Button Unit Tests", () => {
     });
 
     it("Logged in case.", () => {
-        mockUser = {id: 1, accessToken: "Access Token", refreshToken: "Refresh Token"};
+        mockUser = {id: 1, role: "basic", accessToken: "Access Token", refreshToken: "Refresh Token"};
         const { getByTestId } = render(
             <MemoryRouter>
                 <Routes>

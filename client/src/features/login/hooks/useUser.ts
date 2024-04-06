@@ -21,7 +21,7 @@ export const useUser = () => {
   };
 
   const replaceToken = (accessToken: string) => {
-    setUser({ id: user.id, accessToken, refreshToken: user.refreshToken });
+    setUser({ id: user.id, role: user.role, accessToken, refreshToken: user.refreshToken });
     setItem("user", JSON.stringify(user));
   };
 

@@ -7,7 +7,7 @@ const config: Config.InitialOptions = {
   testRegex: '(/__tests__/.*|(\\.|/)(test|spec))\\.tsx?$',
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
   transformIgnorePatterns: ["node_modules"],
-  verbose: true,
+  verbose: true
 };
 
 export default config;

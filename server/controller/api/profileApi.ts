@@ -12,9 +12,9 @@ export default class ProfileAPI {
         this.errorCodeInterpreter = new ErrorCodeInterpreter();
     }
 
-    async getAllProfiles() {
+    async getAllCoachProfiles() {
         try {
-            return await this.parser.parseAllProfiles();
+            return await this.parser.parseCoachProfiles();
         } catch(error: unknown) {
             return this.errorCodeInterpreter.getStatusCode(error as DatabaseError);
         }

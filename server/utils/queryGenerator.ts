@@ -1,10 +1,12 @@
 import { snakeCase } from "lodash";
 import { Query, Table } from "../types";
 
+type Value = string | number | boolean | Date;
+
 export function generateInsertQuery<T extends object>(object: T, table: Table): Query {
     var beginningText = `INSERT INTO ${table}(`;
     var endingText = "VALUES (";
-    var values : (string | number | boolean | Date | undefined)[] = [];
+    var values : Value[] = [];
     Object.entries(object).forEach((element) => {
         const [name, value] = element;
         if(value === undefined || value === "" || Array.isArray(value)) return;
@@ -20,7 +22,7 @@ export function generateInsertQuery<T extends object>(object: T, table: Table): 
 
 export function generateUpdateQuery<T extends object>(object: T, table: Table, key: string): Query {
     var text = `UPDATE ${table} SET `;
-    var values : (string | number | boolean | Date | undefined)[] = [];
+    var values : Value[] = [];
     var keyValue : any;
     Object.entries(object).forEach((element) => {
         const [name, value] = element;

@@ -1,4 +1,4 @@
-import { Profile, GoalType, Module, Goal } from "../../types";
+import { Profile, GoalType, Module, Goal, Role } from "../../types";
 
 export const FAKE_ERRORS = {
     badRequest: {code: '23514'},
@@ -39,6 +39,7 @@ export const TEST_ACCOUNT = {
     password: "09122001",
     accessToken: "1234567890",
     refreshToken: "refresh please",
+    role: "basic",
 }
 
 export const TEST_PROFILE: Profile = {
@@ -75,8 +76,7 @@ export const TEST_MODULE: Module = {
     name: "School",
     description: "Get better grades in school.",
     completion: 0,
-    accountId: TEST_ACCOUNT.id,
-    coachId: 12
+    accountId: TEST_ACCOUNT.id
 }
 
 export const TEST_GOAL = {
@@ -84,7 +84,7 @@ export const TEST_GOAL = {
     name: ["Study for coding test", "do Homework", "Do project"],
     description: ["I need to pass the coding test to graduate!", "spend 3 hours a day on homework", "Finish my project."],
     isComplete: false,
-    goalType: GoalType.TASK,
+    goalType: GoalType.ONCE,
     moduleId: TEST_MODULE.id,
     tagId: TEST_TAG.id,
     dueDate: "2025-01-01T23:59:59.000Z",
@@ -98,7 +98,7 @@ export const TEST_SUB_GOAL = {
     name: ["Complete this quiz", "Sub Goal", "Another Sub Goal"],
     description: ["Take this quiz can get all the questions correct", "This is a sub goal", "This is another sub goal."],
     isComplete: false,
-    goalType: GoalType.REPEATABLE,
+    goalType: GoalType.DAILY,
     moduleId: TEST_MODULE.id,
     tagId: TEST_TAG.id,
     dueDate: new Date(Date.now() + (24 * 3600)).toISOString(),

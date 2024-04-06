@@ -1,5 +1,6 @@
 import LoginParser from '../loginParser';
 import { Pool } from "pg";
+import { Role } from '../../types';
 
 jest.mock("pg");
 
@@ -8,8 +9,9 @@ const TEST_ACCOUNT = {
     email: "testdummy@yahoo.com",
     password: "01010101010",
     refreshToken: "UTDefpAEyREXmgCkK04pL1SXK6jrB2tEc2ZyMbrFs61THq2y3bpRZOCj5RiPoZGa",
-    coach_id: 2
-}
+    coachId: 2,
+    role: "basic",
+};
 
 describe('login parser tests', () => {
     const parser = new LoginParser();
@@ -87,11 +89,11 @@ describe('login parser tests', () => {
 
     it('parse understudies', async () => {
         mockQuery.mockResolvedValueOnce({rows: [TEST_ACCOUNT]});
-        const actual = await parser.parseUnderstudies(TEST_ACCOUNT.coach_id);
+        const actual = await parser.parseUnderstudies(TEST_ACCOUNT.coachId);
         expect(mockQuery).toHaveBeenCalledTimes(1);
         expect(mockQuery).toHaveBeenCalledWith({
             text: "SELECT * FROM UNDERSTUDY_DATA WHERE coach_id = $1",
-            values: [TEST_ACCOUNT.coach_id]
+            values: [TEST_ACCOUNT.coachId]
         });
         expect(actual).toEqual([TEST_ACCOUNT]);
     });

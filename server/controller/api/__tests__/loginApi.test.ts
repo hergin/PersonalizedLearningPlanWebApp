@@ -1,10 +1,9 @@
-export {};
-
 import bcrypt from "bcryptjs";
 import LoginAPI from "../loginApi";
 import LoginParser from "../../../parser/loginParser";
 import { StatusCode } from "../../../types";
 import { FAKE_ERRORS, TEST_ACCOUNT } from "../../global/mockValues";
+
 jest.mock("../../../parser/loginParser");
 
 describe('Login Api Unit Tests', () => {
@@ -22,10 +21,11 @@ describe('Login Api Unit Tests', () => {
 
     it('verify login (pass case)', async () => {
         parser.retrieveLogin.mockResolvedValueOnce([
-            {id: TEST_ACCOUNT.id, email: TEST_ACCOUNT.email, account_password: TEST_ACCOUNT.password}
+            {id: TEST_ACCOUNT.id, email: TEST_ACCOUNT.email, account_password: TEST_ACCOUNT.password, site_role: TEST_ACCOUNT.role}
         ]);
         jest.spyOn(bcrypt, 'compare').mockImplementationOnce((password, hash) => Promise.resolve(password == hash));
-        expect(await loginAPI.verifyLogin(TEST_ACCOUNT.email, TEST_ACCOUNT.password)).toEqual(TEST_ACCOUNT.id);
+        expect(await loginAPI.verifyLogin(TEST_ACCOUNT.email, TEST_ACCOUNT.password)).toEqual({
+            id: TEST_ACCOUNT.id, role: TEST_ACCOUNT.role});
     });
 
     it('verify login (email does not exist case)', async () => {
@@ -37,11 +37,25 @@ describe('Login Api Unit Tests', () => {
     });
 
     it('verify login (wrong password case)', async () => {
+        const wrongPassword = "This is the wrong password."
         parser.retrieveLogin.mockResolvedValueOnce([
-            {email: TEST_ACCOUNT.email, account_password: TEST_ACCOUNT.password}
+            {id: TEST_ACCOUNT.id, email: TEST_ACCOUNT.email, account_password: TEST_ACCOUNT.password, role: TEST_ACCOUNT.role}
         ]);
-        jest.spyOn(bcrypt, 'compare').mockImplementationOnce((s, hash, callback) => {return callback});
-        expect(await loginAPI.verifyLogin(TEST_ACCOUNT.email, TEST_ACCOUNT.password)).toEqual(StatusCode.UNAUTHORIZED);
+        const mockCompare = jest.spyOn(bcrypt, 'compare').mockImplementationOnce((s, hash, callback) => {return callback});
+        const result = await loginAPI.verifyLogin(TEST_ACCOUNT.email, wrongPassword);
+        expect(parser.retrieveLogin).toHaveBeenCalledTimes(1);
+        expect(parser.retrieveLogin).toHaveBeenCalledWith(TEST_ACCOUNT.email);
+        expect(mockCompare).toHaveBeenCalledTimes(1);
+        expect(mockCompare).toHaveBeenCalledWith(wrongPassword, TEST_ACCOUNT.password);
+        expect(result).toEqual(StatusCode.UNAUTHORIZED);
+    });
+
+    it('verify login (error case)', async () => {
+        parser.retrieveLogin.mockRejectedValue(FAKE_ERRORS.fatalServerError);
+        const result = await loginAPI.verifyLogin(TEST_ACCOUNT.email, TEST_ACCOUNT.password);
+        expect(parser.retrieveLogin).toHaveBeenCalledTimes(1);
+        expect(parser.retrieveLogin).toHaveBeenCalledWith(TEST_ACCOUNT.email);
+        expect(result).toEqual(StatusCode.INTERNAL_SERVER_ERROR);
     });
 
     it('create account (pass case)', async () => {

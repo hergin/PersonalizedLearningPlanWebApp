@@ -18,7 +18,6 @@ export function SubGoalsCollapsable({
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
-    // action on update of movies
     if (sub_goal.is_complete) {
       sub_goal.is_complete;
       setProgress(1);
@@ -50,7 +49,6 @@ export function SubGoalsCollapsable({
           <p className="text-black">-</p>
         </div>
         <div className="flex flex-col w-[15%] h-full justify-center p-3 items-center">
-          <p className="text-black">{progress + "/ 1"}</p>
         </div>
         <div className="flex flex-col w-[15%] h-full justify-center p-3 items-center">
           <Checkbox

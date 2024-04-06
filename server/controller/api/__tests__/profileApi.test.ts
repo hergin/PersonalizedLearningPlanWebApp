@@ -1,9 +1,8 @@
-export {};
-
 import ProfileAPI from "../profileApi";
 import ProfileParser from "../../../parser/profileParser";
 import { StatusCode } from "../../../types";
 import { FAKE_ERRORS, TEST_PROFILE, TEST_ACCOUNT } from "../../global/mockValues";
+
 jest.mock("../../../parser/profileParser");
 
 describe('Profile Api Unit Tests', () => {
@@ -30,18 +29,18 @@ describe('Profile Api Unit Tests', () => {
     });
 
     it('get all profiles (normal case)', async() => {
-        parser.parseAllProfiles.mockResolvedValueOnce([{account_id: TEST_ACCOUNT.id, profile_id: TEST_PROFILE.profileId, username: TEST_PROFILE.username}]);
-        const actual = await profileAPI.getAllProfiles();
-        expect(parser.parseAllProfiles).toHaveBeenCalledTimes(1);
-        expect(parser.parseAllProfiles).toHaveBeenCalledWith();
+        parser.parseCoachProfiles.mockResolvedValueOnce([{account_id: TEST_ACCOUNT.id, profile_id: TEST_PROFILE.profileId, username: TEST_PROFILE.username}]);
+        const actual = await profileAPI.getAllCoachProfiles();
+        expect(parser.parseCoachProfiles).toHaveBeenCalledTimes(1);
+        expect(parser.parseCoachProfiles).toHaveBeenCalledWith();
         expect(actual).toEqual([{account_id: TEST_ACCOUNT.id, profile_id: TEST_PROFILE.profileId, username: TEST_PROFILE.username}]);
     });
 
     it('get all profiles (error case)', async () => {
-        parser.parseAllProfiles.mockRejectedValue(FAKE_ERRORS.networkError);
-        const actual = await profileAPI.getAllProfiles();
-        expect(parser.parseAllProfiles).toHaveBeenCalledTimes(1);
-        expect(parser.parseAllProfiles).toHaveBeenCalledWith();
+        parser.parseCoachProfiles.mockRejectedValue(FAKE_ERRORS.networkError);
+        const actual = await profileAPI.getAllCoachProfiles();
+        expect(parser.parseCoachProfiles).toHaveBeenCalledTimes(1);
+        expect(parser.parseCoachProfiles).toHaveBeenCalledWith();
         expect(actual).toEqual(StatusCode.CONNECTION_ERROR);
     });
 

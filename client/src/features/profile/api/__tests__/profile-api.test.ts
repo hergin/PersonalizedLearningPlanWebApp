@@ -1,9 +1,10 @@
 import ProfileApi from "../profile-api";
 import { renderHook, cleanup } from "@testing-library/react";
 import { useApiConnection } from "../../../../hooks/useApiConnection";
-import { AxiosError } from "axios";
+import { throwServerError } from "../../../../utils/errorHandlers";
 
 jest.mock("../../../../hooks/useApiConnection");
+jest.mock("../../../../utils/errorHandlers");
 
 const TEST_PROFILE = {
     id: 0,
@@ -15,18 +16,16 @@ const TEST_PROFILE = {
     bio: "I live to test!",
     account_id: 999
 }
-const TEST_ERROR : AxiosError = {message: "I don't feel like querying right now. :("} as AxiosError;
+const TEST_ERROR = {message: "I don't feel like querying right now. :("};
 
 describe("Profile Api Unit Tests", () => {
     const { FetchProfile, FetchAllProfiles, CreateProfile, UpdateProfile } = renderHook(ProfileApi).result.current;
     var mockApi: any;
-    var mockError: any;
-    var mockAlert: any;
+    var mockServerThrower: jest.Mock<any, any, any>;
 
     beforeEach(() => {
         mockApi = useApiConnection();
-        mockError = jest.spyOn(global.console, 'error');
-        mockAlert = jest.spyOn(window, 'alert');
+        mockServerThrower = throwServerError as jest.Mock;
     });
 
     afterEach(() => {
@@ -40,8 +39,7 @@ describe("Profile Api Unit Tests", () => {
         expect(mockApi.get).toHaveBeenCalledTimes(1);
         expect(mockApi.get).toHaveBeenCalledWith(`profile/get/${TEST_PROFILE.account_id}`);
         expect(result).toEqual([TEST_PROFILE]);
-        expect(mockError).toHaveBeenCalledTimes(0);
-        expect(mockAlert).toHaveBeenCalledTimes(0);
+        expect(mockServerThrower).toHaveBeenCalledTimes(0);
     });
 
     it("FetchProfile (error case)", async () => {
@@ -50,10 +48,8 @@ describe("Profile Api Unit Tests", () => {
         expect(mockApi.get).toHaveBeenCalledTimes(1);
         expect(mockApi.get).toHaveBeenCalledWith(`profile/get/${TEST_PROFILE.account_id}`);
         expect(result).toBeUndefined();
-        expect(mockError).toHaveBeenCalledTimes(1);
-        expect(mockError).toHaveBeenCalledWith(TEST_ERROR);
-        expect(mockAlert).toHaveBeenCalledTimes(1);
-        expect(mockAlert).toHaveBeenCalledWith(TEST_ERROR.message);
+        expect(mockServerThrower).toHaveBeenCalledTimes(1);
+        expect(mockServerThrower).toHaveBeenCalledWith(TEST_ERROR);
     });
 
     it("FetchAllProfiles (normal case)", async () => {
@@ -62,8 +58,7 @@ describe("Profile Api Unit Tests", () => {
         expect(mockApi.get).toHaveBeenCalledTimes(1);
         expect(mockApi.get).toHaveBeenCalledWith("profile/get");
         expect(result).toEqual([TEST_PROFILE, TEST_PROFILE]);
-        expect(mockError).toHaveBeenCalledTimes(0);
-        expect(mockAlert).toHaveBeenCalledTimes(0);
+        expect(mockServerThrower).toHaveBeenCalledTimes(0);
     });
 
     it("FetchAllProfiles (error case)", async () => {
@@ -72,10 +67,8 @@ describe("Profile Api Unit Tests", () => {
         expect(mockApi.get).toHaveBeenCalledTimes(1);
         expect(mockApi.get).toHaveBeenCalledWith("profile/get");
         expect(result).toBeUndefined();
-        expect(mockError).toHaveBeenCalledTimes(1);
-        expect(mockError).toHaveBeenCalledWith(TEST_ERROR);
-        expect(mockAlert).toHaveBeenCalledTimes(1);
-        expect(mockAlert).toHaveBeenCalledWith(TEST_ERROR.message);
+        expect(mockServerThrower).toHaveBeenCalledTimes(1);
+        expect(mockServerThrower).toHaveBeenCalledWith(TEST_ERROR);
     });
 
     it("CreateProfile (normal case)", async () => {
@@ -93,8 +86,7 @@ describe("Profile Api Unit Tests", () => {
             lastName: TEST_PROFILE.lastName, 
             account_id: TEST_PROFILE.account_id
         });
-        expect(mockError).toHaveBeenCalledTimes(0);
-        expect(mockAlert).toHaveBeenCalledTimes(0);
+        expect(mockServerThrower).toHaveBeenCalledTimes(0);
     });
 
     it("CreateProfile (error case)", async () => {
@@ -112,10 +104,8 @@ describe("Profile Api Unit Tests", () => {
             lastName: TEST_PROFILE.lastName, 
             account_id: TEST_PROFILE.account_id
         });
-        expect(mockError).toHaveBeenCalledTimes(1);
-        expect(mockError).toHaveBeenCalledWith(TEST_ERROR);
-        expect(mockAlert).toHaveBeenCalledTimes(1);
-        expect(mockAlert).toHaveBeenCalledWith(TEST_ERROR.message);
+        expect(mockServerThrower).toHaveBeenCalledTimes(1);
+        expect(mockServerThrower).toHaveBeenCalledWith(TEST_ERROR);
     });
 
     it("UpdateProfile (normal case)", async () => {
@@ -131,8 +121,7 @@ describe("Profile Api Unit Tests", () => {
             jobTitle: TEST_PROFILE.jobTitle, 
             bio: updatedBio
         });
-        expect(mockError).toHaveBeenCalledTimes(0);
-        expect(mockAlert).toHaveBeenCalledTimes(0);
+        expect(mockServerThrower).toHaveBeenCalledTimes(0);
     });
 
     it("UpdateProfile (error case)", async () => {
@@ -148,9 +137,7 @@ describe("Profile Api Unit Tests", () => {
             jobTitle: TEST_PROFILE.jobTitle, 
             bio: updatedBio
         });
-        expect(mockError).toHaveBeenCalledTimes(1);
-        expect(mockError).toHaveBeenCalledWith(TEST_ERROR);
-        expect(mockAlert).toHaveBeenCalledTimes(1);
-        expect(mockAlert).toHaveBeenCalledWith(TEST_ERROR.message);
+        expect(mockServerThrower).toHaveBeenCalledTimes(1);
+        expect(mockServerThrower).toHaveBeenCalledWith(TEST_ERROR);
     });
 });

@@ -7,8 +7,9 @@ import dayjs from "dayjs";
 import { Checkbox } from "@mui/material";
 import SubGoalCreator from "./SubGoalCreator";
 import GoalDescriptionModal from "./GoalDescriptionModal";
-import FeedbackCollapsable from "./FeedbackCollapsable";
 import { useGoalUpdater } from "../hooks/useGoals";
+import RemoveIcon from "@mui/icons-material/Remove";
+import AddIcon from "@mui/icons-material/Add";
 
 interface GoalItemProps {
   id: number;
@@ -17,11 +18,6 @@ interface GoalItemProps {
 
 export default function GoalItem({ id, goal }: GoalItemProps) {
   const { getCollapseProps, getToggleProps, isExpanded } = useCollapse();
-  const {
-    getCollapseProps: getFeedbackCollapsable,
-    getToggleProps: getFeedbackToggle,
-    isExpanded: isFeedbackExpanded,
-  } = useCollapse();
   const [progress, setProgress] = useState(0);
   const [openDescription, setOpenDescription] = useState(false);
   const { mutateAsync: updateGoal } = useGoalUpdater(goal.module_id);
@@ -61,7 +57,7 @@ export default function GoalItem({ id, goal }: GoalItemProps) {
                 {dayjs(goal.due_date).format("MM/DD/YYYY")}
               </p>
             ) : (
-              <p className="text-black font-bodyFont">No Due Date</p>
+              <p className="text-black font-bodyFont"></p>
             )}
           </div>
           <div className="flex flex-col transition-transform w-[15%] h-full justify-center p-3 items-center">
@@ -70,31 +66,20 @@ export default function GoalItem({ id, goal }: GoalItemProps) {
             </p>
           </div>
           <div className="flex flex-col transition-transform w-[15%] h-full justify-center p-3 items-center">
-            <button {...getFeedbackToggle()} className="text-black">
-              {isFeedbackExpanded ? "-" : "+"}
+            <button {...getToggleProps()} className="text-black">
+              {isExpanded ? <RemoveIcon /> : <AddIcon />}
             </button>
           </div>
           <div className="flex flex-col transition-transform w-[15%] h-full justify-center p-3 items-center">
-            {goal.sub_goals?.length !== 0 ? (
-              <button {...getToggleProps()} className="text-black">
-                {isExpanded ? "-" : "+"}
-              </button>
-            ) : (
-              <Checkbox
-                checked={goal.is_complete}
-                onChange={(checked) =>
-                  updateGoal({ ...goal, is_complete: checked.target.checked })
-                }
-              />
-            )}
+            <Checkbox
+              checked={goal.is_complete}
+              onChange={(checked) =>
+                updateGoal({ ...goal, is_complete: checked.target.checked })
+              }
+            />
           </div>
           <GoalEditor goal={goal} />
         </div>
-        <FeedbackCollapsable
-          getCollapsableProps={getFeedbackCollapsable}
-          feedback={goal.feedback}
-          id={goal.goal_id}
-        />
         {goal.sub_goals?.map((subGoal: Goal) => (
           <SubGoalsCollapsable
             key={subGoal.goal_id}

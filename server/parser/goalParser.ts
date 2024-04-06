@@ -1,9 +1,9 @@
 import DatabaseParser from "./databaseParser";
 import { generateInsertQuery, generateUpdateQuery } from "../utils/queryGenerator";
-import { Goal, Query, Table } from "../types";
+import { Goal, Table } from "../types";
 
 export default class GoalParser extends DatabaseParser {
-    tableName: Table = Table.GOAL;
+    tableName: Table = "GOAL";
 
     constructor() {
         super();
@@ -46,7 +46,7 @@ export default class GoalParser extends DatabaseParser {
     async updateGoal(goal: Goal) {
         console.log("Inserting updated data into Goal...");
         const query = generateUpdateQuery(goal, this.tableName, "goal_id");
-        console.log(JSON.stringify(query));
+        console.log(`Generated update query: ${JSON.stringify(query)}`);
         await this.updateDatabase(query);
         console.log("Goal data updated!");
     }

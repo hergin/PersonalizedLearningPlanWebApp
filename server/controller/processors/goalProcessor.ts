@@ -3,11 +3,10 @@ import EmailService from "../../service/emailService";
 import { StatusCode } from "../../types";
 import { initializeErrorMap } from "../../utils/errorMessages";
 import { Request, Response } from "express";
-import ModuleAPI from "../api/moduleApi";
 import LoginAPI from "../api/loginApi";
+import isStatusCode from "../../utils/isStatusCode";
 
 const goalAPI = new GoalAPI();
-const moduleAPI = new ModuleAPI();
 const loginAPI = new LoginAPI();
 const ERROR_MESSAGES = initializeErrorMap();
 const emailService = new EmailService();
@@ -69,14 +68,14 @@ async function putGoalFeedback(req: Request, res: Response) {
         res.status(goalQuery).send(ERROR_MESSAGES.get(goalQuery));
         return;
     }
+    const accountQuery = await loginAPI.getAccountById(req.body.userId);
+    if(isStatusCode(accountQuery)) {
+        console.error(`Failed to retrieve account id for coach ${req.body.userId}'s feedback.`);
+        res.status(accountQuery).send("Failed to retrieve understudy's account to email them the feedback.");
+        return;
+    }
+    emailService.sendEmail(accountQuery[0].email, "Feedback", req.body.feedback);
     res.sendStatus(StatusCode.OK);
-    const goal = await goalAPI.getGoalById(Number(req.params.id))
-    const goals = JSON.stringify(goal);
-    const module = await moduleAPI.getModuleById(Number(goals.replace("[{\"module_id\":", "").replace("}]", "")))
-    const modules = JSON.stringify(module);
-    const account = await loginAPI.getAccountById(Number(modules.replace("[{\"account_id\":", "").replace("}]", "")));
-    const email = JSON.stringify(account);
-    emailService.sendEmail(email.replace("[{\"email\":\"", "").replace("\"}]", ""), "Feedback", req.body.feedback);
 }
 
 async function deleteGoal(req: Request, res: Response) {
