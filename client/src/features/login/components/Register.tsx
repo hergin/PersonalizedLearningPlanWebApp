@@ -1,11 +1,11 @@
 import React, { useState, useMemo, ReactElement } from "react";
-import { TextField, Stack, Alert, Button } from "@mui/material";
+import { TextField, Alert, Button } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import { useHotKeys } from "../../../hooks/useHotKeys";
 import { useRegistrationService } from "../hooks/useAccountServices";
 import { RegisterProps } from "../../../types";
 
-const expressionMap = initializeExpressionMap();
+const passwordExpressionMap = initializeExpressionMap();
 function initializeExpressionMap(): Map<RegExp, string> {
   const map = new Map<RegExp, string>();
   map.set(/^(?=.*\d).+$/, "Must have at least 1 number.");
@@ -30,7 +30,7 @@ export default function Register() {
   const passwordErrors: ReactElement[] = useMemo<ReactElement[]>(() => {
     const password = registerValues.password;
     const result: ReactElement[] = [];
-    for (const [expression, message] of expressionMap) {
+    for (const [expression, message] of passwordExpressionMap) {
         if (!password.match(expression)) {
             result.push(<p className="text-sm">{message}</p>);
         }

@@ -19,7 +19,7 @@ function generateEmailBody(goalName: string, username: string, dueDate: Date):st
         <p>Hello ${username},</p>
         <p>Your due date for ${goalName} is coming up at ${dueDate.toDateString()} on ${dueDate.getTime()}.</p>
         <p>Make sure to complete your goals on time!</p>
-    `
+    `;
 }
 
 const updateCompletionStatus = schedule(EVERYDAY_AT_MIDNIGHT, parser.runMaintenanceProcedures);
