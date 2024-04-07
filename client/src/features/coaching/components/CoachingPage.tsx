@@ -12,6 +12,8 @@ import {
 } from "../hooks/useInvites";
 import { useUser } from "../../login/hooks/useUser";
 import { PublicUsers } from "../types";
+import { useUnderstudies } from "../../login/hooks/useUnderstudies";
+import { Understudy } from "../../../types";
 
 const CoachingPage = () => {
   const { user } = useUser();
@@ -25,13 +27,17 @@ const CoachingPage = () => {
     isLoading: inviteLoading,
     isError: inviteError,
   } = useFetchInvites(user.id);
-
   const {
     data: pendingInvites,
     isLoading: pendingInviteLoading,
     isError: pendingInviteError,
   } = useFetchPendingInvitations(user.id);
-  console.log(pendingInvites);
+  const {
+    data: understudies,
+    isLoading: understudiesIsLoading,
+    isError: understudiesError
+  } = useUnderstudies(user.id);
+
   const [searchQuery, setSearchQuery] = useState("");
   const { getCollapseProps, getToggleProps, isExpanded } = useCollapse();
 
@@ -41,9 +47,9 @@ const CoachingPage = () => {
       publicUser.account_id !== user.id
   );
 
-  if (profileLoading || inviteLoading || pendingInviteLoading) return <div>Loading...</div>;
+  if (profileLoading || inviteLoading || pendingInviteLoading || understudiesIsLoading) return <div>Loading...</div>;
 
-  if (profileError || inviteError || pendingInviteError) return <div>Error...</div>;
+  if (profileError || inviteError || pendingInviteError || understudiesError) return <div>Error...</div>;
 
   return (
     <div className="min-h-screen bg-[#F1F1F1]">
@@ -61,37 +67,43 @@ const CoachingPage = () => {
         </div>
       </div>
       <div className="w-full h-auto p-10 flex gap-5 items-center justify-center px-[30%] flex-col">
-        <div className="w-[800px] h-auto flex">
-          <h1 className="text-3xl">
-            Invitations ({invites?.length})
-            <span {...getToggleProps()}>
-              {isExpanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-            </span>
-          </h1>
-        </div>
         {invites?.map((invite: any) => (
           <InvitationItem
             key={invite.id}
             name={invite.sender_username}
             id={invite.id}
-            getCollapseProps={getCollapseProps}
             recipientId={invite.recipient_id}
             senderId={invite.sender_id}
           />
         ))}
+        {
+          understudies?.length > 0 && (
+            <div className="flex flex-col text-left gap-5 p-10">
+              <p className="text-3xl">Understudies</p>
+              {understudies?.map((understudy: Understudy) => (
+                <UserItem
+                  key={`KEY-${understudy.account_id}`}
+                  accountId={understudy.account_id}
+                  username={understudy.username}
+                />
+              ))}
+            </div>
+          )
+        }
       </div>
       <div className="w-full h-auto flex items-center justify-start gap-5 p-10 flex-col">
         <div className="w-[800px] h-auto flex">
-          <h1 className="text-3xl">Users</h1>
+          <h1 className="text-3xl">Coaches</h1>
         </div>
         {filteredUsers?.map((user: PublicUsers) => (
           <UserItem
             key={user.account_id}
             username={user.username}
-            account_id={user.account_id}
+            accountId={user.account_id}
             isPending={pendingInvites?.some(
               (invite: any) => invite.recipient_id === user.account_id
             )}
+            hasInviteButton
           />
         ))}
       </div>

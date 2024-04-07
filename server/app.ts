@@ -11,6 +11,8 @@ import { updateCompletionPercent } from "./cron_jobs/moduleJobs";
 import tagRoute from "./routes/tagRoutes";
 import inviteRoutes from "./routes/inviteRoutes";
 import messageRoutes from "./routes/messageRoutes";
+import { createServer } from "http";
+import { Server } from "socket.io";
 
 const app = express();
 app.use(cors());
@@ -36,4 +38,13 @@ app.listen(4000, () => {
     notifyOfCloseDueDates.start();
     updateCompletionStatus.start();
     updateCompletionPercent.start();
+});
+const httpServer = createServer(app);
+const io = new Server(httpServer);
+app.set('io', io);
+
+io.of("/api/message").on("connection", socket => {
+    socket.on("send-message", (recipientId: number) => {
+        socket.broadcast.emit("new-message", {userId: recipientId});
+    });
 });

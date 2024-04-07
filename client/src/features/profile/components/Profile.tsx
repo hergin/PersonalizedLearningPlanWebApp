@@ -58,13 +58,11 @@ export default function ProfileScreen() {
         <Tooltip title="Edit Profile" placement="top">
             <Fab color="primary" onClick={() => setEditMode(true)} size="large">
                 <HiOutlinePencil className="size-6" />
-                Edit
             </Fab>
         </Tooltip>
         <Tooltip title="Delete Account" placement="top">
             <Fab color="primary" onClick={() => setIsWarningOpen(true)} size="large">
                 <HiTrash className="size-6" />
-                Delete
             </Fab>
         </Tooltip>
       </div>
