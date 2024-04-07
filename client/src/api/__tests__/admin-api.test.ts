@@ -82,7 +82,7 @@ describe("Admin Api Unit Tests", () => {
         await setAccountAsRole(mockAccountId, "coach");
         expect(mockThrowError).toHaveBeenCalledTimes(0);
         expect(mockApiHook.put).toHaveBeenCalledTimes(1);
-        expect(mockApiHook.put).toHaveBeenCalledWith(`/admin/account/${mockAccountId}`, {role: "coach"});
+        expect(mockApiHook.put).toHaveBeenCalledWith(`/admin/account/${mockAccountId}/role`, {role: "coach"});
     });
 
     it("Set Account As Role (error case)", async () => {
@@ -90,7 +90,7 @@ describe("Admin Api Unit Tests", () => {
         mockApiHook.put.mockRejectedValue(mockError);
         await setAccountAsRole(mockAccountId, "coach");
         expect(mockApiHook.put).toHaveBeenCalledTimes(1);
-        expect(mockApiHook.put).toHaveBeenCalledWith(`/admin/account/${mockAccountId}`, {role: "coach"});
+        expect(mockApiHook.put).toHaveBeenCalledWith(`/admin/account/${mockAccountId}/role`, {role: "coach"});
         expect(mockThrowError).toHaveBeenCalledTimes(1);
         expect(mockThrowError).toHaveBeenCalledWith(mockError);
     });
