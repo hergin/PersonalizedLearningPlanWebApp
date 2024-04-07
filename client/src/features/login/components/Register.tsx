@@ -1,4 +1,4 @@
-import React, { useState, ReactElement } from "react";
+import React, { useState, ReactElement, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useHotKeys } from "../../../hooks/useHotKeys";
 import { useRegistrationService } from "../hooks/useAccountServices";
@@ -24,6 +24,10 @@ const Register = () => {
     registerValues.username === "" ||
     registerValues.password === "" ||
     passwordErrors.length !== 0;
+
+    useEffect(() => {
+      document.title = 'Personalized Learning Plan | Register';
+    }, []);
 
   async function handleRegistration() {
     if (!registerValues.email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
