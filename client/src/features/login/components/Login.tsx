@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useHotKeys } from "../../../hooks/useHotKeys";
 import { IconButton, InputAdornment, TextField } from "@mui/material";
@@ -11,10 +11,13 @@ const LoginScreen = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { handleEnterPress } = useHotKeys();
-  const buttonDisabled = email === "" || password === "";
   const [showPassword, setShowPassword] = useState(false);
   const handleClickShowPassword = () => setShowPassword(!showPassword);
   const { mutateAsync: login, error } = useLoginService();
+
+  const buttonDisabled = useMemo<boolean>(() => {
+    return email === "" || password === "";
+  }, [email, password]);
 
   async function handleLogin() {
     await login({email: email, password: password});
