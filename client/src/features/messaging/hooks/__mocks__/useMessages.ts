@@ -1,23 +1,17 @@
-export const mockIsLoading = jest.fn();
-export const mockError = jest.fn();
+export const mockUseMessages = jest.fn();
+export const useMessages = mockUseMessages;
+
 export const mockCreatorMutateAsync = jest.fn();
-export const mockEditorMutateAsync = jest.fn();
-export const mockRemoverMutateAsync = jest.fn();
-
-export const useMessages = () => ({
-    data: [{}],
-    isLoading: mockIsLoading,
-    error: mockError
-});
-
 export const useMessageCreator = () => ({
     mutateAsync: mockCreatorMutateAsync,
 });
 
+export const mockEditorMutateAsync = jest.fn();
 export const useMessageEditor = () => ({
     mutateAsync: mockEditorMutateAsync,
 });
 
+export const mockRemoverMutateAsync = jest.fn();
 export const useMessageRemover = () => ({
     mutateAsync: mockRemoverMutateAsync,
 });

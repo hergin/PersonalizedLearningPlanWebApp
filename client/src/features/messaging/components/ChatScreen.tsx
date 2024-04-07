@@ -6,14 +6,14 @@ import { useMessages } from "../hooks/useMessages";
 import { Message } from "../../../types";
 import { useParams } from "react-router-dom";
 
-export default function Chat() {
+export default function ChatScreen() {
     const { user } = useAuth();
     const { id: recipientId } = useParams();
-    const { data, isLoading, isError } = useMessages(user.id, Number(recipientId));
+    const { data, isLoading, error } = useMessages(user.id, Number(recipientId));
 
     const messageElements = useMemo<ReactElement[]>(() => {
         const elements: ReactElement[] = [];
-        if(!isLoading && !isError) {
+        if(!isLoading && !error) {
             let messages: Message[] = [];
             messages = messages.concat(data.sentMessages);
             messages = messages.concat(data.receivedMessages);
@@ -27,20 +27,21 @@ export default function Chat() {
                     <MessageDisplay
                         key={message.id}
                         username={message.username}
-                        content={message.content}
                         isAuthor={user.id === message.sender_id}
-                    />
+                    >
+                        {message.content}
+                    </MessageDisplay>
                 );
             });
         }
         return elements;
-    }, [data, user.id, isLoading, isError]  );
+    }, [data, user.id, isLoading, error]  );
     
     if(isLoading) {
         return (<div>Loading, please wait...</div>);
     }
 
-    if(isError) {
+    if(error) {
         return (<div>An error occurred! Please try again!</div>);
     }
 

@@ -76,10 +76,9 @@ export type CreatedMessage = {
 
 export type Message = CreatedMessage & {
   id: number,
-  date: string,
-  last_edited: string,
   username: string,
-  profile_picture: string,
+  date: string,
+  last_edited?: string,
 };
 
 export type Chat = {

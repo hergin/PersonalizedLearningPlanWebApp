@@ -1,12 +1,11 @@
-import React from "react";
+import React, { PropsWithChildren } from "react";
 
-interface MessageDisplayProps {
+interface MessageDisplayProps extends PropsWithChildren {
     username: string,
-    content: string,
     isAuthor: boolean,
 }
 
-export default function MessageDisplay({username, content, isAuthor}: MessageDisplayProps) {
+export default function MessageDisplay({username, isAuthor, children, ...other}: MessageDisplayProps) {
     const style = {
         backgroundColor: isAuthor ? "bg-cyan-500" : "bg-gray-400",
         itemAlignment: isAuthor ? "items-end" : "items-start",
@@ -16,13 +15,14 @@ export default function MessageDisplay({username, content, isAuthor}: MessageDis
         <div 
             className={`flex flex-col my-4 ${style.itemAlignment} mx-5`}
             data-testid="display-container"
+            {...other}
         >
             <p className="">{username}:</p>
             <div 
                 className={`${style.backgroundColor} p-3 text-wrap w-1/3`}
                 data-testid="content-container"
             >
-                <p>{content}</p>
+                {children}
             </div>
         </div>
     );
