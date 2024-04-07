@@ -43,24 +43,28 @@ export default function ProfileScreen() {
         accountId={user.id} 
         onClose={() => setIsWarningOpen(false)}
       />
-      <ProfileDisplay profile={{
-        id: profileData.profile_id,
-        username: profileData.username,
-        firstName: profileData.first_name,
-        lastName: profileData.last_name,
-        profilePicture: profileData.profile_picture,
-        jobTitle: profileData.job_title,
-        bio: profileData.bio
-      }} />
+      <ProfileDisplay 
+        profile={{
+          id: profileData.profile_id,
+          username: profileData.username,
+          firstName: profileData.first_name,
+          lastName: profileData.last_name,
+          profilePicture: profileData.profile_picture,
+          jobTitle: profileData.job_title,
+          bio: profileData.bio
+        }} 
+      />
       <div className="w-11/12 flex flex-row flex-wrap justify-end gap-3">
         <Tooltip title="Edit Profile" placement="top">
             <Fab color="primary" onClick={() => setEditMode(true)} size="large">
                 <HiOutlinePencil className="size-6" />
+                Edit
             </Fab>
         </Tooltip>
         <Tooltip title="Delete Account" placement="top">
             <Fab color="primary" onClick={() => setIsWarningOpen(true)} size="large">
                 <HiTrash className="size-6" />
+                Delete
             </Fab>
         </Tooltip>
       </div>

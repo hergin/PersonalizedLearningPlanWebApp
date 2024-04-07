@@ -7,7 +7,7 @@ export function useProfile(accountId: number) {
   return useQuery({ queryFn: () => FetchProfile(accountId), queryKey: ["profile", accountId] });
 }
 
-export function useCoaches() {
+export function useCoachProfiles() {
   const { fetchCoaches } = ProfileApi();
   return useQuery({
     queryFn: () => fetchCoaches(),
