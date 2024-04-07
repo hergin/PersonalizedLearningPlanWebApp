@@ -34,6 +34,7 @@ export default function MessageInput({userId, recipientId}: MessageInputProps) {
                     });
                 }}
                 className="w-10/12"
+                data-testid="message-input"
             />
             <Button 
                 variant="contained" 

@@ -3,16 +3,15 @@ import { useInviteAccepter, useInviteDecliner } from "../hooks/useInvites";
 
 const InvitationItem = ({ name, id, getCollapseProps, recipientId, senderId }: any) => {
   const { mutateAsync: acceptInvite } = useInviteAccepter(); 
-  const { mutateAsync: declinetInvite } = useInviteDecliner(); 
-
+  const { mutateAsync: declineInvite } = useInviteDecliner(); 
 
   async function AcceptInvite() {
     await acceptInvite({id, recipientId, senderId});
-    alert(`Invite accpeted`);
+    alert(`Invite accepted`);
   }
 
   async function DeclineInvite() {
-    await declinetInvite(id);
+    await declineInvite(id);
     alert(`Invite declined`);
   }
 

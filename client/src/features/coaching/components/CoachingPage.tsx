@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import SearchBar from "./SearchBar";
 import UserItem from "./UserItem";
-import { useAllProfiles } from "../../profile/hooks/useProfile";
+import { useCoaches } from "../../profile/hooks/useProfile";
 import InvitationItem from "./InviteItem";
 import { useCollapse } from "react-collapsed";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
@@ -19,7 +19,7 @@ const CoachingPage = () => {
     data: users,
     isLoading: profileLoading,
     isError: profileError,
-  } = useAllProfiles();
+  } = useCoaches();
   const {
     data: invites,
     isLoading: inviteLoading,

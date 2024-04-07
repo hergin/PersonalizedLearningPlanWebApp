@@ -13,9 +13,15 @@ export default function MessageDisplay({username, content, isAuthor}: MessageDis
     };
     
     return (
-        <div className={`flex flex-col my-4 ${style.itemAlignment} mx-5`}>
+        <div 
+            className={`flex flex-col my-4 ${style.itemAlignment} mx-5`}
+            data-testid="display-container"
+        >
             <p className="">{username}:</p>
-            <div className={`${style.backgroundColor} p-3 text-wrap w-1/3`}>
+            <div 
+                className={`${style.backgroundColor} p-3 text-wrap w-1/3`}
+                data-testid="content-container"
+            >
                 <p>{content}</p>
             </div>
         </div>

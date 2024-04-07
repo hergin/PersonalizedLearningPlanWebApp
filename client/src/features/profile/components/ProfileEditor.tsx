@@ -21,7 +21,6 @@ export default function ProfileEditor({accountId, profile, open, onSave, onCance
     const { handleEnterPress } = useHotKeys();
 
     const saveChanges = useCallback(async () => {
-        console.log(`Profile: ${JSON.stringify(newProfile)}`);
         await updateProfile(newProfile);
         onSave();
     }, [newProfile, updateProfile, onSave]);
