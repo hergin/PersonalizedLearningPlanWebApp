@@ -3,8 +3,6 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { CreatedMessage } from "../../../types";
 import { io } from "socket.io-client";
 
-
-
 export function useMessages(userId: number, recipientId: number) {
     const { getMessagesBetween } = MessagingApi();
     const queryClient = useQueryClient();

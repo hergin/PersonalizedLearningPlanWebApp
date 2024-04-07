@@ -1,5 +1,5 @@
 import { useApiConnection } from "../../../hooks/useApiConnection";
-import { AxiosError } from "axios";
+import { throwServerError } from "../../../utils/errorHandlers";
 import { CreateModuleProps, Module } from "../../../types";
 
 export const ModuleApi = () => {
@@ -9,8 +9,7 @@ export const ModuleApi = () => {
     try {
       return await get(`/module/get/${userId}`);
     } catch (error: unknown) {
-      console.error(error);
-      alert((error as AxiosError).message ? (error as AxiosError).message : error);
+      throwServerError(error);
     }
   }
 
@@ -23,8 +22,7 @@ export const ModuleApi = () => {
         accountId: account_id,
       });
     } catch (error: unknown) {
-      console.error(error);
-      alert((error as AxiosError).message ? (error as AxiosError).message : error);
+      throwServerError(error);
     }
   }
 
@@ -36,8 +34,7 @@ export const ModuleApi = () => {
         completion: module.completion 
       });
     } catch (error: unknown) {
-      console.error(error);
-      alert((error as AxiosError).message ? (error as AxiosError).message : error);
+      throwServerError(error);
     }
   }
 
@@ -45,8 +42,7 @@ export const ModuleApi = () => {
     try {
       return await del(`/module/delete/${id}`);
     } catch (error: unknown) {
-      console.error(error);
-      alert((error as AxiosError).message ? (error as AxiosError).message : error);
+      throwServerError(error);
     }
   }
 
