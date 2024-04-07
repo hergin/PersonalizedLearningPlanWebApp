@@ -1,5 +1,5 @@
 import { useApiConnection } from "../../../hooks/useApiConnection";
-import { AxiosError } from "axios";
+import { throwServerError } from "../../../utils/errorHandlers";
 import { Tag } from "../../../types";
 
 export const TagApi = () => {
@@ -10,8 +10,7 @@ export const TagApi = () => {
       const data = await get(`/tag/get/${accountID}`);
       return data;
     } catch (error: unknown) {
-      console.error(error);
-      alert((error as AxiosError).message ? (error as AxiosError).message : error);
+      throwServerError(error);
     }
   }
 
@@ -19,8 +18,7 @@ export const TagApi = () => {
     try {
       return await post("/tag/add", tag);
     } catch (error: unknown) {
-      console.error(error);
-      alert((error as AxiosError).message ? (error as AxiosError).message : error);
+      throwServerError(error);
     }
   }
 
@@ -28,8 +26,7 @@ export const TagApi = () => {
     try {
       return await del(`/tag/delete/${id}`);
     } catch(error: unknown) {
-      console.error(error);
-      alert((error as AxiosError).message ? (error as AxiosError).message : error);
+      throwServerError(error);
     }
   }
   

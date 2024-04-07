@@ -2,11 +2,11 @@ import * as LoginProcessor from "../loginProcessor";
 import { StatusCode } from "../../../types";
 import LoginAPI from "../../api/loginApi";
 import { initializeErrorMap } from "../../../utils/errorMessages";
-import { generateAccessToken, generateRefreshToken } from "../../../utils/token";
+import { generateAccessToken, generateRefreshToken } from "../../../middleware/tokenHandler";
 import { createMockRequest, MOCK_RESPONSE, TEST_ACCOUNT } from "../../global/mockValues";
 
 jest.mock("../../../controller/api/loginAPI");
-jest.mock("../../../utils/token", () => ({
+jest.mock("../../../middleware/tokenHandler", () => ({
     generateAccessToken: jest.fn().mockReturnValue("1234567890"),
     generateRefreshToken: jest.fn().mockReturnValue("refresh please"),
 }));
@@ -25,7 +25,7 @@ describe("Login Processor unit tests", () => {
     });
 
     it("verify login (normal case)", async () => {
-        loginApi.verifyLogin.mockResolvedValueOnce(TEST_ACCOUNT.id);
+        loginApi.verifyLogin.mockResolvedValueOnce({id: TEST_ACCOUNT.id, role: TEST_ACCOUNT.role});
         loginApi.setToken.mockResolvedValueOnce(StatusCode.OK);
         const mRequest = createMockRequest({email: TEST_ACCOUNT.email, password: TEST_ACCOUNT.password});
         await LoginProcessor.verifyLogin(mRequest, MOCK_RESPONSE);
@@ -33,15 +33,16 @@ describe("Login Processor unit tests", () => {
         expect(loginApi.verifyLogin).toHaveBeenCalledWith(TEST_ACCOUNT.email, TEST_ACCOUNT.password);
         expect(MOCK_RESPONSE.send).toHaveBeenCalledTimes(0);
         expect(generateAccessToken).toHaveBeenCalledTimes(1);
-        expect(generateAccessToken).toHaveBeenCalledWith(TEST_ACCOUNT.email);
+        expect(generateAccessToken).toHaveBeenCalledWith({id: TEST_ACCOUNT.id, role: TEST_ACCOUNT.role});
         expect(generateRefreshToken).toHaveBeenCalledTimes(1);
-        expect(generateRefreshToken).toHaveBeenCalledWith(TEST_ACCOUNT.email);
+        expect(generateRefreshToken).toHaveBeenCalledWith({id: TEST_ACCOUNT.id, role: TEST_ACCOUNT.role});
         expect(loginApi.setToken).toHaveBeenCalledTimes(1);
         expect(loginApi.setToken).toHaveBeenCalledWith(TEST_ACCOUNT.id, TEST_ACCOUNT.refreshToken);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledTimes(1);
         expect(MOCK_RESPONSE.json).toHaveBeenCalledTimes(1);
         expect(MOCK_RESPONSE.json).toHaveBeenCalledWith({
-            id: TEST_ACCOUNT.id, 
+            id: TEST_ACCOUNT.id,
+            role: TEST_ACCOUNT.role, 
             accessToken: TEST_ACCOUNT.accessToken, 
             refreshToken: TEST_ACCOUNT.refreshToken
         });
@@ -64,16 +65,16 @@ describe("Login Processor unit tests", () => {
     });
 
     it("verify login (token error case)", async () => {
-        loginApi.verifyLogin.mockResolvedValueOnce(TEST_ACCOUNT.id);
+        loginApi.verifyLogin.mockResolvedValueOnce({id: TEST_ACCOUNT.id, role: TEST_ACCOUNT.role});
         loginApi.setToken.mockResolvedValueOnce(StatusCode.CONNECTION_ERROR);
         const mRequest = createMockRequest({email: TEST_ACCOUNT.email, password: TEST_ACCOUNT.password});
         await LoginProcessor.verifyLogin(mRequest, MOCK_RESPONSE);
         expect(loginApi.verifyLogin).toHaveBeenCalledTimes(1);
         expect(loginApi.verifyLogin).toHaveBeenCalledWith(TEST_ACCOUNT.email, TEST_ACCOUNT.password);
         expect(generateAccessToken).toHaveBeenCalledTimes(1);
-        expect(generateAccessToken).toHaveBeenCalledWith(TEST_ACCOUNT.email);
+        expect(generateAccessToken).toHaveBeenCalledWith({id: TEST_ACCOUNT.id, role: TEST_ACCOUNT.role});
         expect(generateRefreshToken).toHaveBeenCalledTimes(1);
-        expect(generateRefreshToken).toHaveBeenCalledWith(TEST_ACCOUNT.email);
+        expect(generateRefreshToken).toHaveBeenCalledWith({id: TEST_ACCOUNT.id, role: TEST_ACCOUNT.role});
         expect(loginApi.setToken).toHaveBeenCalledTimes(1);
         expect(loginApi.setToken).toHaveBeenCalledWith(TEST_ACCOUNT.id, TEST_ACCOUNT.refreshToken);
         expect(MOCK_RESPONSE.json).toHaveBeenCalledTimes(0);

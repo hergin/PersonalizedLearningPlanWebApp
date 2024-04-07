@@ -6,3 +6,4 @@ WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'learningplan')\gexec
 \i learningPlan_tables.sql;
 \i learningplan_views.sql;
 \i learningplan_procedures.sql;
+\i learningplan_triggers.sql;

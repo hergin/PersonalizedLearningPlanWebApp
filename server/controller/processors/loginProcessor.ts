@@ -1,8 +1,8 @@
 import LoginAPI from "../api/loginApi";
 import { Request, Response } from "express";
 import { initializeErrorMap } from "../../utils/errorMessages";
-import { generateAccessToken, generateRefreshToken } from "../../utils/token";
-import { StatusCode } from "../../types";
+import { generateAccessToken, generateRefreshToken } from "../../middleware/tokenHandler";
+import { User, StatusCode } from "../../types";
 
 const loginAPI = new LoginAPI();
 const ERROR_MESSAGES = initializeErrorMap();
@@ -10,20 +10,25 @@ const ERROR_MESSAGES = initializeErrorMap();
 async function verifyLogin(req: Request, res: Response) {
     console.log(`Received in login: ${JSON.stringify(req.body)}`);
     const loginQuery = await loginAPI.verifyLogin(req.body.email, req.body.password);
-    if(loginQuery in StatusCode) {
+    if(isStatusCode(loginQuery)) {
         console.log(`Login verification failed with status code: ${loginQuery}`);
         res.status(loginQuery).send(ERROR_MESSAGES.get(loginQuery));
         return;
     }
-    const accessToken = generateAccessToken(req.body.email);
-    const refreshToken = generateRefreshToken(req.body.email);
-    const tokenQuery = await loginAPI.setToken(loginQuery, refreshToken);
+    const accessToken = generateAccessToken(loginQuery);
+    const refreshToken = generateRefreshToken(loginQuery);
+    const tokenQuery = await loginAPI.setToken(loginQuery.id, refreshToken);
     if(tokenQuery !== StatusCode.OK) {
         console.log(`Storing token failed with status code: ${tokenQuery}`);
         res.status(tokenQuery).send(ERROR_MESSAGES.get(tokenQuery));
         return;
     }
-    res.status(StatusCode.OK).json({id: loginQuery, accessToken, refreshToken});
+    const loginProps : User = loginQuery as User;
+    res.status(StatusCode.OK).json({id: loginProps.id, role: loginProps.role, accessToken, refreshToken});
+}
+
+function isStatusCode<T>(queryResult: T | StatusCode): queryResult is StatusCode {
+    return queryResult as StatusCode in StatusCode;
 }
 
 async function verifyToken(req : Request, res : Response) {
@@ -73,9 +78,9 @@ async function deleteAccount(req : Request, res : Response) {
 async function getUnderstudies(req : Request, res: Response) {
     console.log(`Received in get understudies: ${req.params.id}`);
     const understudyQuery = await loginAPI.getUnderstudies(Number(req.params.id));
-    if(understudyQuery as StatusCode in StatusCode) {
+    if(isStatusCode(understudyQuery)) {
         console.log(`Retrieving account ${req.params.id}'s understudies failed with status code ${understudyQuery}`);
-        res.status(understudyQuery as StatusCode).send(ERROR_MESSAGES.get(understudyQuery));
+        res.status(understudyQuery).send(ERROR_MESSAGES.get(understudyQuery));
         return;
     }
     res.status(StatusCode.OK).json(understudyQuery);

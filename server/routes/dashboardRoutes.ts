@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { authenticateToken } from '../utils/token';
+import { authenticateToken } from '../middleware/authMiddleware';
 import * as DashboardProcessor from "../controller/processors/dashboardProcessor";
 
 const dashboardRoutes = Router();

@@ -1,6 +1,6 @@
 import { useApiConnection } from "../../../hooks/useApiConnection";
 import { Profile, CreateProfileProps } from "../../../types";
-import { AxiosError } from "axios";
+import { throwServerError } from "../../../utils/errorHandlers";
 
 const ProfileApi = () => {
   const { get, post, put } = useApiConnection();
@@ -10,8 +10,7 @@ const ProfileApi = () => {
       const data = await get(`profile/get/${accountId}`);
       return data;
     } catch (error: unknown) {
-      console.error(error);
-      alert((error as AxiosError).message ? (error as AxiosError).message : error);
+      throwServerError(error);
     }
   }
 
@@ -20,8 +19,7 @@ const ProfileApi = () => {
       const data = await get(`profile/get`);
       return data;
     } catch(error: unknown) {
-      console.error(error);
-      alert((error as AxiosError).message ? (error as AxiosError).message : error);
+      throwServerError(error);
     }
   }
 
@@ -29,8 +27,7 @@ const ProfileApi = () => {
     try {
       await post("profile/create", values);
     } catch(error: unknown) {
-      console.error(error);
-      alert((error as AxiosError).message ? (error as AxiosError).message : error);
+      throwServerError(error);
     }
   }
 
@@ -45,8 +42,7 @@ const ProfileApi = () => {
         bio: profile.bio
       });
     } catch(error: unknown) {
-      console.error(error);
-      alert((error as AxiosError).message ? (error as AxiosError).message : error);
+      throwServerError(error);
     }
   }
 

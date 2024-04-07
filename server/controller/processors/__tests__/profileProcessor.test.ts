@@ -19,13 +19,13 @@ describe("Profile Processor unit tests", () => {
     });
 
     it("get all profiles (normal case)", async () => {
-        profileApi.getAllProfiles.mockResolvedValueOnce([
+        profileApi.getAllCoachProfiles.mockResolvedValueOnce([
             {account_id: TEST_ACCOUNT.id, profile_id: TEST_PROFILE.profileId, username: TEST_PROFILE.username}
         ]);
         const mRequest = createMockRequest({}, {});
-        await ProfileProcessor.getAllProfiles(mRequest, MOCK_RESPONSE);
-        expect(profileApi.getAllProfiles).toHaveBeenCalledTimes(1);
-        expect(profileApi.getAllProfiles).toHaveBeenCalledWith();
+        await ProfileProcessor.getAllCoachProfiles(mRequest, MOCK_RESPONSE);
+        expect(profileApi.getAllCoachProfiles).toHaveBeenCalledTimes(1);
+        expect(profileApi.getAllCoachProfiles).toHaveBeenCalledWith();
         expect(MOCK_RESPONSE.send).toHaveBeenCalledTimes(0);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledTimes(1);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledWith(StatusCode.OK);
@@ -36,11 +36,11 @@ describe("Profile Processor unit tests", () => {
     });
 
     it("get all profiles (error case)", async () => {
-        profileApi.getAllProfiles.mockResolvedValueOnce(StatusCode.FORBIDDEN);
+        profileApi.getAllCoachProfiles.mockResolvedValueOnce(StatusCode.FORBIDDEN);
         const mRequest = createMockRequest({}, {});
-        await ProfileProcessor.getAllProfiles(mRequest, MOCK_RESPONSE);
-        expect(profileApi.getAllProfiles).toHaveBeenCalledTimes(1);
-        expect(profileApi.getAllProfiles).toHaveBeenCalledWith();
+        await ProfileProcessor.getAllCoachProfiles(mRequest, MOCK_RESPONSE);
+        expect(profileApi.getAllCoachProfiles).toHaveBeenCalledTimes(1);
+        expect(profileApi.getAllCoachProfiles).toHaveBeenCalledWith();
         expect(MOCK_RESPONSE.json).toHaveBeenCalledTimes(0);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledTimes(1);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledWith(StatusCode.FORBIDDEN);

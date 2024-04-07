@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { authenticateToken } from "../utils/token";
+import { authenticateToken } from '../middleware/authMiddleware';
 import * as SettingsProcessor from "../controller/processors/settingsProcessor";
 
 const settingsRoute = Router();

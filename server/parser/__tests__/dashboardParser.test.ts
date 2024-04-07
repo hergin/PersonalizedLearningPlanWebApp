@@ -1,5 +1,3 @@
-export {};
-
 import DashboardParser from '../dashboardParser';
 import { Pool } from 'pg';
 

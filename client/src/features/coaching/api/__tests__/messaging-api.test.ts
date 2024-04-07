@@ -11,13 +11,11 @@ const mockRecipientId = 1;
 const TEST_MESSAGE: Message[] = [
     {
         content: "Hello! How are you?",
-        date: "2025-01-01T23:59:59.000Z",
         senderId: mockSenderId,
         recipientId: mockRecipientId,
     },
     {
         content: "Good! And you?",
-        date: "2025-01-02T0:00:00.000Z",
         senderId: mockRecipientId,
         recipientId: mockSenderId
     }

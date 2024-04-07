@@ -1,9 +1,10 @@
 import UnderstudyApi from "../understudy-api";
 import { useApiConnection } from "../../../../hooks/useApiConnection";
-import { AxiosError } from "axios";
+import { throwServerError } from "../../../../utils/errorHandlers";
 import { renderHook } from "@testing-library/react";
 
 jest.mock("../../../../hooks/useApiConnection");
+jest.mock("../../../../utils/errorHandlers");
 
 const TEST_UNDERSTUDY = {
     account_id: 1,
@@ -11,17 +12,15 @@ const TEST_UNDERSTUDY = {
     username: "Xx_TestDummy_xX",
     coach_id: 2,
 }
-const TEST_ERROR : AxiosError = {message: "I don't feel like querying right now. :("} as AxiosError;
+const TEST_ERROR = { message: "I don't feel like querying right now. :(" };
 
 describe("Understudy Api Unit Tests", () => {
     var apiClient: any;
-    var mockError: any;
-    var mockAlert: any;
+    var mockServerThrower: jest.Mock<any, any, any>;
 
     beforeEach(() => {
         apiClient = useApiConnection();
-        mockError = jest.spyOn(global.console, 'error');
-        mockAlert = jest.spyOn(window, 'alert');
+        mockServerThrower = throwServerError as jest.Mock;
     });
 
     afterEach(() => {
@@ -34,8 +33,7 @@ describe("Understudy Api Unit Tests", () => {
         await result.current.fetchUnderstudies(TEST_UNDERSTUDY.coach_id);
         expect(apiClient.get).toHaveBeenCalledTimes(1);
         expect(apiClient.get).toHaveBeenCalledWith(`/auth/understudy/${TEST_UNDERSTUDY.coach_id}`);
-        expect(mockError).toHaveBeenCalledTimes(0);
-        expect(mockAlert).toHaveBeenCalledTimes(0);
+        expect(mockServerThrower).toHaveBeenCalledTimes(0);
     });
 
     it("fetchUnderstudies (error case)", async () => {
@@ -44,9 +42,7 @@ describe("Understudy Api Unit Tests", () => {
         await result.current.fetchUnderstudies(TEST_UNDERSTUDY.coach_id);
         expect(apiClient.get).toHaveBeenCalledTimes(1);
         expect(apiClient.get).toHaveBeenCalledWith(`/auth/understudy/${TEST_UNDERSTUDY.coach_id}`);
-        expect(mockError).toHaveBeenCalledTimes(1);
-        expect(mockError).toHaveBeenCalledWith(TEST_ERROR);
-        expect(mockAlert).toHaveBeenCalledTimes(1);
-        expect(mockAlert).toHaveBeenCalledWith(TEST_ERROR.message);
+        expect(mockServerThrower).toHaveBeenCalledTimes(1);
+        expect(mockServerThrower).toHaveBeenCalledWith(TEST_ERROR);
     });
 });

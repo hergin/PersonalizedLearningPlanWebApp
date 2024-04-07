@@ -1,14 +1,20 @@
 import * as GoalProcessor from "../goalProcessor";
 import GoalAPI from "../../api/goalApi";
+import LoginAPI from "../../api/loginApi";
+import EmailService from "../../../service/emailService";
 import { StatusCode } from "../../../types";
 import { initializeErrorMap } from "../../../utils/errorMessages";
-import { createMockRequest, MOCK_RESPONSE, TEST_GOAL, TEST_SUB_GOAL, TEST_TAG } from "../../global/mockValues";
+import { createMockRequest, MOCK_RESPONSE, TEST_ACCOUNT, TEST_GOAL, TEST_SUB_GOAL, TEST_TAG } from "../../global/mockValues";
 
-jest.mock("../../../controller/api/goalApi");
+jest.mock("../../api/goalApi");
+jest.mock("../../api/loginApi");
+jest.mock("../../../service/emailService");
 
 const ERROR_MESSAGES = initializeErrorMap();
 
 describe("Goal Processor Unit Tests", () => {
+    const emailService: any = new EmailService();
+    const loginApi: any = new LoginAPI();
     const goalApi: any = new GoalAPI();
 
     afterEach(() => {
@@ -178,26 +184,52 @@ describe("Goal Processor Unit Tests", () => {
 
     it("put goal feedback (normal case)", async () => {
         goalApi.updateGoalFeedback.mockResolvedValueOnce(StatusCode.OK);
-        const mRequest = createMockRequest({feedback: TEST_GOAL.feedback}, {id: TEST_GOAL.id[0]});
+        loginApi.getAccountById.mockResolvedValueOnce([TEST_ACCOUNT]);
+        emailService.sendEmail.mockResolvedValueOnce({});
+        const mRequest = createMockRequest({feedback: TEST_GOAL.feedback, userId: TEST_ACCOUNT.id}, {id: TEST_GOAL.id[0]});
         await GoalProcessor.putGoalFeedback(mRequest, MOCK_RESPONSE);
         expect(goalApi.updateGoalFeedback).toHaveBeenCalledTimes(1);
         expect(goalApi.updateGoalFeedback).toHaveBeenCalledWith(TEST_GOAL.id[0], TEST_GOAL.feedback);
+        expect(MOCK_RESPONSE.status).toHaveBeenCalledTimes(0);
         expect(MOCK_RESPONSE.send).toHaveBeenCalledTimes(0);
+        expect(loginApi.getAccountById).toHaveBeenCalledTimes(1);
+        expect(loginApi.getAccountById).toHaveBeenCalledWith(TEST_ACCOUNT.id);
+        expect(emailService.sendEmail).toHaveBeenCalledTimes(1);
+        expect(emailService.sendEmail).toHaveBeenCalledWith(TEST_ACCOUNT.email, "Feedback", TEST_GOAL.feedback);
         expect(MOCK_RESPONSE.sendStatus).toHaveBeenCalledTimes(1);
         expect(MOCK_RESPONSE.sendStatus).toHaveBeenCalledWith(StatusCode.OK);
     });
 
-    it("put goal feedback (error case)", async () => {
+    it("put goal feedback (goal api error case)", async () => {
         goalApi.updateGoalFeedback.mockResolvedValueOnce(StatusCode.INTERNAL_SERVER_ERROR);
-        const mRequest = createMockRequest({feedback: TEST_GOAL.feedback}, {id: TEST_GOAL.id[0]});
+        const mRequest = createMockRequest({feedback: TEST_GOAL.feedback, userId: TEST_ACCOUNT.id}, {id: TEST_GOAL.id[0]});
         await GoalProcessor.putGoalFeedback(mRequest, MOCK_RESPONSE);
         expect(goalApi.updateGoalFeedback).toHaveBeenCalledTimes(1);
         expect(goalApi.updateGoalFeedback).toHaveBeenCalledWith(TEST_GOAL.id[0], TEST_GOAL.feedback);
+        expect(loginApi.getAccountById).toHaveBeenCalledTimes(0);
+        expect(emailService.sendEmail).toHaveBeenCalledTimes(0);
         expect(MOCK_RESPONSE.sendStatus).toHaveBeenCalledTimes(0);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledTimes(1);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledWith(StatusCode.INTERNAL_SERVER_ERROR);
         expect(MOCK_RESPONSE.send).toHaveBeenCalledTimes(1);
         expect(MOCK_RESPONSE.send).toHaveBeenCalledWith(ERROR_MESSAGES.get(StatusCode.INTERNAL_SERVER_ERROR));
+    });
+
+    it("put goal feedback (login api error case)", async () => {
+        goalApi.updateGoalFeedback.mockResolvedValueOnce(StatusCode.OK);
+        loginApi.getAccountById.mockResolvedValueOnce(StatusCode.FORBIDDEN);
+        const mRequest = createMockRequest({feedback: TEST_GOAL.feedback, userId: TEST_ACCOUNT.id}, {id: TEST_GOAL.id[0]});
+        await GoalProcessor.putGoalFeedback(mRequest, MOCK_RESPONSE);
+        expect(goalApi.updateGoalFeedback).toHaveBeenCalledTimes(1);
+        expect(goalApi.updateGoalFeedback).toHaveBeenCalledWith(TEST_GOAL.id[0], TEST_GOAL.feedback);
+        expect(emailService.sendEmail).toHaveBeenCalledTimes(0);
+        expect(MOCK_RESPONSE.sendStatus).toHaveBeenCalledTimes(0);
+        expect(loginApi.getAccountById).toHaveBeenCalledTimes(1);
+        expect(loginApi.getAccountById).toHaveBeenCalledWith(TEST_ACCOUNT.id);
+        expect(MOCK_RESPONSE.status).toHaveBeenCalledTimes(1);
+        expect(MOCK_RESPONSE.status).toHaveBeenCalledWith(StatusCode.FORBIDDEN);
+        expect(MOCK_RESPONSE.send).toHaveBeenCalledTimes(1);
+        expect(MOCK_RESPONSE.send).toHaveBeenCalledWith("Failed to retrieve understudy's account to email them the feedback.");
     });
 
     it("delete goal (normal case)", async () => {

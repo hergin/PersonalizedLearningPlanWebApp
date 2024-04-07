@@ -2,16 +2,17 @@ import ProfileAPI from "../api/profileApi";
 import { StatusCode } from "../../types";
 import { initializeErrorMap } from "../../utils/errorMessages";
 import { Request, Response } from "express";
+import isStatusCode from "../../utils/isStatusCode";
 
 const profileAPI = new ProfileAPI();
 const ERROR_MESSAGES = initializeErrorMap();
 
-async function getAllProfiles(req: Request, res: Response) {
+async function getAllCoachProfiles(req: Request, res: Response) {
     console.log("Get all profiles has been called!");
-    const profileQuery = await profileAPI.getAllProfiles();
-    if(profileQuery as StatusCode in StatusCode) {
+    const profileQuery: any[] | StatusCode = await profileAPI.getAllCoachProfiles();
+    if(isStatusCode(profileQuery)) {
         console.error("There was a problem retrieving profile.");
-        res.status(profileQuery as StatusCode).send(ERROR_MESSAGES.get(profileQuery));
+        res.status(profileQuery).send(ERROR_MESSAGES.get(profileQuery));
         return;
     }
     res.status(StatusCode.OK).json(profileQuery);
@@ -20,7 +21,7 @@ async function getAllProfiles(req: Request, res: Response) {
 async function sendProfile(req : Request, res : Response) {
     console.log(`Data received in get profile: ${req.params.id}`);
     const profileQuery = await profileAPI.getProfile(Number(req.params.id));
-    if(profileQuery as StatusCode in StatusCode) {
+    if(isStatusCode(profileQuery)) {
         console.error("There was a problem retrieving profile.");
         res.status(profileQuery).send(ERROR_MESSAGES.get(profileQuery));
         return;
@@ -69,4 +70,4 @@ async function deleteProfile(req : Request, res : Response) {
     res.sendStatus(StatusCode.OK);
 }
 
-export { getAllProfiles, sendProfile, postProfile, putProfile, deleteProfile };
+export { getAllCoachProfiles, sendProfile, postProfile, putProfile, deleteProfile };

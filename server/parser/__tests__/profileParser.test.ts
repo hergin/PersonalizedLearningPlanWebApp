@@ -38,11 +38,11 @@ describe('profile parser tests', () => {
         });
     });
 
-    it('parse all profiles', async () => {
+    it('parse coach profiles', async () => {
         mockQuery.mockResolvedValueOnce({rows: [TEST_PROFILE, TEST_PROFILE]});
-        var actual = await parser.parseAllProfiles();
+        var actual = await parser.parseCoachProfiles();
         expect(mockQuery).toHaveBeenCalledTimes(1);
-        expect(mockQuery).toHaveBeenCalledWith("SELECT * FROM PUBLIC_USER_DATA");
+        expect(mockQuery).toHaveBeenCalledWith("SELECT * FROM COACH_DATA");
         expect(actual).toEqual([TEST_PROFILE, TEST_PROFILE]);
     });
     

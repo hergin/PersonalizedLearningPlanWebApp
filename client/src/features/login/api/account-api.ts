@@ -1,7 +1,7 @@
 import { useApiConnection } from "../../../hooks/useApiConnection";
 import { useUser } from "../hooks/useUser";
-import { AxiosError } from "axios";
 import { RegisterProps } from "../../../types";
+import { throwServerError } from "../../../utils/errorHandlers";
 
 const AccountApi = () => {
     const { user, addUser, removeUser } = useUser();
@@ -12,12 +12,12 @@ const AccountApi = () => {
             const response = await post("/auth/login", {email, password});
             addUser({
                 id: response.id,
+                role: response.role,
                 accessToken: response.accessToken,
                 refreshToken: response.refreshToken,
             });
         } catch(error: unknown) {
-            console.error(error);
-            alert((error as AxiosError).message ? (error as AxiosError).message : error);
+            throwServerError(error);
         }
     }
 
@@ -27,6 +27,7 @@ const AccountApi = () => {
             const response = await post("/auth/login", {email: registerValues.email, password: registerValues.password});
             addUser({
                 id: response.id,
+                role: response.role,
                 accessToken: response.accessToken,
                 refreshToken: response.refreshToken,
             });
@@ -37,8 +38,7 @@ const AccountApi = () => {
                 account_id: response.id
             });
         } catch(error: unknown) {
-            console.error(error);
-            alert((error as AxiosError).message ? (error as AxiosError).message : error);
+            throwServerError(error);
         }
     }
 
@@ -47,8 +47,7 @@ const AccountApi = () => {
             await post("/auth/logout", {id: user.id});
             removeUser();
         } catch(error: unknown) {
-            console.error(error);
-            alert((error as AxiosError).message ? (error as AxiosError).message : error);
+            throwServerError(error);
         }
     }
 
@@ -57,8 +56,7 @@ const AccountApi = () => {
             await del(`/auth/delete/${accountId}`);
             removeUser();
         } catch(error: unknown) {
-            console.error(error);
-            alert((error as AxiosError).message ? (error as AxiosError).message : error);
+            throwServerError(error);
         }
     }
 
