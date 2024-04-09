@@ -6,12 +6,18 @@ import { HiOutlinePencil, HiTrash } from "react-icons/hi";
 import ProfileEditor from "./ProfileEditor";
 import AccountDeletionWarning from "./AccountDeletionWarning";
 import ProfileDisplay from "./ProfileDisplay";
+import DropDownCheckbox from "../../../components/dropDown/DropDownCheckbox";
+import { useSettings, useSettingsMutation } from "../../../hooks/useSettings";
+import AccountMenu from "../../../components/AccountMenu";
+import AccountToggles from "../../../components/AccountToggles";
 
 export default function ProfileScreen() {
   const [isWarningOpen, setIsWarningOpen] = useState<boolean>(false);
   const [editMode, setEditMode] = useState<boolean>(false);
   const { user } = useAuth();
+  const { mutate: updateSettings } = useSettingsMutation(user.id);
   const { data: profileData, isLoading, error } = useProfile(user.id);
+
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -43,17 +49,16 @@ export default function ProfileScreen() {
         accountId={user.id} 
         onClose={() => setIsWarningOpen(false)}
       />
-      <ProfileDisplay 
-        profile={{
-          id: profileData.profile_id,
-          username: profileData.username,
-          firstName: profileData.first_name,
-          lastName: profileData.last_name,
-          profilePicture: profileData.profile_picture,
-          jobTitle: profileData.job_title,
-          bio: profileData.bio
-        }} 
-      />
+      <ProfileDisplay profile={{
+        id: profileData.profile_id,
+        username: profileData.username,
+        firstName: profileData.first_name,
+        lastName: profileData.last_name,
+        profilePicture: profileData.profile_picture,
+        jobTitle: profileData.job_title,
+        bio: profileData.bio
+      }} />
+      <AccountToggles user={user}></AccountToggles>
       <div className="w-11/12 flex flex-row flex-wrap justify-end gap-3">
         <Tooltip title="Edit Profile" placement="top">
             <Fab color="primary" onClick={() => setEditMode(true)} size="large">
