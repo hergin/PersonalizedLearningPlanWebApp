@@ -5,11 +5,13 @@ import { io } from "socket.io-client";
 
 export function useMessages(userId: number, recipientId: number) {
     const { getMessagesBetween } = MessagingApi();
-    const queryClient = useQueryClient();
-    const socket = io("http://localhost:4000/api/message");
-    socket.on("new-message", () => {
-        queryClient.invalidateQueries({queryKey: ["message"]});
-    });
+    /*
+        const queryClient = useQueryClient();
+        const socket = io("http://localhost:4000/api/message");
+        socket.on("new-message", () => {
+            queryClient.invalidateQueries({queryKey: ["message"]});
+        });
+    */
 
     return useQuery({
         queryFn: () => getMessagesBetween(userId, recipientId),

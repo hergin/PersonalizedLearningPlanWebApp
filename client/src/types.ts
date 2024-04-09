@@ -86,22 +86,6 @@ export type Chat = {
   recipientMessages: Message[],
 }
 
-export interface ModuleCreatorProps {
-  accountId: number;
-  modalTitle: string;
-  open: boolean;
-  closeModal: () => void;
-}
-
-export interface LongMenuProps {
-  id: number;
-  moduleName: string;
-  moduleDescription: string;
-  moduleCompletion: number;
-  editFunction: (module: Module) => void;
-  deleteFunction: (id: number) => void;
-}
-
 export interface GoalStepperProps {
   moduleID: number;
   steps: Goal[];
