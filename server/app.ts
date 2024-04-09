@@ -13,6 +13,7 @@ import inviteRoutes from "./routes/inviteRoutes";
 import messageRoutes from "./routes/messageRoutes";
 import { createServer } from "http";
 import { Server } from "socket.io";
+import adminRoutes from "./routes/adminRoutes";
 
 const app = express();
 app.use(cors());
@@ -26,6 +27,7 @@ app.use('/api/settings', settingsRoute);
 app.use("/api/tag", tagRoute);
 app.use("/api/invite", inviteRoutes);
 app.use("/api/message", messageRoutes);
+app.use("/api/admin", adminRoutes);
 
 app.get('/api', (req : Request, res : Response) => {
     console.log(req.body);
