@@ -6,13 +6,13 @@ import { Tooltip } from "@mui/material";
 import EditModuleModal from "./EditModuleModal";
 import WarningDialogue from "../../../components/WarningDialogue";
 
-interface ModuleProps {
+interface ModuleItemProps {
   module: Module;
   editModule: (updatedModule: Module) => void;
   deleteModule: (id: number) => void;
 }
 
-export default function ModuleItem({ module, editModule, deleteModule }: ModuleProps) {
+export default function ModuleItem({ module, editModule, deleteModule }: ModuleItemProps) {
   const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
   const [isWarningOpen, setIsWarningOpen] = useState<boolean>(false);
   

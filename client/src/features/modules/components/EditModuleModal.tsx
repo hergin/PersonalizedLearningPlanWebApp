@@ -27,35 +27,41 @@ export default function EditModuleModal({module, isOpen, editModule, onClose}: E
 
     return (
         <Dialog open={isOpen} onClose={onClose}>
-            <DialogTitle>Edit Module</DialogTitle>
+            <DialogTitle>
+                Edit Goal Set
+            </DialogTitle>
             <DialogContent>
-            <TextField
-                value={newModule.name}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewModule({
-                    ...newModule, 
-                    name: e.target.value
-                })}
-                onKeyDown={(event) => {
-                    handleEnterPress(event, handleModuleEdit);
-                }}
-                fullWidth
-                margin="normal"
-            />
-            <TextField
-                value={newModule.description}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewModule({
-                    ...newModule,
-                    description: e.target.value
-                })}
-                onKeyDown={(event) => {
-                    handleEnterPress(event, handleModuleEdit);
-                }}
-                fullWidth
-                margin="normal"
-            />
-            <Button variant="contained" onClick={handleModuleEdit}>
-                Save Changes
-            </Button>
+                <TextField
+                    value={newModule.name}
+                    label="Name"
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewModule({
+                        ...newModule, 
+                        name: e.target.value
+                    })}
+                    onKeyUp={(event) => {
+                        handleEnterPress(event, handleModuleEdit);
+                    }}
+                    fullWidth
+                    margin="normal"
+                    inputProps={{"data-testid": "edit-name"}}
+                />
+                <TextField
+                    value={newModule.description}
+                    label="Description"
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewModule({
+                        ...newModule,
+                        description: e.target.value
+                    })}
+                    onKeyUp={(event) => {
+                        handleEnterPress(event, handleModuleEdit);
+                    }}
+                    fullWidth
+                    margin="normal"
+                    inputProps={{"data-testid": "edit-description"}}
+                />
+                <Button variant="contained" onClick={handleModuleEdit}>
+                    Save Changes
+                </Button>
             </DialogContent>
       </Dialog>
     );
