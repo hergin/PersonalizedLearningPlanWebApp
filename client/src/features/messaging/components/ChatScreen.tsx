@@ -21,8 +21,6 @@ export default function ChatScreen() {
                 return Date.parse(msg1.date) - Date.parse(msg2.date);
             });
             messages.forEach(message => {
-                console.log(`User Id: ${user.id}`);
-                console.log(`message Sender Id: ${message.sender_id}`);
                 elements.push(
                     <MessageDisplay
                         key={message.id}
@@ -46,8 +44,8 @@ export default function ChatScreen() {
     }
 
     return (
-        <div className="flex flex-col size-full p-5 gap-5">
-            <div className="overflow-y-auto w-11/12 min-h-96 mt-5 self-center">
+        <div className="flex flex-col my-5 px-5 gap-5">
+            <div className="overflow-y-auto w-11/12 h-[545px] self-center bg-[#F1F1F1]">
                 {messageElements}
             </div>
             <div>

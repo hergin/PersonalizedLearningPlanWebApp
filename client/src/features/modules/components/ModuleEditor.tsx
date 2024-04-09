@@ -14,7 +14,6 @@ import {
 import { useApiConnection } from "../../../hooks/useApiConnection";
 import { useHotKeys } from "../../../hooks/useHotKeys";
 import { LongMenuProps } from "../../../types";
-import { useQueryClient } from "@tanstack/react-query";
 
 const ModuleEditorButton = ({
   id: module_id,
@@ -25,8 +24,6 @@ const ModuleEditorButton = ({
   deleteFunction
 }: LongMenuProps) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
-  const queryClient = useQueryClient();
-
   const open = Boolean(anchorEl);
   const [newModuleName, seNewModuleName] = useState(moduleName);
   const [newDescription, setNewDescription] =
