@@ -53,7 +53,7 @@ export default function FullFeaturedCrudGrid() {
   const handleSaveClick =
     (id: GridRowId, account_id: number, role: Role) => async () => {
       try {
-        await updateRole({ id: account_id, role: role });
+        await updateRole({ id: account_id, role });
         setRowModesModel({
           ...rowModesModel,
           [id]: { mode: GridRowModes.View },
