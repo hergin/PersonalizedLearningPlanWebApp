@@ -30,8 +30,8 @@ export async function getAccount(req: Request, res: Response) {
 }
 
 export async function postAccountRole(req: Request, res: Response) {
-    console.log(`Giving account with id ${req.body.id} the ${req.body.newRole} role.`);
-    const result = await adminApi.setAccountToRole(Number(req.body.id), req.body.newRole);
+    console.log(`Giving account with id ${req.params.id} the ${req.body.newRole} role.`);
+    const result = await adminApi.setAccountToRole(Number(req.params.id), req.body.newRole);
     if(result !== StatusCode.OK) {
         console.error(`Something went wrong while giving account ${req.body.id} the ${req.body.newRole} role.`);
         res.status(result).send(ERROR_MESSAGES.get(result));
