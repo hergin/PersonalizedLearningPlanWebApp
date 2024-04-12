@@ -22,7 +22,7 @@ export default class AdminParser extends DatabaseParser {
     async setAccountAsRole(accountId: number, role: Role) {
         console.log("Setting account as coach...");
         return await this.parseDatabase({
-            text: "UPDATE ACCOUNT SET role = $1 WHERE id = $2",
+            text: "UPDATE ACCOUNT SET site_role = $1 WHERE id = $2",
             values: [role, accountId]
         });
     }
