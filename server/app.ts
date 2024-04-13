@@ -11,6 +11,9 @@ import { updateCompletionPercent } from "./cron_jobs/moduleJobs";
 import tagRoute from "./routes/tagRoutes";
 import inviteRoutes from "./routes/inviteRoutes";
 import messageRoutes from "./routes/messageRoutes";
+import { createServer } from "http";
+import { Server } from "socket.io";
+import adminRoutes from "./routes/adminRoutes";
 
 const app = express();
 app.use(cors());
@@ -24,16 +27,26 @@ app.use('/api/settings', settingsRoute);
 app.use("/api/tag", tagRoute);
 app.use("/api/invite", inviteRoutes);
 app.use("/api/message", messageRoutes);
+app.use("/api/admin", adminRoutes);
 
 app.get('/api', (req : Request, res : Response) => {
     console.log(req.body);
     res.send('Okay');
 });
 
-// When we host, cron jobs will separate from the server.
+// When we host, cron jobs will be separate from the server.
 app.listen(4000, () => {
     console.log("Server running!");
     notifyOfCloseDueDates.start();
     updateCompletionStatus.start();
     updateCompletionPercent.start();
+});
+const httpServer = createServer(app);
+const io = new Server(httpServer);
+app.set('io', io);
+
+io.of("/api/message").on("connection", socket => {
+    socket.on("send-message", (recipientId: number) => {
+        socket.broadcast.emit("new-message", {userId: recipientId});
+    });
 });

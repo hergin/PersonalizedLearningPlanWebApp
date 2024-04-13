@@ -26,7 +26,7 @@ const AdminApi = () => {
         }
 
         try {
-            await put(`/admin/account/${id}`, {role: role});
+            await put(`/admin/account/${id}/role`, {role: role});
         } catch(error: unknown) {
             throwServerError(error);
         }

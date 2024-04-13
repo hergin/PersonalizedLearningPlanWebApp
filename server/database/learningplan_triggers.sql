@@ -41,7 +41,7 @@ EXECUTE FUNCTION calculate_new_module_completion();
 CREATE OR REPLACE FUNCTION set_last_edited()
 RETURNS TRIGGER AS $$
     BEGIN
-        NEW.last_edited = CURRENT_TIMESTAMP;
+        NEW.last_edited := CURRENT_TIMESTAMP;
         RETURN NEW;
     END;
 $$ LANGUAGE PLPGSQL;
@@ -53,17 +53,20 @@ EXECUTE FUNCTION set_last_edited();
 -- Automatically set a completion time and then a expiration date based on the GoalType given after is_complete is set to true.
 CREATE OR REPLACE FUNCTION set_goal_timestamps()
 RETURNS TRIGGER AS $$
+    DECLARE
+        new_expiration TIMESTAMP WITH TIME ZONE;
     BEGIN
         IF NEW.is_complete IS TRUE THEN
-            NEW.completion_time = CURRENT_TIMESTAMP;
+            NEW.completion_time := CURRENT_TIMESTAMP;
             IF NEW.goal_type != 'todo' THEN
-                CASE NEW.goal_type
-                WHEN 'daily' THEN NEW.expiration = CURRENT_TIMESTAMP + INTERVAL '24 hours';
-                WHEN 'weekly' THEN NEW.expiration = CURRENT_TIMESTAMP + INTERVAL '1 week';
-                WHEN 'monthly' THEN NEW.expiration = CURRENT_TIMESTAMP + INTERVAL '1 month';
-                WHEN 'yearly' THEN NEW.expiration = CURRENT_TIMESTAMP + INTERVAL '1 year';
-                ELSE RAISE NOTICE 'Unknown Goal Type.';
+                CASE
+                    WHEN NEW.goal_type = 'daily'::GOAL_TYPE THEN new_expiration := CURRENT_TIMESTAMP + INTERVAL '24 hours';
+                    WHEN NEW.goal_type = 'weekly'::GOAL_TYPE THEN new_expiration := CURRENT_TIMESTAMP + INTERVAL '1 week';
+                    WHEN NEW.goal_type = 'monthly'::GOAL_TYPE THEN new_expiration := CURRENT_TIMESTAMP + INTERVAL '1 month';
+                    WHEN NEW.goal_type = 'yearly'::GOAL_TYPE THEN new_expiration := CURRENT_TIMESTAMP + INTERVAL '1 year';
+                    ELSE RAISE NOTICE 'Unknown Goal Type.';
                 END CASE;
+                NEW.expiration := new_expiration;
             END IF;
         END IF;
         RETURN NEW;

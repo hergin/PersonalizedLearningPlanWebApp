@@ -1,8 +1,15 @@
 import React from "react";
 import { BrowserRouter, Outlet, Routes, Route } from "react-router-dom";
-import { render, fireEvent } from "@testing-library/react";
+import { render, fireEvent, cleanup } from "@testing-library/react";
 import Navbar from "../Navbar";
+import { User, emptyUser } from "../../types";
 
+var mockUser: User = emptyUser;
+jest.mock("../../context/AuthContext", () => ({
+  useAuth: () => ({
+    user: mockUser,
+  }),
+}));
 jest.mock("../AccountButton");
 
 function TestDefaultScreen() {
@@ -15,7 +22,53 @@ function TestDefaultScreen() {
 }
 
 describe("Navbar Unit Tests", () => {
+  afterEach(() => {
+    cleanup();
+    jest.clearAllMocks();
+  });
+
+  it("Not signed in case", () => {
+    mockUser = emptyUser;
+    const { getByTestId } = render(
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<TestDefaultScreen />}>
+            <Route path="/LearningPlan" element={<p>Learning Plan</p>} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    );
+    expect(getByTestId("top-level-navbar")).toBeInTheDocument();
+    expect(() => getByTestId("bottom-level-navbar")).toThrow(expect.any(Error));
+  });
+
+  it("Signed in case", () => {
+    mockUser = {
+      id: 1,
+      role: "basic",
+      accessToken: "Access Token",
+      refreshToken: "Refresh Token"
+    };
+    const { getByTestId } = render(
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<TestDefaultScreen />}>
+            <Route path="/LearningPlan" element={<p>Learning Plan</p>} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    );
+    expect(getByTestId("top-level-navbar")).toBeInTheDocument();
+    expect(getByTestId("bottom-level-navbar")).toBeInTheDocument();
+  });
+
   it("Navbar Links are correct", () => {
+    mockUser = {
+      id: 1,
+      role: "basic",
+      accessToken: "Access Token",
+      refreshToken: "Refresh Token"
+    };
     const { getByTestId } = render(
       <BrowserRouter>
         <Routes>

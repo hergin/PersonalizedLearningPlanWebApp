@@ -2,6 +2,7 @@ import MessageApi from "../api/messageApi";
 import { initializeErrorMap } from "../../utils/errorMessages";
 import { Request, Response } from "express";
 import { StatusCode } from "../../types";
+import { Server } from "socket.io";
 
 const ERROR_MESSAGES = initializeErrorMap();
 const messageApi = new MessageApi();
@@ -18,8 +19,8 @@ export async function getAllSentMessages(req: Request, res: Response) {
 }
 
 export async function getMessagesBetween(req: Request, res: Response) {
-    console.log(`Data received in getMessagesBetween: ${req.params.id} ${req.params.recipientId}`);
-    const query = await messageApi.getChatMessages(Number(req.params.id), Number(req.params.recipientId));
+    console.log(`Data received in getMessagesBetween: ${req.params.id} ${req.params.receivedId}`);
+    const query = await messageApi.getChatMessages(Number(req.params.id), Number(req.params.receivedId));
     if(query as StatusCode in StatusCode) {
         console.log(`Failed to get messages between users ${req.params.id} ${req.params.recipientId}!`);
         res.status(query as StatusCode).send(ERROR_MESSAGES.get(query));
@@ -29,11 +30,11 @@ export async function getMessagesBetween(req: Request, res: Response) {
 }
 
 export async function postMessage(req: Request, res: Response) {
-    console.log(`Data received in post message: ${req.body.senderId} ${req.body.recipientId}`);
+    console.log(`Data received in post message: ${req.body.sender_id} ${req.body.recipient_id}`);
     const query = await messageApi.sendMessage({
         content: req.body.content,
-        senderId: req.body.senderId,
-        recipientId: req.body.recipientId
+        senderId: req.body.sender_id,
+        recipientId: req.body.recipient_id
     });
     if(query !== StatusCode.OK) {
         console.log(`Failed to post message with content "${req.body.content}"!`);
@@ -41,6 +42,8 @@ export async function postMessage(req: Request, res: Response) {
         return;
     }
     res.sendStatus(StatusCode.OK);
+    const io = req.app.get("io") as Server;
+    io.emit("send-message", {recipientId: req.body.recipientId});
 }
 
 export async function putMessage(req: Request, res: Response) {

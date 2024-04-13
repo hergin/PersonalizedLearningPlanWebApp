@@ -1,6 +1,6 @@
-import { AxiosError } from "axios";
 import { useApiConnection } from "../../../hooks/useApiConnection";
-import { Message } from "../../../types";
+import { CreatedMessage } from "../../../types";
+import { throwServerError } from "../../../utils/errorHandlers";
 
 const MessagingApi = () => {
     const { get, post, put, del} = useApiConnection();
@@ -9,21 +9,15 @@ const MessagingApi = () => {
         try {
             return await get(`/message/${id}/${recipientId}`);
         } catch(error: unknown) {
-            console.error(error);
-            alert(
-                (error as AxiosError).message ? (error as AxiosError).message : error
-            );
+            throwServerError(error);
         }
     }
 
-    async function sendMessage(message: Message) {
+    async function sendMessage(message: CreatedMessage) {
         try {
             return await post("/message/send", message);
         } catch(error: unknown) {
-            console.error(error);
-            alert(
-                (error as AxiosError).message ? (error as AxiosError).message : error
-            );
+            throwServerError(error);
         }
     }
 
@@ -31,10 +25,7 @@ const MessagingApi = () => {
         try {
             return await put(`/message/edit/${id}`, {content});
         } catch(error: unknown) {
-            console.error(error);
-            alert(
-                (error as AxiosError).message ? (error as AxiosError).message : error
-            );
+            throwServerError(error);
         }
     }
 
@@ -42,10 +33,7 @@ const MessagingApi = () => {
         try {
             return await del(`/message/delete/${id}`);
         } catch(error: unknown) {
-            console.error(error);
-            alert(
-                (error as AxiosError).message ? (error as AxiosError).message : error
-            );
+            throwServerError(error);
         }
     }
 

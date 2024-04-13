@@ -68,26 +68,22 @@ export type Understudy = {
   coach_id: number;
 };
 
-export type Message = {
+export type CreatedMessage = {
   content: string,
-  senderId: number,
-  recipientId: number
+  sender_id: number,
+  recipient_id: number
 };
 
-export interface ModuleCreatorProps {
-  accountId: number;
-  modalTitle: string;
-  open: boolean;
-  closeModal: () => void;
-}
+export type Message = CreatedMessage & {
+  id: number,
+  username: string,
+  date: string,
+  last_edited?: string,
+};
 
-export interface LongMenuProps {
-  id: number;
-  moduleName: string;
-  moduleDescription: string;
-  moduleCompletion: number;
-  editFunction: (module: Module) => void;
-  deleteFunction: (id: number) => void;
+export type Chat = {
+  sentMessages: Message[],
+  recipientMessages: Message[],
 }
 
 export interface GoalStepperProps {
