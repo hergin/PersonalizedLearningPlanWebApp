@@ -1,8 +1,7 @@
-import React, { useState } from "react";
-import Modal from "@mui/material/Modal";
+import React, { useState, useMemo } from "react";
+import { Modal, TextField, Button } from "@mui/material";
 import { useHotKeys } from "../../../hooks/useHotKeys";
 import { useTagCreator } from "../hooks/useTags";
-import { MuiColorInput } from "mui-color-input";
 
 interface TagCreatorProps {
   accountId: number;
@@ -10,15 +9,16 @@ interface TagCreatorProps {
 
 function TagCreator({ accountId }: TagCreatorProps) {
   const [tagName, setTagName] = useState("");
-  const [tagColor, setTagColor] = useState("#000000");
   const [open, setOpen] = useState(false);
-  const submitDisabled = tagName === "" || tagColor === "";
   const { handleEnterPress } = useHotKeys();
   const { mutate: createTag } = useTagCreator();
 
+  const submitDisabled = useMemo<boolean>(() => {
+    return tagName === "";
+  }, [tagName]);
 
   function handleTagCreation() {
-    createTag({name: tagName, color: tagColor, accountId});
+    createTag({name: tagName, color: "#000000", accountId});
     setOpen(false);
   }
 
@@ -40,11 +40,8 @@ function TagCreator({ accountId }: TagCreatorProps) {
             <h1 className="font-headlineFont text-5xl">Create a new Tag</h1>
           </div>
           <div className="w-full h-full flex flex-col items-center justify-center gap-10">
-            <input
-              className="h-10 rounded text-base w-full border border-solid border-gray-300 px-2 "
-              name="module"
-              type="text"
-              placeholder="Tag Name"
+            <TextField
+              label="Name"
               value={tagName}
               onChange={(event) => {
                 setTagName(event.target.value);
@@ -52,21 +49,18 @@ function TagCreator({ accountId }: TagCreatorProps) {
               onKeyUp={(event) => {
                 handleEnterPress(event, handleTagCreation, submitDisabled);
               }}
+              className="w-8/12 h-10 px-2"
               required
             />
-            <MuiColorInput
-              format="hex"
-              value={tagColor}
-              onChange={setTagColor}
-            />
             <div className="w-full flex justify-center items-center px-20 ">
-              <button
+              <Button
+                variant="contained"
                 onClick={handleTagCreation}
                 disabled={submitDisabled}
-                className="w-6/12 h-10 border-1 border-solid border-gray-300 rounded px-2 text-base bg-element-base text-text-color hover:bg-[#820000] hover:cursor-pointer disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-element-base"
+                className="w-5/12 h-10"
               >
                 Submit
-              </button>
+              </Button>
             </div>
           </div>
         </div>

@@ -12,7 +12,7 @@ const GoalParentContainer = () => {
   const { user } = useUser();
   const { id: moduleId } = useParams();
   const { data: goals, isLoading, error } = useGoals(Number(moduleId));
-  console.log("goals", goals);
+  
   if (isLoading) {
     return <p className="text-black">Loading...</p>;
   }
@@ -20,6 +20,7 @@ const GoalParentContainer = () => {
   if (error) {
     return <p className="text-black">Error</p>;
   }
+
   return (
     <div className="relative flex h-screen">
       <Goals id={Number(moduleId)}>

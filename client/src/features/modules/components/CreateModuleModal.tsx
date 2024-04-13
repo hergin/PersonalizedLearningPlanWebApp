@@ -16,7 +16,7 @@ function CreateModuleModal({accountId, isOpen, closeModal}: CreateModuleModalPro
   const { handleEnterPress } = useHotKeys();
 
   const submitDisabled = useMemo<boolean>(() => {
-    var result = false;
+    let result = false;
     for(const value of Object.values(newModule)) {
       result = result || value === "";
     }
@@ -41,7 +41,7 @@ function CreateModuleModal({accountId, isOpen, closeModal}: CreateModuleModalPro
         <div className="w-full h-full flex flex-col items-center justify-center gap-5 px-2">
           <TextField
             label="Name"
-            value={newModule}
+            value={newModule.name}
             onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
               setNewModule({...newModule, name: event.target.value});
             }}

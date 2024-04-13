@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import GoalEditor from "./GoalEditor";
 import { Goal } from "../../../types";
 import { SubGoalsCollapsable } from "./SubGoalsCollapsable";
@@ -18,23 +18,8 @@ interface GoalItemProps {
 
 export default function GoalItem({ id, goal }: GoalItemProps) {
   const { getCollapseProps, getToggleProps, isExpanded } = useCollapse();
-  const [progress, setProgress] = useState(0);
   const [openDescription, setOpenDescription] = useState(false);
   const { mutateAsync: updateGoal } = useGoalUpdater(goal.module_id);
-
-  useEffect(() => {
-    // action on update of movies
-    if (goal.is_complete) {
-      goal.is_complete;
-      setProgress(1);
-      progress + "Is this";
-    } else {
-      goal.is_complete;
-      setProgress(0);
-      progress + "Is this";
-    }
-    goal.color;
-  }, [goal.color, goal.is_complete, progress]);
 
   return (
     <div>
@@ -61,9 +46,7 @@ export default function GoalItem({ id, goal }: GoalItemProps) {
             )}
           </div>
           <div className="flex flex-col transition-transform w-[15%] h-full justify-center p-3 items-center">
-            <p className={`text-[#${goal.color?.slice(1, goal.color.length)}]`}>
               {goal.tag_name}
-            </p>
           </div>
           <div className="flex flex-col transition-transform w-[15%] h-full justify-center p-3 items-center">
             <button {...getToggleProps()} className="text-black">

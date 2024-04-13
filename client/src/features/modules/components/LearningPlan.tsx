@@ -69,7 +69,6 @@ export default function LearningPlan() {
           style={TABPANEL_STYLE}
         >
         </TabPanel>
-        
       ))}
     </div>
   );
