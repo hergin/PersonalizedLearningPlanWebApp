@@ -50,7 +50,7 @@ describe("Admin Parser Unit Tests", () => {
         await parser.setAccountAsRole(mockAccountId, mockRole);
         expect(mockQuery).toHaveBeenCalledTimes(1);
         expect(mockQuery).toHaveBeenCalledWith({
-            text: "UPDATE ACCOUNT SET role = $1 WHERE id = $2",
+            text: "UPDATE ACCOUNT SET site_role = $1 WHERE id = $2",
             values: [mockRole, mockAccountId]
         });
     });

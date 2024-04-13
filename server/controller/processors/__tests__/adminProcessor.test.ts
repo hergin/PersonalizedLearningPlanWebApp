@@ -75,9 +75,9 @@ describe("Admin Processor Unit Tests", () => {
         expect(MOCK_RESPONSE.send).toHaveBeenCalledWith(ERROR_MESSAGES.get(StatusCode.CONFLICT));
     });
 
-    it("Post Account Role (normal case)", async () => {
+    it("Put Account Role (normal case)", async () => {
         adminApi.setAccountToRole.mockResolvedValueOnce(StatusCode.OK);
-        const mRequest = createMockRequest({id: mockAccountId, newRole: mockRole});
+        const mRequest = createMockRequest({newRole: mockRole}, {id: mockAccountId});
         await AdminProcessor.postAccountRole(mRequest, MOCK_RESPONSE);
         expect(adminApi.setAccountToRole).toHaveBeenCalledTimes(1);
         expect(adminApi.setAccountToRole).toHaveBeenCalledWith(mockAccountId, mockRole);
@@ -87,9 +87,9 @@ describe("Admin Processor Unit Tests", () => {
         expect(MOCK_RESPONSE.send).toHaveBeenCalledTimes(0);
     });
 
-    it("Post Account Role (error case)", async () => {
+    it("Put Account Role (error case)", async () => {
         adminApi.setAccountToRole.mockResolvedValueOnce(StatusCode.CONNECTION_ERROR);
-        const mRequest = createMockRequest({id: mockAccountId, newRole: mockRole});
+        const mRequest = createMockRequest({newRole: mockRole}, {id: mockAccountId});
         await AdminProcessor.postAccountRole(mRequest, MOCK_RESPONSE);
         expect(adminApi.setAccountToRole).toHaveBeenCalledTimes(1);
         expect(adminApi.setAccountToRole).toHaveBeenCalledWith(mockAccountId, mockRole);

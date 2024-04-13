@@ -29,7 +29,12 @@ export const MOCK_RESPONSE : any = {
 export function createMockRequest(body: any, params?: any): any {
     return {
         body: body,
-        params: params
+        params: params,
+        app: {
+            get: jest.fn().mockImplementation(() => ({
+                emit: jest.fn(),
+            })),
+        }
     };
 }
 

@@ -58,7 +58,7 @@ describe("Message Processor Unit Tests", () => {
 
     it("Get Chat Messages (normal case)", async () => {
         api.getChatMessages.mockResolvedValueOnce(TEST_MESSAGE);
-        const mRequest = createMockRequest({}, {id: mockSenderId, recipientId: mockRecipientId});
+        const mRequest = createMockRequest({}, {id: mockSenderId, receivedId: mockRecipientId});
         await MessageProcessor.getMessagesBetween(mRequest, MOCK_RESPONSE);
         expect(api.getChatMessages).toHaveBeenCalledTimes(1);
         expect(api.getChatMessages).toHaveBeenCalledWith(mockSenderId, mockRecipientId);
@@ -71,7 +71,7 @@ describe("Message Processor Unit Tests", () => {
 
     it("Get Chat Messages (error case)", async () => {
         api.getChatMessages.mockResolvedValueOnce(StatusCode.CONFLICT);
-        const mRequest = createMockRequest({}, {id: mockSenderId, recipientId: mockRecipientId});
+        const mRequest = createMockRequest({}, {id: mockSenderId, receivedId: mockRecipientId});
         await MessageProcessor.getMessagesBetween(mRequest, MOCK_RESPONSE);
         expect(api.getChatMessages).toHaveBeenCalledTimes(1);
         expect(api.getChatMessages).toHaveBeenCalledWith(mockSenderId, mockRecipientId);
@@ -84,7 +84,11 @@ describe("Message Processor Unit Tests", () => {
 
     it("Post Message (normal case)", async () => {
         api.sendMessage.mockResolvedValueOnce(StatusCode.OK);
-        const mRequest = createMockRequest(TEST_MESSAGE[0]);
+        const mRequest = createMockRequest({
+            ...TEST_MESSAGE[0],
+            recipient_id: mockRecipientId,
+            sender_id: mockSenderId
+        });
         await MessageProcessor.postMessage(mRequest, MOCK_RESPONSE);
         expect(api.sendMessage).toHaveBeenCalledTimes(1);
         expect(api.sendMessage).toHaveBeenCalledWith(TEST_MESSAGE[0]);
@@ -96,7 +100,11 @@ describe("Message Processor Unit Tests", () => {
 
     it("Post Message (error case)", async () => {
         api.sendMessage.mockResolvedValueOnce(StatusCode.FORBIDDEN);
-        const mRequest = createMockRequest(TEST_MESSAGE[0]);
+        const mRequest = createMockRequest({
+            ...TEST_MESSAGE[0],
+            recipient_id: mockRecipientId,
+            sender_id: mockSenderId
+        });
         await MessageProcessor.postMessage(mRequest, MOCK_RESPONSE);
         expect(api.sendMessage).toHaveBeenCalledTimes(1);
         expect(api.sendMessage).toHaveBeenCalledWith(TEST_MESSAGE[0]);
