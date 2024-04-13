@@ -1,7 +1,7 @@
 import MessageParser from "../../parser/messageParser";
 import { ErrorCodeInterpreter } from "./errorCodeInterpreter";
 import { DatabaseError } from "pg";
-import { Message, Chat, StatusCode } from "../../types";
+import { Message, Chat, STATUS_CODE, StatusCode } from "../../types";
 
 export default class MessageApi {
     parser: MessageParser;
@@ -31,7 +31,7 @@ export default class MessageApi {
     async sendMessage(message: Message): Promise<StatusCode> {
         try {
             await this.parser.storeMessage(message);
-            return StatusCode.OK;
+            return STATUS_CODE.OK;
         } catch(error: unknown) {
             return this.errorCodeInterpreter.getStatusCode(error as DatabaseError);
         }
@@ -40,7 +40,7 @@ export default class MessageApi {
     async editMessage(id: number, content: string): Promise<StatusCode> {
         try {
             await this.parser.editMessage(id, content);
-            return StatusCode.OK;
+            return STATUS_CODE.OK;
         } catch(error: unknown) {
             return this.errorCodeInterpreter.getStatusCode(error as DatabaseError);
         }
@@ -49,7 +49,7 @@ export default class MessageApi {
     async deleteMessage(id: number): Promise<StatusCode> {
         try {
             await this.parser.deleteMessage(id);
-            return StatusCode.OK;
+            return STATUS_CODE.OK;
         } catch(error: unknown) {
             return this.errorCodeInterpreter.getStatusCode(error as DatabaseError);
         }

@@ -1,11 +1,11 @@
 import { generateInsertQuery, generateUpdateQuery } from "../queryGenerator";
-import { Goal, GoalType, Profile } from "../../types";
+import { Goal, GOAL_TYPE, Profile } from "../../types";
 
 const TEST_GOAL : Goal = {
     name: "Do homework",
     description: "Do your homework",
     is_complete: false,
-    goal_type: GoalType.ONCE,
+    goal_type: GOAL_TYPE.ONCE,
 };
 
 const TEST_PROFILE: Profile = {

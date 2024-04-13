@@ -1,5 +1,5 @@
 import TagApi from "../tagApi";
-import { StatusCode } from "../../../types";
+import { STATUS_CODE } from "../../../types";
 import TagParser from "../../../parser/tagParser";
 jest.mock("../../../parser/tagParser");
 
@@ -42,7 +42,7 @@ describe("Tag Api Unit Tests", () => {
         const result = await api.addTag(TEST_DATA.accountId, TEST_DATA.name, TEST_DATA.color);
         expect(parser.storeTag).toHaveBeenCalledTimes(1);
         expect(parser.storeTag).toHaveBeenCalledWith(TEST_DATA.name, TEST_DATA.color, TEST_DATA.accountId);
-        expect(result).toEqual(StatusCode.OK);
+        expect(result).toEqual(STATUS_CODE.OK);
     });
 
     it("Delete tag (normal case)", async () => {
@@ -50,6 +50,6 @@ describe("Tag Api Unit Tests", () => {
         const result = await api.deleteTag(TEST_DATA.id);
         expect(parser.deleteTag).toHaveBeenCalledTimes(1);
         expect(parser.deleteTag).toHaveBeenCalledWith(TEST_DATA.id);
-        expect(result).toEqual(StatusCode.OK);
+        expect(result).toEqual(STATUS_CODE.OK);
     });
 });

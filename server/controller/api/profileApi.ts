@@ -1,6 +1,6 @@
 import ProfileParser from "../../parser/profileParser";
 import { ErrorCodeInterpreter } from "./errorCodeInterpreter";
-import { Profile, StatusCode } from "../../types";
+import { Profile, STATUS_CODE } from "../../types";
 import { DatabaseError } from "pg";
 
 export default class ProfileAPI {
@@ -23,7 +23,7 @@ export default class ProfileAPI {
     async createProfile(username : string, firstName : string, lastName : string, accountId : number) {
         try {
             await this.parser.storeProfile(username, firstName, lastName, accountId);
-            return StatusCode.OK;
+            return STATUS_CODE.OK;
         } catch (error: unknown) {
             return this.errorCodeInterpreter.getStatusCode(error as DatabaseError);
         }
@@ -32,7 +32,7 @@ export default class ProfileAPI {
     async getProfile(accountId : number) {
         try {
             const profile = await this.parser.parseProfile(accountId);
-            return profile ? profile : StatusCode.UNAUTHORIZED;
+            return profile ? profile : STATUS_CODE.UNAUTHORIZED;
         } catch (error: unknown) {
             return this.errorCodeInterpreter.getStatusCode(error as DatabaseError);
         }
@@ -41,7 +41,7 @@ export default class ProfileAPI {
     async updateProfile(profile: Profile) {
         try {
             await this.parser.updateProfile(profile);
-            return StatusCode.OK;
+            return STATUS_CODE.OK;
         } catch (error: unknown) {
             return this.errorCodeInterpreter.getStatusCode(error as DatabaseError);
         }
@@ -50,7 +50,7 @@ export default class ProfileAPI {
     async deleteProfile(profileId : number) {
         try {
             await this.parser.deleteProfile(profileId);
-            return StatusCode.OK;
+            return STATUS_CODE.OK;
         } catch (error: unknown) {
             return this.errorCodeInterpreter.getStatusCode(error as DatabaseError);
         }

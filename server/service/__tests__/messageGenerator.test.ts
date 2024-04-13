@@ -1,5 +1,5 @@
 import MessageGenerator from "../messageGenerator";
-import { Subject, InviteData } from "../../types";
+import { SUBJECTS, Subject, InviteData } from "../../types";
 
 const TEST_INVITE : InviteData = {
     id: 50,
@@ -15,7 +15,7 @@ describe("Message Generator Unit Tests", () => {
     const messageGenerator = new MessageGenerator();
     
     it("get message (normal case)", () => {
-        const actual = messageGenerator.getMessage(Subject.INVITATION, TEST_INVITE);
+        const actual = messageGenerator.getMessage(SUBJECTS.INVITATION, TEST_INVITE);
         expect(actual).toEqual(`
         <p>Dear ${TEST_INVITE.recipient_username},</p>
         <p>${TEST_INVITE.sender_username} has sent you an invitation to become their coach</p>

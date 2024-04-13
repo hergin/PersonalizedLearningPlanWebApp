@@ -1,7 +1,7 @@
 import GoalParser from '../goalParser';
 import { Pool } from 'pg';
 import { generateInsertQuery, generateUpdateQuery } from '../../utils/queryGenerator';
-import { Goal, GoalType, Query } from '../../types';
+import { Goal, GOAL_TYPE, Query } from '../../types';
 
 jest.mock("pg");
 jest.mock("../../utils/queryGenerator");
@@ -20,14 +20,14 @@ const TEST_GOAL: Goal[] = [
         name: "Complete this quiz", 
         description: "This is a quiz that I need to complete.",
         is_complete: false,
-        goal_type: GoalType.ONCE,
+        goal_type: GOAL_TYPE.ONCE,
         module_id: mockModuleId,
     },
     {
         name: "Homework",
         description: "Complete my homework today.",
         is_complete: false,
-        goal_type: GoalType.ONCE,
+        goal_type: GOAL_TYPE.ONCE,
         module_id: mockModuleId,
         due_date: TEST_DATES.dueDate,
     },
@@ -35,7 +35,7 @@ const TEST_GOAL: Goal[] = [
         name: "Sub Goal",
         description: "This is a sub goal",
         is_complete: false,
-        goal_type: GoalType.ONCE,
+        goal_type: GOAL_TYPE.ONCE,
         module_id: mockModuleId,
         tag_id: mockTagId,
     },
@@ -43,7 +43,7 @@ const TEST_GOAL: Goal[] = [
         name: "Sub Goal 2",
         description: "This is another sub goal",
         is_complete: false,
-        goal_type: GoalType.ONCE,
+        goal_type: GOAL_TYPE.ONCE,
         module_id: mockModuleId,
         tag_id: mockTagId,
         due_date: TEST_DATES.dueDate,

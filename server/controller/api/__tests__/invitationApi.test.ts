@@ -1,6 +1,6 @@
 import InvitationApi from "../invitationApi";
 import InvitationParser from "../../../parser/invitationParser";
-import { StatusCode } from "../../../types";
+import { STATUS_CODE } from "../../../types";
 import { FAKE_ERRORS } from "../../global/mockValues";
 jest.mock("../../../parser/invitationParser");
 
@@ -39,7 +39,7 @@ describe("Invitation Api Unit Tests", () => {
         const result = await invitationApi.getInvites(TEST_DATA.recipientId);
         expect(parser.getInvites).toHaveBeenCalledTimes(1);
         expect(parser.getInvites).toHaveBeenCalledWith(TEST_DATA.recipientId);
-        expect(result).toEqual(StatusCode.INTERNAL_SERVER_ERROR);
+        expect(result).toEqual(STATUS_CODE.INTERNAL_SERVER_ERROR);
     });
 
     it("get pending invites (normal case)", async () => {
@@ -55,7 +55,7 @@ describe("Invitation Api Unit Tests", () => {
         const result = await invitationApi.getPendingInvites(TEST_DATA.senderId);
         expect(parser.getPendingInvites).toHaveBeenCalledTimes(1);
         expect(parser.getPendingInvites).toHaveBeenCalledWith(TEST_DATA.senderId);
-        expect(result).toEqual(StatusCode.BAD_REQUEST);
+        expect(result).toEqual(STATUS_CODE.BAD_REQUEST);
     });
 
     it("create invite (normal case)", async () => {
@@ -75,7 +75,7 @@ describe("Invitation Api Unit Tests", () => {
         expect(parser.createInvite).toHaveBeenCalledTimes(1);
         expect(parser.createInvite).toHaveBeenCalledWith(TEST_DATA.senderId, TEST_DATA.recipientId);
         expect(parser.getInviteWithAccounts).toHaveBeenCalledTimes(0);
-        expect(result).toEqual(StatusCode.CONFLICT);
+        expect(result).toEqual(STATUS_CODE.CONFLICT);
     });
 
     it("create invite (get invite with accounts error case)", async () => {
@@ -86,7 +86,7 @@ describe("Invitation Api Unit Tests", () => {
         expect(parser.createInvite).toHaveBeenCalledWith(TEST_DATA.senderId, TEST_DATA.recipientId);
         expect(parser.getInviteWithAccounts).toHaveBeenCalledTimes(1);
         expect(parser.getInviteWithAccounts).toHaveBeenCalledWith(TEST_DATA.senderId, TEST_DATA.recipientId);
-        expect(result).toEqual(StatusCode.CONNECTION_ERROR);
+        expect(result).toEqual(STATUS_CODE.CONNECTION_ERROR);
     });
 
     it("accept invite (normal case)", async () => {
@@ -102,7 +102,7 @@ describe("Invitation Api Unit Tests", () => {
         const result = await invitationApi.acceptInvite(TEST_DATA.id, TEST_DATA.senderId, TEST_DATA.recipientId);
         expect(parser.acceptInvite).toHaveBeenCalledTimes(1);
         expect(parser.acceptInvite).toHaveBeenCalledWith(TEST_DATA.id, TEST_DATA.senderId, TEST_DATA.recipientId);
-        expect(result).toEqual(StatusCode.BAD_REQUEST);
+        expect(result).toEqual(STATUS_CODE.BAD_REQUEST);
     });
 
     it("reject invite (normal case)", async () => {
@@ -118,6 +118,6 @@ describe("Invitation Api Unit Tests", () => {
         const result = await invitationApi.rejectInvite(TEST_DATA.id);
         expect(parser.deleteInvite).toHaveBeenCalledTimes(1);
         expect(parser.deleteInvite).toHaveBeenCalledWith(TEST_DATA.id);
-        expect(result).toEqual(StatusCode.INTERNAL_SERVER_ERROR);
+        expect(result).toEqual(STATUS_CODE.INTERNAL_SERVER_ERROR);
     });
 });

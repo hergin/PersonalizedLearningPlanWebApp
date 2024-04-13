@@ -1,6 +1,6 @@
 import ProfileAPI from "../profileApi";
 import ProfileParser from "../../../parser/profileParser";
-import { StatusCode } from "../../../types";
+import { STATUS_CODE } from "../../../types";
 import { FAKE_ERRORS, TEST_PROFILE, TEST_ACCOUNT } from "../../global/mockValues";
 
 jest.mock("../../../parser/profileParser");
@@ -20,12 +20,12 @@ describe('Profile Api Unit Tests', () => {
 
     it('create profile (pass case)', async () => {
         parser.storeProfile.mockResolvedValueOnce();
-        expect(await profileAPI.createProfile(TEST_PROFILE.username, TEST_PROFILE.firstName, TEST_PROFILE.lastName, TEST_ACCOUNT.id)).toEqual(StatusCode.OK);
+        expect(await profileAPI.createProfile(TEST_PROFILE.username, TEST_PROFILE.firstName, TEST_PROFILE.lastName, TEST_ACCOUNT.id)).toEqual(STATUS_CODE.OK);
     });
 
     it('create profile (error case)', async () => {
         parser.storeProfile.mockRejectedValue(FAKE_ERRORS.badRequest);
-        expect(await profileAPI.createProfile(TEST_PROFILE.username, TEST_PROFILE.firstName, TEST_PROFILE.lastName, TEST_ACCOUNT.id)).toEqual(StatusCode.BAD_REQUEST);
+        expect(await profileAPI.createProfile(TEST_PROFILE.username, TEST_PROFILE.firstName, TEST_PROFILE.lastName, TEST_ACCOUNT.id)).toEqual(STATUS_CODE.BAD_REQUEST);
     });
 
     it('get all profiles (normal case)', async() => {
@@ -41,23 +41,21 @@ describe('Profile Api Unit Tests', () => {
         const actual = await profileAPI.getAllCoachProfiles();
         expect(parser.parseCoachProfiles).toHaveBeenCalledTimes(1);
         expect(parser.parseCoachProfiles).toHaveBeenCalledWith();
-        expect(actual).toEqual(StatusCode.CONNECTION_ERROR);
+        expect(actual).toEqual(STATUS_CODE.CONNECTION_ERROR);
     });
 
     it('get profile (pass case)', async () => {
         parser.parseProfile.mockResolvedValueOnce({
-            username: TEST_PROFILE.username, first_name: TEST_PROFILE.firstName, last_name: TEST_PROFILE.lastName, 
-            profile_picture: TEST_PROFILE.profilePicture, job_title: TEST_PROFILE.jobTitle, bio: TEST_PROFILE.bio, accountId: TEST_ACCOUNT.id
+            username: TEST_PROFILE.username, first_name: TEST_PROFILE.firstName, last_name: TEST_PROFILE.lastName, job_title: TEST_PROFILE.jobTitle, bio: TEST_PROFILE.bio, accountId: TEST_ACCOUNT.id
         });
         expect(await profileAPI.getProfile(TEST_ACCOUNT.id)).toEqual({
-            username: TEST_PROFILE.username, first_name: TEST_PROFILE.firstName, last_name: TEST_PROFILE.lastName, 
-            profile_picture: TEST_PROFILE.profilePicture, job_title: TEST_PROFILE.jobTitle, bio: TEST_PROFILE.bio, accountId: TEST_ACCOUNT.id
+            username: TEST_PROFILE.username, first_name: TEST_PROFILE.firstName, last_name: TEST_PROFILE.lastName, job_title: TEST_PROFILE.jobTitle, bio: TEST_PROFILE.bio, accountId: TEST_ACCOUNT.id
         });
     });
 
     it('get profile (error case)', async () => {
         parser.parseProfile.mockResolvedValueOnce(undefined);
-        expect(await profileAPI.getProfile(TEST_ACCOUNT.id)).toEqual(StatusCode.UNAUTHORIZED);
+        expect(await profileAPI.getProfile(TEST_ACCOUNT.id)).toEqual(STATUS_CODE.UNAUTHORIZED);
     });
 
     it('update profile (pass case)', async () => {
@@ -68,10 +66,9 @@ describe('Profile Api Unit Tests', () => {
             username: TEST_PROFILE.username, 
             firstName: TEST_PROFILE.firstName, 
             lastName: TEST_PROFILE.lastName, 
-            profilePicture: TEST_PROFILE.profilePicture, 
             jobTitle: TEST_PROFILE.jobTitle, 
             bio: TEST_PROFILE.bio, 
-        })).toEqual(StatusCode.OK);
+        })).toEqual(STATUS_CODE.OK);
     });
 
     it('update profile (error case)', async () => {
@@ -82,39 +79,38 @@ describe('Profile Api Unit Tests', () => {
             username: TEST_PROFILE.username, 
             firstName: TEST_PROFILE.firstName, 
             lastName: TEST_PROFILE.lastName, 
-            profilePicture: TEST_PROFILE.profilePicture, 
             jobTitle: TEST_PROFILE.jobTitle, 
             bio: TEST_PROFILE.bio, 
-        })).toEqual(StatusCode.CONNECTION_ERROR);
+        })).toEqual(STATUS_CODE.CONNECTION_ERROR);
     });
 
     it('delete profile (pass case)', async () => {
         if(!TEST_PROFILE.profileId) throw new Error("Profile Id was null!");
         parser.deleteProfile.mockResolvedValueOnce();
-        expect(await profileAPI.deleteProfile(TEST_PROFILE.profileId)).toEqual(StatusCode.OK);
+        expect(await profileAPI.deleteProfile(TEST_PROFILE.profileId)).toEqual(STATUS_CODE.OK);
     });
 
     it('delete profile (duplicate case)', async () => {
         if(!TEST_PROFILE.profileId) throw new Error("Profile Id was null!");
         parser.deleteProfile.mockRejectedValue(FAKE_ERRORS.primaryKeyViolation);
-        expect(await profileAPI.deleteProfile(TEST_PROFILE.profileId)).toEqual(StatusCode.CONFLICT);
+        expect(await profileAPI.deleteProfile(TEST_PROFILE.profileId)).toEqual(STATUS_CODE.CONFLICT);
     });
 
     it('delete profile (bad data case)', async () => {
         if(!TEST_PROFILE.profileId) throw new Error("Profile Id was null!");
         parser.deleteProfile.mockRejectedValue(FAKE_ERRORS.badRequest);
-        expect(await profileAPI.deleteProfile(TEST_PROFILE.profileId)).toEqual(StatusCode.BAD_REQUEST);
+        expect(await profileAPI.deleteProfile(TEST_PROFILE.profileId)).toEqual(STATUS_CODE.BAD_REQUEST);
     });
 
     it('delete profile (connection lost case)', async () => {
         if(!TEST_PROFILE.profileId) throw new Error("Profile Id was null!");
         parser.deleteProfile.mockRejectedValue(FAKE_ERRORS.networkError);
-        expect(await profileAPI.deleteProfile(TEST_PROFILE.profileId)).toEqual(StatusCode.CONNECTION_ERROR);
+        expect(await profileAPI.deleteProfile(TEST_PROFILE.profileId)).toEqual(STATUS_CODE.CONNECTION_ERROR);
     });
 
     it('delete profile (fatal error case)', async () => {
         if(!TEST_PROFILE.profileId) throw new Error("Profile Id was null!");
         parser.deleteProfile.mockRejectedValue(FAKE_ERRORS.fatalServerError);
-        expect(await profileAPI.deleteProfile(TEST_PROFILE.profileId)).toEqual(StatusCode.INTERNAL_SERVER_ERROR);
+        expect(await profileAPI.deleteProfile(TEST_PROFILE.profileId)).toEqual(STATUS_CODE.INTERNAL_SERVER_ERROR);
     });
 });

@@ -1,4 +1,4 @@
-import { Subject, InviteData } from "../types";
+import { SUBJECTS, InviteData, Subject } from "../types";
 
 const RECIPIENT_IDENTIFIER = "$~recipient~$";
 const SENDER_IDENTIFIER = "$~sender~$";
@@ -28,9 +28,9 @@ export default class MessageGenerator {
 
     private generateMessageMap(): Map<Subject, string> {
         const map = new Map<Subject, string>();
-        map.set(Subject.INVITATION, PREMADE_MESSAGES[0]);
-        map.set(Subject.ACCEPTED, PREMADE_MESSAGES[1]);
-        map.set(Subject.REJECTED, PREMADE_MESSAGES[2]);
+        map.set(SUBJECTS.INVITATION, PREMADE_MESSAGES[0]);
+        map.set(SUBJECTS.ACCEPTED, PREMADE_MESSAGES[1]);
+        map.set(SUBJECTS.REJECTED, PREMADE_MESSAGES[2]);
         return map;
     }
 

@@ -1,6 +1,6 @@
 import MessageApi from "../messageApi";
 import MessageParser from "../../../parser/messageParser";
-import { Message, StatusCode } from "../../../types";
+import { Message, STATUS_CODE } from "../../../types";
 import { FAKE_ERRORS } from "../../global/mockValues";
 
 jest.mock("../../../parser/messageParser");
@@ -46,7 +46,7 @@ describe("Message Api Unit Tests", () => {
         const result = await api.getAllSentMessages(mockSenderId);
         expect(parser.parseAllMessagesFrom).toHaveBeenCalledTimes(1);
         expect(parser.parseAllMessagesFrom).toHaveBeenCalledWith(mockSenderId);
-        expect(result).toEqual(StatusCode.CONNECTION_ERROR);
+        expect(result).toEqual(STATUS_CODE.CONNECTION_ERROR);
     });
 
     it("Get Chat Messages (normal case)", async () => {
@@ -62,7 +62,7 @@ describe("Message Api Unit Tests", () => {
         const result = await api.getChatMessages(mockSenderId, mockRecipientId);
         expect(parser.parseChat).toHaveBeenCalledTimes(1);
         expect(parser.parseChat).toHaveBeenCalledWith(mockSenderId, mockRecipientId);
-        expect(result).toEqual(StatusCode.CONFLICT);
+        expect(result).toEqual(STATUS_CODE.CONFLICT);
     });
 
     it("Send Message (normal case)", async () => {
@@ -70,7 +70,7 @@ describe("Message Api Unit Tests", () => {
         const status = await api.sendMessage(TEST_MESSAGE[0]);
         expect(parser.storeMessage).toHaveBeenCalledTimes(1);
         expect(parser.storeMessage).toHaveBeenCalledWith(TEST_MESSAGE[0]);
-        expect(status).toEqual(StatusCode.OK);
+        expect(status).toEqual(STATUS_CODE.OK);
     });
 
     it("Send Message (error case)", async () => {
@@ -78,7 +78,7 @@ describe("Message Api Unit Tests", () => {
         const status = await api.sendMessage(TEST_MESSAGE[0]);
         expect(parser.storeMessage).toHaveBeenCalledTimes(1);
         expect(parser.storeMessage).toHaveBeenCalledWith(TEST_MESSAGE[0]);
-        expect(status).toEqual(StatusCode.BAD_REQUEST);
+        expect(status).toEqual(STATUS_CODE.BAD_REQUEST);
     });
 
     it("Edit Message (normal case)", async () => {
@@ -87,7 +87,7 @@ describe("Message Api Unit Tests", () => {
         const status = await api.editMessage(mockMessageId, mockContent);
         expect(parser.editMessage).toHaveBeenCalledTimes(1);
         expect(parser.editMessage).toHaveBeenCalledWith(mockMessageId, mockContent);
-        expect(status).toEqual(StatusCode.OK);
+        expect(status).toEqual(STATUS_CODE.OK);
     });
 
     it("Edit Message (error case)", async () => {
@@ -96,7 +96,7 @@ describe("Message Api Unit Tests", () => {
         const status = await api.editMessage(mockMessageId, mockContent);
         expect(parser.editMessage).toHaveBeenCalledTimes(1);
         expect(parser.editMessage).toHaveBeenCalledWith(mockMessageId, mockContent);
-        expect(status).toEqual(StatusCode.INTERNAL_SERVER_ERROR);
+        expect(status).toEqual(STATUS_CODE.INTERNAL_SERVER_ERROR);
     });
 
     it("Delete Message (normal case)", async () => {
@@ -104,7 +104,7 @@ describe("Message Api Unit Tests", () => {
         const status = await api.deleteMessage(mockMessageId);
         expect(parser.deleteMessage).toHaveBeenCalledTimes(1);
         expect(parser.deleteMessage).toHaveBeenCalledWith(mockMessageId);
-        expect(status).toEqual(StatusCode.OK);
+        expect(status).toEqual(STATUS_CODE.OK);
     });
 
     it("Delete Message (error case)", async () => {
@@ -112,6 +112,6 @@ describe("Message Api Unit Tests", () => {
         const status = await api.deleteMessage(mockMessageId);
         expect(parser.deleteMessage).toHaveBeenCalledTimes(1);
         expect(parser.deleteMessage).toHaveBeenCalledWith(mockMessageId);
-        expect(status).toEqual(StatusCode.CONNECTION_ERROR);
+        expect(status).toEqual(STATUS_CODE.CONNECTION_ERROR);
     });
 });

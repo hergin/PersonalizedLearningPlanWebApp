@@ -1,5 +1,5 @@
 import AdminParser from "../../parser/adminParser";
-import { UserData, StatusCode, Role } from "../../types";
+import { UserData, StatusCode, STATUS_CODE, Role } from "../../types";
 import { ErrorCodeInterpreter } from "./errorCodeInterpreter";
 import { DatabaseError } from "pg";
 
@@ -33,7 +33,7 @@ export default class AdminApi {
     async setAccountToRole(id: number, role: Role): Promise<StatusCode> {
         try {
             await this.parser.setAccountAsRole(id, role);
-            return StatusCode.OK;
+            return STATUS_CODE.OK;
         } catch(error: unknown) {
             const actualError = error as DatabaseError;
             return this.errorCodeInterpreter.getStatusCode(actualError);

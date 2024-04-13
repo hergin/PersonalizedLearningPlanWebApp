@@ -1,41 +1,46 @@
-export enum StatusCode {
-    OK = 200,
-    BAD_REQUEST = 400,
-    UNAUTHORIZED = 401,
-    FORBIDDEN = 403,
-    CONNECTION_ERROR = 404,
-    CONFLICT = 409,
-    GONE = 410,
-    INTERNAL_SERVER_ERROR = 500
-}
+type ObjectValues<T> = T[keyof T];
 
-export enum GoalType {
-    ONCE = "todo",
-    DAILY = "daily",
-    WEEKLY = "weekly",
-    MONTHLY = "monthly",
-}
+export const STATUS_CODE = {
+    OK: 200,
+    BAD_REQUEST: 400,
+    UNAUTHORIZED: 401,
+    FORBIDDEN: 403,
+    CONNECTION_ERROR: 404,
+    CONFLICT: 409,
+    GONE: 410,
+    INTERNAL_SERVER_ERROR: 500
+} as const;
+export type StatusCode = ObjectValues<typeof STATUS_CODE>;
 
-export enum Subject {
-    INVITATION = "Coach Invitation",
-    ACCEPTED = "Invitation Accepted!",
-    REJECTED = "Invitation Rejected!"
-}
+export const GOAL_TYPE = {
+    ONCE: "todo",
+    DAILY: "daily",
+    WEEKLY: "weekly",
+    MONTHLY: "monthly",
+} as const;
+export type GoalType = ObjectValues<typeof GOAL_TYPE>; 
 
-const tables = {
+export const SUBJECTS = {
+    INVITATION: "Coach Invitation",
+    ACCEPTED: "Invitation Accepted!",
+    REJECTED: "Invitation Rejected!"
+} as const;
+export type Subject = ObjectValues<typeof SUBJECTS>;
+
+const TABLES = {
     GOAL: "GOAL",
     PROFILE: "PROFILE",
     MODULE: "MODULE",
     MESSAGE: "MESSAGE"
 } as const;
-export type Table = (typeof tables)[keyof typeof tables];
+export type Table = ObjectValues<typeof TABLES>;
 
-const roles = {
+export const ROLES = {
     ADMIN: "admin",
     COACH: "coach",
     BASIC: "basic", 
 } as const;
-export type Role = (typeof roles)[keyof typeof roles];
+export type Role = ObjectValues<typeof ROLES>;
 
 export type User = {
     id: number,
@@ -70,7 +75,6 @@ export type Profile = {
     firstName: string,
     lastName: string,
     accountId?: number,
-    profilePicture?: string,
     jobTitle?: string,
     bio?: string
 }

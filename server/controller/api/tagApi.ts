@@ -1,6 +1,6 @@
 import TagParser from "../../parser/tagParser";
 import { ErrorCodeInterpreter } from "./errorCodeInterpreter";
-import { StatusCode } from "../../types";
+import { STATUS_CODE } from "../../types";
 import { DatabaseError } from "pg";
 
 export default class TagApi {
@@ -24,7 +24,7 @@ export default class TagApi {
     async addTag(accountId: number, name: string, color: string) {
         try {
             await this.parser.storeTag(name, color, accountId);
-            return StatusCode.OK;
+            return STATUS_CODE.OK;
         } catch(error: unknown) {
             return this.errorCodeInterpreter.getStatusCode(error as DatabaseError);
         }
@@ -33,7 +33,7 @@ export default class TagApi {
     async deleteTag(id: number) {
         try {
             await this.parser.deleteTag(id);
-            return StatusCode.OK;
+            return STATUS_CODE.OK;
         } catch(error: unknown) {
             return this.errorCodeInterpreter.getStatusCode(error as DatabaseError);
         }

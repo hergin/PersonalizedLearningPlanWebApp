@@ -1,6 +1,6 @@
 import bcrypt from "bcryptjs";
 import LoginParser from "../../parser/loginParser";
-import { Role, User, StatusCode } from "../../types";
+import { Role, User, STATUS_CODE, StatusCode } from "../../types";
 import { ErrorCodeInterpreter } from "./errorCodeInterpreter";
 import { DatabaseError } from "pg";
 
@@ -16,9 +16,9 @@ export default class LoginAPI {
     async verifyLogin(email: string, password: string): Promise<User | StatusCode> {
         try {
             const login = await this.parser.retrieveLogin(email);
-            if(login.length === 0) return StatusCode.GONE;
+            if(login.length === 0) return STATUS_CODE.GONE;
             return await bcrypt.compare(password, login[0].account_password) ? 
-                {id: login[0].id, role: login[0].site_role} : StatusCode.UNAUTHORIZED;
+                {id: login[0].id, role: login[0].site_role} : STATUS_CODE.UNAUTHORIZED;
         } catch (error: unknown) {
             return this.errorCodeInterpreter.getStatusCode(error as DatabaseError);
         }
@@ -28,7 +28,7 @@ export default class LoginAPI {
         try {
             const hash = await this.hashPassword(password);
             await this.parser.storeLogin(email, hash);
-            return StatusCode.OK;
+            return STATUS_CODE.OK;
         } catch (error: unknown) {
             return this.errorCodeInterpreter.getStatusCode(error as DatabaseError);
         }
@@ -52,7 +52,7 @@ export default class LoginAPI {
     async setToken(accountId: number, refreshToken : string) {
         try {
             await this.parser.storeToken(accountId, refreshToken);
-            return StatusCode.OK;
+            return STATUS_CODE.OK;
         } catch (error: unknown) {
             return this.errorCodeInterpreter.getStatusCode(error as DatabaseError);
         }
@@ -61,8 +61,8 @@ export default class LoginAPI {
     async verifyToken(accountId: number, refreshToken: string): Promise<StatusCode> {
         try {
             const result = await this.parser.parseToken(accountId);
-            if (result.length === 0) return StatusCode.GONE;
-            return (result[0].refresh_token === refreshToken) ? StatusCode.OK : StatusCode.UNAUTHORIZED;
+            if (result.length === 0) return STATUS_CODE.GONE;
+            return (result[0].refresh_token === refreshToken) ? STATUS_CODE.OK : STATUS_CODE.UNAUTHORIZED;
         } catch (error: unknown) {
             return this.errorCodeInterpreter.getStatusCode(error as DatabaseError);
         }
@@ -71,7 +71,7 @@ export default class LoginAPI {
     async logout(accountId: number): Promise<StatusCode> {
         try {
             await this.parser.deleteToken(accountId);
-            return StatusCode.OK;
+            return STATUS_CODE.OK;
         } catch (error: unknown) {
             return this.errorCodeInterpreter.getStatusCode(error as DatabaseError);
         }
@@ -80,7 +80,7 @@ export default class LoginAPI {
     async delete(accountId: number) {
         try {
             await this.parser.deleteAccount(accountId);
-            return StatusCode.OK;
+            return STATUS_CODE.OK;
         } catch (error: unknown) {
             return this.errorCodeInterpreter.getStatusCode(error as DatabaseError);
         }

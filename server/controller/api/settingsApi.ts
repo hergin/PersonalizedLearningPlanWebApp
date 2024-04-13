@@ -1,7 +1,7 @@
 import SettingsParser from "../../parser/settingsParser";
 import { ErrorCodeInterpreter } from "./errorCodeInterpreter";
 import { DatabaseError } from "pg";
-import { AccountSettings, StatusCode } from "../../types";
+import { AccountSettings, STATUS_CODE, StatusCode } from "../../types";
 
 export default class SettingsApi {
     parser : SettingsParser;
@@ -19,7 +19,7 @@ export default class SettingsApi {
     async updateSettings(accountId: number, settings: AccountSettings): Promise<StatusCode> {
         try {
             await this.parser.updateAccountSettings(accountId, settings);
-            return StatusCode.OK;
+            return STATUS_CODE.OK;
         } catch(error: unknown) {
             return this.errorCodeInterpreter.getStatusCode(error as DatabaseError);
         }

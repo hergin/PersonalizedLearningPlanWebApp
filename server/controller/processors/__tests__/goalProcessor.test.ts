@@ -2,7 +2,7 @@ import * as GoalProcessor from "../goalProcessor";
 import GoalAPI from "../../api/goalApi";
 import LoginAPI from "../../api/loginApi";
 import EmailService from "../../../service/emailService";
-import { StatusCode } from "../../../types";
+import { STATUS_CODE } from "../../../types";
 import { initializeErrorMap } from "../../../utils/errorMessages";
 import { createMockRequest, MOCK_RESPONSE, TEST_ACCOUNT, TEST_GOAL, TEST_SUB_GOAL, TEST_TAG } from "../../global/mockValues";
 
@@ -39,7 +39,7 @@ describe("Goal Processor Unit Tests", () => {
         expect(goalApi.getGoals).toHaveBeenCalledWith(TEST_GOAL.moduleId);
         expect(MOCK_RESPONSE.send).toHaveBeenCalledTimes(0);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledTimes(1);
-        expect(MOCK_RESPONSE.status).toHaveBeenCalledWith(StatusCode.OK);
+        expect(MOCK_RESPONSE.status).toHaveBeenCalledWith(STATUS_CODE.OK);
         expect(MOCK_RESPONSE.json).toHaveBeenCalledTimes(1);
         expect(MOCK_RESPONSE.json).toHaveBeenCalledWith([{
             ...TEST_GOAL,
@@ -55,20 +55,20 @@ describe("Goal Processor Unit Tests", () => {
     });
 
     it("get module goals (error case)", async () => {
-        goalApi.getGoals.mockResolvedValueOnce(StatusCode.BAD_REQUEST);
+        goalApi.getGoals.mockResolvedValueOnce(STATUS_CODE.BAD_REQUEST);
         const mRequest = createMockRequest({}, {id: TEST_GOAL.moduleId});
         await GoalProcessor.getModuleGoals(mRequest, MOCK_RESPONSE);
         expect(goalApi.getGoals).toHaveBeenCalledTimes(1);
         expect(goalApi.getGoals).toHaveBeenCalledWith(TEST_GOAL.moduleId);
         expect(MOCK_RESPONSE.json).toHaveBeenCalledTimes(0);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledTimes(1);
-        expect(MOCK_RESPONSE.status).toHaveBeenCalledWith(StatusCode.BAD_REQUEST);
+        expect(MOCK_RESPONSE.status).toHaveBeenCalledWith(STATUS_CODE.BAD_REQUEST);
         expect(MOCK_RESPONSE.send).toHaveBeenCalledTimes(1);
-        expect(MOCK_RESPONSE.send).toHaveBeenCalledWith(ERROR_MESSAGES.get(StatusCode.BAD_REQUEST));
+        expect(MOCK_RESPONSE.send).toHaveBeenCalledWith(ERROR_MESSAGES.get(STATUS_CODE.BAD_REQUEST));
     });
 
     it("post goal (normal case)", async () => {
-        goalApi.createGoal.mockResolvedValueOnce(StatusCode.OK);
+        goalApi.createGoal.mockResolvedValueOnce(STATUS_CODE.OK);
         const mRequest = createMockRequest({
             name: TEST_GOAL.name[0],
             description: TEST_GOAL.description[0],
@@ -92,11 +92,11 @@ describe("Goal Processor Unit Tests", () => {
         expect(MOCK_RESPONSE.status).toHaveBeenCalledTimes(0);
         expect(MOCK_RESPONSE.send).toHaveBeenCalledTimes(0);
         expect(MOCK_RESPONSE.sendStatus).toHaveBeenCalledTimes(1);
-        expect(MOCK_RESPONSE.sendStatus).toHaveBeenCalledWith(StatusCode.OK);
+        expect(MOCK_RESPONSE.sendStatus).toHaveBeenCalledWith(STATUS_CODE.OK);
     });
 
     it("post goal (error case)", async () => {
-        goalApi.createGoal.mockResolvedValueOnce(StatusCode.BAD_REQUEST);
+        goalApi.createGoal.mockResolvedValueOnce(STATUS_CODE.BAD_REQUEST);
         const mRequest = createMockRequest({
             name: TEST_GOAL.name[0],
             description: TEST_GOAL.description[0],
@@ -119,13 +119,13 @@ describe("Goal Processor Unit Tests", () => {
         });
         expect(MOCK_RESPONSE.sendStatus).toHaveBeenCalledTimes(0);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledTimes(1);
-        expect(MOCK_RESPONSE.status).toHaveBeenCalledWith(StatusCode.BAD_REQUEST);
+        expect(MOCK_RESPONSE.status).toHaveBeenCalledWith(STATUS_CODE.BAD_REQUEST);
         expect(MOCK_RESPONSE.send).toHaveBeenCalledTimes(1);
-        expect(MOCK_RESPONSE.send).toHaveBeenCalledWith(ERROR_MESSAGES.get(StatusCode.BAD_REQUEST));
+        expect(MOCK_RESPONSE.send).toHaveBeenCalledWith(ERROR_MESSAGES.get(STATUS_CODE.BAD_REQUEST));
     });
 
     it("put goal (normal case)", async () => {
-        goalApi.updateGoal.mockResolvedValueOnce(StatusCode.OK);
+        goalApi.updateGoal.mockResolvedValueOnce(STATUS_CODE.OK);
         const mRequest = createMockRequest({
             name: TEST_GOAL.name[0],
             description: TEST_GOAL.description[0],
@@ -149,11 +149,11 @@ describe("Goal Processor Unit Tests", () => {
         });
         expect(MOCK_RESPONSE.send).toHaveBeenCalledTimes(0);
         expect(MOCK_RESPONSE.sendStatus).toHaveBeenCalledTimes(1);
-        expect(MOCK_RESPONSE.sendStatus).toHaveBeenCalledWith(StatusCode.OK);
+        expect(MOCK_RESPONSE.sendStatus).toHaveBeenCalledWith(STATUS_CODE.OK);
     });
 
     it("put goal (error case)", async () => {
-        goalApi.updateGoal.mockResolvedValueOnce(StatusCode.CONNECTION_ERROR);
+        goalApi.updateGoal.mockResolvedValueOnce(STATUS_CODE.CONNECTION_ERROR);
         const mRequest = createMockRequest({
             name: TEST_GOAL.name[0],
             description: TEST_GOAL.description[0],
@@ -177,13 +177,13 @@ describe("Goal Processor Unit Tests", () => {
         });
         expect(MOCK_RESPONSE.sendStatus).toHaveBeenCalledTimes(0);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledTimes(1);
-        expect(MOCK_RESPONSE.status).toHaveBeenCalledWith(StatusCode.CONNECTION_ERROR);
+        expect(MOCK_RESPONSE.status).toHaveBeenCalledWith(STATUS_CODE.CONNECTION_ERROR);
         expect(MOCK_RESPONSE.send).toHaveBeenCalledTimes(1);
-        expect(MOCK_RESPONSE.send).toHaveBeenCalledWith(ERROR_MESSAGES.get(StatusCode.CONNECTION_ERROR));
+        expect(MOCK_RESPONSE.send).toHaveBeenCalledWith(ERROR_MESSAGES.get(STATUS_CODE.CONNECTION_ERROR));
     });
 
     it("put goal feedback (normal case)", async () => {
-        goalApi.updateGoalFeedback.mockResolvedValueOnce(StatusCode.OK);
+        goalApi.updateGoalFeedback.mockResolvedValueOnce(STATUS_CODE.OK);
         loginApi.getAccountById.mockResolvedValueOnce([TEST_ACCOUNT]);
         emailService.sendEmail.mockResolvedValueOnce({});
         const mRequest = createMockRequest({feedback: TEST_GOAL.feedback, userId: TEST_ACCOUNT.id}, {id: TEST_GOAL.id[0]});
@@ -197,11 +197,11 @@ describe("Goal Processor Unit Tests", () => {
         expect(emailService.sendEmail).toHaveBeenCalledTimes(1);
         expect(emailService.sendEmail).toHaveBeenCalledWith(TEST_ACCOUNT.email, "Feedback", TEST_GOAL.feedback);
         expect(MOCK_RESPONSE.sendStatus).toHaveBeenCalledTimes(1);
-        expect(MOCK_RESPONSE.sendStatus).toHaveBeenCalledWith(StatusCode.OK);
+        expect(MOCK_RESPONSE.sendStatus).toHaveBeenCalledWith(STATUS_CODE.OK);
     });
 
     it("put goal feedback (goal api error case)", async () => {
-        goalApi.updateGoalFeedback.mockResolvedValueOnce(StatusCode.INTERNAL_SERVER_ERROR);
+        goalApi.updateGoalFeedback.mockResolvedValueOnce(STATUS_CODE.INTERNAL_SERVER_ERROR);
         const mRequest = createMockRequest({feedback: TEST_GOAL.feedback, userId: TEST_ACCOUNT.id}, {id: TEST_GOAL.id[0]});
         await GoalProcessor.putGoalFeedback(mRequest, MOCK_RESPONSE);
         expect(goalApi.updateGoalFeedback).toHaveBeenCalledTimes(1);
@@ -210,14 +210,14 @@ describe("Goal Processor Unit Tests", () => {
         expect(emailService.sendEmail).toHaveBeenCalledTimes(0);
         expect(MOCK_RESPONSE.sendStatus).toHaveBeenCalledTimes(0);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledTimes(1);
-        expect(MOCK_RESPONSE.status).toHaveBeenCalledWith(StatusCode.INTERNAL_SERVER_ERROR);
+        expect(MOCK_RESPONSE.status).toHaveBeenCalledWith(STATUS_CODE.INTERNAL_SERVER_ERROR);
         expect(MOCK_RESPONSE.send).toHaveBeenCalledTimes(1);
-        expect(MOCK_RESPONSE.send).toHaveBeenCalledWith(ERROR_MESSAGES.get(StatusCode.INTERNAL_SERVER_ERROR));
+        expect(MOCK_RESPONSE.send).toHaveBeenCalledWith(ERROR_MESSAGES.get(STATUS_CODE.INTERNAL_SERVER_ERROR));
     });
 
     it("put goal feedback (login api error case)", async () => {
-        goalApi.updateGoalFeedback.mockResolvedValueOnce(StatusCode.OK);
-        loginApi.getAccountById.mockResolvedValueOnce(StatusCode.FORBIDDEN);
+        goalApi.updateGoalFeedback.mockResolvedValueOnce(STATUS_CODE.OK);
+        loginApi.getAccountById.mockResolvedValueOnce(STATUS_CODE.FORBIDDEN);
         const mRequest = createMockRequest({feedback: TEST_GOAL.feedback, userId: TEST_ACCOUNT.id}, {id: TEST_GOAL.id[0]});
         await GoalProcessor.putGoalFeedback(mRequest, MOCK_RESPONSE);
         expect(goalApi.updateGoalFeedback).toHaveBeenCalledTimes(1);
@@ -227,33 +227,33 @@ describe("Goal Processor Unit Tests", () => {
         expect(loginApi.getAccountById).toHaveBeenCalledTimes(1);
         expect(loginApi.getAccountById).toHaveBeenCalledWith(TEST_ACCOUNT.id);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledTimes(1);
-        expect(MOCK_RESPONSE.status).toHaveBeenCalledWith(StatusCode.FORBIDDEN);
+        expect(MOCK_RESPONSE.status).toHaveBeenCalledWith(STATUS_CODE.FORBIDDEN);
         expect(MOCK_RESPONSE.send).toHaveBeenCalledTimes(1);
         expect(MOCK_RESPONSE.send).toHaveBeenCalledWith("Failed to retrieve understudy's account to email them the feedback.");
     });
 
     it("delete goal (normal case)", async () => {
-        goalApi.deleteGoal.mockResolvedValueOnce(StatusCode.OK);
+        goalApi.deleteGoal.mockResolvedValueOnce(STATUS_CODE.OK);
         const mRequest = createMockRequest({}, {id: TEST_GOAL.id[0]});
         await GoalProcessor.deleteGoal(mRequest, MOCK_RESPONSE);
         expect(goalApi.deleteGoal).toHaveBeenCalledTimes(1);
         expect(goalApi.deleteGoal).toHaveBeenCalledWith(TEST_GOAL.id[0]);
         expect(MOCK_RESPONSE.send).toHaveBeenCalledTimes(0);
         expect(MOCK_RESPONSE.sendStatus).toHaveBeenCalledTimes(1);
-        expect(MOCK_RESPONSE.sendStatus).toHaveBeenCalledWith(StatusCode.OK);
+        expect(MOCK_RESPONSE.sendStatus).toHaveBeenCalledWith(STATUS_CODE.OK);
     });
 
     it("delete goal (error case)", async () => {
-        goalApi.deleteGoal.mockResolvedValueOnce(StatusCode.FORBIDDEN);
+        goalApi.deleteGoal.mockResolvedValueOnce(STATUS_CODE.FORBIDDEN);
         const mRequest = createMockRequest({}, {id: TEST_GOAL.id[0]});
         await GoalProcessor.deleteGoal(mRequest, MOCK_RESPONSE);
         expect(goalApi.deleteGoal).toHaveBeenCalledTimes(1);
         expect(goalApi.deleteGoal).toHaveBeenCalledWith(TEST_GOAL.id[0]);
         expect(MOCK_RESPONSE.sendStatus).toHaveBeenCalledTimes(0);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledTimes(1);
-        expect(MOCK_RESPONSE.status).toHaveBeenCalledWith(StatusCode.FORBIDDEN);
+        expect(MOCK_RESPONSE.status).toHaveBeenCalledWith(STATUS_CODE.FORBIDDEN);
         expect(MOCK_RESPONSE.send).toHaveBeenCalledTimes(1);
-        expect(MOCK_RESPONSE.send).toHaveBeenCalledWith(ERROR_MESSAGES.get(StatusCode.FORBIDDEN));
+        expect(MOCK_RESPONSE.send).toHaveBeenCalledWith(ERROR_MESSAGES.get(STATUS_CODE.FORBIDDEN));
     });
 
     it("post sub goal (normal case)", async () => {
@@ -280,13 +280,13 @@ describe("Goal Processor Unit Tests", () => {
         });
         expect(MOCK_RESPONSE.send).toHaveBeenCalledTimes(0);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledTimes(1);
-        expect(MOCK_RESPONSE.status).toHaveBeenCalledWith(StatusCode.OK);
+        expect(MOCK_RESPONSE.status).toHaveBeenCalledWith(STATUS_CODE.OK);
         expect(MOCK_RESPONSE.json).toHaveBeenCalledTimes(1);
         expect(MOCK_RESPONSE.json).toHaveBeenCalledWith([{id: TEST_SUB_GOAL.id[0]}]);
     });
 
     it("post sub goal (error case)", async () => {
-        goalApi.addSubGoal.mockResolvedValueOnce(StatusCode.GONE);
+        goalApi.addSubGoal.mockResolvedValueOnce(STATUS_CODE.GONE);
         const mRequest = createMockRequest({
             name: TEST_SUB_GOAL.name[0],
             description: TEST_SUB_GOAL.description[0],
@@ -309,9 +309,9 @@ describe("Goal Processor Unit Tests", () => {
         });
         expect(MOCK_RESPONSE.json).toHaveBeenCalledTimes(0);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledTimes(1);
-        expect(MOCK_RESPONSE.status).toHaveBeenCalledWith(StatusCode.GONE);
+        expect(MOCK_RESPONSE.status).toHaveBeenCalledWith(STATUS_CODE.GONE);
         expect(MOCK_RESPONSE.send).toHaveBeenCalledTimes(1);
-        expect(MOCK_RESPONSE.send).toHaveBeenCalledWith(ERROR_MESSAGES.get(StatusCode.GONE));
+        expect(MOCK_RESPONSE.send).toHaveBeenCalledWith(ERROR_MESSAGES.get(STATUS_CODE.GONE));
     });
 
     it("get goal variable (normal case)", async () => {
@@ -322,21 +322,21 @@ describe("Goal Processor Unit Tests", () => {
         expect(goalApi.getGoalVariable).toHaveBeenCalledWith(TEST_GOAL.id[0], "name");
         expect(MOCK_RESPONSE.send).toHaveBeenCalledTimes(0);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledTimes(1);
-        expect(MOCK_RESPONSE.status).toHaveBeenCalledWith(StatusCode.OK);
+        expect(MOCK_RESPONSE.status).toHaveBeenCalledWith(STATUS_CODE.OK);
         expect(MOCK_RESPONSE.json).toHaveBeenCalledTimes(1);
         expect(MOCK_RESPONSE.json).toHaveBeenCalledWith([{name: TEST_GOAL.name[0]}]);
     });
 
     it("get goal variable (error case)", async () => {
-        goalApi.getGoalVariable.mockResolvedValueOnce(StatusCode.BAD_REQUEST);
+        goalApi.getGoalVariable.mockResolvedValueOnce(STATUS_CODE.BAD_REQUEST);
         const mRequest = createMockRequest({}, {id: TEST_GOAL.id[0], variable: "name"});
         await GoalProcessor.getGoalVariable(mRequest, MOCK_RESPONSE);
         expect(goalApi.getGoalVariable).toHaveBeenCalledTimes(1);
         expect(goalApi.getGoalVariable).toHaveBeenCalledWith(TEST_GOAL.id[0], "name");
         expect(MOCK_RESPONSE.json).toHaveBeenCalledTimes(0);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledTimes(1);
-        expect(MOCK_RESPONSE.status).toHaveBeenCalledWith(StatusCode.BAD_REQUEST);
+        expect(MOCK_RESPONSE.status).toHaveBeenCalledWith(STATUS_CODE.BAD_REQUEST);
         expect(MOCK_RESPONSE.send).toHaveBeenCalledTimes(1);
-        expect(MOCK_RESPONSE.send).toHaveBeenCalledWith(ERROR_MESSAGES.get(StatusCode.BAD_REQUEST));
+        expect(MOCK_RESPONSE.send).toHaveBeenCalledWith(ERROR_MESSAGES.get(STATUS_CODE.BAD_REQUEST));
     });
 });

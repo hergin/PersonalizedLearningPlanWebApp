@@ -2,7 +2,7 @@ import { join } from "path";
 import dotenv from "dotenv";
 import { createTransport, Transporter } from 'nodemailer';
 import SMTPTransport from "nodemailer/lib/smtp-transport";
-import { InviteData, StatusCode, Subject } from "../types";
+import { InviteData, STATUS_CODE, Subject } from "../types";
 import MessageGenerator from "./messageGenerator";
 
 dotenv.config({
@@ -33,7 +33,7 @@ export default class EmailService {
 
     async sendEmail(recipient: string, subject: string, message: string) {
         if(!recipient || !recipient.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
-            return StatusCode.BAD_REQUEST;
+            return STATUS_CODE.BAD_REQUEST;
         }
 
         try {
@@ -44,16 +44,16 @@ export default class EmailService {
                 html: message
             });
             console.log(`Message sent: ${info.messageId}`);
-            return StatusCode.OK;
+            return STATUS_CODE.OK;
         } catch(error: unknown) {
             console.error(error);
-            return StatusCode.INTERNAL_SERVER_ERROR;
+            return STATUS_CODE.INTERNAL_SERVER_ERROR;
         }
     }
 
     async sendInviteEmail(data: InviteData, subject : Subject) {
         if(!data.recipient_email || !data.recipient_email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
-            return StatusCode.BAD_REQUEST;
+            return STATUS_CODE.BAD_REQUEST;
         }
 
         try {
@@ -65,10 +65,10 @@ export default class EmailService {
                 html: message
             });
             console.log(`Message sent: ${info.messageId}`);
-            return StatusCode.OK;
+            return STATUS_CODE.OK;
         } catch(error: unknown) {
             console.error(error);
-            return StatusCode.INTERNAL_SERVER_ERROR;
+            return STATUS_CODE.INTERNAL_SERVER_ERROR;
         }
     }
 }
