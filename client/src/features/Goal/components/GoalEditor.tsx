@@ -12,7 +12,7 @@ import {
   IconButton,
 } from "@mui/material";
 import { useHotKeys } from "../../../hooks/useHotKeys";
-import { Goal, GoalType } from "../../../types";
+import { Goal, GOAL_TYPE } from "../../../types";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
@@ -134,13 +134,13 @@ export default function GoalEditor({ goal }: GoalEditorProps) {
               <div className="flex flex-row justify-center items-center">
                 <p className="font-headlineFont text-xl">Daily</p>
                 <Checkbox
-                  checked={updatedGoal.goal_type === GoalType.REPEATABLE}
+                  checked={updatedGoal.goal_type === GOAL_TYPE.DAILY}
                   onChange={(event) =>
                     setGoal({
                       ...goal,
                       goal_type: event.target.checked
-                        ? GoalType.REPEATABLE
-                        : GoalType.TASK,
+                        ? GOAL_TYPE.DAILY
+                        : GOAL_TYPE.ONCE,
                     })
                   }
                 />

@@ -1,6 +1,7 @@
 import { useApiConnection } from "../../../hooks/useApiConnection";
 import { throwServerError } from "../../../utils/errorHandlers";
 import { Goal, CreateGoalProps, CreateSubGoalProps } from "../../../types";
+import { isCreatedSubGoal } from "../../../utils/typePredicates";
 
 export const GoalApi = () => {
   const { get, post, put, del } = useApiConnection();
@@ -14,15 +15,12 @@ export const GoalApi = () => {
   }
 
   async function createGoal(goal: CreateGoalProps | CreateSubGoalProps) {
+    const endOfPath = isCreatedSubGoal(goal) ? `/${goal.parentId}` : "";
     try {
-      await post(`/goal/add${isSubGoal(goal) ? `/${goal.parentId}` : ""}`, goal)
+      await post(`/goal/add${endOfPath}`, goal)
     } catch (error: unknown) {
       throwServerError(error);
     }
-  }
-
-  function isSubGoal<T extends CreateGoalProps>(goal: T | CreateSubGoalProps): goal is CreateSubGoalProps {
-    return "parentId" in goal;
   }
 
   async function updateGoal(goal: Goal) {

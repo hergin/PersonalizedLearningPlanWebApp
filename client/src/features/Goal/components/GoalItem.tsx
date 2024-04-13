@@ -5,7 +5,7 @@ import { SubGoalsCollapsable } from "./SubGoalsCollapsable";
 import { useCollapse } from "react-collapsed";
 import dayjs from "dayjs";
 import { Checkbox } from "@mui/material";
-import SubGoalCreator from "./SubGoalCreator";
+import GoalCreator from "./GoalCreator";
 import GoalDescriptionModal from "./GoalDescriptionModal";
 import { useGoalUpdater } from "../hooks/useGoals";
 import RemoveIcon from "@mui/icons-material/Remove";
@@ -26,7 +26,7 @@ export default function GoalItem({ id, goal }: GoalItemProps) {
       <>
         <div
           key={goal.goal_id}
-          className="flex flex-row transition-transform rounded  w-full h-[100px] border-2 border-solid border-black divide-x"
+          className="flex flex-row transition-transform rounded w-full h-[100px] border-2 border-solid border-black divide-x"
         >
           <div className="flex flex-col w-2/5 h-full justify-center p-3 ">
             <button
@@ -73,7 +73,7 @@ export default function GoalItem({ id, goal }: GoalItemProps) {
             }}
           />
         ))}
-        <SubGoalCreator moduleID={id} parentId={goal.goal_id} />
+        <GoalCreator moduleId={id} parentGoalId={goal.goal_id} />
         <GoalDescriptionModal
           goal={goal}
           open={openDescription}

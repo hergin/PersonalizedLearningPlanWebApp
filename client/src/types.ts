@@ -1,14 +1,19 @@
-export enum GoalType {
-  TASK = "todo",
-  REPEATABLE = "daily",
-}
+type ObjectValues<T> = T[keyof T];
 
-const roles = {
+export const GOAL_TYPE = {
+  ONCE: "todo",
+  DAILY: "daily",
+  WEEKLY: "weekly",
+  MONTHLY: "monthly"
+} as const;
+export type GoalType = ObjectValues<typeof GOAL_TYPE>; 
+
+export const ROLES = {
   ADMIN: "admin",
   COACH: "coach",
   BASIC: "basic", 
 } as const;
-export type Role = (typeof roles)[keyof typeof roles];
+export type Role = ObjectValues<typeof ROLES>;
 
 export interface Module {
   id: number;

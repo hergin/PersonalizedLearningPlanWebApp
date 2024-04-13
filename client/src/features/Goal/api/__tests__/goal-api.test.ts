@@ -1,7 +1,7 @@
 import { GoalApi } from "../goal-api";
 import { useApiConnection } from "../../../../hooks/useApiConnection";
 import { throwServerError } from "../../../../utils/errorHandlers";
-import { CreateGoalProps, GoalType } from "../../../../types";
+import { CreateGoalProps, GOAL_TYPE } from "../../../../types";
 
 jest.mock("../../../../hooks/useApiConnection");
 jest.mock("../../../../utils/errorHandlers");
@@ -10,7 +10,7 @@ const mockModuleId = 0;
 const mockGoalId = 2;
 const mockGoal: CreateGoalProps = {
     name: "Goal",
-    goalType: GoalType.TASK,
+    goalType: GOAL_TYPE.ONCE,
     description: "Mock Goal is used for testing.",
     isComplete: false,
     moduleId: mockModuleId,
