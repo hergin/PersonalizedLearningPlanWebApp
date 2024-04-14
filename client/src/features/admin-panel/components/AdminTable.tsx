@@ -23,7 +23,6 @@ import { Role } from "../../../types";
 
 export default function FullFeaturedCrudGrid() {
   const { data: profiles, isLoading, error } = useAccountData();
-  console.log(profiles);
   const { mutateAsync: updateRole } = useRoleUpdater();
   const [rows, setRows] = React.useState<GridRowModel[]>([]);
   const [rowModesModel, setRowModesModel] = React.useState<GridRowModesModel>(
@@ -50,10 +49,7 @@ export default function FullFeaturedCrudGrid() {
   };
 
   const handleSaveClick =
-    (GridID: GridRowId, id: number, role: Role) => async () => {
-      console.log(`Changing user ${id} to role ${role}`);
-      await updateRole({ id, role });
-      console.log(`Changed user ${id} to role ${role}`);
+    (GridID: GridRowId, id: number,) => async () => {
       setRowModesModel({
         ...rowModesModel,
         [id]: { mode: GridRowModes.View },
@@ -76,13 +72,14 @@ export default function FullFeaturedCrudGrid() {
     }
   };
 
-  const processRowUpdate = (newRow: GridRowModel) => {
+  const processRowUpdate = async (newRow: GridRowModel) => {
     const updatedRow = { ...newRow };
     setRows(
       rows.map((row) =>
         row.account_id === newRow.account_id ? updatedRow : row
       )
     );
+    await updateRole({ id: updatedRow.account_id, role: updatedRow.role });
     return updatedRow;
   };
 
@@ -132,7 +129,7 @@ export default function FullFeaturedCrudGrid() {
               sx={{
                 color: "primary.main",
               }}
-              onClick={handleSaveClick(id, currentRow?.account_id, currentRow?.valueOptions)}
+              onClick={handleSaveClick(id, currentRow?.account_id)}
               key={id}
             />,
             <GridActionsCellItem
