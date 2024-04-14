@@ -3,7 +3,7 @@ import SimpleTable from "./AdminTable";
 
 const AdminPage = () => {
   return (
-    <div className="flex p-32">
+    <div className="flex p-32 bg-[#F1F1F1] h-screen">
       <SimpleTable />
     </div>
   );

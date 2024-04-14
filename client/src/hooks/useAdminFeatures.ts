@@ -6,7 +6,7 @@ export function useAccountData() {
     const { fetchAllAccounts } = AdminApi();
 
     return useQuery({
-        queryFn: () => fetchAllAccounts(),
+        queryFn: async() => await fetchAllAccounts(),
         queryKey: ["account"],
     });
 }
