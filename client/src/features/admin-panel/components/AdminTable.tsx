@@ -1,7 +1,6 @@
 import * as React from "react";
 import Box from "@mui/material/Box";
 import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/DeleteOutlined";
 import SaveIcon from "@mui/icons-material/Save";
 import CancelIcon from "@mui/icons-material/Close";
 import {
@@ -19,7 +18,6 @@ import {
   useAccountData,
   useRoleUpdater,
 } from "../../../hooks/useAdminFeatures";
-import { Role } from "../../../types";
 
 export default function FullFeaturedCrudGrid() {
   const { data: profiles, isLoading, error } = useAccountData();
@@ -48,13 +46,12 @@ export default function FullFeaturedCrudGrid() {
     setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
   };
 
-  const handleSaveClick =
-    (GridID: GridRowId, id: number,) => async () => {
-      setRowModesModel({
-        ...rowModesModel,
-        [id]: { mode: GridRowModes.View },
-      });
-    };
+  const handleSaveClick = (GridID: GridRowId, id: number) => async () => {
+    setRowModesModel({
+      ...rowModesModel,
+      [id]: { mode: GridRowModes.View },
+    });
+  };
 
   const handleDeleteClick = (id: GridRowId) => () => {
     setRows(rows.filter((row) => row.account_id !== id));
@@ -90,7 +87,7 @@ export default function FullFeaturedCrudGrid() {
   // Columns
 
   const columns: GridColDef[] = [
-    { field: "username", headerName: "UserName", width: 180 },
+    { field: "username", headerName: "Username", width: 180 },
     {
       field: "email",
       headerName: "Email",
@@ -152,13 +149,6 @@ export default function FullFeaturedCrudGrid() {
             color="inherit"
             key={id}
           />,
-          <GridActionsCellItem
-            icon={<DeleteIcon />}
-            label="Delete"
-            onClick={handleDeleteClick(id)}
-            color="inherit"
-            key={id}
-          />,
         ];
       },
     },
@@ -175,6 +165,28 @@ export default function FullFeaturedCrudGrid() {
         "& .textPrimary": {
           color: "text.primary",
         },
+        "& .MuiDataGrid-columnHeader": {
+          backgroundColor: "#8C1515",
+          color: "white",
+        },
+        "& .MuiDataGrid-columnHeaderTitleContainer": {
+          color: "white",
+        },
+        "& .MuiDataGrid-menuIconButton": {
+          color: "white",
+        },
+        "& .MuiDataGrid-sortIcon": {
+          color: "white",
+        },
+        "& .MuiDataGrid-columnSeparator": {
+          visibility: "visible",
+          "&:hover": {
+            color: "white",
+          },
+          "&.Mui-resizable": {
+            color: "white",
+          },
+        },
       }}
     >
       <DataGrid
@@ -190,6 +202,7 @@ export default function FullFeaturedCrudGrid() {
         slotProps={{
           toolbar: { setRows, setRowModesModel },
         }}
+        sx={{ backgroundColor: "white" }}
       />
     </Box>
   );
