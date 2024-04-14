@@ -49,29 +49,16 @@ export default function FullFeaturedCrudGrid() {
     setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
   };
 
-  const handleSaveClick = (gridID: GridRowId) => async () => {
-    const rowToUpdate = rows.find((row) => row.account_id === gridID);
-    if (rowToUpdate) {
-      try {
-        console.log(
-          `Changing user ${rowToUpdate.account_id} to role ${rowToUpdate.role}`
-        );
-        await updateRole({
-          id: rowToUpdate.account_id,
-          role: rowToUpdate.role,
-        });
-        console.log(
-          `Changed user ${rowToUpdate.account_id} to role ${rowToUpdate.role}`
-        );
-        setRowModesModel({
-          ...rowModesModel,
-          [gridID]: { mode: GridRowModes.View },
-        });
-      } catch (error) {
-        console.error("Error updating role:", error);
-      }
-    }
-  };
+  const handleSaveClick =
+    (GridID: GridRowId, id: number, role: Role) => async () => {
+      console.log(`Changing user ${id} to role ${role}`);
+      await updateRole({ id, role });
+      console.log(`Changed user ${id} to role ${role}`);
+      setRowModesModel({
+        ...rowModesModel,
+        [id]: { mode: GridRowModes.View },
+      });
+    };
 
   const handleDeleteClick = (id: GridRowId) => () => {
     setRows(rows.filter((row) => row.account_id !== id));
@@ -90,10 +77,7 @@ export default function FullFeaturedCrudGrid() {
   };
 
   const processRowUpdate = (newRow: GridRowModel) => {
-    const updatedRow = {
-      ...rows.find((row) => row.account_id === newRow.account_id),
-      ...newRow,
-    };
+    const updatedRow = { ...newRow };
     setRows(
       rows.map((row) =>
         row.account_id === newRow.account_id ? updatedRow : row
@@ -113,19 +97,19 @@ export default function FullFeaturedCrudGrid() {
     {
       field: "email",
       headerName: "Email",
-      width: 80,
+      flex: 1,
       align: "left",
       headerAlign: "left",
     },
     {
       field: "account_id",
       headerName: "Account ID",
-      width: 180,
+      flex: 1,
     },
     {
       field: "role",
       headerName: "Role",
-      width: 220,
+      flex: 1,
       editable: true,
       type: "singleSelect",
       valueOptions: ["coach", "basic", "admin"],
@@ -134,45 +118,51 @@ export default function FullFeaturedCrudGrid() {
       field: "actions",
       type: "actions",
       headerName: "Actions",
-      width: 100,
+      flex: 1,
       cellClassName: "actions",
       getActions: ({ id }) => {
         const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
-        return isInEditMode
-          ? [
-              <GridActionsCellItem
-                icon={<SaveIcon />}
-                label="Save"
-                sx={{ color: "primary.main" }}
-                onClick={handleSaveClick(id)}
-                key={`${id}-save`}
-              />,
-              <GridActionsCellItem
-                icon={<CancelIcon />}
-                label="Cancel"
-                className="textPrimary"
-                onClick={handleCancelClick(id)}
-                color="inherit"
-                key={`${id}-cancel`}
-              />,
-            ]
-          : [
-              <GridActionsCellItem
-                icon={<EditIcon />}
-                label="Edit"
-                className="textPrimary"
-                onClick={handleEditClick(id)}
-                color="inherit"
-                key={`${id}-edit`}
-              />,
-              <GridActionsCellItem
-                icon={<DeleteIcon />}
-                label="Delete"
-                onClick={handleDeleteClick(id)}
-                color="inherit"
-                key={`${id}-delete`}
-              />,
-            ];
+        const currentRow = rows.find((row) => row.account_id === id);
+
+        if (isInEditMode) {
+          return [
+            <GridActionsCellItem
+              icon={<SaveIcon />}
+              label="Save"
+              sx={{
+                color: "primary.main",
+              }}
+              onClick={handleSaveClick(id, currentRow?.account_id, currentRow?.valueOptions)}
+              key={id}
+            />,
+            <GridActionsCellItem
+              icon={<CancelIcon />}
+              label="Cancel"
+              className="textPrimary"
+              onClick={handleCancelClick(id)}
+              color="inherit"
+              key={id}
+            />,
+          ];
+        }
+
+        return [
+          <GridActionsCellItem
+            icon={<EditIcon />}
+            label="Edit"
+            className="textPrimary"
+            onClick={handleEditClick(id)}
+            color="inherit"
+            key={id}
+          />,
+          <GridActionsCellItem
+            icon={<DeleteIcon />}
+            label="Delete"
+            onClick={handleDeleteClick(id)}
+            color="inherit"
+            key={id}
+          />,
+        ];
       },
     },
   ];
