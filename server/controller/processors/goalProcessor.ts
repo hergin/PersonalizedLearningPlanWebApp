@@ -52,7 +52,7 @@ async function putGoal(req: Request, res: Response) {
         completion_time: req.body.completion_time,
         expiration: req.body.expiration
     });
-    if (resultingStatusCode !==STATUS_CODE.OK) {
+    if (resultingStatusCode !== STATUS_CODE.OK) {
         console.log(`Updating goal failed for goal ${req.params.id} with status code ${resultingStatusCode}`);
         res.status(resultingStatusCode).send(getLoginError(resultingStatusCode));
         return;
@@ -67,7 +67,7 @@ async function putGoalFeedback(req: Request, res: Response) {
         res.status(goalQuery).send(getLoginError(goalQuery));
         return;
     }
-    const accountQuery = await loginAPI.getAccountById(req.body.userId);
+    const accountQuery = await loginAPI.getEmailById(req.body.userId);
     if(isStatusCode(accountQuery)) {
         console.error(`Failed to retrieve account id for coach ${req.body.userId}'s feedback.`);
         res.status(accountQuery).send("Failed to retrieve understudy's account to email them the feedback.");

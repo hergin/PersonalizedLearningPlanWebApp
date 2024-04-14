@@ -18,7 +18,7 @@ describe("Goal Processor Unit Tests", () => {
     afterEach(() => {
         jest.clearAllMocks();
     });
-    
+
     it("get module goals (normal case)", async () => {
         goalApi.getGoals.mockResolvedValueOnce([{
             ...TEST_GOAL,
@@ -182,7 +182,7 @@ describe("Goal Processor Unit Tests", () => {
 
     it("put goal feedback (normal case)", async () => {
         goalApi.updateGoalFeedback.mockResolvedValueOnce(STATUS_CODE.OK);
-        loginApi.getAccountById.mockResolvedValueOnce([TEST_ACCOUNT]);
+        loginApi.getEmailById.mockResolvedValueOnce([TEST_ACCOUNT]);
         emailService.sendEmail.mockResolvedValueOnce({});
         const mRequest = createMockRequest({feedback: TEST_GOAL.feedback, userId: TEST_ACCOUNT.id}, {id: TEST_GOAL.id[0]});
         await GoalProcessor.putGoalFeedback(mRequest, MOCK_RESPONSE);
@@ -190,8 +190,8 @@ describe("Goal Processor Unit Tests", () => {
         expect(goalApi.updateGoalFeedback).toHaveBeenCalledWith(TEST_GOAL.id[0], TEST_GOAL.feedback);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledTimes(0);
         expect(MOCK_RESPONSE.send).toHaveBeenCalledTimes(0);
-        expect(loginApi.getAccountById).toHaveBeenCalledTimes(1);
-        expect(loginApi.getAccountById).toHaveBeenCalledWith(TEST_ACCOUNT.id);
+        expect(loginApi.getEmailById).toHaveBeenCalledTimes(1);
+        expect(loginApi.getEmailById).toHaveBeenCalledWith(TEST_ACCOUNT.id);
         expect(emailService.sendEmail).toHaveBeenCalledTimes(1);
         expect(emailService.sendEmail).toHaveBeenCalledWith(TEST_ACCOUNT.email, "Feedback", TEST_GOAL.feedback);
         expect(MOCK_RESPONSE.sendStatus).toHaveBeenCalledTimes(1);
@@ -204,7 +204,7 @@ describe("Goal Processor Unit Tests", () => {
         await GoalProcessor.putGoalFeedback(mRequest, MOCK_RESPONSE);
         expect(goalApi.updateGoalFeedback).toHaveBeenCalledTimes(1);
         expect(goalApi.updateGoalFeedback).toHaveBeenCalledWith(TEST_GOAL.id[0], TEST_GOAL.feedback);
-        expect(loginApi.getAccountById).toHaveBeenCalledTimes(0);
+        expect(loginApi.getEmailById).toHaveBeenCalledTimes(0);
         expect(emailService.sendEmail).toHaveBeenCalledTimes(0);
         expect(MOCK_RESPONSE.sendStatus).toHaveBeenCalledTimes(0);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledTimes(1);
@@ -215,15 +215,15 @@ describe("Goal Processor Unit Tests", () => {
 
     it("put goal feedback (login api error case)", async () => {
         goalApi.updateGoalFeedback.mockResolvedValueOnce(STATUS_CODE.OK);
-        loginApi.getAccountById.mockResolvedValueOnce(STATUS_CODE.FORBIDDEN);
+        loginApi.getEmailById.mockResolvedValueOnce(STATUS_CODE.FORBIDDEN);
         const mRequest = createMockRequest({feedback: TEST_GOAL.feedback, userId: TEST_ACCOUNT.id}, {id: TEST_GOAL.id[0]});
         await GoalProcessor.putGoalFeedback(mRequest, MOCK_RESPONSE);
         expect(goalApi.updateGoalFeedback).toHaveBeenCalledTimes(1);
         expect(goalApi.updateGoalFeedback).toHaveBeenCalledWith(TEST_GOAL.id[0], TEST_GOAL.feedback);
         expect(emailService.sendEmail).toHaveBeenCalledTimes(0);
         expect(MOCK_RESPONSE.sendStatus).toHaveBeenCalledTimes(0);
-        expect(loginApi.getAccountById).toHaveBeenCalledTimes(1);
-        expect(loginApi.getAccountById).toHaveBeenCalledWith(TEST_ACCOUNT.id);
+        expect(loginApi.getEmailById).toHaveBeenCalledTimes(1);
+        expect(loginApi.getEmailById).toHaveBeenCalledWith(TEST_ACCOUNT.id);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledTimes(1);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledWith(STATUS_CODE.FORBIDDEN);
         expect(MOCK_RESPONSE.send).toHaveBeenCalledTimes(1);

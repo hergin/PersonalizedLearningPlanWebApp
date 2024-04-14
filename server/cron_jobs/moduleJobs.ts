@@ -1,9 +1,9 @@
 import { schedule } from "node-cron";
-import ModuleParser from "../parser/moduleParser";
+import DatabaseParser from "../parser/databaseParser";
 
 const EVERYDAY_AT_MIDNIGHT = "0 0 * * *";
-const parser = new ModuleParser();
+const parser = new DatabaseParser();
 
-const updateCompletionPercent = schedule(EVERYDAY_AT_MIDNIGHT, parser.runMaintenanceProcedures);
+const updateCompletionPercent = schedule(EVERYDAY_AT_MIDNIGHT, () => parser.updateDatabase("CALL update_module_completion()"));
 
 export {updateCompletionPercent};

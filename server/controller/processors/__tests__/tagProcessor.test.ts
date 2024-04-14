@@ -41,10 +41,10 @@ describe("Tag Processor unit tests", () => {
 
     it("create tag (normal case)", async () => {
         tagApi.addTag.mockResolvedValueOnce(STATUS_CODE.OK);
-        const mRequest = createMockRequest({name: TEST_TAG.name, color: TEST_TAG.color, accountId: TEST_TAG.accountId});
+        const mRequest = createMockRequest({name: TEST_TAG.name, accountId: TEST_TAG.accountId});
         await TagProcessor.createTag(mRequest, MOCK_RESPONSE);
         expect(tagApi.addTag).toHaveBeenCalledTimes(1);
-        expect(tagApi.addTag).toHaveBeenCalledWith(TEST_TAG.accountId, TEST_TAG.name, TEST_TAG.color);
+        expect(tagApi.addTag).toHaveBeenCalledWith(TEST_TAG.accountId, TEST_TAG.name);
         expect(MOCK_RESPONSE.send).toHaveBeenCalledTimes(0);
         expect(MOCK_RESPONSE.sendStatus).toHaveBeenCalledTimes(1);
         expect(MOCK_RESPONSE.sendStatus).toHaveBeenCalledWith(STATUS_CODE.OK);
@@ -52,10 +52,10 @@ describe("Tag Processor unit tests", () => {
 
     it("create tag (error case)", async () => {
         tagApi.addTag.mockResolvedValueOnce(STATUS_CODE.CONFLICT);
-        const mRequest = createMockRequest({name: TEST_TAG.name, color: TEST_TAG.color, accountId: TEST_TAG.accountId});
+        const mRequest = createMockRequest({name: TEST_TAG.name, accountId: TEST_TAG.accountId});
         await TagProcessor.createTag(mRequest, MOCK_RESPONSE);
         expect(tagApi.addTag).toHaveBeenCalledTimes(1);
-        expect(tagApi.addTag).toHaveBeenCalledWith(TEST_TAG.accountId, TEST_TAG.name, TEST_TAG.color);
+        expect(tagApi.addTag).toHaveBeenCalledWith(TEST_TAG.accountId, TEST_TAG.name);
         expect(MOCK_RESPONSE.sendStatus).toHaveBeenCalledTimes(0);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledTimes(1);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledWith(STATUS_CODE.CONFLICT);
