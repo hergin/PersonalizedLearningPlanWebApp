@@ -1,22 +1,20 @@
 import { DatabaseError } from "pg";
 import InvitationParser from "../../parser/invitationParser";
 import { InviteData, StatusCode } from "../../types";
-import { ErrorCodeInterpreter } from "./errorCodeInterpreter";
+import { convertDatabaseErrorToStatusCode } from "../../utils/errorHandlers";
 
 export default class InvitationApi {
-    parser: InvitationParser;
-    errorCodeInterpreter: ErrorCodeInterpreter;
+    readonly parser: InvitationParser;
 
     constructor() {
         this.parser = new InvitationParser();
-        this.errorCodeInterpreter = new ErrorCodeInterpreter();
     }
 
     async getInvites(recipientId: number) {
         try {
             return await this.parser.getInvites(recipientId); 
         } catch(error: unknown) {
-            return this.errorCodeInterpreter.getStatusCode(error as DatabaseError);
+            return convertDatabaseErrorToStatusCode(error as DatabaseError);
         }
     }
 
@@ -24,7 +22,7 @@ export default class InvitationApi {
         try {
             return await this.parser.getPendingInvites(senderId);
         } catch(error: unknown) {
-            return this.errorCodeInterpreter.getStatusCode(error as DatabaseError);
+            return convertDatabaseErrorToStatusCode(error as DatabaseError);
         }
     }
 
@@ -33,7 +31,7 @@ export default class InvitationApi {
             await this.parser.createInvite(senderId, recipientId);
             return await this.parser.getInviteWithAccounts(senderId, recipientId);
         } catch(error: unknown) {
-            return this.errorCodeInterpreter.getStatusCode(error as DatabaseError);
+            return convertDatabaseErrorToStatusCode(error as DatabaseError);
         }
     }
 
@@ -41,7 +39,7 @@ export default class InvitationApi {
         try {
             return await this.parser.acceptInvite(inviteId, senderId, recipientId);
         } catch(error: unknown) {
-            return this.errorCodeInterpreter.getStatusCode(error as DatabaseError);
+            return convertDatabaseErrorToStatusCode(error as DatabaseError);
         }
     }
 
@@ -49,7 +47,7 @@ export default class InvitationApi {
         try {
             return await this.parser.deleteInvite(inviteId);
         } catch(error: unknown) {
-            return this.errorCodeInterpreter.getStatusCode(error as DatabaseError);
+            return convertDatabaseErrorToStatusCode(error as DatabaseError);
         }
     }
 }

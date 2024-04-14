@@ -1,6 +1,6 @@
 import { StatusCode, STATUS_CODE } from "../types";
 
-export default function isStatusCode<T>(value: T | StatusCode): value is StatusCode {
+export function isStatusCode<T>(value: T | StatusCode): value is StatusCode {
     let result = false;
     for(const statusCode of Object.values(STATUS_CODE)) {
         result = result || value === statusCode;

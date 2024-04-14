@@ -1,15 +1,13 @@
 import SettingsParser from "../../parser/settingsParser";
-import { ErrorCodeInterpreter } from "./errorCodeInterpreter";
+import { convertDatabaseErrorToStatusCode } from "../../utils/errorHandlers";
 import { DatabaseError } from "pg";
 import { AccountSettings, STATUS_CODE, StatusCode } from "../../types";
 
 export default class SettingsApi {
-    parser : SettingsParser;
-    errorCodeInterpreter : ErrorCodeInterpreter;
+    readonly parser : SettingsParser;
     
     constructor() {
         this.parser = new SettingsParser();
-        this.errorCodeInterpreter = new ErrorCodeInterpreter();
     }
 
     async getSettings(accountId: number): Promise<AccountSettings[] | StatusCode> {
@@ -21,12 +19,12 @@ export default class SettingsApi {
             await this.parser.updateAccountSettings(accountId, settings);
             return STATUS_CODE.OK;
         } catch(error: unknown) {
-            return this.errorCodeInterpreter.getStatusCode(error as DatabaseError);
+            return convertDatabaseErrorToStatusCode(error as DatabaseError);
         }
     }
 
     async #onApiError(error: unknown) {
         console.error(error);
-        return this.errorCodeInterpreter.getStatusCode(error as DatabaseError);
+        return convertDatabaseErrorToStatusCode(error as DatabaseError);
     }
 }

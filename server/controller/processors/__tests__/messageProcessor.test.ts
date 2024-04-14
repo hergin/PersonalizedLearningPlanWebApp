@@ -1,12 +1,11 @@
 import * as MessageProcessor from "../messageProcessor";
 import MessageApi from "../../api/messageApi";
 import { createMockRequest, MOCK_RESPONSE } from "../../global/mockValues";
-import { initializeErrorMap } from "../../../utils/errorMessages";
+import { getLoginError } from "../../../utils/errorHandlers";
 import { Message, STATUS_CODE } from "../../../types";
 
 jest.mock("../../api/messageApi");
 
-const ERROR_MESSAGES = initializeErrorMap();
 const mockMessageId = -1;
 const mockSenderId = 0;
 const mockRecipientId = 1;
@@ -53,7 +52,7 @@ describe("Message Processor Unit Tests", () => {
         expect(MOCK_RESPONSE.status).toHaveBeenCalledTimes(1);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledWith(STATUS_CODE.BAD_REQUEST);
         expect(MOCK_RESPONSE.send).toHaveBeenCalledTimes(1);
-        expect(MOCK_RESPONSE.send).toHaveBeenCalledWith(ERROR_MESSAGES.get(STATUS_CODE.BAD_REQUEST));
+        expect(MOCK_RESPONSE.send).toHaveBeenCalledWith(getLoginError(STATUS_CODE.BAD_REQUEST));
     });
 
     it("Get Chat Messages (normal case)", async () => {
@@ -79,7 +78,7 @@ describe("Message Processor Unit Tests", () => {
         expect(MOCK_RESPONSE.status).toHaveBeenCalledTimes(1);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledWith(STATUS_CODE.CONFLICT);
         expect(MOCK_RESPONSE.send).toHaveBeenCalledTimes(1);
-        expect(MOCK_RESPONSE.send).toHaveBeenCalledWith(ERROR_MESSAGES.get(STATUS_CODE.CONFLICT));
+        expect(MOCK_RESPONSE.send).toHaveBeenCalledWith(getLoginError(STATUS_CODE.CONFLICT));
     });
 
     it("Post Message (normal case)", async () => {
@@ -112,7 +111,7 @@ describe("Message Processor Unit Tests", () => {
         expect(MOCK_RESPONSE.status).toHaveBeenCalledTimes(1);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledWith(STATUS_CODE.FORBIDDEN);
         expect(MOCK_RESPONSE.send).toHaveBeenCalledTimes(1);
-        expect(MOCK_RESPONSE.send).toHaveBeenCalledWith(ERROR_MESSAGES.get(STATUS_CODE.FORBIDDEN));
+        expect(MOCK_RESPONSE.send).toHaveBeenCalledWith(getLoginError(STATUS_CODE.FORBIDDEN));
     });
 
     it("Put Message (normal case)", async () => {
@@ -137,7 +136,7 @@ describe("Message Processor Unit Tests", () => {
         expect(MOCK_RESPONSE.status).toHaveBeenCalledTimes(1);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledWith(STATUS_CODE.GONE);
         expect(MOCK_RESPONSE.send).toHaveBeenCalledTimes(1);
-        expect(MOCK_RESPONSE.send).toHaveBeenCalledWith(ERROR_MESSAGES.get(STATUS_CODE.GONE));
+        expect(MOCK_RESPONSE.send).toHaveBeenCalledWith(getLoginError(STATUS_CODE.GONE));
     });
 
     it("Delete Message (normal case)", async () => {
@@ -162,6 +161,6 @@ describe("Message Processor Unit Tests", () => {
         expect(MOCK_RESPONSE.status).toHaveBeenCalledTimes(1);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledWith(STATUS_CODE.GONE);
         expect(MOCK_RESPONSE.send).toHaveBeenCalledTimes(1);
-        expect(MOCK_RESPONSE.send).toHaveBeenCalledWith(ERROR_MESSAGES.get(STATUS_CODE.GONE));
+        expect(MOCK_RESPONSE.send).toHaveBeenCalledWith(getLoginError(STATUS_CODE.GONE));
     });
 });

@@ -1,22 +1,20 @@
 import MessageParser from "../../parser/messageParser";
-import { ErrorCodeInterpreter } from "./errorCodeInterpreter";
+import { convertDatabaseErrorToStatusCode } from "../../utils/errorHandlers";
 import { DatabaseError } from "pg";
 import { Message, Chat, STATUS_CODE, StatusCode } from "../../types";
 
 export default class MessageApi {
-    parser: MessageParser;
-    errorCodeInterpreter: ErrorCodeInterpreter;
+    readonly parser: MessageParser;
 
     constructor() {
         this.parser = new MessageParser();
-        this.errorCodeInterpreter = new ErrorCodeInterpreter();
     }
 
     async getAllSentMessages(id: number): Promise<Message[] | StatusCode> {
         try {
             return await this.parser.parseAllMessagesFrom(id);
         } catch(error: unknown) {
-            return this.errorCodeInterpreter.getStatusCode(error as DatabaseError);
+            return convertDatabaseErrorToStatusCode(error as DatabaseError);
         }
     }
 
@@ -24,7 +22,7 @@ export default class MessageApi {
         try {
             return await this.parser.parseChat(accountId, recipientId);
         } catch (error: unknown) {
-            return this.errorCodeInterpreter.getStatusCode(error as DatabaseError);
+            return convertDatabaseErrorToStatusCode(error as DatabaseError);
         }
     }
 
@@ -33,7 +31,7 @@ export default class MessageApi {
             await this.parser.storeMessage(message);
             return STATUS_CODE.OK;
         } catch(error: unknown) {
-            return this.errorCodeInterpreter.getStatusCode(error as DatabaseError);
+            return convertDatabaseErrorToStatusCode(error as DatabaseError);
         }
     }
 
@@ -42,7 +40,7 @@ export default class MessageApi {
             await this.parser.editMessage(id, content);
             return STATUS_CODE.OK;
         } catch(error: unknown) {
-            return this.errorCodeInterpreter.getStatusCode(error as DatabaseError);
+            return convertDatabaseErrorToStatusCode(error as DatabaseError);
         }
     }
 
@@ -51,7 +49,7 @@ export default class MessageApi {
             await this.parser.deleteMessage(id);
             return STATUS_CODE.OK;
         } catch(error: unknown) {
-            return this.errorCodeInterpreter.getStatusCode(error as DatabaseError);
+            return convertDatabaseErrorToStatusCode(error as DatabaseError);
         }
     }
 }

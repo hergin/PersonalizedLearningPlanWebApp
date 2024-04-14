@@ -1,11 +1,10 @@
 import InvitationApi from "../api/invitationApi";
 import EmailService from "../../service/emailService";
 import { InviteData, STATUS_CODE, SUBJECTS } from "../../types";
-import { initializeErrorMap } from "../../utils/errorMessages";
+import { getLoginError } from "../../utils/errorHandlers";
 import { Request, Response } from "express";
-import isStatusCode from "../../utils/isStatusCode";
+import { isStatusCode } from "../../utils/typePredicates";
 
-const ERROR_MESSAGES = initializeErrorMap();
 const invitationApi = new InvitationApi();
 const emailService = new EmailService();
 
@@ -14,7 +13,7 @@ async function getInvites(req: Request, res: Response) {
     const query = await invitationApi.getInvites(Number(req.params.id));
     if(isStatusCode(query)) {
         console.log(`Failed to get invites for user ${req.params.id}`);
-        res.status(query).send(ERROR_MESSAGES.get(query));
+        res.status(query).send(getLoginError(query));
         return;
     }
     res.status(STATUS_CODE.OK).json(query);
@@ -25,7 +24,7 @@ async function getPendingInvites(req: Request, res: Response) {
     const query = await invitationApi.getPendingInvites(Number(req.params.id));
     if(isStatusCode(query)) {
         console.log(`Failed to get pending invites for user ${req.params.id}`);
-        res.status(query).send(ERROR_MESSAGES.get(query));
+        res.status(query).send(getLoginError(query));
         return;
     }
     res.status(STATUS_CODE.OK).json(query);
@@ -36,7 +35,7 @@ async function postInvite(req: Request, res: Response) {
     const query = await invitationApi.createInvite(req.body.senderId, req.body.recipientId);
     if(isStatusCode(query)) {
         console.log(`Failed to create invite between users ${req.body.senderId} ${req.body.recipientId}`);
-        res.status(query).send(ERROR_MESSAGES.get(query));
+        res.status(query).send(getLoginError(query));
         return;
     }
     res.sendStatus(STATUS_CODE.OK);
@@ -48,7 +47,7 @@ async function acceptInvite(req: Request, res: Response) {
     const query = await invitationApi.acceptInvite(Number(req.params.id), req.body.senderId, req.body.recipientId);
     if(isStatusCode(query)) {
         console.log(`Failed to create invite between users ${req.body.senderId} ${req.body.recipientId}`);
-        res.status(query).send(ERROR_MESSAGES.get(query));
+        res.status(query).send(getLoginError(query));
         return;
     }
     res.sendStatus(STATUS_CODE.OK);
@@ -60,7 +59,7 @@ async function rejectInvite(req: Request, res: Response) {
     const query = await invitationApi.rejectInvite(Number(req.params.id));
     if(isStatusCode(query)) {
         console.log(`Failed to create invite between users ${req.body.senderId} ${req.body.recipientId}`);
-        res.status(query).send(ERROR_MESSAGES.get(query));
+        res.status(query).send(getLoginError(query));
         return;
     }
     res.sendStatus(STATUS_CODE.OK);

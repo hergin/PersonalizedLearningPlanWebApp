@@ -1,5 +1,5 @@
 import { STATUS_CODE, StatusCode } from "../../types";
-import isStatusCode from "../isStatusCode";
+import { isStatusCode } from "../typePredicates";
 
 describe("Is Status Code Unit Tests", () => {
     it.each([

@@ -2,10 +2,9 @@ import * as ProfileProcessor from "../profileProcessor";
 import ProfileAPI from "../../api/profileApi";
 import { createMockRequest, MOCK_RESPONSE, TEST_PROFILE, TEST_ACCOUNT } from "../../global/mockValues";
 import { STATUS_CODE } from "../../../types";
-import { initializeErrorMap } from "../../../utils/errorMessages";
+import { getLoginError } from "../../../utils/errorHandlers";
 
 jest.mock("../../../controller/api/profileApi");
-const ERROR_MESSAGES = initializeErrorMap();
 
 describe("Profile Processor unit tests", () => {
     var profileApi : any;
@@ -45,7 +44,7 @@ describe("Profile Processor unit tests", () => {
         expect(MOCK_RESPONSE.status).toHaveBeenCalledTimes(1);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledWith(STATUS_CODE.FORBIDDEN);
         expect(MOCK_RESPONSE.send).toHaveBeenCalledTimes(1);
-        expect(MOCK_RESPONSE.send).toHaveBeenCalledWith(ERROR_MESSAGES.get(STATUS_CODE.FORBIDDEN));
+        expect(MOCK_RESPONSE.send).toHaveBeenCalledWith(getLoginError(STATUS_CODE.FORBIDDEN));
     });
 
     it("get profile (normal case)", async () => {
@@ -71,7 +70,7 @@ describe("Profile Processor unit tests", () => {
         expect(MOCK_RESPONSE.status).toHaveBeenCalledTimes(1);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledWith(STATUS_CODE.UNAUTHORIZED);
         expect(MOCK_RESPONSE.send).toHaveBeenCalledTimes(1);
-        expect(MOCK_RESPONSE.send).toHaveBeenCalledWith(ERROR_MESSAGES.get(STATUS_CODE.UNAUTHORIZED));
+        expect(MOCK_RESPONSE.send).toHaveBeenCalledWith(getLoginError(STATUS_CODE.UNAUTHORIZED));
     });
 
     it("post profile (normal case)", async () => {
@@ -95,7 +94,7 @@ describe("Profile Processor unit tests", () => {
         expect(MOCK_RESPONSE.status).toHaveBeenCalledTimes(1);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledWith(STATUS_CODE.CONFLICT);
         expect(MOCK_RESPONSE.send).toHaveBeenCalledTimes(1);
-        expect(MOCK_RESPONSE.send).toHaveBeenCalledWith(ERROR_MESSAGES.get(STATUS_CODE.CONFLICT));
+        expect(MOCK_RESPONSE.send).toHaveBeenCalledWith(getLoginError(STATUS_CODE.CONFLICT));
     });
 
     it("put profile (correct case)", async () => {
@@ -119,7 +118,7 @@ describe("Profile Processor unit tests", () => {
         expect(MOCK_RESPONSE.status).toHaveBeenCalledTimes(1);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledWith(STATUS_CODE.CONNECTION_ERROR);
         expect(MOCK_RESPONSE.send).toHaveBeenCalledTimes(1);
-        expect(MOCK_RESPONSE.send).toHaveBeenCalledWith(ERROR_MESSAGES.get(STATUS_CODE.CONNECTION_ERROR));
+        expect(MOCK_RESPONSE.send).toHaveBeenCalledWith(getLoginError(STATUS_CODE.CONNECTION_ERROR));
     });
 
     it("delete profile (normal case)", async () => {
@@ -143,6 +142,6 @@ describe("Profile Processor unit tests", () => {
         expect(MOCK_RESPONSE.status).toHaveBeenCalledTimes(1);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledWith(STATUS_CODE.FORBIDDEN);
         expect(MOCK_RESPONSE.send).toHaveBeenCalledTimes(1);
-        expect(MOCK_RESPONSE.send).toHaveBeenCalledWith(ERROR_MESSAGES.get(STATUS_CODE.FORBIDDEN));
+        expect(MOCK_RESPONSE.send).toHaveBeenCalledWith(getLoginError(STATUS_CODE.FORBIDDEN));
     });
 });

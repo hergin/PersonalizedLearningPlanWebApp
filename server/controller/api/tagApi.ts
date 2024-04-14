@@ -1,15 +1,13 @@
 import TagParser from "../../parser/tagParser";
-import { ErrorCodeInterpreter } from "./errorCodeInterpreter";
+import { convertDatabaseErrorToStatusCode } from "../../utils/errorHandlers";
 import { STATUS_CODE } from "../../types";
 import { DatabaseError } from "pg";
 
 export default class TagApi {
-    parser: TagParser;
-    errorCodeInterpreter: ErrorCodeInterpreter;
+    readonly parser: TagParser;
 
     constructor() {
         this.parser = new TagParser();
-        this.errorCodeInterpreter = new ErrorCodeInterpreter();
     }
 
     async getTags(accountId: number) {
@@ -17,7 +15,7 @@ export default class TagApi {
             const tags = await this.parser.parseTags(accountId);
             return tags;
         } catch(error: unknown) {
-            return this.errorCodeInterpreter.getStatusCode(error as DatabaseError);
+            return convertDatabaseErrorToStatusCode(error as DatabaseError);
         }
     }
 
@@ -26,7 +24,7 @@ export default class TagApi {
             await this.parser.storeTag(name, color, accountId);
             return STATUS_CODE.OK;
         } catch(error: unknown) {
-            return this.errorCodeInterpreter.getStatusCode(error as DatabaseError);
+            return convertDatabaseErrorToStatusCode(error as DatabaseError);
         }
     }
 
@@ -35,7 +33,7 @@ export default class TagApi {
             await this.parser.deleteTag(id);
             return STATUS_CODE.OK;
         } catch(error: unknown) {
-            return this.errorCodeInterpreter.getStatusCode(error as DatabaseError);
+            return convertDatabaseErrorToStatusCode(error as DatabaseError);
         }
     }
 }

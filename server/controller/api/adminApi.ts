@@ -1,15 +1,13 @@
 import AdminParser from "../../parser/adminParser";
 import { UserData, StatusCode, STATUS_CODE, Role } from "../../types";
-import { ErrorCodeInterpreter } from "./errorCodeInterpreter";
+import { convertDatabaseErrorToStatusCode } from "../../utils/errorHandlers";
 import { DatabaseError } from "pg";
 
 export default class AdminApi {
     readonly parser: AdminParser;
-    readonly errorCodeInterpreter: ErrorCodeInterpreter;
 
     constructor() {
         this.parser = new AdminParser();
-        this.errorCodeInterpreter = new ErrorCodeInterpreter();
     }
 
     async getAllUserData(): Promise<UserData[] | StatusCode> {
@@ -17,7 +15,7 @@ export default class AdminApi {
             return await this.parser.parseAllUserData();
         } catch(error: unknown) {
             const actualError = error as DatabaseError;
-            return this.errorCodeInterpreter.getStatusCode(actualError);
+            return convertDatabaseErrorToStatusCode(actualError);
         }
     }
 
@@ -26,7 +24,7 @@ export default class AdminApi {
             return await this.parser.parseUserData(id);
         } catch(error: unknown) {
             const actualError = error as DatabaseError;
-            return this.errorCodeInterpreter.getStatusCode(actualError);
+            return convertDatabaseErrorToStatusCode(actualError);
         }
     }
 
@@ -36,7 +34,7 @@ export default class AdminApi {
             return STATUS_CODE.OK;
         } catch(error: unknown) {
             const actualError = error as DatabaseError;
-            return this.errorCodeInterpreter.getStatusCode(actualError);
+            return convertDatabaseErrorToStatusCode(actualError);
         }
     }
 }

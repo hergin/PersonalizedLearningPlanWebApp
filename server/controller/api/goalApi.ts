@@ -1,16 +1,14 @@
 import GoalParser from "../../parser/goalParser";
 import { STATUS_CODE, StatusCode } from "../../types";
-import { ErrorCodeInterpreter } from "./errorCodeInterpreter";
+import { convertDatabaseErrorToStatusCode } from "../../utils/errorHandlers";
 import { Goal } from "../../types";
 import { DatabaseError } from "pg";
 
 export default class GoalAPI {
-    parser: GoalParser;
-    errorCodeInterpreter: ErrorCodeInterpreter;
+    readonly parser: GoalParser;
 
     constructor() {
         this.parser = new GoalParser();
-        this.errorCodeInterpreter = new ErrorCodeInterpreter();
     }
 
     async getGoals(moduleId: number): Promise<Goal[] | StatusCode> {
@@ -31,7 +29,7 @@ export default class GoalAPI {
             console.log(parentGoals);
             return parentGoals;
         } catch (error: unknown) {
-            return this.errorCodeInterpreter.getStatusCode(error as DatabaseError);
+            return convertDatabaseErrorToStatusCode(error as DatabaseError);
         }
     }
 
@@ -44,7 +42,7 @@ export default class GoalAPI {
             console.log(goal);
             return goal;
         } catch (error: unknown) {
-            return this.errorCodeInterpreter.getStatusCode(error as DatabaseError);
+            return convertDatabaseErrorToStatusCode(error as DatabaseError);
         }
     }
 
@@ -63,7 +61,7 @@ export default class GoalAPI {
             });
             return STATUS_CODE.OK;
         } catch (error: unknown) {
-            return this.errorCodeInterpreter.getStatusCode(error as DatabaseError)
+            return convertDatabaseErrorToStatusCode(error as DatabaseError)
         }
     }
 
@@ -84,7 +82,7 @@ export default class GoalAPI {
             await this.parser.updateGoal({ ...goal, due_date: dueDate, completion_time: completionTime, expiration: expiration });
             return STATUS_CODE.OK;
         } catch (error: unknown) {
-            return this.errorCodeInterpreter.getStatusCode(error as DatabaseError);
+            return convertDatabaseErrorToStatusCode(error as DatabaseError);
         }
     }
 
@@ -97,7 +95,7 @@ export default class GoalAPI {
             await this.parser.updateGoalFeedback(goalId, feedback);
             return STATUS_CODE.OK;
         } catch (error: unknown) {
-            return this.errorCodeInterpreter.getStatusCode(error as DatabaseError);
+            return convertDatabaseErrorToStatusCode(error as DatabaseError);
         }
     }
 
@@ -110,7 +108,7 @@ export default class GoalAPI {
             await this.parser.deleteGoal(goalId);
             return STATUS_CODE.OK;
         } catch (error: unknown) {
-            return this.errorCodeInterpreter.getStatusCode(error as DatabaseError)
+            return convertDatabaseErrorToStatusCode(error as DatabaseError)
         }
     }
 
@@ -123,7 +121,7 @@ export default class GoalAPI {
             const result = await this.parser.parseGoalVariable(goalId, variable);
             return result;
         } catch (error: unknown) {
-            return this.errorCodeInterpreter.getStatusCode(error as DatabaseError)
+            return convertDatabaseErrorToStatusCode(error as DatabaseError)
         }
     }
 
@@ -137,7 +135,7 @@ export default class GoalAPI {
             await this.parser.storeSubGoal(parentGoalId, goal);
             return STATUS_CODE.OK;
         } catch (error: unknown) {
-            return this.errorCodeInterpreter.getStatusCode(error as DatabaseError)
+            return convertDatabaseErrorToStatusCode(error as DatabaseError)
         }
     }
 }

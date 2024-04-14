@@ -2,14 +2,11 @@ import * as InvitationProcessor from "../invitationProcessor";
 import InvitationApi from "../../api/invitationApi";
 import EmailService from "../../../service/emailService";
 import { STATUS_CODE, SUBJECTS } from "../../../types";
-import { initializeErrorMap } from "../../../utils/errorMessages";
+import { getLoginError } from "../../../utils/errorHandlers";
 import { createMockRequest, MOCK_RESPONSE, TEST_INVITE } from "../../global/mockValues";
 
 jest.mock("../../../controller/api/invitationApi");
 jest.mock("../../../service/emailService");
-
-const ERROR_MESSAGES = initializeErrorMap();
-
 
 describe("Invitation Processor Unit Tests", () => {
     var invitationApi: any;
@@ -47,7 +44,7 @@ describe("Invitation Processor Unit Tests", () => {
         expect(MOCK_RESPONSE.status).toHaveBeenCalledTimes(1);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledWith(STATUS_CODE.BAD_REQUEST);
         expect(MOCK_RESPONSE.send).toHaveBeenCalledTimes(1);
-        expect(MOCK_RESPONSE.send).toHaveBeenCalledWith(ERROR_MESSAGES.get(STATUS_CODE.BAD_REQUEST));
+        expect(MOCK_RESPONSE.send).toHaveBeenCalledWith(getLoginError(STATUS_CODE.BAD_REQUEST));
     });
 
     it("get pending invites (normal case)", async () => {
@@ -73,7 +70,7 @@ describe("Invitation Processor Unit Tests", () => {
         expect(MOCK_RESPONSE.status).toHaveBeenCalledTimes(1);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledWith(STATUS_CODE.CONFLICT);
         expect(MOCK_RESPONSE.send).toHaveBeenCalledTimes(1);
-        expect(MOCK_RESPONSE.send).toHaveBeenCalledWith(ERROR_MESSAGES.get(STATUS_CODE.CONFLICT));
+        expect(MOCK_RESPONSE.send).toHaveBeenCalledWith(getLoginError(STATUS_CODE.CONFLICT));
     });
 
     it("post invite (normal case)", async () => {
@@ -100,7 +97,7 @@ describe("Invitation Processor Unit Tests", () => {
         expect(MOCK_RESPONSE.status).toHaveBeenCalledTimes(1);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledWith(STATUS_CODE.FORBIDDEN);
         expect(MOCK_RESPONSE.send).toHaveBeenCalledTimes(1);
-        expect(MOCK_RESPONSE.send).toHaveBeenCalledWith(ERROR_MESSAGES.get(STATUS_CODE.FORBIDDEN));
+        expect(MOCK_RESPONSE.send).toHaveBeenCalledWith(getLoginError(STATUS_CODE.FORBIDDEN));
         expect(emailService.sendInviteEmail).toHaveBeenCalledTimes(0);
     });
 
@@ -129,7 +126,7 @@ describe("Invitation Processor Unit Tests", () => {
         expect(MOCK_RESPONSE.status).toHaveBeenCalledTimes(1);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledWith(STATUS_CODE.BAD_REQUEST);
         expect(MOCK_RESPONSE.send).toHaveBeenCalledTimes(1);
-        expect(MOCK_RESPONSE.send).toHaveBeenCalledWith(ERROR_MESSAGES.get(STATUS_CODE.BAD_REQUEST));
+        expect(MOCK_RESPONSE.send).toHaveBeenCalledWith(getLoginError(STATUS_CODE.BAD_REQUEST));
         expect(emailService.sendInviteEmail).toHaveBeenCalledTimes(0);
     });
 
@@ -157,7 +154,7 @@ describe("Invitation Processor Unit Tests", () => {
         expect(MOCK_RESPONSE.status).toHaveBeenCalledTimes(1);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledWith(STATUS_CODE.GONE);
         expect(MOCK_RESPONSE.send).toHaveBeenCalledTimes(1);
-        expect(MOCK_RESPONSE.send).toHaveBeenCalledWith(ERROR_MESSAGES.get(STATUS_CODE.GONE));
+        expect(MOCK_RESPONSE.send).toHaveBeenCalledWith(getLoginError(STATUS_CODE.GONE));
         expect(emailService.sendInviteEmail).toHaveBeenCalledTimes(0);
     });
 });

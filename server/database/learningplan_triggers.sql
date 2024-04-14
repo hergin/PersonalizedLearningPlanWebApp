@@ -81,7 +81,7 @@ EXECUTE FUNCTION set_goal_timestamps();
 CREATE OR REPLACE FUNCTION delete_sub_goals()
 RETURNS TRIGGER AS $$
     BEGIN
-        DELETE FROM GOAL WHERE parent_goal = OLD.id;
+        DELETE FROM GOAL WHERE parent_goal = OLD.goal_id;
         RETURN NEW;
     END;
 $$ LANGUAGE PLPGSQL;

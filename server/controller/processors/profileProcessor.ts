@@ -1,18 +1,17 @@
 import ProfileAPI from "../api/profileApi";
 import { STATUS_CODE } from "../../types";
-import { initializeErrorMap } from "../../utils/errorMessages";
+import { getLoginError } from "../../utils/errorHandlers";
 import { Request, Response } from "express";
-import isStatusCode from "../../utils/isStatusCode";
+import { isStatusCode } from "../../utils/typePredicates";
 
 const profileAPI = new ProfileAPI();
-const ERROR_MESSAGES = initializeErrorMap();
 
 async function getAllCoachProfiles(req: Request, res: Response) {
     console.log("Get all profiles has been called!");
     const profileQuery = await profileAPI.getAllCoachProfiles();
     if(isStatusCode(profileQuery)) {
         console.error("There was a problem retrieving profile.");
-        res.status(profileQuery).send(ERROR_MESSAGES.get(profileQuery));
+        res.status(profileQuery).send(getLoginError(profileQuery));
         return;
     }
     res.status(STATUS_CODE.OK).json(profileQuery);
@@ -23,7 +22,7 @@ async function sendProfile(req : Request, res : Response) {
     const profileQuery = await profileAPI.getProfile(Number(req.params.id));
     if(isStatusCode(profileQuery)) {
         console.error("There was a problem retrieving profile.");
-        res.status(profileQuery).send(ERROR_MESSAGES.get(profileQuery));
+        res.status(profileQuery).send(getLoginError(profileQuery));
         return;
     }
     res.status(STATUS_CODE.OK).json(profileQuery);
@@ -34,7 +33,7 @@ async function postProfile(req : Request, res : Response) {
     const profileQuery = await profileAPI.createProfile(req.body.username, req.body.firstName, req.body.lastName, req.body.account_id);
     if(profileQuery !== STATUS_CODE.OK) {
         console.error("There was a problem creating profile.");
-        res.status(profileQuery).send(ERROR_MESSAGES.get(profileQuery));
+        res.status(profileQuery).send(getLoginError(profileQuery));
         return;
     }
     res.sendStatus(STATUS_CODE.OK);
@@ -52,7 +51,7 @@ async function putProfile(req : Request, res : Response) {
     });
     if(profileQuery !== STATUS_CODE.OK) {
         console.error("There was a problem updating profile.");
-        res.status(profileQuery).send(ERROR_MESSAGES.get(profileQuery));
+        res.status(profileQuery).send(getLoginError(profileQuery));
         return;
     }
     res.sendStatus(STATUS_CODE.OK);
@@ -63,7 +62,7 @@ async function deleteProfile(req : Request, res : Response) {
     const profileQuery = await profileAPI.deleteProfile(parseInt(req.params.id));
     if(profileQuery !== STATUS_CODE.OK) {
         console.error("There was a problem deleting profile.");
-        res.status(profileQuery).send(ERROR_MESSAGES.get(profileQuery));
+        res.status(profileQuery).send(getLoginError(profileQuery));
         return;
     }
     res.sendStatus(STATUS_CODE.OK);

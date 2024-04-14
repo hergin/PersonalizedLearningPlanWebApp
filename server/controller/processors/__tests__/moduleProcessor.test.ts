@@ -1,11 +1,10 @@
 import * as ModuleProcessor from "../moduleProcessor";
 import ModuleAPI from "../../api/moduleApi";
 import { STATUS_CODE } from "../../../types";
-import { initializeErrorMap } from "../../../utils/errorMessages";
+import { getLoginError } from "../../../utils/errorHandlers";
 import { createMockRequest, MOCK_RESPONSE, TEST_MODULE } from "../../global/mockValues";
 
 jest.mock("../../../controller/api/moduleApi");
-const ERROR_MESSAGES = initializeErrorMap();
 
 describe("Module Processor unit tests", () => {
     const moduleApi: any = new ModuleAPI();
@@ -37,7 +36,7 @@ describe("Module Processor unit tests", () => {
         expect(MOCK_RESPONSE.status).toHaveBeenCalledTimes(1);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledWith(STATUS_CODE.INTERNAL_SERVER_ERROR);
         expect(MOCK_RESPONSE.send).toHaveBeenCalledTimes(1);
-        expect(MOCK_RESPONSE.send).toHaveBeenCalledWith(ERROR_MESSAGES.get(STATUS_CODE.INTERNAL_SERVER_ERROR));
+        expect(MOCK_RESPONSE.send).toHaveBeenCalledWith(getLoginError(STATUS_CODE.INTERNAL_SERVER_ERROR));
     });
 
     it("create module (normal case)", async () => {
@@ -84,7 +83,7 @@ describe("Module Processor unit tests", () => {
         expect(MOCK_RESPONSE.status).toHaveBeenCalledTimes(1);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledWith(STATUS_CODE.CONFLICT);
         expect(MOCK_RESPONSE.send).toHaveBeenCalledTimes(1);
-        expect(MOCK_RESPONSE.send).toHaveBeenCalledWith(ERROR_MESSAGES.get(STATUS_CODE.CONFLICT));
+        expect(MOCK_RESPONSE.send).toHaveBeenCalledWith(getLoginError(STATUS_CODE.CONFLICT));
     });
 
     it("update module (normal case)", async () => {
@@ -126,7 +125,7 @@ describe("Module Processor unit tests", () => {
         expect(MOCK_RESPONSE.status).toHaveBeenCalledTimes(1);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledWith(STATUS_CODE.BAD_REQUEST);
         expect(MOCK_RESPONSE.send).toHaveBeenCalledTimes(1);
-        expect(MOCK_RESPONSE.send).toHaveBeenCalledWith(ERROR_MESSAGES.get(STATUS_CODE.BAD_REQUEST));
+        expect(MOCK_RESPONSE.send).toHaveBeenCalledWith(getLoginError(STATUS_CODE.BAD_REQUEST));
     });
 
     it("delete module (normal case)", async () => {
@@ -150,7 +149,7 @@ describe("Module Processor unit tests", () => {
         expect(MOCK_RESPONSE.status).toHaveBeenCalledTimes(1);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledWith(STATUS_CODE.FORBIDDEN);
         expect(MOCK_RESPONSE.send).toHaveBeenCalledTimes(1);
-        expect(MOCK_RESPONSE.send).toHaveBeenCalledWith(ERROR_MESSAGES.get(STATUS_CODE.FORBIDDEN));
+        expect(MOCK_RESPONSE.send).toHaveBeenCalledWith(getLoginError(STATUS_CODE.FORBIDDEN));
     });
 
     it("get module variable (normal case)", async () => {
@@ -176,6 +175,6 @@ describe("Module Processor unit tests", () => {
         expect(MOCK_RESPONSE.status).toHaveBeenCalledTimes(1);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledWith(STATUS_CODE.UNAUTHORIZED);
         expect(MOCK_RESPONSE.send).toHaveBeenCalledTimes(1);
-        expect(MOCK_RESPONSE.send).toHaveBeenCalledWith(ERROR_MESSAGES.get(STATUS_CODE.UNAUTHORIZED));
+        expect(MOCK_RESPONSE.send).toHaveBeenCalledWith(getLoginError(STATUS_CODE.UNAUTHORIZED));
     });
 });
