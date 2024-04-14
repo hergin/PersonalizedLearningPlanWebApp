@@ -1,7 +1,6 @@
 import GoalParser from "../../parser/goalParser";
-import { STATUS_CODE, StatusCode } from "../../types";
+import { STATUS_CODE, StatusCode, CreateGoalProps, Goal, ParentGoal } from "../../types";
 import { convertDatabaseErrorToStatusCode } from "../../utils/errorHandlers";
-import { Goal } from "../../types";
 import { DatabaseError } from "pg";
 
 export default class GoalAPI {
@@ -11,7 +10,7 @@ export default class GoalAPI {
         this.parser = new GoalParser();
     }
 
-    async getGoals(moduleId: number): Promise<Goal[] | StatusCode> {
+    async getGoals(moduleId: number): Promise<ParentGoal[] | StatusCode> {
         if (isNaN(moduleId)) {
             return STATUS_CODE.BAD_REQUEST;
         }
@@ -19,39 +18,20 @@ export default class GoalAPI {
         try {
             const parentGoals = await this.parser.parseParentGoals(moduleId);
             for (const goal of parentGoals) {
-                const subGoals: Goal[] = await this.getSubGoals(goal.goal_id);
-                if (subGoals?.length !== undefined && subGoals?.length !== 0) {
+                const subGoals: Goal[] = await this.parser.parseSubGoals(goal.goal_id);
+                if (subGoals.length !== undefined && subGoals.length !== 0) {
                     goal.sub_goals = subGoals;
                 } else {
                     goal.sub_goals = [];
                 }
             }
-            console.log(parentGoals);
             return parentGoals;
         } catch (error: unknown) {
             return convertDatabaseErrorToStatusCode(error as DatabaseError);
         }
     }
 
-    async getGoalById(goalId: number): Promise<Goal[] | StatusCode> {
-        if (isNaN(goalId)) {
-            return STATUS_CODE.BAD_REQUEST;
-        }
-        try {
-            const goal = await this.parser.parseGoalById(goalId);
-            console.log(goal);
-            return goal;
-        } catch (error: unknown) {
-            return convertDatabaseErrorToStatusCode(error as DatabaseError);
-        }
-    }
-
-    async getSubGoals(goalID: number): Promise<Goal[]> {
-        const subGoals = await this.parser.parseSubGoals(goalID);
-        return subGoals;
-    }
-
-    async createGoal(goal: Goal): Promise<StatusCode> {
+    async createGoal(goal: CreateGoalProps): Promise<StatusCode> {
         const dueDate: string | undefined = this.convertToPostgresTimestamp(goal.due_date);
 
         try {
@@ -79,7 +59,7 @@ export default class GoalAPI {
         const expiration: string | undefined = this.convertToPostgresTimestamp(goal.expiration);
 
         try {
-            await this.parser.updateGoal({ ...goal, due_date: dueDate, completion_time: completionTime, expiration: expiration });
+            await this.parser.updateGoal({...goal, due_date: dueDate, completion_time: completionTime, expiration: expiration});
             return STATUS_CODE.OK;
         } catch (error: unknown) {
             return convertDatabaseErrorToStatusCode(error as DatabaseError);
@@ -112,7 +92,7 @@ export default class GoalAPI {
         }
     }
 
-    async getGoalVariable(goalId: number, variable: string) {
+    async getGoalVariable(goalId: number, variable: string): Promise<any[] | StatusCode> {
         if (isNaN(goalId)) {
             return STATUS_CODE.BAD_REQUEST;
         }
@@ -120,20 +100,6 @@ export default class GoalAPI {
         try {
             const result = await this.parser.parseGoalVariable(goalId, variable);
             return result;
-        } catch (error: unknown) {
-            return convertDatabaseErrorToStatusCode(error as DatabaseError)
-        }
-    }
-
-    async addSubGoal(parentGoalId: number, goal: Goal): Promise<StatusCode> {
-        if (isNaN(parentGoalId)) {
-            return STATUS_CODE.BAD_REQUEST;
-        }
-
-        try {
-            console.log(`In addSubGoal: ${JSON.stringify(goal)}`);
-            await this.parser.storeSubGoal(parentGoalId, goal);
-            return STATUS_CODE.OK;
         } catch (error: unknown) {
             return convertDatabaseErrorToStatusCode(error as DatabaseError)
         }

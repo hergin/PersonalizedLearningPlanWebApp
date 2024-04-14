@@ -1,5 +1,5 @@
 import SettingsApi from "../api/settingsApi";
-import { AccountSettings, STATUS_CODE } from "../../types";
+import { Settings, STATUS_CODE } from "../../types";
 import { getLoginError } from "../../utils/errorHandlers";
 import { Request, Response } from "express";
 import { isStatusCode } from "../../utils/typePredicates";
@@ -14,12 +14,12 @@ async function getSettings(req: Request, res: Response) {
         res.status(settingQuery).send(getLoginError(settingQuery));
         return;
     }
-    res.status(STATUS_CODE.OK).json(settingQuery as AccountSettings[]);
+    res.status(STATUS_CODE.OK).json(settingQuery as Settings[]);
 }
 
 async function updateSettings(req: Request, res: Response) {
     console.log(`Id received in update account settings: ${req.params.id}`);
-    const resultingStatusCode = await settingsApi.updateSettings(Number(req.params.id), req.body);
+    const resultingStatusCode = await settingsApi.updateSettings(Number(req.params.id), {...req.body});
     if(resultingStatusCode !== STATUS_CODE.OK) {
         console.log(`Something went wrong when updating settings for account ${req.params.id}`);
         res.status(resultingStatusCode).send(getLoginError(resultingStatusCode));

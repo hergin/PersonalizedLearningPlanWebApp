@@ -1,6 +1,6 @@
 import DatabaseParser from "./databaseParser";
 import { generateInsertQuery, generateUpdateQuery } from "../utils/queryGenerator";
-import { Goal, Table } from "../types";
+import { ClientGoal, ParentGoal, CreateGoalProps, Goal, Table } from "../types";
 
 export default class GoalParser extends DatabaseParser {
     readonly tableName: Table = "GOAL";
@@ -9,16 +9,16 @@ export default class GoalParser extends DatabaseParser {
         super();
     }
 
-    async parseParentGoals(moduleId: number) {
+    async parseParentGoals(moduleId: number): Promise<ParentGoal[]> {
         console.log("Getting Goals...");
         const query = {
             text: "SELECT * FROM get_goals($1) where parent_goal is null",
             values: [moduleId]
         };
-        return this.parseDatabase(query);
+        return await this.parseDatabase(query);
     }
 
-    async parseGoalById(goalId: number) {
+    async parseGoalById(goalId: number): Promise<Goal[]> {
         console.log("Getting Goal...");
         const query = {
             text: "SELECT module_id FROM Goal where goal_id = $1",
@@ -27,24 +27,24 @@ export default class GoalParser extends DatabaseParser {
         return this.parseDatabase(query);
     }
 
-    async parseSubGoals(goalID: number) {
+    async parseSubGoals(goalId: number): Promise<ClientGoal[]> {
         console.log("Getting sub goals...");
         const query = {
             text: "SELECT * FROM goal_with_tag WHERE parent_goal = $1",
-            values: [goalID]
+            values: [goalId]
         };
         const result = await this.parseDatabase(query);
         console.log(`Parsed in sub goals: ${JSON.stringify(result)}`);
         return result;
     }
 
-    async storeGoal(goal: Goal) {
+    async storeGoal(goal: CreateGoalProps): Promise<void> {
         console.log("Storing Goal...");
         const query = generateInsertQuery(goal, this.tableName);
         await this.updateDatabase(query);
     }
 
-    async updateGoal(goal: Goal) {
+    async updateGoal(goal: Goal): Promise<void> {
         console.log("Inserting updated data into Goal...");
         const query = generateUpdateQuery(goal, this.tableName, "goal_id");
         console.log(`Generated update query: ${JSON.stringify(query)}`);
@@ -61,45 +61,23 @@ export default class GoalParser extends DatabaseParser {
         await this.updateDatabase(query);
     }
 
-    async deleteGoal(goalID: number) {
+    async deleteGoal(goalId: number): Promise<void> {
         console.log("Deleting Goal...");
-        const query1 = {
-            text: "DELETE FROM GOAL WHERE parent_goal = $1",
-            values: [goalID]
-        };
-        const query2 = {
+        const query = {
             text: "DELETE FROM GOAL WHERE goal_id = $1",
-            values: [goalID]
+            values: [goalId]
         };
-        await this.updateDatabase(query1);
-        await this.updateDatabase(query2);
+        await this.updateDatabase(query);
         console.log("Goal successfully deleted!");
     }
 
-    async parseGoalVariable(goalID: number, variable: string) {
+    async parseGoalVariable(goalId: number, variable: string): Promise<unknown[]> {
         console.log(`Getting goal variable ${variable}...`);
         const query = {
             text: `SELECT ${variable} FROM GOAL WHERE goal_id = $1`,
-            values: [goalID]
+            values: [goalId]
         };
         return this.parseDatabase(query);
-    }
-
-    async storeSubGoal(parentGoalID: number, goal: Goal) {
-        console.log("Storing sub goal...");
-        const text = `INSERT INTO GOAL(name, description, goal_type, is_complete, module_id, tag_id, parent_goal${goal.due_date ? ", due_date" : ""}) VALUES ($1, $2, $3, $4, $5, $6, $7${goal.due_date ? `, $8` : ""})`;
-        const query = {
-            text: text,
-            values: goal.due_date ? [goal.name, goal.description, goal.goal_type, goal.is_complete, goal.module_id, goal.tag_id, parentGoalID, goal.due_date] :
-                [goal.name, goal.description, goal.goal_type, goal.is_complete, goal.module_id, goal.tag_id, parentGoalID]
-        };
-        await this.updateDatabase(query);
-        console.log("Sub goal stored! Now returning id...");
-        const idQuery = {
-            text: "SELECT goal_id FROM GOAL WHERE name = $1 AND description = $2 AND parent_goal = $3",
-            values: [goal.name, goal.description, parentGoalID]
-        };
-        return this.parseDatabase(idQuery);
     }
 
     async parseAccountsWithUpcomingDueDates() {
@@ -124,7 +102,7 @@ export default class GoalParser extends DatabaseParser {
         return filtered;
     }
 
-    async runMaintenanceProcedures() {
+    async runMaintenanceProcedures(): Promise<void> {
         console.log("Running goal's maintenance procedures...");
         await this.updateDatabase("CALL update_is_complete()");
     }

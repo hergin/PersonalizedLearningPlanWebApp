@@ -21,7 +21,6 @@ async function getModuleGoals(req: Request, res: Response) {
 }
 
 async function postGoal(req: Request, res: Response) {
-    console.log(req.body);
     const status = await goalAPI.createGoal({
         name: req.body.name,
         description: req.body.description,
@@ -29,7 +28,8 @@ async function postGoal(req: Request, res: Response) {
         is_complete: req.body.isComplete,
         module_id: req.body.moduleId,
         tag_id: req.body.tagId,
-        due_date: req.body.dueDate
+        due_date: req.body.dueDate,
+        parent_goal: req.params.id ? Number(req.params.id) : undefined
     });
     if (status !== STATUS_CODE.OK) {
         console.log("Something went wrong while creating module.");
@@ -47,6 +47,7 @@ async function putGoal(req: Request, res: Response) {
         description: req.body.description,
         goal_type: req.body.goal_type,
         is_complete: req.body.is_complete,
+        module_id: req.body.module_id,
         due_date: req.body.due_date,
         tag_id: req.body.tag_id,
         completion_time: req.body.completion_time,
@@ -97,22 +98,4 @@ async function getGoalVariable(req: Request, res: Response) {
     res.status(STATUS_CODE.OK).json(variableQuery);
 }
 
-async function postSubGoal(req: Request, res: Response) {
-    console.log(`Received in add sub goal: ${req.params.id}`);
-    const goalQuery = await goalAPI.addSubGoal(Number(req.params.id), {
-        name: req.body.name,
-        description: req.body.description,
-        goal_type: req.body.goalType,
-        is_complete: req.body.isComplete,
-        module_id: req.body.moduleId,
-        tag_id: req.body.tagId,
-        due_date: req.body.dueDate
-    });
-    if (isStatusCode(goalQuery)) {
-        res.status(goalQuery).send(getLoginError(goalQuery));
-        return;
-    }
-    res.status(STATUS_CODE.OK).json(goalQuery);
-}
-
-export { getModuleGoals, postGoal, putGoal, putGoalFeedback, deleteGoal, getGoalVariable, postSubGoal };
+export { getModuleGoals, postGoal, putGoal, putGoalFeedback, deleteGoal, getGoalVariable };

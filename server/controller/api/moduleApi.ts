@@ -1,5 +1,5 @@
 import DatabaseParser from "../../parser/databaseParser";
-import { Module, STATUS_CODE, StatusCode } from "../../types";
+import { Module, STATUS_CODE, StatusCode, CreateModuleProps } from "../../types";
 import { convertDatabaseErrorToStatusCode } from "../../utils/errorHandlers";
 import { DatabaseError } from "pg";
 
@@ -22,7 +22,7 @@ export default class ModuleAPI {
         }
     }
 
-    async createModule(module: Module): Promise<StatusCode> {
+    async createModule(module: CreateModuleProps): Promise<StatusCode> {
         try {
             await this.parser.updateDatabase({
                 text: 'INSERT INTO Module(module_name, description, completion_percent, account_id) VALUES($1, $2, $3, $4)',
@@ -35,14 +35,10 @@ export default class ModuleAPI {
     }
 
     async updateModule(module: Module): Promise<StatusCode> {
-        if (!module.id) {
-            return STATUS_CODE.BAD_REQUEST;
-        }
-
         try {
             await this.parser.updateDatabase({
                 text: "UPDATE MODULE SET module_name = $1, description = $2, completion_percent = $3 WHERE module_id = $4",
-                values: [module.name, module.description, module.completion, module.id]
+                values: [module.name, module.description, module.completion, module.module_id]
             });
             return STATUS_CODE.OK;
         } catch (error: unknown) {

@@ -1,7 +1,7 @@
 import MessageParser from "../../parser/messageParser";
 import { convertDatabaseErrorToStatusCode } from "../../utils/errorHandlers";
 import { DatabaseError } from "pg";
-import { Message, Chat, STATUS_CODE, StatusCode } from "../../types";
+import { CreatedMessage, STATUS_CODE, StatusCode } from "../../types";
 
 export default class MessageApi {
     readonly parser: MessageParser;
@@ -10,7 +10,7 @@ export default class MessageApi {
         this.parser = new MessageParser();
     }
 
-    async getAllSentMessages(id: number): Promise<Message[] | StatusCode> {
+    async getAllSentMessages(id: number): Promise<CreatedMessage[] | StatusCode> {
         try {
             return await this.parser.parseAllMessagesFrom(id);
         } catch(error: unknown) {
@@ -18,7 +18,7 @@ export default class MessageApi {
         }
     }
 
-    async getChatMessages(accountId: number, recipientId: number): Promise<Chat | StatusCode> {
+    async getChatMessages(accountId: number, recipientId: number): Promise<CreatedMessage[] | StatusCode> {
         try {
             return await this.parser.parseChat(accountId, recipientId);
         } catch (error: unknown) {
@@ -26,7 +26,7 @@ export default class MessageApi {
         }
     }
 
-    async sendMessage(message: Message): Promise<StatusCode> {
+    async sendMessage(message: CreatedMessage): Promise<StatusCode> {
         try {
             await this.parser.storeMessage(message);
             return STATUS_CODE.OK;

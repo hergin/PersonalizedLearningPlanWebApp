@@ -30,7 +30,12 @@ async function sendProfile(req : Request, res : Response) {
 
 async function postProfile(req : Request, res : Response) {
     console.log(`Data received in create profile: ${req.body.account_id}`);
-    const profileQuery = await profileAPI.createProfile(req.body.username, req.body.firstName, req.body.lastName, req.body.account_id);
+    const profileQuery = await profileAPI.createProfile({
+        username: req.body.username,
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
+        accountId: req.body.account_id
+    });
     if(profileQuery !== STATUS_CODE.OK) {
         console.error("There was a problem creating profile.");
         res.status(profileQuery).send(getLoginError(profileQuery));
@@ -42,11 +47,12 @@ async function postProfile(req : Request, res : Response) {
 async function putProfile(req : Request, res : Response) {
     console.log(`Data received in update profile: ${req.params.id} ${JSON.stringify(req.body)}`);
     const profileQuery = await profileAPI.updateProfile({
-        profileId: parseInt(req.params.id), 
-        username: req.body.username, 
-        firstName: req.body.firstName, 
-        lastName: req.body.lastName,  
-        jobTitle: req.body.jobTitle, 
+        profileId: parseInt(req.params.id),
+        username: req.body.username,
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
+        accountId: req.body.accountId,
+        jobTitle: req.body.jobTitle,
         bio: req.body.bio
     });
     if(profileQuery !== STATUS_CODE.OK) {

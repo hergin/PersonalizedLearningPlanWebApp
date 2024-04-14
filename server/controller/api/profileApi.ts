@@ -1,6 +1,6 @@
 import DatabaseParser from "../../parser/databaseParser";
 import { convertDatabaseErrorToStatusCode } from "../../utils/errorHandlers";
-import { Profile, STATUS_CODE } from "../../types";
+import { CreateProfileProps, Profile, STATUS_CODE } from "../../types";
 import { DatabaseError } from "pg";
 
 export default class ProfileAPI {
@@ -18,11 +18,11 @@ export default class ProfileAPI {
         }
     }
 
-    async createProfile(username : string, firstName : string, lastName : string, accountId : number) {
+    async createProfile(profile: CreateProfileProps) {
         try {
             await this.parser.updateDatabase({
                 text: "INSERT INTO PROFILE(username, first_name, last_name, account_id) VALUES($1, $2, $3, $4)",
-                values: [username, firstName, lastName, accountId]
+                values: [profile.username, profile.firstName, profile.lastName, profile.accountId]
             });
             return STATUS_CODE.OK;
         } catch (error: unknown) {

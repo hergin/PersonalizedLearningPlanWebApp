@@ -1,6 +1,6 @@
 import * as ProfileProcessor from "../profileProcessor";
 import ProfileAPI from "../../api/profileApi";
-import { createMockRequest, MOCK_RESPONSE, TEST_PROFILE, TEST_ACCOUNT } from "../../global/mockValues";
+import { createMockRequest, MOCK_RESPONSE, TEST_PROFILE, TEST_ACCOUNT, TEST_CREATED_PROFILE } from "../../global/mockValues";
 import { STATUS_CODE } from "../../../types";
 import { getLoginError } from "../../../utils/errorHandlers";
 
@@ -75,10 +75,10 @@ describe("Profile Processor unit tests", () => {
 
     it("post profile (normal case)", async () => {
         profileApi.createProfile.mockResolvedValueOnce(STATUS_CODE.OK);
-        const mRequest = createMockRequest({username: TEST_PROFILE.username, firstName: TEST_PROFILE.firstName, lastName: TEST_PROFILE.lastName, account_id: TEST_ACCOUNT.id});
+        const mRequest = createMockRequest({...TEST_CREATED_PROFILE, account_id: TEST_CREATED_PROFILE.accountId});
         await ProfileProcessor.postProfile(mRequest, MOCK_RESPONSE);
         expect(profileApi.createProfile).toHaveBeenCalledTimes(1);
-        expect(profileApi.createProfile).toHaveBeenCalledWith(TEST_PROFILE.username, TEST_PROFILE.firstName, TEST_PROFILE.lastName, TEST_ACCOUNT.id);
+        expect(profileApi.createProfile).toHaveBeenCalledWith(TEST_CREATED_PROFILE);
         expect(MOCK_RESPONSE.send).toHaveBeenCalledTimes(0);
         expect(MOCK_RESPONSE.sendStatus).toHaveBeenCalledTimes(1);
         expect(MOCK_RESPONSE.sendStatus).toHaveBeenCalledWith(STATUS_CODE.OK);
@@ -86,10 +86,10 @@ describe("Profile Processor unit tests", () => {
 
     it("post profile (error case)", async () => {
         profileApi.createProfile.mockResolvedValueOnce(STATUS_CODE.CONFLICT);
-        const mRequest = createMockRequest({username: TEST_PROFILE.username, firstName: TEST_PROFILE.firstName, lastName: TEST_PROFILE.lastName, account_id: TEST_ACCOUNT.id});
+        const mRequest = createMockRequest({...TEST_CREATED_PROFILE, account_id: TEST_CREATED_PROFILE.accountId});
         await ProfileProcessor.postProfile(mRequest, MOCK_RESPONSE);
         expect(profileApi.createProfile).toHaveBeenCalledTimes(1);
-        expect(profileApi.createProfile).toHaveBeenCalledWith(TEST_PROFILE.username, TEST_PROFILE.firstName, TEST_PROFILE.lastName, TEST_ACCOUNT.id);
+        expect(profileApi.createProfile).toHaveBeenCalledWith(TEST_CREATED_PROFILE);
         expect(MOCK_RESPONSE.sendStatus).toHaveBeenCalledTimes(0);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledTimes(1);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledWith(STATUS_CODE.CONFLICT);

@@ -1,6 +1,6 @@
 import MessageApi from "../messageApi";
 import MessageParser from "../../../parser/messageParser";
-import { Message, STATUS_CODE } from "../../../types";
+import { CreatedMessage, STATUS_CODE } from "../../../types";
 import { FAKE_ERRORS } from "../../global/mockValues";
 
 jest.mock("../../../parser/messageParser");
@@ -8,7 +8,7 @@ jest.mock("../../../parser/messageParser");
 const mockMessageId = -1;
 const mockSenderId = 0;
 const mockRecipientId = 1;
-const TEST_MESSAGE: Message[] = [
+const TEST_MESSAGE: CreatedMessage[] = [
     {
         content: "Hello, how are you doing today?",
         senderId: mockSenderId,

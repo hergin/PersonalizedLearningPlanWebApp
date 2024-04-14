@@ -12,7 +12,7 @@ describe("Module Processor unit tests", () => {
     afterEach(() => {
         jest.clearAllMocks();
     });
-    
+
     it("get account modules (normal case)", async () => {
         moduleApi.getModules.mockResolvedValueOnce([TEST_MODULE]);
         const mRequest = createMockRequest({}, {id: TEST_MODULE.accountId});
@@ -45,14 +45,14 @@ describe("Module Processor unit tests", () => {
             name: TEST_MODULE.name,
             description: TEST_MODULE.description,
             completionPercent: TEST_MODULE.completion,
-            accountId: TEST_MODULE.accountId 
+            accountId: TEST_MODULE.accountId
         });
         await ModuleProcessor.postModule(mRequest, MOCK_RESPONSE);
         expect(moduleApi.createModule).toHaveBeenCalledTimes(1);
         expect(moduleApi.createModule).toHaveBeenCalledWith({
-            name: TEST_MODULE.name, 
-            description: TEST_MODULE.description, 
-            completion: TEST_MODULE.completion, 
+            name: TEST_MODULE.name,
+            description: TEST_MODULE.description,
+            completion: TEST_MODULE.completion,
             accountId: TEST_MODULE.accountId,
             coachId: undefined
         });
@@ -68,14 +68,14 @@ describe("Module Processor unit tests", () => {
             name: TEST_MODULE.name,
             description: TEST_MODULE.description,
             completionPercent: TEST_MODULE.completion,
-            accountId: TEST_MODULE.accountId 
+            accountId: TEST_MODULE.accountId
         });
         await ModuleProcessor.postModule(mRequest, MOCK_RESPONSE);
         expect(moduleApi.createModule).toHaveBeenCalledTimes(1);
         expect(moduleApi.createModule).toHaveBeenCalledWith({
-            name: TEST_MODULE.name, 
-            description: TEST_MODULE.description, 
-            completion: TEST_MODULE.completion, 
+            name: TEST_MODULE.name,
+            description: TEST_MODULE.description,
+            completion: TEST_MODULE.completion,
             accountId: TEST_MODULE.accountId,
             coachId: undefined
         });
@@ -92,13 +92,13 @@ describe("Module Processor unit tests", () => {
             name: TEST_MODULE.name,
             description: TEST_MODULE.description,
             completion: TEST_MODULE.completion
-        }, {id: TEST_MODULE.id});
+        }, {id: TEST_MODULE.module_id});
         await ModuleProcessor.putModule(mRequest, MOCK_RESPONSE);
         expect(moduleApi.updateModule).toHaveBeenCalledTimes(1);
         expect(moduleApi.updateModule).toHaveBeenCalledWith({
-            id: TEST_MODULE.id, 
-            name: TEST_MODULE.name, 
-            description: TEST_MODULE.description, 
+            id: TEST_MODULE.module_id,
+            name: TEST_MODULE.name,
+            description: TEST_MODULE.description,
             completion: TEST_MODULE.completion
         });
         expect(MOCK_RESPONSE.send).toHaveBeenCalledTimes(0);
@@ -112,13 +112,13 @@ describe("Module Processor unit tests", () => {
             name: TEST_MODULE.name,
             description: TEST_MODULE.description,
             completion: TEST_MODULE.completion
-        }, {id: TEST_MODULE.id});
+        }, {id: TEST_MODULE.module_id});
         await ModuleProcessor.putModule(mRequest, MOCK_RESPONSE);
         expect(moduleApi.updateModule).toHaveBeenCalledTimes(1);
         expect(moduleApi.updateModule).toHaveBeenCalledWith({
-            id: TEST_MODULE.id, 
-            name: TEST_MODULE.name, 
-            description: TEST_MODULE.description, 
+            id: TEST_MODULE.module_id,
+            name: TEST_MODULE.name,
+            description: TEST_MODULE.description,
             completion: TEST_MODULE.completion
         });
         expect(MOCK_RESPONSE.sendStatus).toHaveBeenCalledTimes(0);
@@ -130,10 +130,10 @@ describe("Module Processor unit tests", () => {
 
     it("delete module (normal case)", async () => {
         moduleApi.deleteModule.mockResolvedValueOnce(STATUS_CODE.OK);
-        const mRequest = createMockRequest({}, {id: TEST_MODULE.id});
+        const mRequest = createMockRequest({}, {id: TEST_MODULE.module_id});
         await ModuleProcessor.deleteModule(mRequest, MOCK_RESPONSE);
         expect(moduleApi.deleteModule).toHaveBeenCalledTimes(1);
-        expect(moduleApi.deleteModule).toHaveBeenCalledWith(TEST_MODULE.id);
+        expect(moduleApi.deleteModule).toHaveBeenCalledWith(TEST_MODULE.module_id);
         expect(MOCK_RESPONSE.send).toHaveBeenCalledTimes(0);
         expect(MOCK_RESPONSE.sendStatus).toHaveBeenCalledTimes(1);
         expect(MOCK_RESPONSE.sendStatus).toHaveBeenCalledWith(STATUS_CODE.OK);
@@ -141,10 +141,10 @@ describe("Module Processor unit tests", () => {
 
     it("delete module (error case)", async () => {
         moduleApi.deleteModule.mockResolvedValueOnce(STATUS_CODE.FORBIDDEN);
-        const mRequest = createMockRequest({}, {id: TEST_MODULE.id});
+        const mRequest = createMockRequest({}, {id: TEST_MODULE.module_id});
         await ModuleProcessor.deleteModule(mRequest, MOCK_RESPONSE);
         expect(moduleApi.deleteModule).toHaveBeenCalledTimes(1);
-        expect(moduleApi.deleteModule).toHaveBeenCalledWith(TEST_MODULE.id);
+        expect(moduleApi.deleteModule).toHaveBeenCalledWith(TEST_MODULE.module_id);
         expect(MOCK_RESPONSE.sendStatus).toHaveBeenCalledTimes(0);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledTimes(1);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledWith(STATUS_CODE.FORBIDDEN);
@@ -154,10 +154,10 @@ describe("Module Processor unit tests", () => {
 
     it("get module variable (normal case)", async () => {
         moduleApi.getModuleVariable.mockResolvedValueOnce({completion_percent: TEST_MODULE.completion});
-        const mRequest = createMockRequest({}, {id: TEST_MODULE.id, variable: "completion_percent"});
+        const mRequest = createMockRequest({}, {id: TEST_MODULE.module_id, variable: "completion_percent"});
         await ModuleProcessor.getModuleVariable(mRequest, MOCK_RESPONSE);
         expect(moduleApi.getModuleVariable).toHaveBeenCalledTimes(1);
-        expect(moduleApi.getModuleVariable).toHaveBeenCalledWith(TEST_MODULE.id, "completion_percent");
+        expect(moduleApi.getModuleVariable).toHaveBeenCalledWith(TEST_MODULE.module_id, "completion_percent");
         expect(MOCK_RESPONSE.send).toHaveBeenCalledTimes(0);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledTimes(1);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledWith(STATUS_CODE.OK);
@@ -167,10 +167,10 @@ describe("Module Processor unit tests", () => {
 
     it("get module variable (error case)", async () => {
         moduleApi.getModuleVariable.mockResolvedValueOnce(STATUS_CODE.UNAUTHORIZED);
-        const mRequest = createMockRequest({}, {id: TEST_MODULE.id, variable: "completion_percent"});
+        const mRequest = createMockRequest({}, {id: TEST_MODULE.module_id, variable: "completion_percent"});
         await ModuleProcessor.getModuleVariable(mRequest, MOCK_RESPONSE);
         expect(moduleApi.getModuleVariable).toHaveBeenCalledTimes(1);
-        expect(moduleApi.getModuleVariable).toHaveBeenCalledWith(TEST_MODULE.id, "completion_percent");
+        expect(moduleApi.getModuleVariable).toHaveBeenCalledWith(TEST_MODULE.module_id, "completion_percent");
         expect(MOCK_RESPONSE.json).toHaveBeenCalledTimes(0);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledTimes(1);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledWith(STATUS_CODE.UNAUTHORIZED);

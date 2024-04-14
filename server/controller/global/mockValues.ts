@@ -1,4 +1,4 @@
-import { Profile, GOAL_TYPE, Module } from "../../types";
+import { Profile, Goal, GOAL_TYPE, Module, CreateGoalProps, CreateProfileProps, InviteData, AccountSettings, CreateModuleProps } from "../../types";
 
 export const FAKE_ERRORS = {
     badRequest: {code: '23514'},
@@ -29,14 +29,14 @@ export const MOCK_RESPONSE : any = {
 export function createMockRequest(body: any, params?: any): any {
     return {
         body: body,
-        params: params,
+        params: params ?? {id: undefined},
         app: {
             get: jest.fn().mockImplementation(() => ({
                 emit: jest.fn(),
             })),
         }
     };
-}
+};
 
 export const TEST_ACCOUNT = {
     id: 601,
@@ -45,79 +45,125 @@ export const TEST_ACCOUNT = {
     accessToken: "1234567890",
     refreshToken: "refresh please",
     role: "basic",
-}
+};
 
-export const TEST_PROFILE: Profile = {
-    profileId: 12,
+export const TEST_CREATED_PROFILE: CreateProfileProps = {
     username: "Xx_testdummy_xX",
     firstName: "Test",
     lastName: "Dummy",
-    jobTitle: "Construction Dummy",
-    bio: "I'm a dummy..."
+    accountId: TEST_ACCOUNT.id
 }
 
-export const TEST_SETTINGS = {
+export const TEST_PROFILE: Profile = {
+    ...TEST_CREATED_PROFILE,
+    profileId: 12,
+    jobTitle: "Construction Dummy",
+    bio: "I'm a dummy...",
+};
+
+export const TEST_SETTINGS: AccountSettings = {
     id: 42,
     receiveEmails: true,
     allowCoachInvitations: true,
     accountId: TEST_ACCOUNT.id
-}
+};
 
 export const TEST_TAG = {
     id: 120,
     name: "school",
-    color: "#0000FF",
     accountId: TEST_ACCOUNT.id
-}
+};
 
-export const TEST_DASHBOARD = {
-    id: 541,
-    profileId: TEST_PROFILE.profileId
-}
-
-export const TEST_MODULE: Module = {
-    id: 2377,
+export const TEST_CREATED_MODULE: CreateModuleProps = {
     name: "School",
     description: "Get better grades in school.",
     completion: 0,
     accountId: TEST_ACCOUNT.id
 }
 
-export const TEST_GOAL = {
-    id: [5292, 7869, 4324],
-    name: ["Study for coding test", "do Homework", "Do project"],
-    description: ["I need to pass the coding test to graduate!", "spend 3 hours a day on homework", "Finish my project."],
-    isComplete: false,
-    goalType: GOAL_TYPE.ONCE,
-    moduleId: TEST_MODULE.id,
-    tagId: TEST_TAG.id,
-    dueDate: "2025-01-01T23:59:59.000Z",
-    completionTime: null,
-    expiration: null,
-    feedback: "It's important to study!",
-}
+export const TEST_MODULE: Module = {
+    ...TEST_CREATED_MODULE,
+    module_id: 54,
+};
 
-export const TEST_SUB_GOAL = {
-    id: [5293, 7870, 4325],
-    name: ["Complete this quiz", "Sub Goal", "Another Sub Goal"],
-    description: ["Take this quiz can get all the questions correct", "This is a sub goal", "This is another sub goal."],
-    isComplete: false,
-    goalType: GOAL_TYPE.DAILY,
-    moduleId: TEST_MODULE.id,
-    tagId: TEST_TAG.id,
-    dueDate: new Date(Date.now() + (24 * 3600)).toISOString(),
-    completionTime: null,
-    expiration: null,
-    feedback: "I approve this goal!",
-    parentGoal: TEST_GOAL.id,
-}
+export const TEST_CREATED_GOAL: CreateGoalProps[] = [
+    {
+        name: "do Homework",
+        description: "spend 3 hours a day on homework",
+        is_complete: false,
+        goal_type: GOAL_TYPE.DAILY,
+        module_id: TEST_MODULE.module_id,
+    },
+    {
+        name: "Sub Goal",
+        description: "This is a sub goal",
+        is_complete: false,
+        goal_type: GOAL_TYPE.DAILY,
+        module_id: TEST_MODULE.module_id,
+        due_date: "2030-01-23T14:15:00.000Z",
+        tag_id: TEST_TAG.id,
+        parent_goal: 4324
+    }
+];
 
-export const TEST_INVITE = {
+export const TEST_GOAL: Goal[] = [
+    {
+        goal_id: 5292,
+        name: "Study for coding test",
+        description: "I need to pass the coding test to graduate!",
+        is_complete: false,
+        goal_type: GOAL_TYPE.ONCE,
+        module_id: TEST_MODULE.module_id,
+    },
+    {
+        goal_id: 4324,
+        name: "Do project",
+        description: "Finish my project.",
+        is_complete: false,
+        goal_type: GOAL_TYPE.WEEKLY,
+        module_id: TEST_MODULE.module_id,
+        tag_id: TEST_TAG.id,
+        due_date: "2025-01-01T23:59:59.000Z",
+        feedback: "It's important to study!",
+    },
+    {
+        goal_id: 5293,
+        name: "Complete this quiz",
+        description: "Take this quiz can get all the questions correct",
+        is_complete: false,
+        goal_type: GOAL_TYPE.DAILY,
+        module_id: TEST_MODULE.module_id,
+        tag_id: TEST_TAG.id,
+        feedback: "I approve this goal!",
+        parent_goal: 5292,
+    },
+    {
+        goal_id: 1002,
+        name: "Wake me up",
+        description: "Wake me up inside",
+        is_complete: true,
+        goal_type: GOAL_TYPE.WEEKLY,
+        module_id: TEST_MODULE.module_id,
+        tag_id: TEST_TAG.id,
+        parent_goal: 5292
+    },
+    {
+        ...TEST_CREATED_GOAL[0],
+        goal_id: 1000
+    },
+    {
+        ...TEST_CREATED_GOAL[1],
+        goal_id: 1001
+    },
+
+];
+
+export const TEST_INVITE: InviteData = {
     id: 50,
-    senderId: 1,
-    recipientId: 2,
-    senderUsername: "bobjonesxx",
-    recipientUsername: "tsnicholas",
-    senderEmail: "example@outlook.com",
-    recipientEmail: "foo@gmail.com"
-}
+    sender_id: 1,
+    recipient_id: 2,
+    sender_username: "bobjonesxx",
+    recipient_username: "tsnicholas",
+    sender_email: "example@outlook.com",
+    recipient_email: "foo@gmail.com"
+};

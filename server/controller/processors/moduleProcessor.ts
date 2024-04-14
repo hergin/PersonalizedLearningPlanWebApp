@@ -19,9 +19,9 @@ async function getAccountModules(req : Request, res : Response) {
 async function postModule(req : Request, res : Response) {
     console.log(`Received in post module: ${req.body.accountId}`);
     const status = await moduleAPI.createModule({
-        name: req.body.name, 
-        description: req.body.description, 
-        completion: req.body.completionPercent, 
+        name: req.body.name,
+        description: req.body.description,
+        completion: req.body.completionPercent,
         accountId: req.body.accountId
     });
     if(status !== STATUS_CODE.OK) {
@@ -35,10 +35,11 @@ async function postModule(req : Request, res : Response) {
 async function putModule(req : Request, res : Response) {
     console.log(`Received in update module: ${req.params.id}`);
     const moduleQuery = await moduleAPI.updateModule({
-        id: parseInt(req.params.id), 
-        name: req.body.name, 
-        description: req.body.description, 
+        module_id: parseInt(req.params.id),
+        name: req.body.name,
+        description: req.body.description,
         completion: req.body.completion,
+        accountId: req.body.userId
     });
     if(moduleQuery !== STATUS_CODE.OK) {
         console.log("Something went wrong while editing a module.");

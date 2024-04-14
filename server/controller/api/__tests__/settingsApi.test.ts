@@ -41,7 +41,7 @@ describe('Settings Api Unit Tests', () => {
 
     it("update settings (normal resolved case)", async () => {
         parser.updateDatabase.mockResolvedValueOnce();
-        const result = await api.updateSettings(TEST_SETTINGS.accountId, {receiveEmails: !TEST_SETTINGS.receiveEmails, allowCoachInvitations: TEST_SETTINGS.allowCoachInvitations});
+        const result = await api.updateSettings(TEST_SETTINGS.accountId, {...TEST_SETTINGS, receiveEmails: !TEST_SETTINGS.receiveEmails});
         expect(parser.updateDatabase).toHaveBeenCalledTimes(1);
         expect(parser.updateDatabase).toHaveBeenCalledWith({
             text: "UPDATE ACCOUNT_SETTINGS SET receive_emails = $1, allow_coach_invitations = $2 WHERE account_id = $3",
@@ -52,7 +52,7 @@ describe('Settings Api Unit Tests', () => {
 
     it("update settings (bad request case)", async () => {
         parser.updateDatabase.mockRejectedValue(FAKE_ERRORS.badRequest);
-        const result = await api.updateSettings(TEST_SETTINGS.accountId, {receiveEmails: !TEST_SETTINGS.receiveEmails, allowCoachInvitations: TEST_SETTINGS.allowCoachInvitations});
+        const result = await api.updateSettings(TEST_SETTINGS.accountId, {...TEST_SETTINGS, receiveEmails: !TEST_SETTINGS.receiveEmails});
         expect(parser.updateDatabase).toHaveBeenCalledTimes(1);
         expect(parser.updateDatabase).toHaveBeenCalledWith({
             text: "UPDATE ACCOUNT_SETTINGS SET receive_emails = $1, allow_coach_invitations = $2 WHERE account_id = $3",
@@ -63,7 +63,7 @@ describe('Settings Api Unit Tests', () => {
 
     it("update settings (network error case)", async () => {
         parser.updateDatabase.mockRejectedValue(FAKE_ERRORS.networkError);
-        const result = await api.updateSettings(TEST_SETTINGS.accountId, {receiveEmails: !TEST_SETTINGS.receiveEmails, allowCoachInvitations: TEST_SETTINGS.allowCoachInvitations});
+        const result = await api.updateSettings(TEST_SETTINGS.accountId, {...TEST_SETTINGS, receiveEmails: !TEST_SETTINGS.receiveEmails});
         expect(parser.updateDatabase).toHaveBeenCalledTimes(1);
         expect(parser.updateDatabase).toHaveBeenCalledWith({
             text: "UPDATE ACCOUNT_SETTINGS SET receive_emails = $1, allow_coach_invitations = $2 WHERE account_id = $3",
