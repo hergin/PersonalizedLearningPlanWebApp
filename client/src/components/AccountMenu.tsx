@@ -1,22 +1,19 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { IoIosLogOut } from "react-icons/io";
+import { IoIosLogOut, IoIosSettings } from "react-icons/io";
 import DropDownMenu from "./dropDown/DropDownMenu";
 import DropDownItem from "./dropDown/DropDownItem";
-import DropDownCheckbox from "./dropDown/DropDownCheckbox";
-import { useSettings, useSettingsMutation } from "../hooks/useSettings";
 import { useLogoutService } from "../features/login/hooks/useAccountServices";
 import { User } from "../types";
-import AccountToggles from "./AccountToggles";
+import SettingsModal from "./SettingsModal";
 
 interface AccountMenuProps {
     user: User,
     style?: string,
 }
 
-export default function AccountMenu({user, style}: AccountMenuProps) {
-    const { data, isLoading, error } = useSettings(user.id);
-    const { mutate: updateSettings } = useSettingsMutation(user.id);
+export default function AccountMenu({user, ...other}: AccountMenuProps) {
+    const [isOpen, setIsOpen] = useState<boolean>(false);
     const { mutateAsync: logout } = useLogoutService();
     const navigate = useNavigate();
 
@@ -26,13 +23,27 @@ export default function AccountMenu({user, style}: AccountMenuProps) {
     }
 
     return (
-        <DropDownMenu style={`absolute top-[58px] w-[190px] translate-x-[-45%] translate-y-[20px]${style ? ` ${style}` : ""}`}>
-            <DropDownItem 
-                leftIcon={<IoIosLogOut className="size-6" />} 
-                onClick={handleLogout}
-            >
-                Logout
-            </DropDownItem>
-        </DropDownMenu>
+        <>
+            <SettingsModal
+                user={user}
+                isOpen={isOpen}
+                onClose={() => {setIsOpen(false)}}
+            />
+            <DropDownMenu style="absolute top-[58px] w-[190px] translate-x-[-45%] translate-y-[20px]" {...other}>
+                <DropDownItem
+                    leftIcon={<IoIosSettings className="size-6" />}
+                    onClick={() => {setIsOpen(true)}}
+                >
+                    Settings
+                </DropDownItem>
+                <DropDownItem 
+                    leftIcon={<IoIosLogOut className="size-6" />} 
+                    onClick={handleLogout}
+                >
+                    Logout
+                </DropDownItem>
+            </DropDownMenu>
+        </>
+        
     );
 }
