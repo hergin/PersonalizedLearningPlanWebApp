@@ -12,7 +12,7 @@ dotenv.config({
 export default class EmailService {
     transporter : Transporter;
     messageGenerator : MessageGenerator;
-    
+
     constructor() {
         const transportOptions : SMTPTransport.Options = {
             service: process.env.SERVICE,
@@ -60,7 +60,7 @@ export default class EmailService {
             const message = this.messageGenerator.getMessage(subject, data);
             const info = await this.transporter.sendMail({
                 from: `Learning Plan <${process.env.ACCOUNT_EMAIL}>`,
-                to: data.recipient_email,
+                to: subject === "Coach Invitation" ? data.recipient_email : data.sender_email,
                 subject: subject,
                 html: message
             });

@@ -8,7 +8,7 @@ dotenv.config({
 });
 
 export default class DatabaseParser {
-    readonly pool : Pool;
+    protected readonly pool : Pool;
 
     constructor() {
         this.pool = new Pool({

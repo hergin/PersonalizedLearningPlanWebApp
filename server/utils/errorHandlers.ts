@@ -13,14 +13,14 @@ function initializeDatabaseErrorStatusMap() {
 }
 
 export function convertDatabaseErrorToStatusCode(error: DatabaseError) {
-    var result = databaseErrorStatusMap.get(error.code);
-    return result ??= STATUS_CODE.INTERNAL_SERVER_ERROR;
+    const result = databaseErrorStatusMap.get(error.code);
+    return result ?? STATUS_CODE.INTERNAL_SERVER_ERROR;
 }
 
 const loginErrorMessageMap = initializeLoginErrorMap();
 function initializeLoginErrorMap(): Map<StatusCode, string> {
     const map = new Map();
-    map.set(STATUS_CODE.OK, "Data received is invalid. Please try again.");
+    map.set(STATUS_CODE.BAD_REQUEST, "Data received is invalid. Please try again.");
     map.set(STATUS_CODE.UNAUTHORIZED, "Invalid Login.");
     map.set(STATUS_CODE.FORBIDDEN, "Forbidden request.");
     map.set(STATUS_CODE.CONNECTION_ERROR, "Failed to connect to database.");

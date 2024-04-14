@@ -10,7 +10,7 @@ const notifyOfCloseDueDates = schedule(EVERYDAY_AT_MIDNIGHT, async () => {
     const results = await parser.parseAccountsWithUpcomingDueDates();
     for(const user of results) {
         const message = generateEmailBody(user.goal, user.username, new Date(user.due_date));
-        emailService.sendEmail(user.email, "Due Date Coming Soon!", message);
+        await emailService.sendEmail(user.email, "Due Date Coming Soon!", message);
     }
 });
 
@@ -24,4 +24,4 @@ function generateEmailBody(goalName: string, username: string, dueDate: Date):st
 
 const updateCompletionStatus = schedule(EVERYDAY_AT_MIDNIGHT, parser.runMaintenanceProcedures);
 
-export {notifyOfCloseDueDates, updateCompletionStatus};
+export {notifyOfCloseDueDates as emailAboutCloseDueDates, updateCompletionStatus};

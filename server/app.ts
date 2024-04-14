@@ -5,8 +5,8 @@ import moduleRoutes from "./routes/moduleRoutes";
 import profileRoutes from "./routes/profileRoutes";
 import goalRoutes from "./routes/goalRoutes";
 import settingsRoute from "./routes/settingRoutes";
-import { notifyOfCloseDueDates, updateCompletionStatus } from "./cron_jobs/goalJobs";
-import { updateCompletionPercent } from "./cron_jobs/moduleJobs";
+import { emailAboutCloseDueDates, updateCompletionStatus } from "./cronJobs/goalJobs";
+import { updateCompletionPercent } from "./cronJobs/moduleJobs";
 import tagRoute from "./routes/tagRoutes";
 import inviteRoutes from "./routes/inviteRoutes";
 import messageRoutes from "./routes/messageRoutes";
@@ -35,7 +35,7 @@ app.get('/api', (req : Request, res : Response) => {
 // When we host, cron jobs will be separate from the server.
 app.listen(4000, () => {
     console.log("Server running!");
-    notifyOfCloseDueDates.start();
+    emailAboutCloseDueDates.start();
     updateCompletionStatus.start();
     updateCompletionPercent.start();
 });
