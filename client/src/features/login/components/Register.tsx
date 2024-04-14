@@ -1,193 +1,177 @@
-import React, { useState, ReactElement } from "react";
+import React, { useState, useMemo, ReactElement } from "react";
+import { TextField, Alert, Button } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import { useHotKeys } from "../../../hooks/useHotKeys";
 import { useRegistrationService } from "../hooks/useAccountServices";
 import { RegisterProps } from "../../../types";
 
-const TEXT_INPUT_STYLE_NORMAL =
-  "h-10 rounded text-base w-full border border-solid border-gray-300 px-2 ";
-const TEXT_INPUT_STYLE_ERROR =
-  "h-10 rounded text-base w-full border border-solid border-red-700 px-2";
+const passwordExpressionMap = initializeExpressionMap();
+function initializeExpressionMap(): Map<RegExp, string> {
+  const map = new Map<RegExp, string>();
+  map.set(/^(?=.*\d).+$/, "Must have at least 1 number.");
+  map.set(/^(?=.*[a-z]).+$/, "Must have at least 1 lowercase letter.");
+  map.set(/^(?=.*[A-Z]).+$/, "Must have at least 1 uppercase letter.");
+  map.set(/^.{8,}$/, "Must be at least 8 characters long.");
+  return map;
+}
 
-const Register = () => {
+export default function Register() {
   const [registerValues, setRegisterValues] = useState<RegisterProps>({
     email: "", password: "", firstName: "", lastName: "", username: ""
   });
   const navigate = useNavigate();
   const { handleEnterPress } = useHotKeys();
-  const [passwordErrors, setPasswordErrors] = useState<ReactElement[]>([]);
   const { mutateAsync: register, error } = useRegistrationService();
-  const submitDisabled =
-    registerValues.firstName === "" ||
-    registerValues.lastName === "" ||
-    registerValues.email === "" ||
-    registerValues.username === "" ||
-    registerValues.password === "" ||
-    passwordErrors.length !== 0;
-
-  async function handleRegistration() {
-    if (!registerValues.email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
-      alert("Your email must be valid.");
-      return;
+  
+  const isEmailValid = useMemo(() => {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(registerValues.email) || registerValues.email === "";
+  }, [registerValues.email]);
+  
+  const passwordErrors: ReactElement[] = useMemo<ReactElement[]>(() => {
+    const password = registerValues.password;
+    const result: ReactElement[] = [];
+    for (const [expression, message] of passwordExpressionMap) {
+        if (!password.match(expression)) {
+            result.push(<p className="text-sm">{message}</p>);
+        }
     }
+    return result;
+  }, [registerValues.password]);
+  
+  const submitDisabled = useMemo<boolean>(() => {
+    const result = false;
+    for(const value of Object.values(registerValues)) {
+      result || value === "";
+    }
+    return result || !isEmailValid || passwordErrors.length > 0;
+  }, [registerValues, isEmailValid, passwordErrors.length]);
+  
+  async function handleRegistration() {
     await register(registerValues);
     if(!error) {
       navigate("/");
     }
   }
 
-  function validatePassword(input: string) {
-    const errorsFound: ReactElement[] = [];
-    const expressionMap = initializeExpressionMap();
-    for (const [expression, message] of expressionMap) {
-      if (!input.match(expression)) {
-        errorsFound.push(
-          <p>
-            <span className="font-bold">!</span> {message}
-          </p>
-        );
-      }
-    }
-    setPasswordErrors(errorsFound);
-  }
-
-  function initializeExpressionMap(): Map<RegExp, string> {
-    const map = new Map<RegExp, string>();
-    map.set(/^(?=.*\d).+$/, "1 number.");
-    map.set(/^(?=.*[a-z]).+$/, "1 lowercase letter.");
-    map.set(/^(?=.*[A-Z]).+$/, "1 uppercase letter.");
-    map.set(/^.{8,}$/, "Must be 8 characters long.");
-    return map;
-  }
-
   return (
-    <div className="flex flex-col flex-1 justify-center items-center h-[80vh]">
-      <div className="flex flex-nowrap flex-col justify-center h-[65vh] w-[20vw] py-2.5 border border-solid border-[#DBDBDB]">
-        <div className="flex flex-col justify-center items-center h-24">
-          <h1 className="text-5xl">Registration</h1>
-        </div>
-        <div className="flex flex-col h-full justify-center mx-10 gap-6">
-          <div>
-            <input
-              id="firstName"
-              className={TEXT_INPUT_STYLE_NORMAL}
-              placeholder="First Name"
-              type="text"
-              value={registerValues.firstName}
-              onChange={(input) => {
-                setRegisterValues({
-                  ...registerValues,
-                  firstName: input.target.value
-                });
-              }}
-              onKeyUp={(event) => {
-                handleEnterPress(event, handleRegistration, submitDisabled);
-              }}
-            />
-          </div>
-          <div>
-            <input
-              id="lastName"
-              className={TEXT_INPUT_STYLE_NORMAL}
-              placeholder="Last Name"
-              type="text"
-              value={registerValues.lastName}
-              onChange={(input) => {
-                setRegisterValues({
-                  ...registerValues,
-                  lastName: input.target.value
-                });
-              }}
-              onKeyUp={(event) => {
-                handleEnterPress(event, handleRegistration, submitDisabled);
-              }}
-            />
-          </div>
-          <div className="emailContainer">
-            <input
-              id="emailInput"
-              className={TEXT_INPUT_STYLE_NORMAL}
-              placeholder="Email"
-              type="text"
-              value={registerValues.email}
-              onChange={(input) => {
-                setRegisterValues({
-                  ...registerValues,
-                  email: input.target.value
-                });
-              }}
-              onKeyUp={(event) => {
-                handleEnterPress(event, handleRegistration, submitDisabled);
-              }}
-            />
-          </div>
-          <div>
-            <input
-              id="usernameInput"
-              className={TEXT_INPUT_STYLE_NORMAL}
-              placeholder="Username"
-              type="text"
-              value={registerValues.username}
-              onChange={(input) => {
-                setRegisterValues({
-                  ...registerValues,
-                  username: input.target.value
-                });
-              }}
-              onKeyUp={(event) => {
-                handleEnterPress(event, handleRegistration, submitDisabled);
-              }}
-            />
-          </div>
-          <div className="passwordContainer">
-            <input
-              id="passwordInput"
-              className={
-                passwordErrors.length !== 0
-                  ? TEXT_INPUT_STYLE_ERROR
-                  : TEXT_INPUT_STYLE_NORMAL
-              }
-              placeholder="Password"
-              type="password"
-              value={registerValues.password}
-              onChange={(input) => {
-                setRegisterValues({
-                  ...registerValues,
-                  password: input.target.value
-                });
-                validatePassword(input.target.value);
-              }}
-              onKeyUp={(event) => {
-                handleEnterPress(event, handleRegistration, submitDisabled);
-              }}
-            />
-            {passwordErrors.length !== 0 && (
-              <div className="border-2 border-solid border-red-700 opacity-75 mt-2 flex flex-col items-center">
-                <div className="text-red-400 text-xs ">
-                  <p>Missing requirements:</p>
-                  {passwordErrors}
-                </div>
-              </div>
-            )}
-          </div>
-          <button
-            id="registerButton"
-            disabled={submitDisabled}
-            onClick={handleRegistration}
-            className="h-10 border-1 border-solid border-gray-300 rounded px-2 text-base bg-element-base text-text-color hover:bg-[#820000] hover:cursor-pointer disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-element-base"
-          >
-            Register
-          </button>
-        </div>
+    <div className="flex flex-nowrap flex-col py-3 my-2.5 mx-20 h-full">
+      <div className="flex flex-col items-center py-3 my-2.5">
+        <h1 className="text-5xl">Registration</h1>
       </div>
-      <div className="flex flex-col justify-center items-center mt-2 h-24 w-[20vw] border border-solid border-[#DBDBDB]">
-        <p>Already have an account?</p>
-        <Link to="/login" className="no-underline text-blue-700 text-base mb-2">
-          <p>Sign in here</p>
+      <div className="flex flex-col h-full mx-10 gap-6 items-center">
+        <TextField
+          label="First Name"
+          value={registerValues.firstName}
+          onChange={(input) => {
+            setRegisterValues({
+              ...registerValues,
+              firstName: input.target.value
+            });
+          }}
+          onKeyUp={(event) => {
+            handleEnterPress(event, handleRegistration, submitDisabled);
+          }}
+          helperText={registerValues.firstName ? "" : "First name is required!"}
+          error={!registerValues.firstName}
+          required
+          className={"w-1/2"}
+        />
+        <TextField
+          label="Last Name"
+          value={registerValues.lastName}
+          onChange={(input) => {
+            setRegisterValues({
+              ...registerValues,
+              lastName: input.target.value
+            });
+          }}
+          onKeyUp={(event) => {
+            handleEnterPress(event, handleRegistration, submitDisabled);
+          }}
+          helperText={registerValues.lastName ? "" : "Last Name is required!"}
+          error={!registerValues.lastName}
+          required
+          className={"w-1/2"}
+        />
+        <TextField
+          label="Email"
+          value={registerValues.email}
+          onChange={(input) => {
+            setRegisterValues({
+              ...registerValues,
+              email: input.target.value
+            });
+          }}
+          onKeyUp={(event) => {
+            handleEnterPress(event, handleRegistration, submitDisabled);
+          }}
+          helperText={registerValues.email ? "" : "Email is required!"}
+          error={!registerValues.email || !isEmailValid}
+          required
+          className={"w-1/2"}
+        />
+        {
+          !isEmailValid && <Alert severity="error" className="w-1/2">Your email must be valid!</Alert>
+        }
+        <TextField
+          label="Username"
+          value={registerValues.username}
+          onChange={(input) => {
+            setRegisterValues({
+              ...registerValues,
+              username: input.target.value
+            });
+          }}
+          onKeyUp={(event) => {
+            handleEnterPress(event, handleRegistration, submitDisabled);
+          }}
+          helperText={registerValues.username ? "" : "Username is required!"}
+          error={!registerValues.username}
+          required
+          className={"w-1/2"}
+        />
+        <TextField
+          label="Password"
+          type="password"
+          value={registerValues.password}
+          onChange={(input) => {
+            setRegisterValues({
+              ...registerValues,
+              password: input.target.value
+            });
+          }}
+          onKeyUp={(event) => {
+            handleEnterPress(event, handleRegistration, submitDisabled);
+          }}
+          helperText={registerValues.password ? "" : "Password is required!"}
+          error={passwordErrors.length > 0 || !registerValues.password}
+          required
+          className={"w-1/2"}
+        />
+        {
+          passwordErrors.length > 0 && registerValues.password && (
+            <Alert severity="error" className="w-1/2">
+              <p className="text-sm font-bold">Missing requirements:</p>
+              {passwordErrors}
+            </Alert>
+          )
+        }            
+        <Button
+          variant="contained"
+          disabled={submitDisabled}
+          onClick={handleRegistration}
+          size="large"
+          className={"w-1/4"}
+        >
+          Register
+        </Button>
+      </div>
+      <div className="flex flex-col items-center py-3">
+        <p className="text-base">Already have an account?</p>
+        <Link to="/login" className="no-underline mb-2">
+          <p className="text-sm text-blue-700">Sign in here</p>
         </Link>
       </div>
     </div>
   );
-};
-
-export default Register;
+}

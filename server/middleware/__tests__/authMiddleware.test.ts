@@ -1,7 +1,7 @@
 import { authenticateToken, authenticateRole } from "../authMiddleware";
 import { verify, VerifyErrors, JsonWebTokenError } from "jsonwebtoken";
 import { Response, Request } from "express";
-import { StatusCode } from "../../types";
+import { STATUS_CODE } from "../../types";
 import { jwtDecode } from "jwt-decode";
 import EnvError from "../../utils/envError";
 import { resolve } from "path";
@@ -49,7 +49,7 @@ describe("Authentication Unit Tests", () => {
         expect(() => authenticateToken(mockRequest, mockResponse, mockNext)).toThrow(
             new EnvError('ACCESS_TOKEN_SECRET', resolve("./middleware")));
         expect(mockSendStatus).toHaveBeenCalledTimes(1);
-        expect(mockSendStatus).toHaveBeenCalledWith(StatusCode.INTERNAL_SERVER_ERROR);
+        expect(mockSendStatus).toHaveBeenCalledWith(STATUS_CODE.INTERNAL_SERVER_ERROR);
         expect(mockNext).toHaveBeenCalledTimes(0);
         expect(mockVerify).toHaveBeenCalledTimes(0);
         expect(mockJwtDecode).toHaveBeenCalledTimes(0);
@@ -87,7 +87,7 @@ describe("Authentication Unit Tests", () => {
         expect(mockVerify).toHaveBeenCalledTimes(0);
         expect(mockJwtDecode).toHaveBeenCalledTimes(0);
         expect(mockStatus).toHaveBeenCalledTimes(1);
-        expect(mockStatus).toHaveBeenCalledWith(StatusCode.UNAUTHORIZED);
+        expect(mockStatus).toHaveBeenCalledWith(STATUS_CODE.UNAUTHORIZED);
         expect(mockSend).toHaveBeenCalledTimes(1);
         expect(mockSend).toHaveBeenCalledWith("Error: No access token provided in request.");
     });
@@ -110,7 +110,7 @@ describe("Authentication Unit Tests", () => {
         expect(mockVerify).toHaveBeenCalledTimes(1);
         expect(mockVerify).toHaveBeenCalledWith(wrongToken, process.env.ACCESS_TOKEN_SECRET, undefined, expect.any(Function));
         expect(mockStatus).toHaveBeenCalledTimes(1);
-        expect(mockStatus).toHaveBeenCalledWith(StatusCode.FORBIDDEN);
+        expect(mockStatus).toHaveBeenCalledWith(STATUS_CODE.FORBIDDEN);
         expect(mockSend).toHaveBeenCalledTimes(1);
         expect(mockSend).toHaveBeenCalledWith("Your token isn't valid!");
     });
@@ -140,7 +140,7 @@ describe("Authentication Unit Tests", () => {
         expect(mockSendStatus).toHaveBeenCalledTimes(0);
         expect(mockNext).toHaveBeenCalledTimes(0);
         expect(mockStatus).toHaveBeenCalledTimes(1);
-        expect(mockStatus).toHaveBeenCalledWith(StatusCode.UNAUTHORIZED);
+        expect(mockStatus).toHaveBeenCalledWith(STATUS_CODE.UNAUTHORIZED);
         expect(mockSend).toHaveBeenCalledTimes(1);
         expect(mockSend).toHaveBeenCalledWith("You aren't authorized to be here.");
     });

@@ -14,7 +14,7 @@ const ProfileApi = () => {
     }
   }
 
-  async function FetchAllProfiles() {
+  async function fetchCoaches() {
     try {
       const data = await get(`profile/get`);
       return data;
@@ -46,7 +46,7 @@ const ProfileApi = () => {
     }
   }
 
-  return { FetchProfile, FetchAllProfiles, CreateProfile, UpdateProfile };
+  return { FetchProfile, fetchCoaches: fetchCoaches, CreateProfile, UpdateProfile };
 };
 
 export default ProfileApi;

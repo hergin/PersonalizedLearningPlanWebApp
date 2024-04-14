@@ -13,7 +13,7 @@
         "allowSyntheticDefaultImports": true,
         "esModuleInterop": true,
         "lib": ["es5", "es6", "dom"],
-        "skipLibCheck": true,
+        "skipDefaultLibCheck": true,
     },
     "typeRoots": [
         "custom_typing",

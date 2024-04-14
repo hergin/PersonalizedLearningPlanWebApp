@@ -1,24 +1,31 @@
+import { Alert } from "@mui/material";
 import React from "react";
-import { useInviteAccepter, useInviteDecliner } from "../hooks/useInvite";
+import { useInviteAccepter, useInviteDecliner } from "../hooks/useInvites";
 
-const InvitationItem = ({ name, id, getCollapseProps, recipientId, senderId }: any) => {
+interface InvitationItemProps {
+  id: number,
+  name: string,
+  recipientId: number,
+  senderId: number
+}
+
+const InvitationItem = ({ name, id, recipientId, senderId }: InvitationItemProps) => {
   const { mutateAsync: acceptInvite } = useInviteAccepter(); 
-  const { mutateAsync: declinetInvite } = useInviteDecliner(); 
-
+  const { mutateAsync: declineInvite } = useInviteDecliner(); 
 
   async function AcceptInvite() {
     await acceptInvite({id, recipientId, senderId});
-    alert(`Invite accpeted`);
+    alert(`Invite accepted`);
   }
 
   async function DeclineInvite() {
-    await declinetInvite(id);
+    await declineInvite(id);
     alert(`Invite declined`);
   }
 
   return (
     <>
-      <div {...getCollapseProps()} className="flex flex-row transition-transform rounded border border-solid border-black w-[800px] h-[100px] shadow-md bg-white items-center justify-between">
+      <div className="flex flex-row transition-transform rounded border border-solid border-black w-[800px] h-[100px] shadow-md bg-white items-center justify-between">
         <div className="flex flex-row items-center">
           <img
             src="https://www.w3schools.com/howto/img_avatar.png"

@@ -48,9 +48,7 @@ RETURNS SETOF GOAL_WITH_TAG AS $$
     BEGIN
         CALL update_is_complete();
         CALL update_module_completion();
-
-        RETURN QUERY SELECT * FROM GOAL_WITH_TAG
-                     WHERE module_id = get_goals.id;
+        RETURN QUERY SELECT * FROM GOAL_WITH_TAG WHERE module_id = get_goals.id;
     END;
 $$ LANGUAGE PLPGSQL;
 

@@ -1,24 +1,23 @@
 import GoalAPI from "../api/goalApi";
 import EmailService from "../../service/emailService";
-import { StatusCode } from "../../types";
-import { initializeErrorMap } from "../../utils/errorMessages";
+import { STATUS_CODE } from "../../types";
+import { getLoginError } from "../../utils/errorHandlers";
 import { Request, Response } from "express";
 import LoginAPI from "../api/loginApi";
-import isStatusCode from "../../utils/isStatusCode";
+import { isStatusCode } from "../../utils/typePredicates";
 
 const goalAPI = new GoalAPI();
 const loginAPI = new LoginAPI();
-const ERROR_MESSAGES = initializeErrorMap();
 const emailService = new EmailService();
 
 async function getModuleGoals(req: Request, res: Response) {
     console.log(`Received in get goals: ${req.params.id}`);
     const goalQuery = await goalAPI.getGoals(parseInt(req.params.id));
-    if (typeof goalQuery !== "object") {
-        res.status(goalQuery).send(ERROR_MESSAGES.get(goalQuery));
+    if (isStatusCode(goalQuery)) {
+        res.status(goalQuery).send(getLoginError(goalQuery));
         return;
     }
-    res.status(StatusCode.OK).json(goalQuery);
+    res.status(STATUS_CODE.OK).json(goalQuery);
 }
 
 async function postGoal(req: Request, res: Response) {
@@ -32,12 +31,12 @@ async function postGoal(req: Request, res: Response) {
         tag_id: req.body.tagId,
         due_date: req.body.dueDate
     });
-    if (status !== StatusCode.OK) {
+    if (status !== STATUS_CODE.OK) {
         console.log("Something went wrong while creating module.");
-        res.status(status).send(ERROR_MESSAGES.get(status));
+        res.status(status).send(getLoginError(status));
         return;
     }
-    res.sendStatus(StatusCode.OK);
+    res.sendStatus(STATUS_CODE.OK);
 }
 
 async function putGoal(req: Request, res: Response) {
@@ -53,49 +52,49 @@ async function putGoal(req: Request, res: Response) {
         completion_time: req.body.completion_time,
         expiration: req.body.expiration
     });
-    if (resultingStatusCode !== StatusCode.OK) {
+    if (resultingStatusCode !== STATUS_CODE.OK) {
         console.log(`Updating goal failed for goal ${req.params.id} with status code ${resultingStatusCode}`);
-        res.status(resultingStatusCode).send(ERROR_MESSAGES.get(resultingStatusCode));
+        res.status(resultingStatusCode).send(getLoginError(resultingStatusCode));
         return;
     }
-    res.sendStatus(StatusCode.OK);
+    res.sendStatus(STATUS_CODE.OK);
 }
 
 async function putGoalFeedback(req: Request, res: Response) {
     console.log(`Received in update goal feedback: ${req.params.id} ${req.body.feedback}`);
     const goalQuery = await goalAPI.updateGoalFeedback(Number(req.params.id), req.body.feedback);
-    if (goalQuery !== StatusCode.OK) {
-        res.status(goalQuery).send(ERROR_MESSAGES.get(goalQuery));
+    if (goalQuery !==STATUS_CODE.OK) {
+        res.status(goalQuery).send(getLoginError(goalQuery));
         return;
     }
-    const accountQuery = await loginAPI.getAccountById(req.body.userId);
+    const accountQuery = await loginAPI.getEmailById(req.body.userId);
     if(isStatusCode(accountQuery)) {
         console.error(`Failed to retrieve account id for coach ${req.body.userId}'s feedback.`);
         res.status(accountQuery).send("Failed to retrieve understudy's account to email them the feedback.");
         return;
     }
     emailService.sendEmail(accountQuery[0].email, "Feedback", req.body.feedback);
-    res.sendStatus(StatusCode.OK);
+    res.sendStatus(STATUS_CODE.OK);
 }
 
 async function deleteGoal(req: Request, res: Response) {
     console.log(`Received in delete goal: ${req.params.id}`);
     const goalQuery = await goalAPI.deleteGoal(parseInt(req.params.id));
-    if (goalQuery !== StatusCode.OK) {
-        res.status(goalQuery).send(ERROR_MESSAGES.get(goalQuery));
+    if (goalQuery !== STATUS_CODE.OK) {
+        res.status(goalQuery).send(getLoginError(goalQuery));
         return;
     }
-    res.sendStatus(StatusCode.OK);
+    res.sendStatus(STATUS_CODE.OK);
 }
 
 async function getGoalVariable(req: Request, res: Response) {
     console.log(`Received in get goal variable: ${req.params.id} ${req.params.variable}`);
     const variableQuery = await goalAPI.getGoalVariable(parseInt(req.params.id), req.params.variable);
-    if (typeof variableQuery !== "object") {
-        res.status(variableQuery).send(ERROR_MESSAGES.get(variableQuery));
+    if (isStatusCode(variableQuery)) {
+        res.status(variableQuery).send(getLoginError(variableQuery));
         return;
     }
-    res.status(StatusCode.OK).json(variableQuery);
+    res.status(STATUS_CODE.OK).json(variableQuery);
 }
 
 async function postSubGoal(req: Request, res: Response) {
@@ -109,11 +108,11 @@ async function postSubGoal(req: Request, res: Response) {
         tag_id: req.body.tagId,
         due_date: req.body.dueDate
     });
-    if (typeof goalQuery !== "object") {
-        res.status(goalQuery).send(ERROR_MESSAGES.get(goalQuery));
+    if (isStatusCode(goalQuery)) {
+        res.status(goalQuery).send(getLoginError(goalQuery));
         return;
     }
-    res.status(StatusCode.OK).json(goalQuery);
+    res.status(STATUS_CODE.OK).json(goalQuery);
 }
 
 export { getModuleGoals, postGoal, putGoal, putGoalFeedback, deleteGoal, getGoalVariable, postSubGoal };

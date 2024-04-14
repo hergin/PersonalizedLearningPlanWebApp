@@ -2,7 +2,7 @@ export {};
 
 import EmailService from "../emailService";
 import MessageGenerator from "../messageGenerator";
-import { InviteData, StatusCode, Subject } from "../../types";
+import { InviteData, STATUS_CODE, SUBJECTS } from "../../types";
 
 const sendMailMock = jest.fn(); 
 jest.mock('nodemailer', () => ({
@@ -54,13 +54,13 @@ describe("service tests", () => {
             subject: TEST_DATA.subject,
             html: TEST_DATA.messageHtml
         });
-        expect(status).toEqual(StatusCode.OK);
+        expect(status).toEqual(STATUS_CODE.OK);
     });
 
     it("send mail (bad request case)", async () => {
         const status = await emailService.sendEmail("not an email >:3", TEST_DATA.subject, TEST_DATA.messageHtml);
         expect(sendMailMock).toHaveBeenCalledTimes(0);
-        expect(status).toEqual(StatusCode.BAD_REQUEST);
+        expect(status).toEqual(STATUS_CODE.BAD_REQUEST);
     });
 
     it("send mail (internal error)", async () => {
@@ -73,23 +73,23 @@ describe("service tests", () => {
             subject: TEST_DATA.subject,
             html: TEST_DATA.messageHtml
         });
-        expect(status).toEqual(StatusCode.INTERNAL_SERVER_ERROR);
+        expect(status).toEqual(STATUS_CODE.INTERNAL_SERVER_ERROR);
     });
 
     it("send invite mail (normal case)", async () => {
         sendMailMock.mockResolvedValueOnce({messageId: "message"});
         messageGenerator.getMessage.mockReturnValue("message");
-        const status = await emailService.sendInviteEmail(TEST_INVITE, Subject.INVITATION);
+        const status = await emailService.sendInviteEmail(TEST_INVITE, SUBJECTS.INVITATION);
         expect(messageGenerator.getMessage).toHaveBeenCalledTimes(1);
-        expect(messageGenerator.getMessage).toHaveBeenCalledWith(Subject.INVITATION, TEST_INVITE);
+        expect(messageGenerator.getMessage).toHaveBeenCalledWith(SUBJECTS.INVITATION, TEST_INVITE);
         expect(sendMailMock).toHaveBeenCalledTimes(1);
         expect(sendMailMock).toHaveBeenCalledWith({
             from: `Learning Plan <${process.env.ACCOUNT_EMAIL}>`,
             to: TEST_INVITE.recipient_email,
-            subject: Subject.INVITATION,
+            subject: SUBJECTS.INVITATION,
             html: "message"
         });
-        expect(status).toEqual(StatusCode.OK);
+        expect(status).toEqual(STATUS_CODE.OK);
     });
 
     it("send invite mail (bad request case)", async () => {
@@ -97,9 +97,9 @@ describe("service tests", () => {
         messageGenerator.getMessage.mockReturnValue("message");
         const status = await emailService.sendInviteEmail({
             ...TEST_INVITE, recipient_email: "This isn't an email"
-        }, Subject.INVITATION);
+        }, SUBJECTS.INVITATION);
         expect(messageGenerator.getMessage).toHaveBeenCalledTimes(0);
         expect(sendMailMock).toHaveBeenCalledTimes(0);
-        expect(status).toEqual(StatusCode.BAD_REQUEST);
+        expect(status).toEqual(STATUS_CODE.BAD_REQUEST);
     });
 });

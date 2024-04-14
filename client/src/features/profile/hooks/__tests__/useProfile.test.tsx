@@ -1,5 +1,5 @@
 import React, { PropsWithChildren } from "react";
-import { useProfile, useAllProfiles, useProfileCreator, useProfileUpdater } from "../useProfile";
+import { useProfile, useCoachProfiles, useProfileCreator, useProfileUpdater } from "../useProfile";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { renderHook, waitFor, cleanup } from "@testing-library/react";
 import ProfileApi from "../../api/profile-api";
@@ -52,10 +52,10 @@ describe("useProfile Unit Tests", () => {
     });
 
     it("useAllProfiles", async () => {
-        mockApi.FetchAllProfiles.mockResolvedValueOnce([TEST_PROFILE, TEST_PROFILE]);
-        const { result } = renderHook(() => useAllProfiles(), { wrapper });
+        mockApi.fetchCoaches.mockResolvedValueOnce([TEST_PROFILE, TEST_PROFILE]);
+        const { result } = renderHook(() => useCoachProfiles(), { wrapper });
         await waitFor(() => expect(result.current.isSuccess).toBe(true));
-        expect(mockApi.FetchAllProfiles).toHaveBeenCalledTimes(1);
+        expect(mockApi.fetchCoaches).toHaveBeenCalledTimes(1);
         expect(result.current.data).toEqual([TEST_PROFILE, TEST_PROFILE]);
     });
 

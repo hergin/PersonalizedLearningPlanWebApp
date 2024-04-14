@@ -2,9 +2,9 @@ export {};
 
 import GoalAPI from "../goalApi";
 import GoalParser from "../../../parser/goalParser";
-import { StatusCode } from "../../../types";
+import { STATUS_CODE } from "../../../types";
 import { FAKE_ERRORS, TEST_GOAL, TEST_SUB_GOAL } from "../../global/mockValues";
-import { GoalType } from "../../../types";
+import { GOAL_TYPE } from "../../../types";
 jest.mock("../../../parser/goalParser");
 
 
@@ -132,13 +132,13 @@ describe('Goal Api Unit Tests', () => {
     it('get goals (network error case)', async () => {
         if(!TEST_GOAL.moduleId) throw new Error("Module id is undefined!");
         parser.parseParentGoals.mockRejectedValue(FAKE_ERRORS.networkError);
-        expect(await goalAPI.getGoals(TEST_GOAL.moduleId)).toEqual(StatusCode.CONNECTION_ERROR);
+        expect(await goalAPI.getGoals(TEST_GOAL.moduleId)).toEqual(STATUS_CODE.CONNECTION_ERROR);
     });
 
     it('get goals (fatal server error case)', async () => {
         if(!TEST_GOAL.moduleId) throw new Error("Module id is undefined!");
         parser.parseParentGoals.mockRejectedValue(FAKE_ERRORS.fatalServerError);
-        expect(await goalAPI.getGoals(TEST_GOAL.moduleId)).toEqual(StatusCode.INTERNAL_SERVER_ERROR);
+        expect(await goalAPI.getGoals(TEST_GOAL.moduleId)).toEqual(STATUS_CODE.INTERNAL_SERVER_ERROR);
     });
 
     it('create goal (correct case without due date)', async () => {
@@ -150,7 +150,7 @@ describe('Goal Api Unit Tests', () => {
             is_complete: TEST_GOAL.isComplete, 
             module_id: TEST_GOAL.moduleId}
         );
-        expect(actual).toEqual(StatusCode.OK);
+        expect(actual).toEqual(STATUS_CODE.OK);
     });
 
     it('create goal (correct case with due date)', async () => {
@@ -169,7 +169,7 @@ describe('Goal Api Unit Tests', () => {
             ...testObject,
             due_date: "2025-01-01 23:59:59.000 "
         });
-        expect(actual).toEqual(StatusCode.OK);
+        expect(actual).toEqual(STATUS_CODE.OK);
     });
 
     it('create goal (primary key violation case)', async () => {
@@ -181,7 +181,7 @@ describe('Goal Api Unit Tests', () => {
             is_complete: TEST_GOAL.isComplete, 
             module_id: TEST_GOAL.moduleId
         });
-        expect(actual).toEqual(StatusCode.CONFLICT);
+        expect(actual).toEqual(STATUS_CODE.CONFLICT);
     });
 
     it('create goal (network error case)', async () => {
@@ -193,7 +193,7 @@ describe('Goal Api Unit Tests', () => {
             is_complete: TEST_GOAL.isComplete, 
             module_id: TEST_GOAL.moduleId
         });
-        expect(actual).toEqual(StatusCode.CONNECTION_ERROR);
+        expect(actual).toEqual(STATUS_CODE.CONNECTION_ERROR);
     });
 
     it('create goal (server error case)', async () => {
@@ -203,9 +203,9 @@ describe('Goal Api Unit Tests', () => {
             description: TEST_GOAL.description[0], 
             is_complete: TEST_GOAL.isComplete, 
             module_id: TEST_GOAL.moduleId,
-            goal_type: GoalType.DAILY
+            goal_type: GOAL_TYPE.DAILY
         });
-        expect(actual).toEqual(StatusCode.INTERNAL_SERVER_ERROR);
+        expect(actual).toEqual(STATUS_CODE.INTERNAL_SERVER_ERROR);
     });
 
     it('update goal (pass case)', async () => {
@@ -216,7 +216,7 @@ describe('Goal Api Unit Tests', () => {
             description: TEST_GOAL.description[0], 
             goal_type: TEST_GOAL.goalType, 
             is_complete: TEST_GOAL.isComplete
-        })).toEqual(StatusCode.OK);
+        })).toEqual(STATUS_CODE.OK);
     });
 
     it('update goal (duplicate case)', async () => {
@@ -227,7 +227,7 @@ describe('Goal Api Unit Tests', () => {
             description: TEST_GOAL.description[0], 
             goal_type: TEST_GOAL.goalType, 
             is_complete: TEST_GOAL.isComplete
-        })).toEqual(StatusCode.CONFLICT);
+        })).toEqual(STATUS_CODE.CONFLICT);
     });
 
     it('update goal (bad data case)', async () => {
@@ -238,7 +238,7 @@ describe('Goal Api Unit Tests', () => {
             description: TEST_GOAL.description[0], 
             goal_type: TEST_GOAL.goalType, 
             is_complete: TEST_GOAL.isComplete
-        })).toEqual(StatusCode.BAD_REQUEST);
+        })).toEqual(STATUS_CODE.BAD_REQUEST);
     });
 
     it('update goal (connection lost case)', async () => {
@@ -249,7 +249,7 @@ describe('Goal Api Unit Tests', () => {
             description: TEST_GOAL.description[0], 
             goal_type: TEST_GOAL.goalType, 
             is_complete: TEST_GOAL.isComplete
-        })).toEqual(StatusCode.CONNECTION_ERROR);
+        })).toEqual(STATUS_CODE.CONNECTION_ERROR);
     });
 
     it('update goal (fatal error case)', async () => {
@@ -260,7 +260,7 @@ describe('Goal Api Unit Tests', () => {
             description: TEST_GOAL.description[0], 
             goal_type: TEST_GOAL.goalType, 
             is_complete: TEST_GOAL.isComplete
-        })).toEqual(StatusCode.INTERNAL_SERVER_ERROR);
+        })).toEqual(STATUS_CODE.INTERNAL_SERVER_ERROR);
     });
 
     it('update goal feedback (correct case)', async () => {
@@ -268,32 +268,32 @@ describe('Goal Api Unit Tests', () => {
         const actual = await goalAPI.updateGoalFeedback(TEST_GOAL.id[0], "this is feedback");
         expect(parser.updateGoalFeedback).toHaveBeenCalledTimes(1);
         expect(parser.updateGoalFeedback).toHaveBeenCalledWith(TEST_GOAL.id[0], "this is feedback");
-        expect(actual).toEqual(StatusCode.OK);
+        expect(actual).toEqual(STATUS_CODE.OK);
     });
 
     it('delete goal (pass case)', async () => {
         parser.deleteGoal.mockResolvedValueOnce();
-        expect(await goalAPI.deleteGoal(TEST_GOAL.id[0])).toEqual(StatusCode.OK);
+        expect(await goalAPI.deleteGoal(TEST_GOAL.id[0])).toEqual(STATUS_CODE.OK);
     });
 
     it('delete goal (duplicate case)', async () => {
         parser.deleteGoal.mockRejectedValue(FAKE_ERRORS.primaryKeyViolation);
-        expect(await goalAPI.deleteGoal(TEST_GOAL.id[0])).toEqual(StatusCode.CONFLICT);
+        expect(await goalAPI.deleteGoal(TEST_GOAL.id[0])).toEqual(STATUS_CODE.CONFLICT);
     });
 
     it('delete goal (bad data case)', async () => {
         parser.deleteGoal.mockRejectedValue(FAKE_ERRORS.badRequest);
-        expect(await goalAPI.deleteGoal(TEST_GOAL.id[0])).toEqual(StatusCode.BAD_REQUEST);
+        expect(await goalAPI.deleteGoal(TEST_GOAL.id[0])).toEqual(STATUS_CODE.BAD_REQUEST);
     });
 
     it('delete goal (connection lost case)', async () => {
         parser.deleteGoal.mockRejectedValue(FAKE_ERRORS.networkError);
-        expect(await goalAPI.deleteGoal(TEST_GOAL.id[0])).toEqual(StatusCode.CONNECTION_ERROR);
+        expect(await goalAPI.deleteGoal(TEST_GOAL.id[0])).toEqual(STATUS_CODE.CONNECTION_ERROR);
     });
 
     it('delete goal (fatal error case)', async () => {
         parser.deleteGoal.mockRejectedValue(FAKE_ERRORS.fatalServerError);
-        expect(await goalAPI.deleteGoal(TEST_GOAL.id[0])).toEqual(StatusCode.INTERNAL_SERVER_ERROR);
+        expect(await goalAPI.deleteGoal(TEST_GOAL.id[0])).toEqual(STATUS_CODE.INTERNAL_SERVER_ERROR);
     });
 
     it('parse goal attribute (name case)', async () => {
@@ -308,16 +308,16 @@ describe('Goal Api Unit Tests', () => {
 
     it('parse goal attribute (bad request)', async () => {
         parser.parseGoalVariable.mockRejectedValue(FAKE_ERRORS.badRequest);
-        expect(await goalAPI.getGoalVariable(TEST_GOAL.id[0], "name")).toEqual(StatusCode.BAD_REQUEST);
+        expect(await goalAPI.getGoalVariable(TEST_GOAL.id[0], "name")).toEqual(STATUS_CODE.BAD_REQUEST);
     });
 
     it('parse goal attribute (network error case)', async () => {
         parser.parseGoalVariable.mockRejectedValue(FAKE_ERRORS.networkError);
-        expect(await goalAPI.getGoalVariable(TEST_GOAL.id[0], "name")).toEqual(StatusCode.CONNECTION_ERROR);
+        expect(await goalAPI.getGoalVariable(TEST_GOAL.id[0], "name")).toEqual(STATUS_CODE.CONNECTION_ERROR);
     });
 
     it('parse goal attribute (fatal server error case)', async () => {
         parser.parseGoalVariable.mockRejectedValue(FAKE_ERRORS.fatalServerError);
-        expect(await goalAPI.getGoalVariable(TEST_GOAL.id[0], "name")).toEqual(StatusCode.INTERNAL_SERVER_ERROR);
+        expect(await goalAPI.getGoalVariable(TEST_GOAL.id[0], "name")).toEqual(STATUS_CODE.INTERNAL_SERVER_ERROR);
     });
 });

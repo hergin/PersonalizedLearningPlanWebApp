@@ -19,7 +19,7 @@ const TEST_PROFILE = {
 const TEST_ERROR = {message: "I don't feel like querying right now. :("};
 
 describe("Profile Api Unit Tests", () => {
-    const { FetchProfile, FetchAllProfiles, CreateProfile, UpdateProfile } = renderHook(ProfileApi).result.current;
+    const { FetchProfile, fetchCoaches, CreateProfile, UpdateProfile } = renderHook(ProfileApi).result.current;
     var mockApi: any;
     var mockServerThrower: jest.Mock<any, any, any>;
 
@@ -54,7 +54,7 @@ describe("Profile Api Unit Tests", () => {
 
     it("FetchAllProfiles (normal case)", async () => {
         mockApi.get.mockResolvedValueOnce([TEST_PROFILE, TEST_PROFILE]);
-        const result = await FetchAllProfiles();
+        const result = await fetchCoaches();
         expect(mockApi.get).toHaveBeenCalledTimes(1);
         expect(mockApi.get).toHaveBeenCalledWith("profile/get");
         expect(result).toEqual([TEST_PROFILE, TEST_PROFILE]);
@@ -63,7 +63,7 @@ describe("Profile Api Unit Tests", () => {
 
     it("FetchAllProfiles (error case)", async () => {
         mockApi.get.mockRejectedValue(TEST_ERROR);
-        const result = await FetchAllProfiles();
+        const result = await fetchCoaches();
         expect(mockApi.get).toHaveBeenCalledTimes(1);
         expect(mockApi.get).toHaveBeenCalledWith("profile/get");
         expect(result).toBeUndefined();

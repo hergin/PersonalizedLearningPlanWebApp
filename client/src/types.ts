@@ -1,14 +1,19 @@
-export enum GoalType {
-  TASK = "todo",
-  REPEATABLE = "daily",
-}
+type ObjectValues<T> = T[keyof T];
 
-const roles = {
+export const GOAL_TYPE = {
+  ONCE: "todo",
+  DAILY: "daily",
+  WEEKLY: "weekly",
+  MONTHLY: "monthly"
+} as const;
+export type GoalType = ObjectValues<typeof GOAL_TYPE>; 
+
+export const ROLES = {
   ADMIN: "admin",
   COACH: "coach",
   BASIC: "basic", 
 } as const;
-export type Role = (typeof roles)[keyof typeof roles];
+export type Role = ObjectValues<typeof ROLES>;
 
 export interface Module {
   id: number;
@@ -68,26 +73,22 @@ export type Understudy = {
   coach_id: number;
 };
 
-export type Message = {
+export type CreatedMessage = {
   content: string,
-  senderId: number,
-  recipientId: number
+  sender_id: number,
+  recipient_id: number
 };
 
-export interface ModuleCreatorProps {
-  accountId: number;
-  modalTitle: string;
-  open: boolean;
-  closeModal: () => void;
-}
+export type Message = CreatedMessage & {
+  id: number,
+  username: string,
+  date: string,
+  last_edited?: string,
+};
 
-export interface LongMenuProps {
-  id: number;
-  moduleName: string;
-  moduleDescription: string;
-  moduleCompletion: number;
-  editFunction: (module: Module) => void;
-  deleteFunction: (id: number) => void;
+export type Chat = {
+  sentMessages: Message[],
+  recipientMessages: Message[],
 }
 
 export interface GoalStepperProps {

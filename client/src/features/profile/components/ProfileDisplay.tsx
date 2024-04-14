@@ -25,7 +25,10 @@ export default function ProfileDisplay({profile}: ProfileDisplayProps) {
           }
     
           result.push(
-            <div className={`flex flex-row ${STYLE.defaultGap} justify-between text-start`}>
+            <div 
+                className={`flex flex-row ${STYLE.defaultGap} justify-between text-start`}
+                data-testid={`${key}-div`}
+            >
                 <p>{`${startCase(key)}:`}</p>
                 <p>{value ? value : ""}</p>
             </div>

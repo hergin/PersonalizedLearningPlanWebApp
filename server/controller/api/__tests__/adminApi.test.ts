@@ -1,12 +1,12 @@
 import AdminApi from "../adminApi";
-import AdminParser from "../../../parser/adminParser";
+import DatabaseParser from "../../../parser/databaseParser";
 import { FAKE_ERRORS } from "../../global/mockValues";
-import { StatusCode } from "../../../types";
+import { STATUS_CODE, Role } from "../../../types";
 
-jest.mock("../../../parser/adminParser");
+jest.mock("../../../parser/databaseParser");
 
 const mockAccountId = 0;
-const mockRole = "coach";
+const mockRole: Role = "coach";
 const mockUserData = {
     id: mockAccountId,
     email: "testdummy@outlook.com",
@@ -15,11 +15,11 @@ const mockUserData = {
 };
 
 describe("Admin Api", () => {
-    const api = new AdminApi();
+    const adminApi = new AdminApi();
     var parser: any;
-    
+
     beforeEach(() => {
-        parser = new AdminParser();
+        parser = new DatabaseParser();
     });
 
     afterEach(() => {
@@ -27,50 +27,62 @@ describe("Admin Api", () => {
     });
 
     it("Get All User Data (normal case)", async () => {
-        parser.parseAllUserData.mockResolvedValueOnce([mockUserData]);
-        const result = await api.getAllUserData();
-        expect(parser.parseAllUserData).toHaveBeenCalledTimes(1);
-        expect(parser.parseAllUserData).toHaveBeenCalledWith();
+        parser.parseDatabase.mockResolvedValueOnce([mockUserData]);
+        const result = await adminApi.getAllUserData();
+        expect(parser.parseDatabase).toHaveBeenCalledTimes(1);
+        expect(parser.parseDatabase).toHaveBeenCalledWith("SELECT * FROM USER_DATA");
         expect(result).toEqual([mockUserData]);
     });
 
     it("Get All User Data (error case)", async () => {
-        parser.parseAllUserData.mockRejectedValue(FAKE_ERRORS.networkError);
-        const result = await api.getAllUserData();
-        expect(parser.parseAllUserData).toHaveBeenCalledTimes(1);
-        expect(parser.parseAllUserData).toHaveBeenCalledWith();
-        expect(result).toEqual(StatusCode.CONNECTION_ERROR);
+        parser.parseDatabase.mockRejectedValue(FAKE_ERRORS.networkError);
+        const result = await adminApi.getAllUserData();
+        expect(parser.parseDatabase).toHaveBeenCalledTimes(1);
+        expect(parser.parseDatabase).toHaveBeenCalledWith("SELECT * FROM USER_DATA");
+        expect(result).toEqual(STATUS_CODE.CONNECTION_ERROR);
     });
 
     it("Get User Data (normal case)", async () => {
-        parser.parseUserData.mockResolvedValueOnce([mockUserData]);
-        const result = await api.getUserData(mockAccountId);
-        expect(parser.parseUserData).toHaveBeenCalledTimes(1);
-        expect(parser.parseUserData).toHaveBeenCalledWith(mockAccountId);
+        parser.parseDatabase.mockResolvedValueOnce([mockUserData]);
+        const result = await adminApi.getUserData(mockAccountId);
+        expect(parser.parseDatabase).toHaveBeenCalledTimes(1);
+        expect(parser.parseDatabase).toHaveBeenCalledWith({
+            text: "SELECT * FROM USER_DATA WHERE id = $1",
+            values: [mockAccountId]
+        });
         expect(result).toEqual([mockUserData]);
     });
 
     it("Get User Data (error case)", async () => {
-        parser.parseUserData.mockRejectedValue(FAKE_ERRORS.fatalServerError);
-        const result = await api.getUserData(mockAccountId);
-        expect(parser.parseUserData).toHaveBeenCalledTimes(1);
-        expect(parser.parseUserData).toHaveBeenCalledWith(mockAccountId);
-        expect(result).toEqual(StatusCode.INTERNAL_SERVER_ERROR);
+        parser.parseDatabase.mockRejectedValue(FAKE_ERRORS.fatalServerError);
+        const result = await adminApi.getUserData(mockAccountId);
+        expect(parser.parseDatabase).toHaveBeenCalledTimes(1);
+        expect(parser.parseDatabase).toHaveBeenCalledWith({
+            text: "SELECT * FROM USER_DATA WHERE id = $1",
+            values: [mockAccountId]
+        });
+        expect(result).toEqual(STATUS_CODE.INTERNAL_SERVER_ERROR);
     });
 
     it("Set Account To Coach (normal case)", async () => {
-        parser.setAccountAsRole.mockResolvedValueOnce({});
-        const result = await api.setAccountToRole(mockAccountId, mockRole);
-        expect(parser.setAccountAsRole).toHaveBeenCalledTimes(1);
-        expect(parser.setAccountAsRole).toHaveBeenCalledWith(mockAccountId, mockRole);
-        expect(result).toEqual(StatusCode.OK);
+        parser.updateDatabase.mockResolvedValueOnce({});
+        const result = await adminApi.setAccountToRole(mockAccountId, mockRole);
+        expect(parser.updateDatabase).toHaveBeenCalledTimes(1);
+        expect(parser.updateDatabase).toHaveBeenCalledWith({
+            text: "UPDATE ACCOUNT SET site_role = $1 WHERE id = $2",
+            values: [mockRole, mockAccountId]
+        });
+        expect(result).toEqual(STATUS_CODE.OK);
     });
 
     it("Set Account To Coach (error case)", async () => {
-        parser.setAccountAsRole.mockRejectedValue(FAKE_ERRORS.badRequest);
-        const result = await api.setAccountToRole(mockAccountId, mockRole);
-        expect(parser.setAccountAsRole).toHaveBeenCalledTimes(1);
-        expect(parser.setAccountAsRole).toHaveBeenCalledWith(mockAccountId, mockRole);
-        expect(result).toEqual(StatusCode.BAD_REQUEST);
+        parser.updateDatabase.mockRejectedValue(FAKE_ERRORS.badRequest);
+        const result = await adminApi.setAccountToRole(mockAccountId, mockRole);
+        expect(parser.updateDatabase).toHaveBeenCalledTimes(1);
+        expect(parser.updateDatabase).toHaveBeenCalledWith({
+            text: "UPDATE ACCOUNT SET site_role = $1 WHERE id = $2",
+            values: [mockRole, mockAccountId]
+        });
+        expect(result).toEqual(STATUS_CODE.BAD_REQUEST);
     });
 });

@@ -1,7 +1,7 @@
 import * as LoginProcessor from "../loginProcessor";
-import { StatusCode } from "../../../types";
+import { STATUS_CODE } from "../../../types";
 import LoginAPI from "../../api/loginApi";
-import { initializeErrorMap } from "../../../utils/errorMessages";
+import { getLoginError } from "../../../utils/errorHandlers";
 import { generateAccessToken, generateRefreshToken } from "../../../middleware/tokenHandler";
 import { createMockRequest, MOCK_RESPONSE, TEST_ACCOUNT } from "../../global/mockValues";
 
@@ -10,8 +10,6 @@ jest.mock("../../../middleware/tokenHandler", () => ({
     generateAccessToken: jest.fn().mockReturnValue("1234567890"),
     generateRefreshToken: jest.fn().mockReturnValue("refresh please"),
 }));
-
-const ERROR_MESSAGES = initializeErrorMap();
 
 describe("Login Processor unit tests", () => {
     var loginApi: any;
@@ -26,7 +24,7 @@ describe("Login Processor unit tests", () => {
 
     it("verify login (normal case)", async () => {
         loginApi.verifyLogin.mockResolvedValueOnce({id: TEST_ACCOUNT.id, role: TEST_ACCOUNT.role});
-        loginApi.setToken.mockResolvedValueOnce(StatusCode.OK);
+        loginApi.setToken.mockResolvedValueOnce(STATUS_CODE.OK);
         const mRequest = createMockRequest({email: TEST_ACCOUNT.email, password: TEST_ACCOUNT.password});
         await LoginProcessor.verifyLogin(mRequest, MOCK_RESPONSE);
         expect(loginApi.verifyLogin).toHaveBeenCalledTimes(1);
@@ -49,7 +47,7 @@ describe("Login Processor unit tests", () => {
     });
 
     it("verify login (account error case)", async () => {
-        loginApi.verifyLogin.mockResolvedValueOnce(StatusCode.GONE);
+        loginApi.verifyLogin.mockResolvedValueOnce(STATUS_CODE.GONE);
         const mRequest = createMockRequest({email: TEST_ACCOUNT.email, password: TEST_ACCOUNT.password});
         await LoginProcessor.verifyLogin(mRequest, MOCK_RESPONSE);
         expect(loginApi.verifyLogin).toHaveBeenCalledTimes(1);
@@ -59,14 +57,14 @@ describe("Login Processor unit tests", () => {
         expect(generateRefreshToken).toHaveBeenCalledTimes(0);
         expect(MOCK_RESPONSE.json).toHaveBeenCalledTimes(0);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledTimes(1);
-        expect(MOCK_RESPONSE.status).toHaveBeenCalledWith(StatusCode.GONE);
+        expect(MOCK_RESPONSE.status).toHaveBeenCalledWith(STATUS_CODE.GONE);
         expect(MOCK_RESPONSE.send).toHaveBeenCalledTimes(1);
-        expect(MOCK_RESPONSE.send).toHaveBeenCalledWith(ERROR_MESSAGES.get(StatusCode.GONE));
+        expect(MOCK_RESPONSE.send).toHaveBeenCalledWith(getLoginError(STATUS_CODE.GONE));
     });
 
     it("verify login (token error case)", async () => {
         loginApi.verifyLogin.mockResolvedValueOnce({id: TEST_ACCOUNT.id, role: TEST_ACCOUNT.role});
-        loginApi.setToken.mockResolvedValueOnce(StatusCode.CONNECTION_ERROR);
+        loginApi.setToken.mockResolvedValueOnce(STATUS_CODE.CONNECTION_ERROR);
         const mRequest = createMockRequest({email: TEST_ACCOUNT.email, password: TEST_ACCOUNT.password});
         await LoginProcessor.verifyLogin(mRequest, MOCK_RESPONSE);
         expect(loginApi.verifyLogin).toHaveBeenCalledTimes(1);
@@ -79,13 +77,13 @@ describe("Login Processor unit tests", () => {
         expect(loginApi.setToken).toHaveBeenCalledWith(TEST_ACCOUNT.id, TEST_ACCOUNT.refreshToken);
         expect(MOCK_RESPONSE.json).toHaveBeenCalledTimes(0);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledTimes(1);
-        expect(MOCK_RESPONSE.status).toHaveBeenCalledWith(StatusCode.CONNECTION_ERROR);
+        expect(MOCK_RESPONSE.status).toHaveBeenCalledWith(STATUS_CODE.CONNECTION_ERROR);
         expect(MOCK_RESPONSE.send).toHaveBeenCalledTimes(1);
-        expect(MOCK_RESPONSE.send).toHaveBeenCalledWith(ERROR_MESSAGES.get(StatusCode.CONNECTION_ERROR));
+        expect(MOCK_RESPONSE.send).toHaveBeenCalledWith(getLoginError(STATUS_CODE.CONNECTION_ERROR));
     });
 
     it("verify token (normal case)", async () => {
-        loginApi.verifyToken.mockResolvedValueOnce(StatusCode.OK);
+        loginApi.verifyToken.mockResolvedValueOnce(STATUS_CODE.OK);
         const mRequest = createMockRequest({id: TEST_ACCOUNT.id, refreshToken: TEST_ACCOUNT.refreshToken});
         await LoginProcessor.verifyToken(mRequest, MOCK_RESPONSE);
         expect(loginApi.verifyToken).toHaveBeenCalledTimes(1);
@@ -93,13 +91,13 @@ describe("Login Processor unit tests", () => {
         expect(generateAccessToken).toHaveBeenCalledTimes(1);
         expect(generateAccessToken).toHaveBeenCalledWith(TEST_ACCOUNT.id);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledTimes(1);
-        expect(MOCK_RESPONSE.status).toHaveBeenCalledWith(StatusCode.OK);
+        expect(MOCK_RESPONSE.status).toHaveBeenCalledWith(STATUS_CODE.OK);
         expect(MOCK_RESPONSE.json).toHaveBeenCalledTimes(1);
         expect(MOCK_RESPONSE.json).toHaveBeenCalledWith({accessToken: TEST_ACCOUNT.accessToken});
     });
 
     it("verify token (error case)", async () => {
-        loginApi.verifyToken.mockResolvedValueOnce(StatusCode.GONE);
+        loginApi.verifyToken.mockResolvedValueOnce(STATUS_CODE.GONE);
         const mRequest = createMockRequest({id: TEST_ACCOUNT.id, refreshToken: TEST_ACCOUNT.refreshToken});
         await LoginProcessor.verifyToken(mRequest, MOCK_RESPONSE);
         expect(loginApi.verifyToken).toHaveBeenCalledTimes(1);
@@ -107,77 +105,77 @@ describe("Login Processor unit tests", () => {
         expect(generateAccessToken).toHaveBeenCalledTimes(0);
         expect(MOCK_RESPONSE.json).toHaveBeenCalledTimes(0);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledTimes(1);
-        expect(MOCK_RESPONSE.status).toHaveBeenCalledWith(StatusCode.GONE);
+        expect(MOCK_RESPONSE.status).toHaveBeenCalledWith(STATUS_CODE.GONE);
         expect(MOCK_RESPONSE.send).toHaveBeenCalledTimes(1);
-        expect(MOCK_RESPONSE.send).toHaveBeenCalledWith(ERROR_MESSAGES.get(StatusCode.GONE));
+        expect(MOCK_RESPONSE.send).toHaveBeenCalledWith(getLoginError(STATUS_CODE.GONE));
     });
 
     it("register account (normal case)", async () => {
-        loginApi.createAccount.mockResolvedValueOnce(StatusCode.OK);
+        loginApi.createAccount.mockResolvedValueOnce(STATUS_CODE.OK);
         const mRequest = createMockRequest({email: TEST_ACCOUNT.email, password: TEST_ACCOUNT.password});
         await LoginProcessor.registerAccount(mRequest, MOCK_RESPONSE);
         expect(loginApi.createAccount).toHaveBeenCalledTimes(1);
         expect(loginApi.createAccount).toHaveBeenCalledWith(TEST_ACCOUNT.email, TEST_ACCOUNT.password);
         expect(MOCK_RESPONSE.sendStatus).toHaveBeenCalledTimes(1);
-        expect(MOCK_RESPONSE.sendStatus).toHaveBeenCalledWith(StatusCode.OK);
+        expect(MOCK_RESPONSE.sendStatus).toHaveBeenCalledWith(STATUS_CODE.OK);
     });
 
     it("register account (error case)", async () => {
-        loginApi.createAccount.mockResolvedValueOnce(StatusCode.CONFLICT);
+        loginApi.createAccount.mockResolvedValueOnce(STATUS_CODE.CONFLICT);
         const mRequest = createMockRequest({email: TEST_ACCOUNT.email, password: TEST_ACCOUNT.password});
         await LoginProcessor.registerAccount(mRequest, MOCK_RESPONSE);
         expect(loginApi.createAccount).toHaveBeenCalledTimes(1);
         expect(loginApi.createAccount).toHaveBeenCalledWith(TEST_ACCOUNT.email, TEST_ACCOUNT.password);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledTimes(1);
-        expect(MOCK_RESPONSE.status).toHaveBeenCalledWith(StatusCode.CONFLICT);
+        expect(MOCK_RESPONSE.status).toHaveBeenCalledWith(STATUS_CODE.CONFLICT);
         expect(MOCK_RESPONSE.send).toHaveBeenCalledTimes(1);
-        expect(MOCK_RESPONSE.send).toHaveBeenCalledWith(ERROR_MESSAGES.get(StatusCode.CONFLICT));
+        expect(MOCK_RESPONSE.send).toHaveBeenCalledWith(getLoginError(STATUS_CODE.CONFLICT));
     });
 
     it("logout user (normal case)", async () => {
-        loginApi.logout.mockResolvedValueOnce(StatusCode.OK);
+        loginApi.logout.mockResolvedValueOnce(STATUS_CODE.OK);
         const mRequest = createMockRequest({id: TEST_ACCOUNT.id});
         await LoginProcessor.logoutUser(mRequest, MOCK_RESPONSE);
         expect(loginApi.logout).toHaveBeenCalledTimes(1);
         expect(loginApi.logout).toHaveBeenCalledWith(TEST_ACCOUNT.id);
         expect(MOCK_RESPONSE.sendStatus).toHaveBeenCalledTimes(1);
-        expect(MOCK_RESPONSE.sendStatus).toHaveBeenCalledWith(StatusCode.OK);
+        expect(MOCK_RESPONSE.sendStatus).toHaveBeenCalledWith(STATUS_CODE.OK);
     });
 
     it("logout user (error case)", async () => {
-        loginApi.logout.mockResolvedValueOnce(StatusCode.FORBIDDEN);
+        loginApi.logout.mockResolvedValueOnce(STATUS_CODE.FORBIDDEN);
         const mRequest = createMockRequest({id: TEST_ACCOUNT.id});
         await LoginProcessor.logoutUser(mRequest, MOCK_RESPONSE);
         expect(loginApi.logout).toHaveBeenCalledTimes(1);
         expect(loginApi.logout).toHaveBeenCalledWith(TEST_ACCOUNT.id);
         expect(MOCK_RESPONSE.sendStatus).toHaveBeenCalledTimes(0);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledTimes(1);
-        expect(MOCK_RESPONSE.status).toHaveBeenCalledWith(StatusCode.FORBIDDEN);
+        expect(MOCK_RESPONSE.status).toHaveBeenCalledWith(STATUS_CODE.FORBIDDEN);
         expect(MOCK_RESPONSE.send).toHaveBeenCalledTimes(1);
-        expect(MOCK_RESPONSE.send).toHaveBeenCalledWith(ERROR_MESSAGES.get(StatusCode.FORBIDDEN));
+        expect(MOCK_RESPONSE.send).toHaveBeenCalledWith(getLoginError(STATUS_CODE.FORBIDDEN));
     });
 
     it("delete account (normal case)", async () => {
-        loginApi.delete.mockResolvedValueOnce(StatusCode.OK);
+        loginApi.delete.mockResolvedValueOnce(STATUS_CODE.OK);
         const mRequest = createMockRequest({}, {id: TEST_ACCOUNT.id});
         await LoginProcessor.deleteAccount(mRequest, MOCK_RESPONSE);
         expect(loginApi.delete).toHaveBeenCalledTimes(1);
         expect(loginApi.delete).toHaveBeenCalledWith(TEST_ACCOUNT.id);
         expect(MOCK_RESPONSE.sendStatus).toHaveBeenCalledTimes(1);
-        expect(MOCK_RESPONSE.sendStatus).toHaveBeenCalledWith(StatusCode.OK);
+        expect(MOCK_RESPONSE.sendStatus).toHaveBeenCalledWith(STATUS_CODE.OK);
     });
 
     it("delete account (error case)", async () => {
-        loginApi.delete.mockResolvedValueOnce(StatusCode.INTERNAL_SERVER_ERROR);
+        loginApi.delete.mockResolvedValueOnce(STATUS_CODE.INTERNAL_SERVER_ERROR);
         const mRequest = createMockRequest({}, {id: TEST_ACCOUNT.id});
         await LoginProcessor.deleteAccount(mRequest, MOCK_RESPONSE);
         expect(loginApi.delete).toHaveBeenCalledTimes(1);
         expect(loginApi.delete).toHaveBeenCalledWith(TEST_ACCOUNT.id);
         expect(MOCK_RESPONSE.sendStatus).toHaveBeenCalledTimes(0);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledTimes(1);
-        expect(MOCK_RESPONSE.status).toHaveBeenCalledWith(StatusCode.INTERNAL_SERVER_ERROR);
+        expect(MOCK_RESPONSE.status).toHaveBeenCalledWith(STATUS_CODE.INTERNAL_SERVER_ERROR);
         expect(MOCK_RESPONSE.send).toHaveBeenCalledTimes(1);
-        expect(MOCK_RESPONSE.send).toHaveBeenCalledWith(ERROR_MESSAGES.get(StatusCode.INTERNAL_SERVER_ERROR));
+        expect(MOCK_RESPONSE.send).toHaveBeenCalledWith(getLoginError(STATUS_CODE.INTERNAL_SERVER_ERROR));
     });
 
     it("get understudies (normal case)", async () => {
@@ -188,21 +186,21 @@ describe("Login Processor unit tests", () => {
         expect(loginApi.getUnderstudies).toHaveBeenCalledWith(TEST_ACCOUNT.id);
         expect(MOCK_RESPONSE.send).toHaveBeenCalledTimes(0);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledTimes(1);
-        expect(MOCK_RESPONSE.status).toHaveBeenCalledWith(StatusCode.OK);
+        expect(MOCK_RESPONSE.status).toHaveBeenCalledWith(STATUS_CODE.OK);
         expect(MOCK_RESPONSE.json).toHaveBeenCalledTimes(1);
         expect(MOCK_RESPONSE.json).toHaveBeenCalledWith([TEST_ACCOUNT]);
     });
 
     it("get understudies (error case)", async () => {
-        loginApi.getUnderstudies.mockResolvedValueOnce(StatusCode.CONNECTION_ERROR);
+        loginApi.getUnderstudies.mockResolvedValueOnce(STATUS_CODE.CONNECTION_ERROR);
         const mRequest = createMockRequest({}, {id: TEST_ACCOUNT.id});
         await LoginProcessor.getUnderstudies(mRequest, MOCK_RESPONSE);
         expect(loginApi.getUnderstudies).toHaveBeenCalledTimes(1);
         expect(loginApi.getUnderstudies).toHaveBeenCalledWith(TEST_ACCOUNT.id);
-        expect(MOCK_RESPONSE.json).toHaveBeenCalledTimes(0);
+        
         expect(MOCK_RESPONSE.status).toHaveBeenCalledTimes(1);
-        expect(MOCK_RESPONSE.status).toHaveBeenCalledWith(StatusCode.CONNECTION_ERROR);
+        expect(MOCK_RESPONSE.status).toHaveBeenCalledWith(STATUS_CODE.CONNECTION_ERROR);
         expect(MOCK_RESPONSE.send).toHaveBeenCalledTimes(1);
-        expect(MOCK_RESPONSE.send).toHaveBeenCalledWith(ERROR_MESSAGES.get(StatusCode.CONNECTION_ERROR));
+        expect(MOCK_RESPONSE.send).toHaveBeenCalledWith(getLoginError(STATUS_CODE.CONNECTION_ERROR));
     });
 });

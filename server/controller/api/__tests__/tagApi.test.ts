@@ -1,12 +1,12 @@
 import TagApi from "../tagApi";
-import { StatusCode } from "../../../types";
-import TagParser from "../../../parser/tagParser";
-jest.mock("../../../parser/tagParser");
+import { STATUS_CODE } from "../../../types";
+import DatabaseParser from "../../../parser/databaseParser";
 
-const TEST_DATA = {
+jest.mock("../../../parser/databaseParser");
+
+const TEST_TAG = {
     id: 1,
     name: "school",
-    color: "#0000FF",
     accountId: 1
 }
 
@@ -16,7 +16,7 @@ describe("Tag Api Unit Tests", () => {
 
     beforeEach(() => {
         api = new TagApi();
-        parser = new TagParser();
+        parser = new DatabaseParser();
     });
 
     afterEach(() => {
@@ -24,32 +24,38 @@ describe("Tag Api Unit Tests", () => {
     });
 
     it("get tags (normal case)", async () => {
-        parser.parseTags.mockResolvedValueOnce([{id: TEST_DATA.id, color: TEST_DATA.color, name: TEST_DATA.name}]);
-        const result = await api.getTags(TEST_DATA.accountId);
-        expect(parser.parseTags).toHaveBeenCalledTimes(1);
-        expect(parser.parseTags).toHaveBeenCalledWith(TEST_DATA.id);
-        expect(result).toEqual([
-            {
-                id: TEST_DATA.id,
-                name: TEST_DATA.name,
-                color: TEST_DATA.color
-            }
-        ]);
+        const parseDatabase = parser.parseDatabase as jest.Mock;
+        parseDatabase.mockResolvedValueOnce([TEST_TAG]);
+        const result = await api.getTags(TEST_TAG.accountId);
+        expect(parseDatabase).toHaveBeenCalledTimes(1);
+        expect(parseDatabase).toHaveBeenCalledWith({
+            text: "SELECT tag_id AS id, tag_name AS name, account_id FROM TAG WHERE account_id = $1",
+            values: [TEST_TAG.accountId]
+        });
+        expect(result).toEqual([TEST_TAG]);
     });
 
     it("store tag (normal case)", async () => {
-        parser.storeTag.mockResolvedValueOnce();
-        const result = await api.addTag(TEST_DATA.accountId, TEST_DATA.name, TEST_DATA.color);
-        expect(parser.storeTag).toHaveBeenCalledTimes(1);
-        expect(parser.storeTag).toHaveBeenCalledWith(TEST_DATA.name, TEST_DATA.color, TEST_DATA.accountId);
-        expect(result).toEqual(StatusCode.OK);
+        const updateDatabase = parser.updateDatabase as jest.Mock;
+        updateDatabase.mockResolvedValueOnce({});
+        const result = await api.addTag(TEST_TAG.accountId, TEST_TAG.name);
+        expect(parser.updateDatabase).toHaveBeenCalledTimes(1);
+        expect(parser.updateDatabase).toHaveBeenCalledWith({
+            text: "INSERT INTO TAG(tag_name, account_id) VALUES ($1, $2)",
+            values: [TEST_TAG.name, TEST_TAG.accountId]
+        });
+        expect(result).toEqual(STATUS_CODE.OK);
     });
 
     it("Delete tag (normal case)", async () => {
-        parser.deleteTag.mockResolvedValueOnce();
-        const result = await api.deleteTag(TEST_DATA.id);
-        expect(parser.deleteTag).toHaveBeenCalledTimes(1);
-        expect(parser.deleteTag).toHaveBeenCalledWith(TEST_DATA.id);
-        expect(result).toEqual(StatusCode.OK);
+        const updateDatabase = parser.updateDatabase as jest.Mock;
+        updateDatabase.mockResolvedValueOnce({});
+        const result = await api.deleteTag(TEST_TAG.id);
+        expect(updateDatabase).toHaveBeenCalledTimes(1);
+        expect(updateDatabase).toHaveBeenCalledWith({
+            text: "DELETE FROM TAG WHERE tag_id = $1",
+            values: [TEST_TAG.id]
+        });
+        expect(result).toEqual(STATUS_CODE.OK);
     });
 });

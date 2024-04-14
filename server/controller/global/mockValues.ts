@@ -1,4 +1,4 @@
-import { Profile, GoalType, Module, Goal, Role } from "../../types";
+import { Profile, GOAL_TYPE, Module } from "../../types";
 
 export const FAKE_ERRORS = {
     badRequest: {code: '23514'},
@@ -29,7 +29,12 @@ export const MOCK_RESPONSE : any = {
 export function createMockRequest(body: any, params?: any): any {
     return {
         body: body,
-        params: params
+        params: params,
+        app: {
+            get: jest.fn().mockImplementation(() => ({
+                emit: jest.fn(),
+            })),
+        }
     };
 }
 
@@ -47,7 +52,6 @@ export const TEST_PROFILE: Profile = {
     username: "Xx_testdummy_xX",
     firstName: "Test",
     lastName: "Dummy",
-    profilePicture: "",
     jobTitle: "Construction Dummy",
     bio: "I'm a dummy..."
 }
@@ -84,7 +88,7 @@ export const TEST_GOAL = {
     name: ["Study for coding test", "do Homework", "Do project"],
     description: ["I need to pass the coding test to graduate!", "spend 3 hours a day on homework", "Finish my project."],
     isComplete: false,
-    goalType: GoalType.ONCE,
+    goalType: GOAL_TYPE.ONCE,
     moduleId: TEST_MODULE.id,
     tagId: TEST_TAG.id,
     dueDate: "2025-01-01T23:59:59.000Z",
@@ -98,7 +102,7 @@ export const TEST_SUB_GOAL = {
     name: ["Complete this quiz", "Sub Goal", "Another Sub Goal"],
     description: ["Take this quiz can get all the questions correct", "This is a sub goal", "This is another sub goal."],
     isComplete: false,
-    goalType: GoalType.DAILY,
+    goalType: GOAL_TYPE.DAILY,
     moduleId: TEST_MODULE.id,
     tagId: TEST_TAG.id,
     dueDate: new Date(Date.now() + (24 * 3600)).toISOString(),

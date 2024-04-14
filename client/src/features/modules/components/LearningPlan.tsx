@@ -7,7 +7,7 @@ import { useAuth } from "../../../context/AuthContext";
 import { emptyUser, Understudy } from "../../../types";
 import ProfilePicture from "../../../components/ProfilePicture";
 
-const TABPANEL_STYLE = "p-[2%] h-screen bg-[#F1F1F1]";
+const TABPANEL_STYLE = "p-[2%] h-[590px]";
 
 export default function LearningPlan() {
   const { user, setUser } = useAuth();
@@ -69,7 +69,6 @@ export default function LearningPlan() {
           style={TABPANEL_STYLE}
         >
         </TabPanel>
-        
       ))}
     </div>
   );

@@ -17,7 +17,7 @@ export default function DropDownCheckbox({checked, leftIcon, rightIcon, handleCh
                 className="size-10"
                 checked={checked}
                 onChange={(event) => handleCheckToggle(event.target.checked)}
-                color="secondary"
+                color="primary"
             />
             <p data-testid="text" className={"truncate"}>{children}</p>
             {rightIcon && <span className="icon-button">{rightIcon}</span>}

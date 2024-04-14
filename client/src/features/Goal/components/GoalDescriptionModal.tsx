@@ -21,9 +21,7 @@ const GoalDescriptionModal = ({ goal, onClose, open }: Props) => {
         <div>
           <h1 className="font-headlineFont text-5xl">{goal.name}</h1>
         </div>
-
         <div className="bg-[#F1F1F1] w-full h-auto rounded border border-solid border-[lightgrey] p-1 ">
-        
           <p>{goal.description}</p>
         </div>
       </div>

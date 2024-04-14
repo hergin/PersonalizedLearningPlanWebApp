@@ -1,7 +1,7 @@
 import GoalParser from '../goalParser';
 import { Pool } from 'pg';
 import { generateInsertQuery, generateUpdateQuery } from '../../utils/queryGenerator';
-import { Goal, GoalType, Query } from '../../types';
+import { Goal, GOAL_TYPE, Query } from '../../types';
 
 jest.mock("pg");
 jest.mock("../../utils/queryGenerator");
@@ -17,17 +17,17 @@ const TEST_DATES = {
 
 const TEST_GOAL: Goal[] = [
     {
-        name: "Complete this quiz", 
+        name: "Complete this quiz",
         description: "This is a quiz that I need to complete.",
         is_complete: false,
-        goal_type: GoalType.ONCE,
+        goal_type: GOAL_TYPE.ONCE,
         module_id: mockModuleId,
     },
     {
         name: "Homework",
         description: "Complete my homework today.",
         is_complete: false,
-        goal_type: GoalType.ONCE,
+        goal_type: GOAL_TYPE.ONCE,
         module_id: mockModuleId,
         due_date: TEST_DATES.dueDate,
     },
@@ -35,7 +35,7 @@ const TEST_GOAL: Goal[] = [
         name: "Sub Goal",
         description: "This is a sub goal",
         is_complete: false,
-        goal_type: GoalType.ONCE,
+        goal_type: GOAL_TYPE.ONCE,
         module_id: mockModuleId,
         tag_id: mockTagId,
     },
@@ -43,7 +43,7 @@ const TEST_GOAL: Goal[] = [
         name: "Sub Goal 2",
         description: "This is another sub goal",
         is_complete: false,
-        goal_type: GoalType.ONCE,
+        goal_type: GOAL_TYPE.ONCE,
         module_id: mockModuleId,
         tag_id: mockTagId,
         due_date: TEST_DATES.dueDate,
@@ -66,7 +66,7 @@ describe('goal parser tests', () => {
     afterEach(async () => {
         jest.clearAllMocks();
     });
-    
+
     it('store goal', async () => {
         const mockGoal: Goal = {...TEST_GOAL[0]};
         const mockInsertQuery: Query = {
@@ -200,7 +200,7 @@ describe('goal parser tests', () => {
         const result = await parser.parseAccountsWithUpcomingDueDates();
         expect(mockQuery).toHaveBeenCalledTimes(1);
         expect(mockQuery).toHaveBeenCalledWith(`
-            SELECT g.goal_id as id, g.name as goal, p.username as username, a.email as email, g.due_date as due_date 
+            SELECT g.goal_id as id, g.name as goal, p.username as username, a.email as email, g.due_date as due_date
             FROM GOAL g JOIN MODULE m USING (module_id) JOIN ACCOUNT a ON a.id = m.account_id JOIN PROFILE p ON a.id = p.account_id JOIN ACCOUNT_SETTINGS s ON s.account_id = a.id
             WHERE g.due_date IS NOT NULL AND g.is_complete IS FALSE AND s.receive_emails IS TRUE AND g.due_date <= (CURRENT_TIMESTAMP + INTERVAL '24 hours') AND g.due_date > CURRENT_TIMESTAMP;
         `);

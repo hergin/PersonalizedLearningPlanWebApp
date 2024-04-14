@@ -15,7 +15,7 @@ SELECT a.id as account_id, p.profile_id as profile_id, p.username as username, a
 FROM ACCOUNT a JOIN PROFILE p ON a.id = p.account_id;
 
 CREATE OR REPLACE VIEW MESSAGE_DATA AS
-SELECT m.id as id, m.content as content, m.date as date, m.last_edited as last_edited, m.recipient_id as recipient_id, m.sender_id as sender_id, p.username as username, p.profile_picture as profile_picture
+SELECT m.id as id, m.content as content, m.date as date, m.last_edited as last_edited, m.recipient_id as recipient_id, m.sender_id as sender_id, p.username as username
 FROM MESSAGE m JOIN ACCOUNT a ON a.id = m.sender_id JOIN PROFILE p ON a.id = p.account_id;
 
 CREATE OR REPLACE VIEW USER_DATA AS

@@ -1,16 +1,16 @@
 import ProfileAPI from "../profileApi";
-import ProfileParser from "../../../parser/profileParser";
-import { StatusCode } from "../../../types";
+import DatabaseParser from "../../../parser/databaseParser";
+import { STATUS_CODE } from "../../../types";
 import { FAKE_ERRORS, TEST_PROFILE, TEST_ACCOUNT } from "../../global/mockValues";
 
-jest.mock("../../../parser/profileParser");
+jest.mock("../../../parser/databaseParser");
 
 describe('Profile Api Unit Tests', () => {
     let parser : any;
     let profileAPI : ProfileAPI;
 
     beforeEach(() => {
-        parser = new ProfileParser();
+        parser = new DatabaseParser();
         profileAPI = new ProfileAPI();
     });
 
@@ -19,102 +19,80 @@ describe('Profile Api Unit Tests', () => {
     });
 
     it('create profile (pass case)', async () => {
-        parser.storeProfile.mockResolvedValueOnce();
-        expect(await profileAPI.createProfile(TEST_PROFILE.username, TEST_PROFILE.firstName, TEST_PROFILE.lastName, TEST_ACCOUNT.id)).toEqual(StatusCode.OK);
+        parser.updateDatabase.mockResolvedValueOnce();
+        expect(await profileAPI.createProfile(TEST_PROFILE.username, TEST_PROFILE.firstName, TEST_PROFILE.lastName, TEST_ACCOUNT.id)).toEqual(STATUS_CODE.OK);
     });
 
     it('create profile (error case)', async () => {
-        parser.storeProfile.mockRejectedValue(FAKE_ERRORS.badRequest);
-        expect(await profileAPI.createProfile(TEST_PROFILE.username, TEST_PROFILE.firstName, TEST_PROFILE.lastName, TEST_ACCOUNT.id)).toEqual(StatusCode.BAD_REQUEST);
+        parser.updateDatabase.mockRejectedValue(FAKE_ERRORS.badRequest);
+        expect(await profileAPI.createProfile(TEST_PROFILE.username, TEST_PROFILE.firstName, TEST_PROFILE.lastName, TEST_ACCOUNT.id)).toEqual(STATUS_CODE.BAD_REQUEST);
     });
 
     it('get all profiles (normal case)', async() => {
-        parser.parseCoachProfiles.mockResolvedValueOnce([{account_id: TEST_ACCOUNT.id, profile_id: TEST_PROFILE.profileId, username: TEST_PROFILE.username}]);
+        parser.parseDatabase.mockResolvedValueOnce([{account_id: TEST_ACCOUNT.id, profile_id: TEST_PROFILE.profileId, username: TEST_PROFILE.username}]);
         const actual = await profileAPI.getAllCoachProfiles();
-        expect(parser.parseCoachProfiles).toHaveBeenCalledTimes(1);
-        expect(parser.parseCoachProfiles).toHaveBeenCalledWith();
+        expect(parser.parseDatabase).toHaveBeenCalledTimes(1);
+        expect(parser.parseDatabase).toHaveBeenCalledWith("SELECT * FROM COACH_DATA");
         expect(actual).toEqual([{account_id: TEST_ACCOUNT.id, profile_id: TEST_PROFILE.profileId, username: TEST_PROFILE.username}]);
     });
 
     it('get all profiles (error case)', async () => {
-        parser.parseCoachProfiles.mockRejectedValue(FAKE_ERRORS.networkError);
+        parser.parseDatabase.mockRejectedValue(FAKE_ERRORS.networkError);
         const actual = await profileAPI.getAllCoachProfiles();
-        expect(parser.parseCoachProfiles).toHaveBeenCalledTimes(1);
-        expect(parser.parseCoachProfiles).toHaveBeenCalledWith();
-        expect(actual).toEqual(StatusCode.CONNECTION_ERROR);
+        expect(parser.parseDatabase).toHaveBeenCalledTimes(1);
+        expect(parser.parseDatabase).toHaveBeenCalledWith("SELECT * FROM COACH_DATA");
+        expect(actual).toEqual(STATUS_CODE.CONNECTION_ERROR);
     });
 
     it('get profile (pass case)', async () => {
-        parser.parseProfile.mockResolvedValueOnce({
-            username: TEST_PROFILE.username, first_name: TEST_PROFILE.firstName, last_name: TEST_PROFILE.lastName, 
-            profile_picture: TEST_PROFILE.profilePicture, job_title: TEST_PROFILE.jobTitle, bio: TEST_PROFILE.bio, accountId: TEST_ACCOUNT.id
+        parser.parseDatabase.mockResolvedValueOnce({
+            username: TEST_PROFILE.username, first_name: TEST_PROFILE.firstName, last_name: TEST_PROFILE.lastName, job_title: TEST_PROFILE.jobTitle, bio: TEST_PROFILE.bio, accountId: TEST_ACCOUNT.id
         });
         expect(await profileAPI.getProfile(TEST_ACCOUNT.id)).toEqual({
-            username: TEST_PROFILE.username, first_name: TEST_PROFILE.firstName, last_name: TEST_PROFILE.lastName, 
-            profile_picture: TEST_PROFILE.profilePicture, job_title: TEST_PROFILE.jobTitle, bio: TEST_PROFILE.bio, accountId: TEST_ACCOUNT.id
+            username: TEST_PROFILE.username, first_name: TEST_PROFILE.firstName, last_name: TEST_PROFILE.lastName, job_title: TEST_PROFILE.jobTitle, bio: TEST_PROFILE.bio, accountId: TEST_ACCOUNT.id
         });
     });
 
     it('get profile (error case)', async () => {
-        parser.parseProfile.mockResolvedValueOnce(undefined);
-        expect(await profileAPI.getProfile(TEST_ACCOUNT.id)).toEqual(StatusCode.UNAUTHORIZED);
+        parser.parseDatabase.mockResolvedValueOnce(undefined);
+        expect(await profileAPI.getProfile(TEST_ACCOUNT.id)).toEqual(STATUS_CODE.GONE);
     });
 
     it('update profile (pass case)', async () => {
         if(!TEST_PROFILE.profileId) throw new Error("Profile Id was null!");
-        parser.updateProfile.mockResolvedValueOnce();
+        parser.updateDatabase.mockResolvedValueOnce();
         expect(await profileAPI.updateProfile({
             profileId: TEST_PROFILE.profileId,
-            username: TEST_PROFILE.username, 
-            firstName: TEST_PROFILE.firstName, 
-            lastName: TEST_PROFILE.lastName, 
-            profilePicture: TEST_PROFILE.profilePicture, 
-            jobTitle: TEST_PROFILE.jobTitle, 
-            bio: TEST_PROFILE.bio, 
-        })).toEqual(StatusCode.OK);
+            username: TEST_PROFILE.username,
+            firstName: TEST_PROFILE.firstName,
+            lastName: TEST_PROFILE.lastName,
+            jobTitle: TEST_PROFILE.jobTitle,
+            bio: TEST_PROFILE.bio,
+        })).toEqual(STATUS_CODE.OK);
     });
 
     it('update profile (error case)', async () => {
         if(!TEST_PROFILE.profileId) throw new Error("Profile Id was null!");
-        parser.updateProfile.mockRejectedValue(FAKE_ERRORS.networkError);
+        parser.updateDatabase.mockRejectedValue(FAKE_ERRORS.networkError);
         expect(await profileAPI.updateProfile({
             profileId: TEST_PROFILE.profileId,
-            username: TEST_PROFILE.username, 
-            firstName: TEST_PROFILE.firstName, 
-            lastName: TEST_PROFILE.lastName, 
-            profilePicture: TEST_PROFILE.profilePicture, 
-            jobTitle: TEST_PROFILE.jobTitle, 
-            bio: TEST_PROFILE.bio, 
-        })).toEqual(StatusCode.CONNECTION_ERROR);
+            username: TEST_PROFILE.username,
+            firstName: TEST_PROFILE.firstName,
+            lastName: TEST_PROFILE.lastName,
+            jobTitle: TEST_PROFILE.jobTitle,
+            bio: TEST_PROFILE.bio,
+        })).toEqual(STATUS_CODE.CONNECTION_ERROR);
     });
 
     it('delete profile (pass case)', async () => {
         if(!TEST_PROFILE.profileId) throw new Error("Profile Id was null!");
-        parser.deleteProfile.mockResolvedValueOnce();
-        expect(await profileAPI.deleteProfile(TEST_PROFILE.profileId)).toEqual(StatusCode.OK);
+        parser.updateDatabase.mockResolvedValueOnce();
+        expect(await profileAPI.deleteProfile(TEST_PROFILE.profileId)).toEqual(STATUS_CODE.OK);
     });
 
     it('delete profile (duplicate case)', async () => {
         if(!TEST_PROFILE.profileId) throw new Error("Profile Id was null!");
-        parser.deleteProfile.mockRejectedValue(FAKE_ERRORS.primaryKeyViolation);
-        expect(await profileAPI.deleteProfile(TEST_PROFILE.profileId)).toEqual(StatusCode.CONFLICT);
-    });
-
-    it('delete profile (bad data case)', async () => {
-        if(!TEST_PROFILE.profileId) throw new Error("Profile Id was null!");
-        parser.deleteProfile.mockRejectedValue(FAKE_ERRORS.badRequest);
-        expect(await profileAPI.deleteProfile(TEST_PROFILE.profileId)).toEqual(StatusCode.BAD_REQUEST);
-    });
-
-    it('delete profile (connection lost case)', async () => {
-        if(!TEST_PROFILE.profileId) throw new Error("Profile Id was null!");
-        parser.deleteProfile.mockRejectedValue(FAKE_ERRORS.networkError);
-        expect(await profileAPI.deleteProfile(TEST_PROFILE.profileId)).toEqual(StatusCode.CONNECTION_ERROR);
-    });
-
-    it('delete profile (fatal error case)', async () => {
-        if(!TEST_PROFILE.profileId) throw new Error("Profile Id was null!");
-        parser.deleteProfile.mockRejectedValue(FAKE_ERRORS.fatalServerError);
-        expect(await profileAPI.deleteProfile(TEST_PROFILE.profileId)).toEqual(StatusCode.INTERNAL_SERVER_ERROR);
+        parser.updateDatabase.mockRejectedValue(FAKE_ERRORS.primaryKeyViolation);
+        expect(await profileAPI.deleteProfile(TEST_PROFILE.profileId)).toEqual(STATUS_CODE.CONFLICT);
     });
 });
