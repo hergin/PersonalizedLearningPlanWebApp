@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { ProfileApi } from "../api/profile-api";
+import ProfileApi from "../api/profile-api";
 import { CreateProfileProps, Profile } from "../../../types";
 
 export function useProfile(accountId: number) {
@@ -7,10 +7,10 @@ export function useProfile(accountId: number) {
   return useQuery({ queryFn: () => FetchProfile(accountId), queryKey: ["profile", accountId] });
 }
 
-export function useAllProfiles() {
-  const { FetchAllProfiles } = ProfileApi();
+export function useCoachProfiles() {
+  const { fetchCoaches } = ProfileApi();
   return useQuery({
-    queryFn: () => FetchAllProfiles(),
+    queryFn: () => fetchCoaches(),
     queryKey: ["profile"]
   });
 }

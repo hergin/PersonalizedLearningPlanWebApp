@@ -1,25 +1,25 @@
-import { ApiClient } from "../../../hooks/ApiClient";
-import { AxiosError } from "axios";
+import { useApiConnection } from "../../../hooks/useApiConnection";
+import { throwServerError } from "../../../utils/errorHandlers";
 import { Goal, CreateGoalProps, CreateSubGoalProps } from "../../../types";
+import { isCreatedSubGoal } from "../../../utils/typeGuards";
 
 export const GoalApi = () => {
-  const { get, post, put, del } = ApiClient();
+  const { get, post, put, del } = useApiConnection();
   
   async function fetchGoals(moduleId: number) {
     try {
       return await get(`/goal/get/module/${moduleId}`);
     } catch (error: unknown) {
-      console.error(error);
-      alert((error as AxiosError).message ? (error as AxiosError).message : error);
+      throwServerError(error);
     }
   }
 
   async function createGoal(goal: CreateGoalProps | CreateSubGoalProps) {
+    const endOfPath = isCreatedSubGoal(goal) ? `/${goal.parentId}` : "";
     try {
-      await post(`/goal/add${(goal as CreateSubGoalProps).parentId ? `/${(goal as CreateSubGoalProps).parentId}`: ""}`, goal)
+      await post(`/goal/add${endOfPath}`, goal)
     } catch (error: unknown) {
-      console.error(error);
-      alert((error as AxiosError).message ? (error as AxiosError).message : error);
+      throwServerError(error);
     }
   }
 
@@ -27,26 +27,23 @@ export const GoalApi = () => {
     try {
       await put(`/goal/update/${goal.goal_id}`, goal);
     } catch (error: unknown) {
-      console.error(error);
-      alert((error as AxiosError).message ? (error as AxiosError).message : error);
+      throwServerError(error);
     }
   }
 
   async function updateGoalFeedback(id: number, feedback: string) {
     try {
-      await put(`goal/update/feedback/${id}`, {feedback: feedback});
+      await put(`/goal/update/feedback/${id}`, {feedback: feedback});
     } catch (error: unknown) {
-      console.error(error);
-      alert((error as AxiosError).message ? (error as AxiosError).message : error);
+      throwServerError(error);
     }
   }
 
   async function deleteGoal(id: number) {
     try {
-      await del(`goal/delete/${id}`);
+      await del(`/goal/delete/${id}`);
     } catch (error: unknown) {
-      console.error(error);
-      alert((error as AxiosError).message ? (error as AxiosError).message : error);
+      throwServerError(error);
     }
   }
   

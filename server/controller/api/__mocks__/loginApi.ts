@@ -4,6 +4,7 @@ export const mockSetToken = jest.fn();
 export const mockVerifyToken = jest.fn();
 export const mockLogout = jest.fn();
 export const mockDelete = jest.fn();
+export const mockGetEmailById = jest.fn();
 export const mockGetUnderstudies = jest.fn();
 
 const mock = jest.fn().mockImplementation(() => {
@@ -14,6 +15,7 @@ const mock = jest.fn().mockImplementation(() => {
         verifyToken: mockVerifyToken,
         logout: mockLogout,
         delete: mockDelete,
+        getEmailById: mockGetEmailById,
         getUnderstudies: mockGetUnderstudies,
     }
 });

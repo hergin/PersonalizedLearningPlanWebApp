@@ -1,31 +1,31 @@
 import SettingsApi from "../api/settingsApi";
-import { AccountSettings, StatusCode } from "../../types";
-import { initializeErrorMap} from "../../utils/errorMessages";
+import { Settings, STATUS_CODE } from "../../types";
+import { getLoginError } from "../../utils/errorHandlers";
 import { Request, Response } from "express";
+import { isStatusCode } from "../../utils/typeGuards";
 
 const settingsApi = new SettingsApi();
-const ERROR_MESSAGES = initializeErrorMap();
 
 async function getSettings(req: Request, res: Response) {
     console.log(`Id received in get account settings: ${req.params.id}`);
     const settingQuery = await settingsApi.getSettings(Number(req.params.id));
-    if(settingQuery as StatusCode in StatusCode) {
+    if(isStatusCode(settingQuery)) {
         console.log(`Failed to get settings with status code ${settingQuery}`);
-        res.status(settingQuery as StatusCode).send(ERROR_MESSAGES.get(settingQuery as StatusCode));
+        res.status(settingQuery).send(getLoginError(settingQuery));
         return;
     }
-    res.status(StatusCode.OK).json(settingQuery as AccountSettings[]);
+    res.status(STATUS_CODE.OK).json(settingQuery as Settings[]);
 }
 
 async function updateSettings(req: Request, res: Response) {
     console.log(`Id received in update account settings: ${req.params.id}`);
-    const resultingStatusCode : StatusCode = await settingsApi.updateSettings(Number(req.params.id), req.body);
-    if(resultingStatusCode !== StatusCode.OK) {
+    const resultingStatusCode = await settingsApi.updateSettings(Number(req.params.id), {...req.body});
+    if(resultingStatusCode !== STATUS_CODE.OK) {
         console.log(`Something went wrong when updating settings for account ${req.params.id}`);
-        res.status(resultingStatusCode).send(ERROR_MESSAGES.get(resultingStatusCode));
+        res.status(resultingStatusCode).send(getLoginError(resultingStatusCode));
         return;
     }
-    res.sendStatus(StatusCode.OK);
+    res.sendStatus(STATUS_CODE.OK);
 }
 
 export {getSettings, updateSettings};

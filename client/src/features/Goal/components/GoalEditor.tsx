@@ -9,30 +9,32 @@ import {
   TextField,
   Menu,
   MenuItem,
-  IconButton
+  IconButton,
 } from "@mui/material";
 import { useHotKeys } from "../../../hooks/useHotKeys";
-import { Goal, GoalType } from "../../../types";
+import { Goal, GOAL_TYPE } from "../../../types";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 import { useGoalUpdater, useGoalRemover } from "../hooks/useGoals";
+import FeedbackModal from "./FeedbackModal";
 
 interface GoalEditorProps {
-  goal: Goal,
+  goal: Goal;
 }
 
-export default function GoalEditor({goal}: GoalEditorProps) {
+export default function GoalEditor({ goal }: GoalEditorProps) {
+  const [openModal, setOpenModal] = useState(false);
   const [anchorElGoal, setAnchorElGoal] = useState<Element | null>(null);
   const [updatedGoal, setGoal] = useState<Goal>(goal);
-  const [openModal, setOpenModal] = useState(false);
+  const [openMenu, setOpenMenu] = useState(false);
   const { mutateAsync: updateGoal } = useGoalUpdater(goal.module_id);
   const { mutateAsync: deleteGoal } = useGoalRemover(goal.module_id);
   const { handleEnterPress } = useHotKeys();
   const open = Boolean(anchorElGoal);
 
-  const handleOpenModal = () => {
-    setOpenModal(true);
+  const handleOpenMenu = () => {
+    setOpenMenu(true);
     setAnchorElGoal(null); // Close the menu when the modal opens
   };
 
@@ -41,7 +43,7 @@ export default function GoalEditor({goal}: GoalEditorProps) {
   };
 
   const handleCloseModal = () => {
-    setOpenModal(false);
+    setOpenMenu(false);
   };
 
   async function handleUpdateGoal() {
@@ -52,6 +54,16 @@ export default function GoalEditor({goal}: GoalEditorProps) {
   async function handleDeleteGoal() {
     await deleteGoal(goal.goal_id);
     handleClose();
+  }
+
+  function handleFeedback() {
+    setOpenModal(true);
+    console.log("feedback");
+    handleClose();
+  }
+
+  function handleModalClose() {
+    setOpenModal(false);
   }
 
   return (
@@ -75,20 +87,31 @@ export default function GoalEditor({goal}: GoalEditorProps) {
         open={open}
         onClose={handleClose}
       >
-        <MenuItem key={"edit"} onClick={handleOpenModal}>
+        <MenuItem key={"edit"} onClick={handleOpenMenu}>
           Edit
+        </MenuItem>
+        <MenuItem key={"feedback"} onClick={handleFeedback}>
+          Feedback
         </MenuItem>
         <MenuItem key={"delete"} onClick={handleDeleteGoal}>
           Delete
         </MenuItem>
       </Menu>
+      <FeedbackModal
+        open={openModal}
+        onClose={handleModalClose}
+        goal_id={goal.goal_id}
+        feedbackGoal={goal.feedback}
+      />
       <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <Dialog open={openModal} onClose={handleCloseModal}>
+        <Dialog open={openMenu} onClose={handleCloseModal}>
           <DialogTitle>Edit Object</DialogTitle>
           <DialogContent>
             <TextField
               value={updatedGoal.name}
-              onChange={(e) => setGoal({...updatedGoal, name: e.target.value})}
+              onChange={(e) =>
+                setGoal({ ...updatedGoal, name: e.target.value })
+              }
               onKeyDown={(event) => {
                 handleEnterPress(event, handleUpdateGoal);
               }}
@@ -97,7 +120,9 @@ export default function GoalEditor({goal}: GoalEditorProps) {
             />
             <TextField
               value={updatedGoal.description}
-              onChange={(e) => setGoal({...updatedGoal, description: e.target.value})}
+              onChange={(e) =>
+                setGoal({ ...updatedGoal, description: e.target.value })
+              }
               onKeyDown={(event) => {
                 handleEnterPress(event, handleUpdateGoal);
               }}
@@ -109,15 +134,25 @@ export default function GoalEditor({goal}: GoalEditorProps) {
               <div className="flex flex-row justify-center items-center">
                 <p className="font-headlineFont text-xl">Daily</p>
                 <Checkbox
-                  checked={updatedGoal.goal_type === GoalType.REPEATABLE}
-                  onChange={(event) => setGoal({...goal, goal_type: event.target.checked ? GoalType.REPEATABLE : GoalType.TASK})}
+                  checked={updatedGoal.goal_type === GOAL_TYPE.DAILY}
+                  onChange={(event) =>
+                    setGoal({
+                      ...goal,
+                      goal_type: event.target.checked
+                        ? GOAL_TYPE.DAILY
+                        : GOAL_TYPE.ONCE,
+                    })
+                  }
                 />
               </div>
               <DatePicker
                 label="Due Date"
                 value={dayjs(updatedGoal.due_date)}
                 onChange={(newDueDate) =>
-                  setGoal({...updatedGoal, due_date: dayjs(newDueDate).format("MM/DD/YYYY")})
+                  setGoal({
+                    ...updatedGoal,
+                    due_date: dayjs(newDueDate).format("MM/DD/YYYY"),
+                  })
                 }
               />
             </div>

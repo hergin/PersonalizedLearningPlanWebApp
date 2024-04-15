@@ -1,7 +1,19 @@
-export enum GoalType {
-  TASK = "todo",
-  REPEATABLE = "daily",
-}
+type ObjectValues<T> = T[keyof T];
+
+export const GOAL_TYPE = {
+  ONCE: "todo",
+  DAILY: "daily",
+  WEEKLY: "weekly",
+  MONTHLY: "monthly"
+} as const;
+export type GoalType = ObjectValues<typeof GOAL_TYPE>;
+
+export const ROLES = {
+  ADMIN: "admin",
+  COACH: "coach",
+  BASIC: "basic",
+} as const;
+export type Role = ObjectValues<typeof ROLES>;
 
 export interface Module {
   id: number;
@@ -26,18 +38,19 @@ export interface Goal {
 
 export interface User {
   id: number;
+  role: Role;
   accessToken: string;
   refreshToken: string;
 }
 
 export type Profile = {
-  id: number;
+  [key: string]: number | string;
+  id: number,
   username: string;
   firstName: string;
   lastName: string;
-  profilePicture: string;
-  jobTitle?: string;
-  bio?: string;
+  jobTitle: string;
+  bio: string;
 };
 
 export type Settings = {
@@ -59,55 +72,37 @@ export type Understudy = {
   coach_id: number;
 };
 
-export interface ModuleCreatorProps {
-  accountId: number;
-  modalTitle: string;
-  open: boolean;
-  closeModal: () => void;
-}
+export type CreatedMessage = {
+  content: string,
+  sender_id: number,
+  recipient_id: number
+};
 
-export interface LongMenuProps {
-  id: number;
-  moduleName: string;
-  moduleDescription: string;
-  moduleCompletion: number;
-  editFunction: (module: Module) => void;
-  deleteFunction: (id: number) => void;
-}
+export type Message = CreatedMessage & {
+  id: number,
+  username: string,
+  date: string
+};
 
-export interface GoalStepperProps {
-  moduleID: number;
-  steps: Goal[];
-  addGoal: (goal: Goal) => void;
-  editGoal: (goal: Goal) => void;
-  deleteGoal: (id: number) => void;
-  restGoalProgress: () => void;
-  addGoalProgress: () => void;
-}
-
-export interface GoalHeaderProps {
-  moduleID: string;
-}
-
-export interface CreateProfileProps {
+export type CreateProfileProps = {
   username: string;
   firstName: string;
   lastName: string;
   account_id: number;
 }
 
-export interface CreateInvitationProps {
+export type CreateInvitationProps = {
   senderId: number;
   recipientId: number;
 }
 
-export interface CreateModuleProps {
+export type CreateModuleProps = {
   module_name: string;
   description: string;
   account_id: number;
 }
 
-export interface CreateGoalProps {
+export type CreateGoalProps = {
   name: string;
   description: string;
   goalType: GoalType;
@@ -117,7 +112,7 @@ export interface CreateGoalProps {
   tagId?: number | null;
 }
 
-export interface CreateSubGoalProps extends CreateGoalProps {
+export type CreateSubGoalProps = CreateGoalProps & {
   parentId: number;
 }
 
@@ -126,16 +121,20 @@ export interface UpdateFeedbackProps {
   feedback: string;
 }
 
-export const emptyUser: User = { id: -1, accessToken: "", refreshToken: "" };
-export const emptyProfile: Profile = {
-  id: -1,
-  username: "",
-  firstName: "",
-  lastName: "",
-  profilePicture: "",
-  jobTitle: "",
-  bio: "",
-};
+export interface LoginProps {
+  email: string,
+  password: string
+}
+
+export interface RegisterProps {
+  firstName: string,
+  lastName: string,
+  username: string,
+  email: string,
+  password: string
+}
+
+export const emptyUser: User = { id: -1, role: "basic", accessToken: "", refreshToken: "" };
 export const defaultSettings = {
   receiveEmails: true,
   allowCoachInvitations: true,

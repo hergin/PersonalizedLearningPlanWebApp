@@ -7,7 +7,7 @@ import { useAuth } from "../../../context/AuthContext";
 import { emptyUser, Understudy } from "../../../types";
 import ProfilePicture from "../../../components/ProfilePicture";
 
-const TABPANEL_STYLE = "p-[2%] h-screen bg-[#F1F1F1]";
+const TABPANEL_STYLE = "p-[2%] h-[590px]";
 
 export default function LearningPlan() {
   const { user, setUser } = useAuth();
@@ -15,9 +15,9 @@ export default function LearningPlan() {
   const [currentTabIndex, setCurrentTabIndex] = useState(user.id);
 
   useEffect(() => {
-    `Default screen: ${sessionStorage.getItem("user")}`;
     const currentUser: string | null = sessionStorage.getItem("user");
     setUser(currentUser ? JSON.parse(currentUser) : emptyUser);
+    document.title = 'Personalized Learning Plan | Goals';
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -59,13 +59,13 @@ export default function LearningPlan() {
           />
         ))}
       </Tabs>
-      <TabPanel value={currentTabIndex} index={user.id} style={TABPANEL_STYLE}>
+      <TabPanel selectedValue={currentTabIndex} index={user.id} style={TABPANEL_STYLE}>
         <ModuleComponent accountId={user.id} />
       </TabPanel>
       {understudyData?.map((understudy: Understudy) => (
         <TabPanel
           key={`PANEL_KEY-${understudy.account_id}`}
-          value={currentTabIndex}
+          selectedValue={currentTabIndex}
           index={understudy.account_id}
           style={TABPANEL_STYLE}
         >

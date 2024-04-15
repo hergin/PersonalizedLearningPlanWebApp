@@ -41,26 +41,24 @@ export default class InvitationParser extends DatabaseParser {
         const query = {
             text: "INSERT INTO INVITATION(sender_id, recipient_id) VALUES($1, $2)",
             values: [senderId, recipientId]
-        }
+        };
         await this.updateDatabase(query);
     }
 
     async acceptInvite(inviteId: number, senderId: number, recipientId: number) {
-        const updateCoachQuery = {
+        await this.updateDatabase({
             text: "UPDATE ACCOUNT SET coach_id = $1 WHERE id = $2",
             values: [recipientId, senderId]
-        }
-        await this.updateDatabase(updateCoachQuery);
+        });
         return await this.deleteInvite(inviteId);
     }
 
     async deleteInvite(inviteId: number) {
-        const deleteQuery = {
+        const inviteData = await this.getInviteWithId(inviteId);
+        await this.updateDatabase({
             text: "DELETE FROM INVITATION WHERE id = $1",
             values: [inviteId]
-        };
-        const inviteData = await this.getInviteWithId(inviteId);
-        await this.updateDatabase(deleteQuery);
+        });
         return inviteData;
     }
 }

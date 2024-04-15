@@ -1,12 +1,29 @@
+DROP TYPE IF EXISTS SITE_ROLE CASCADE;
+CREATE TYPE SITE_ROLE AS ENUM ('admin', 'coach', 'basic');
+
 DROP TABLE IF EXISTS ACCOUNT CASCADE;
 CREATE TABLE ACCOUNT(
     id SERIAL PRIMARY KEY,
-    email TEXT UNIQUE NOT NULL,
+    email VARCHAR(300) UNIQUE NOT NULL,
     account_password TEXT NOT NULL,
     refresh_token TEXT,
     coach_id INT,
+    site_role SITE_ROLE DEFAULT 'basic',
     CONSTRAINT valid_email 
     CHECK (email ~* '^[A-Za-z0-9._%-]+@[A-Za-z0-9.-]+[.][A-Za-z]+$')
+);
+
+DROP TABLE IF EXISTS PROFILE CASCADE;
+CREATE TABLE PROFILE(
+    profile_id SERIAL PRIMARY KEY,
+    username VARCHAR(50) NOT NULL,
+    first_name VARCHAR(50) NOT NULL,
+    last_name VARCHAR(50) NOT NULL,
+    job_title VARCHAR(50),
+    bio VARCHAR(500),
+    account_id INT UNIQUE NOT NULL,
+    FOREIGN KEY (account_id) REFERENCES ACCOUNT(id)
+        ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 DROP TABLE IF EXISTS ACCOUNT_SETTINGS CASCADE;
@@ -14,7 +31,7 @@ CREATE TABLE ACCOUNT_SETTINGS(
     id SERIAL PRIMARY KEY,
     receive_emails BOOLEAN DEFAULT TRUE,
     allow_coach_invitations BOOLEAN DEFAULT TRUE,
-    account_id INT NOT NULL,
+    account_id INT UNIQUE NOT NULL,
     FOREIGN KEY (account_id) REFERENCES ACCOUNT(id)
         ON DELETE CASCADE ON UPDATE CASCADE
 );
@@ -22,24 +39,7 @@ CREATE TABLE ACCOUNT_SETTINGS(
 DROP TABLE IF EXISTS TAG CASCADE;
 CREATE TABLE TAG(
     tag_id SERIAL PRIMARY KEY,
-    tag_name TEXT,
-    color VARCHAR(7),
-    account_id INT,
-    FOREIGN KEY (account_id) REFERENCES ACCOUNT(id)
-        ON DELETE CASCADE ON UPDATE CASCADE,
-    CONSTRAINT valid_hex_code
-    CHECK (color IS NULL OR COLOR ~* '^#[a-f0-9]{2}[a-f0-9]{2}[a-f0-9]{2}$')
-);
-
-DROP TABLE IF EXISTS PROFILE CASCADE;
-CREATE TABLE PROFILE(
-    profile_id SERIAL PRIMARY KEY,
-    username TEXT NOT NULL,
-    first_name TEXT NOT NULL,
-    last_name TEXT NOT NULL,
-    profile_picture TEXT,
-    job_title TEXT,
-    bio TEXT,
+    tag_name TEXT NOT NULL,
     account_id INT NOT NULL,
     FOREIGN KEY (account_id) REFERENCES ACCOUNT(id)
         ON DELETE CASCADE ON UPDATE CASCADE
@@ -50,23 +50,23 @@ CREATE TABLE MODULE(
     module_id SERIAL PRIMARY KEY,
     module_name TEXT,
     description TEXT,
-    completion_percent INT,
-    account_id INT,
-    coach_id INT,
+    completion_percent INT DEFAULT 100,
+    account_id INT NOT NULL,
     FOREIGN KEY (account_id) REFERENCES ACCOUNT(id)
         ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-DROP TABLE IF EXISTS GOAL CASCADE;
 DROP TYPE IF EXISTS GOAL_TYPE CASCADE;
-CREATE TYPE GOAL_TYPE AS ENUM ('todo', 'daily');
+CREATE TYPE GOAL_TYPE AS ENUM ('todo', 'daily', 'weekly', 'monthly', 'yearly');
+
+DROP TABLE IF EXISTS GOAL CASCADE;
 CREATE TABLE GOAL(
     goal_id SERIAL PRIMARY KEY,
-    name TEXT,
-    description TEXT,
+    name TEXT NOT NULL,
+    description TEXT NOT NULL,
     goal_type GOAL_TYPE NOT NULL,
-    is_complete BOOLEAN,
-    module_id INT,
+    is_complete BOOLEAN DEFAULT 'false',
+    module_id INT NOT NULL,
     due_date TIMESTAMP WITH TIME ZONE,
     completion_time TIMESTAMP WITH TIME ZONE,
     expiration TIMESTAMP WITH TIME ZONE,
@@ -79,26 +79,30 @@ CREATE TABLE GOAL(
         ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-DROP TABLE IF EXISTS DASHBOARD CASCADE;
-CREATE TABLE DASHBOARD(
-    dashboard_id SERIAL PRIMARY KEY,
-    profile_id INT NOT NULL,
-    FOREIGN KEY (profile_id) REFERENCES PROFILE(profile_id)
-        ON DELETE CASCADE ON UPDATE CASCADE
-);
-
 DROP TABLE IF EXISTS INVITATION CASCADE;
 CREATE TABLE INVITATION(
     id SERIAL PRIMARY KEY,
-    recipient_id INT,
-    sender_id INT,
+    recipient_id INT NOT NULL,
+    sender_id INT NOT NULL,
     FOREIGN KEY (recipient_id) REFERENCES ACCOUNT(id)
         ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY (sender_id) REFERENCES ACCOUNT(id)
         ON DELETE CASCADE ON UPDATE CASCADE
 );
 
--- This will eliminate the possibility that an id from these tables will match a status code.
-ALTER SEQUENCE IF EXISTS ACCOUNT_id_seq RESTART WITH 600;
-ALTER SEQUENCE IF EXISTS MODULE_module_id_seq RESTART WITH 600;
-ALTER SEQUENCE IF EXISTS GOAL_goal_id_seq RESTART WITH 600;
+DROP TABLE IF EXISTS MESSAGE CASCADE;
+CREATE TABLE MESSAGE(
+    id SERIAL PRIMARY KEY,
+    content TEXT,
+    date TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    last_edited TIMESTAMP WITH TIME ZONE,
+    recipient_id INT NOT NULL,
+    sender_id INT NOT NULL,
+    FOREIGN KEY (recipient_id) REFERENCES ACCOUNT(id)
+        ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (sender_id) REFERENCES ACCOUNT(id)
+        ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+-- This will eliminate the possibility that the account id will match a status code and cause issues.
+ALTER SEQUENCE IF EXISTS ACCOUNT_id_seq RESTART WITH 1000;

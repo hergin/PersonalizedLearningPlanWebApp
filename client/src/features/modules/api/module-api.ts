@@ -1,16 +1,15 @@
-import { ApiClient } from "../../../hooks/ApiClient";
-import { AxiosError } from "axios";
+import { useApiConnection } from "../../../hooks/useApiConnection";
+import { throwServerError } from "../../../utils/errorHandlers";
 import { CreateModuleProps, Module } from "../../../types";
 
 export const ModuleApi = () => {
-  const { get, post, put, del } = ApiClient();
+  const { get, post, put, del } = useApiConnection();
 
   async function fetchModules(userId: number) {
     try {
       return await get(`/module/get/${userId}`);
     } catch (error: unknown) {
-      console.error(error);
-      alert((error as AxiosError).message ? (error as AxiosError).message : error);
+      throwServerError(error);
     }
   }
 
@@ -23,8 +22,7 @@ export const ModuleApi = () => {
         accountId: account_id,
       });
     } catch (error: unknown) {
-      console.error(error);
-      alert((error as AxiosError).message ? (error as AxiosError).message : error);
+      throwServerError(error);
     }
   }
 
@@ -36,8 +34,7 @@ export const ModuleApi = () => {
         completion: module.completion 
       });
     } catch (error: unknown) {
-      console.error(error);
-      alert((error as AxiosError).message ? (error as AxiosError).message : error);
+      throwServerError(error);
     }
   }
 
@@ -45,8 +42,7 @@ export const ModuleApi = () => {
     try {
       return await del(`/module/delete/${id}`);
     } catch (error: unknown) {
-      console.error(error);
-      alert((error as AxiosError).message ? (error as AxiosError).message : error);
+      throwServerError(error);
     }
   }
 

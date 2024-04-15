@@ -48,9 +48,7 @@ RETURNS SETOF GOAL_WITH_TAG AS $$
     BEGIN
         CALL update_is_complete();
         CALL update_module_completion();
-
-        RETURN QUERY SELECT * FROM GOAL_WITH_TAG
-                     WHERE module_id = get_goals.id;
+        RETURN QUERY SELECT * FROM GOAL_WITH_TAG WHERE module_id = get_goals.id;
     END;
 $$ LANGUAGE PLPGSQL;
 
@@ -64,42 +62,3 @@ RETURNS SETOF goal_with_tag AS $$
                      WHERE parent_goal = get_child_goals.id;
     END;
 $$ LANGUAGE PLPGSQL;
-
-CREATE OR REPLACE FUNCTION create_new_user()
-RETURNS TRIGGER AS $$
-    BEGIN
-        INSERT INTO ACCOUNT_SETTINGS(account_id) VALUES (NEW.id);
-        RETURN NEW;
-    END;
-$$ LANGUAGE PLPGSQL;
-
--- Automatically create the account settings row when an account is created.
-CREATE OR REPLACE TRIGGER trigger_create_new_user
-AFTER INSERT ON ACCOUNT FOR EACH ROW
-EXECUTE FUNCTION create_new_user();
-
-CREATE OR REPLACE FUNCTION create_new_profile()
-RETURNS TRIGGER AS $$
-    BEGIN
-        INSERT INTO DASHBOARD(profile_id) VALUES (NEW.profile_id);
-        RETURN NEW;
-    END;
-$$ LANGUAGE PLPGSQL;
-
--- When a profile is created, automatically create a new Dashboard for the newly created profile.
-CREATE OR REPLACE TRIGGER trigger_create_new_profile
-AFTER INSERT ON PROFILE FOR EACH ROW
-EXECUTE FUNCTION create_new_profile();
-
-CREATE OR REPLACE FUNCTION calculate_new_module_completion()
-RETURNS TRIGGER AS $$
-    BEGIN
-        CALL update_module_completion();
-        RETURN NEW;
-    END;
-$$ LANGUAGE PLPGSQL;
-
--- Automatically update module's completion percent when data is inserted or updated from Goal.
-CREATE OR REPLACE TRIGGER trigger_calculate_new_module_completion
-AFTER INSERT OR UPDATE OF is_complete OR DELETE ON GOAL FOR EACH ROW
-EXECUTE FUNCTION calculate_new_module_completion();

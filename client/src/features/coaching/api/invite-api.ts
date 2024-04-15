@@ -1,9 +1,9 @@
 import { AxiosError } from "axios";
-import { ApiClient } from "../../../hooks/ApiClient";
+import { useApiConnection } from "../../../hooks/useApiConnection";
 import { CreateInvitationProps } from "../types";
 
 export const InvitationApi = () => {
-  const { post, get } = ApiClient();
+  const { post, get } = useApiConnection();
 
   async function FetchInvitations(id: number) {
     try {
