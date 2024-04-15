@@ -3,7 +3,7 @@ import EmailService from "../../service/emailService";
 import { STATUS_CODE, SUBJECTS } from "../../types";
 import { getLoginError } from "../../utils/errorHandlers";
 import { Request, Response } from "express";
-import { isStatusCode } from "../../utils/typePredicates";
+import { isStatusCode } from "../../utils/typeGuards";
 
 const invitationApi = new InvitationApi();
 const emailService = new EmailService();

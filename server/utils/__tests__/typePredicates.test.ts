@@ -1,5 +1,5 @@
 import { STATUS_CODE, StatusCode } from "../../types";
-import { isStatusCode } from "../typePredicates";
+import { isStatusCode } from "../typeGuards";
 
 describe("Is Status Code Unit Tests", () => {
     it.each([

@@ -4,7 +4,7 @@ import { throwServerError } from "../../../utils/errorHandlers";
 
 const ProfileApi = () => {
   const { get, post, put } = useApiConnection();
-  
+
   async function FetchProfile(accountId: number) {
     try {
       const data = await get(`profile/get/${accountId}`);
@@ -33,14 +33,7 @@ const ProfileApi = () => {
 
   async function UpdateProfile(profile: Profile) {
     try {
-      await put(`profile/edit/${profile.id}`, {
-        username: profile.username,
-        firstName: profile.firstName,
-        lastName: profile.lastName,
-        profilePicture: profile.profilePicture,
-        jobTitle: profile.jobTitle,
-        bio: profile.bio
-      });
+      await put(`profile/edit/${profile.id}`, profile);
     } catch(error: unknown) {
       throwServerError(error);
     }

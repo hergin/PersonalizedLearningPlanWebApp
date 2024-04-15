@@ -49,7 +49,6 @@ export type Profile = {
   username: string;
   firstName: string;
   lastName: string;
-  profilePicture: string;
   jobTitle: string;
   bio: string;
 };
@@ -85,29 +84,25 @@ export type Message = CreatedMessage & {
   date: string
 };
 
-export interface GoalHeaderProps {
-  moduleID: string;
-}
-
-export interface CreateProfileProps {
+export type CreateProfileProps = {
   username: string;
   firstName: string;
   lastName: string;
   account_id: number;
 }
 
-export interface CreateInvitationProps {
+export type CreateInvitationProps = {
   senderId: number;
   recipientId: number;
 }
 
-export interface CreateModuleProps {
+export type CreateModuleProps = {
   module_name: string;
   description: string;
   account_id: number;
 }
 
-export interface CreateGoalProps {
+export type CreateGoalProps = {
   name: string;
   description: string;
   goalType: GoalType;
@@ -117,7 +112,7 @@ export interface CreateGoalProps {
   tagId?: number | null;
 }
 
-export interface CreateSubGoalProps extends CreateGoalProps {
+export type CreateSubGoalProps = CreateGoalProps & {
   parentId: number;
 }
 

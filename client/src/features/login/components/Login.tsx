@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useHotKeys } from "../../../hooks/useHotKeys";
-import { IconButton, InputAdornment, TextField } from "@mui/material";
+import { Button, IconButton, InputAdornment, TextField } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useLoginService } from "../hooks/useAccountServices";
 
@@ -27,8 +27,8 @@ const LoginScreen = () => {
   }
 
   return (
-    <div className="flex flex-col flex-1 justify-center items-center h-[80vh] bg-[#F1F1F1]">
-      <div className="flex flex-nowrap flex-col justify-center h-auto w-[300px] py-5 border border-solid border-[#DBDBDB]">
+    <div className="flex flex-col flex-1 justify-center items-center h-screen bg-[#F1F1F1]">
+      <div className="flex flex-nowrap flex-col justify-center w-[300px] py-5 border border-solid border-[#DBDBDB]">
         <div className="flex flex-col justify-center items-center h-24 w-full">
           <h1 className="text-5xl mb-2">Login</h1>
         </div>
@@ -66,13 +66,14 @@ const LoginScreen = () => {
             label="Password"
           />
 
-          <button
+          <Button
+            variant="contained"
             onClick={handleLogin}
-            className="h-10 border-1 border-solid border-gray-300 rounded px-2 text-base bg-element-base text-text-color hover:bg-[#820000] hover:cursor-pointer disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-element-base"
+            className="h-10"
             disabled={buttonDisabled}
           >
-            Login
-          </button>
+            Sign In
+          </Button>
         </div>
       </div>
       <div className="flex mt-2 flex-col justify-center items-center h-24 w-[300px] border border-solid border-[#DBDBDB]">

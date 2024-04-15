@@ -2,7 +2,7 @@ import SettingsApi from "../api/settingsApi";
 import { Settings, STATUS_CODE } from "../../types";
 import { getLoginError } from "../../utils/errorHandlers";
 import { Request, Response } from "express";
-import { isStatusCode } from "../../utils/typePredicates";
+import { isStatusCode } from "../../utils/typeGuards";
 
 const settingsApi = new SettingsApi();
 

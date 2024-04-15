@@ -39,12 +39,3 @@ app.listen(4000, () => {
     updateCompletionStatus.start();
     updateCompletionPercent.start();
 });
-const httpServer = createServer(app);
-const io = new Server(httpServer);
-app.set('io', io);
-
-io.of("/api/message").on("connection", socket => {
-    socket.on("send-message", (recipientId: number) => {
-        socket.broadcast.emit("new-message", {userId: recipientId});
-    });
-});

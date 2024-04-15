@@ -1,17 +1,9 @@
 import MessagingApi from "../api/messaging-api";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { CreatedMessage } from "../../../types";
-import { io } from "socket.io-client";
 
 export function useMessages(userId: number, recipientId: number) {
     const { getMessagesBetween } = MessagingApi();
-    /*
-        const queryClient = useQueryClient();
-        const socket = io("http://localhost:4000/api/message");
-        socket.on("new-message", () => {
-            queryClient.invalidateQueries({queryKey: ["message"]});
-        });
-    */
 
     return useQuery({
         queryFn: () => getMessagesBetween(userId, recipientId),

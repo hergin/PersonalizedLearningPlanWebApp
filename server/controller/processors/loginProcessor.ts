@@ -3,7 +3,7 @@ import { Request, Response } from "express";
 import { getLoginError } from "../../utils/errorHandlers";
 import { generateAccessToken, generateRefreshToken } from "../../middleware/tokenHandler";
 import { User, STATUS_CODE } from "../../types";
-import { isStatusCode } from "../../utils/typePredicates";
+import { isStatusCode } from "../../utils/typeGuards";
 
 const loginAPI = new LoginAPI();
 

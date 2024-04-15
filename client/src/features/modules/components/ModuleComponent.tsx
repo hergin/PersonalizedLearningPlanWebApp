@@ -15,7 +15,7 @@ const ModuleComponent = ({accountId}: ModuleComponentProps) => {
   const { mutateAsync: updateModule } = useModuleUpdater();
   const { mutateAsync: deleteModule } = useModuleRemover();
   const [ isCreateModalOpen, setIsCreateModalOpen ] = useState<boolean>(false);
-  
+
   if (isLoading) {
     return <div>Loading, please wait...</div>;
   }

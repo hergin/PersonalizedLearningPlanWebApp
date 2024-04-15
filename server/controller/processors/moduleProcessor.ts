@@ -2,7 +2,7 @@ import ModuleAPI from "../api/moduleApi";
 import { STATUS_CODE } from "../../types";
 import { getLoginError } from "../../utils/errorHandlers";
 import { Request, Response } from "express";
-import { isStatusCode } from "../../utils/typePredicates";
+import { isStatusCode } from "../../utils/typeGuards";
 
 const moduleAPI = new ModuleAPI();
 

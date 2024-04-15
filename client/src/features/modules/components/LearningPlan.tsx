@@ -68,6 +68,7 @@ export default function LearningPlan() {
           index={understudy.account_id}
           style={TABPANEL_STYLE}
         >
+          <ModuleComponent accountId={understudy.account_id} />
         </TabPanel>
       ))}
     </div>

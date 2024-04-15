@@ -1,6 +1,6 @@
+import React from "react";
 import { Checkbox } from "@mui/material";
 import GoalEditor from "./GoalEditor";
-import React, { useEffect, useState } from "react";
 import { Goal } from "../../../types";
 import dayjs from "dayjs";
 
@@ -15,38 +15,22 @@ export function SubGoalsCollapsable({
   sub_goal,
   updateGoal,
 }: GoalCreatorProps) {
-  const [progress, setProgress] = useState(0);
-
-  useEffect(() => {
-    if (sub_goal.is_complete) {
-      sub_goal.is_complete;
-      setProgress(1);
-      progress + "Is this";
-    } else {
-      sub_goal.is_complete;
-      setProgress(0);
-      progress + "Is this";
-    }
-  }, [sub_goal.is_complete, progress]);
-
   return (
     <>
       <div
         {...getCollapseProps()}
         className="flex flex-row rounded w-full h-[50px] border-2 border-solid border-[#F4F4F4] divide-x pl-2/5"
       >
-        <div className="flex flex-col w-2/5 h-full justify-center p-3 ">
+        <div className="flex flex-col w-2/5 h-full justify-center p-3">
           <p className="text-black text-lg font-bodyFont">{sub_goal.name}</p>
         </div>
         <div className="flex flex-col w-[15%] h-full justify-center p-3 items-center">
           <p className="text-black font-bodyFont">
-            {sub_goal.due_date
-              ? dayjs(sub_goal.due_date).format("MM/DD/YYYY")
-              : ""}
+            {sub_goal.due_date ? dayjs(sub_goal.due_date).format("MM/DD/YYYY") : ""}
           </p>
         </div>
         <div className="flex flex-col w-[15%] h-full justify-center p-3 items-center">
-          <p className="text-black">-</p>
+          <p className="text-black">{sub_goal.tag_name ?? ""}</p>
         </div>
         <div className="flex flex-col w-[15%] h-full justify-center p-3 items-center">
         </div>
