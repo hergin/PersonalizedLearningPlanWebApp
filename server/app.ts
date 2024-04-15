@@ -10,8 +10,6 @@ import { updateCompletionPercent } from "./cronJobs/moduleJobs";
 import tagRoute from "./routes/tagRoutes";
 import inviteRoutes from "./routes/inviteRoutes";
 import messageRoutes from "./routes/messageRoutes";
-import { createServer } from "http";
-import { Server } from "socket.io";
 import adminRoutes from "./routes/adminRoutes";
 
 const app = express();

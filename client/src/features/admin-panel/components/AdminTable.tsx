@@ -53,10 +53,6 @@ export default function FullFeaturedCrudGrid() {
     });
   };
 
-  const handleDeleteClick = (id: GridRowId) => () => {
-    setRows(rows.filter((row) => row.account_id !== id));
-  };
-
   const handleCancelClick = (id: GridRowId) => () => {
     setRowModesModel({
       ...rowModesModel,

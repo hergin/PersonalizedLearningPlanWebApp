@@ -45,7 +45,7 @@ export default function GoalItem({ id, goal }: GoalItemProps) {
               <p className="text-black font-bodyFont"></p>
             )}
           </div>
-          <div className="flex flex-col transition-transform w-[15%] h-full justify-center p-3 items-center">
+          <div className="flex flex-col transition-transform w-[15%] h-full justify-center p-3 items-center text-black">
               {goal.tag_name}
           </div>
           <div className="flex flex-col transition-transform w-[15%] h-full justify-center p-3 items-center">

@@ -42,8 +42,6 @@ export async function postMessage(req: Request, res: Response) {
         return;
     }
     res.sendStatus(STATUS_CODE.OK);
-    const io = req.app.get("io") as Server;
-    io.emit("send-message", {recipientId: req.body.recipientId});
 }
 
 export async function putMessage(req: Request, res: Response) {
