@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useProfile } from "../hooks/useProfile";
 import { useAuth } from "../../../context/AuthContext";
 import { Fab, Tooltip } from "@mui/material";
@@ -12,6 +12,10 @@ export default function ProfileScreen() {
   const [editMode, setEditMode] = useState<boolean>(false);
   const { user } = useAuth();
   const { data: profileData, isLoading, error } = useProfile(user.id);
+
+  useEffect(() => {
+    document.title = 'Personalized Learning Plan | Profile';
+  }, []);
 
   if (isLoading) {
     return <div>Loading...</div>;

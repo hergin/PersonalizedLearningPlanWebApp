@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useHotKeys } from "../../../hooks/useHotKeys";
 import { Button, IconButton, InputAdornment, TextField } from "@mui/material";
@@ -25,6 +25,10 @@ const LoginScreen = () => {
       location.state?.from ? navigate(location.state.from) : navigate("/LearningPlan");
     }
   }
+
+  useEffect(() => {
+    document.title = 'Personalized Learning Plan | Login';
+  }, []);
 
   return (
     <div className="flex flex-col flex-1 justify-center items-center h-screen bg-[#F1F1F1]">

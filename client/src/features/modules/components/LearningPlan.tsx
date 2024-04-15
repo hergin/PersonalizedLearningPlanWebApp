@@ -17,6 +17,7 @@ export default function LearningPlan() {
   useEffect(() => {
     const currentUser: string | null = sessionStorage.getItem("user");
     setUser(currentUser ? JSON.parse(currentUser) : emptyUser);
+    document.title = 'Personalized Learning Plan | Goals';
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

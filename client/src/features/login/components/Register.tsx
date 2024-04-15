@@ -1,4 +1,4 @@
-import React, { useState, useMemo, ReactElement } from "react";
+import React, { useState, useMemo, ReactElement, useEffect } from "react";
 import { TextField, Alert, Button } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import { useHotKeys } from "../../../hooks/useHotKeys";
@@ -22,11 +22,11 @@ export default function Register() {
   const navigate = useNavigate();
   const { handleEnterPress } = useHotKeys();
   const { mutateAsync: register, error } = useRegistrationService();
-  
+
   const isEmailValid = useMemo(() => {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(registerValues.email) || registerValues.email === "";
   }, [registerValues.email]);
-  
+
   const passwordErrors: ReactElement[] = useMemo<ReactElement[]>(() => {
     const password = registerValues.password;
     const result: ReactElement[] = [];
@@ -37,7 +37,7 @@ export default function Register() {
     }
     return result;
   }, [registerValues.password]);
-  
+
   const submitDisabled = useMemo<boolean>(() => {
     const result = false;
     for(const value of Object.values(registerValues)) {
@@ -45,7 +45,7 @@ export default function Register() {
     }
     return result || !isEmailValid || passwordErrors.length > 0;
   }, [registerValues, isEmailValid, passwordErrors.length]);
-  
+
   async function handleRegistration() {
     await register(registerValues);
     if(!error) {
@@ -155,7 +155,7 @@ export default function Register() {
               {passwordErrors}
             </Alert>
           )
-        }            
+        }
         <Button
           variant="contained"
           disabled={submitDisabled}
