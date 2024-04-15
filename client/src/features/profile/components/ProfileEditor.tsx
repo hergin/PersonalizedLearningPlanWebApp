@@ -37,16 +37,17 @@ export default function ProfileEditor({accountId, profile, open, onSave, onCance
             if(typeof value === "number" || noTextInput.includes(key)) {
                 continue;
             }
-            
+            console.log(value);
+
             result.push(
                 <TextBox
                     key={`ID-${key}`}
-                    name={key} 
+                    name={key}
                     value={value}
                     onEnterPress={(event: React.KeyboardEvent) => handleEnterPress(event, saveChanges, disabled)}
-                    onChange={(event: React.ChangeEvent) => {
+                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                         const editedProfile: Profile = {...newProfile};
-                        editedProfile[key] = (event.target as HTMLInputElement).value;
+                        editedProfile[key] = event.target.value;
                         setNewProfile(editedProfile);
                     }}
                     required={requiredFields.includes(key)}
@@ -70,11 +71,11 @@ export default function ProfileEditor({accountId, profile, open, onSave, onCance
                 <div className={`flex flex-col justify-around content-normal p-2.5 mx-10 my-7 gap-2.5 w-4/5`}>
                     {textBoxes}
                 </div>
-                <div className={"flex flex-row gap-5 justify-center"}> 
-                    <Button 
-                        variant="contained" 
-                        onClick={saveChanges} 
-                        size="large" 
+                <div className={"flex flex-row gap-5 justify-center"}>
+                    <Button
+                        variant="contained"
+                        onClick={saveChanges}
+                        size="large"
                         startIcon={<HiCheck />}
                         disabled={disabled}
                     >

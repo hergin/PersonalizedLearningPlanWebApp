@@ -20,21 +20,20 @@ export default function ProfileDisplay({profile}: ProfileDisplayProps) {
         const result: ReactElement[] = [];
         const nonDefaultElements: string[] = ["id", "username", "bio"];
         for(const [key, value] of Object.entries(profile)) {
-            console.log(value);
-          if(typeof value === "number" || nonDefaultElements.includes(key)) {
-            continue;
-          }
+            if(typeof value === "number" || nonDefaultElements.includes(key)) {
+                continue;
+            }
 
-          result.push(
-            <div
-                key={`ID-${key}`}
-                className={`flex flex-row ${STYLE.defaultGap} justify-between text-start`}
-                data-testid={`${key}-div`}
-            >
-                <p>{`${startCase(key)}:`}</p>
-                <p>{value ?? ""}</p>
-            </div>
-          );
+            result.push(
+                <div
+                    key={`ID-${key}`}
+                    className={`flex flex-row ${STYLE.defaultGap} justify-between text-start`}
+                    data-testid={`${key}-div`}
+                >
+                    <p>{`${startCase(key)}:`}</p>
+                    <p>{value ?? ""}</p>
+                </div>
+            );
         }
         return result;
       }, [profile]);
