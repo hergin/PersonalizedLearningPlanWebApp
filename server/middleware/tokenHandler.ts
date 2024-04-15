@@ -4,9 +4,7 @@ import { sign } from "jsonwebtoken";
 import { User } from "../types";
 import EnvError from "../utils/envError";
 
-dotenv.config({
-    path: join(__dirname, ".env")
-});
+dotenv.config({path: join(__dirname, ".env")});
 
 export function generateAccessToken(authProps: User): string {
     if(!process.env.ACCESS_TOKEN_SECRET) {

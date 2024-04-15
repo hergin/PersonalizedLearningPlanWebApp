@@ -27,6 +27,7 @@ export default class GoalAPI {
             }
             return parentGoals;
         } catch (error: unknown) {
+            console.error(error);
             return convertDatabaseErrorToStatusCode(error as DatabaseError);
         }
     }
@@ -41,6 +42,7 @@ export default class GoalAPI {
             });
             return STATUS_CODE.OK;
         } catch (error: unknown) {
+            console.error(error);
             return convertDatabaseErrorToStatusCode(error as DatabaseError)
         }
     }
@@ -62,6 +64,7 @@ export default class GoalAPI {
             await this.parser.updateGoal({...goal, due_date: dueDate, completion_time: completionTime, expiration: expiration});
             return STATUS_CODE.OK;
         } catch (error: unknown) {
+            console.error(error);
             return convertDatabaseErrorToStatusCode(error as DatabaseError);
         }
     }
@@ -75,6 +78,7 @@ export default class GoalAPI {
             await this.parser.updateGoalFeedback(goalId, feedback);
             return STATUS_CODE.OK;
         } catch (error: unknown) {
+            console.error(error);
             return convertDatabaseErrorToStatusCode(error as DatabaseError);
         }
     }
@@ -88,6 +92,7 @@ export default class GoalAPI {
             await this.parser.deleteGoal(goalId);
             return STATUS_CODE.OK;
         } catch (error: unknown) {
+            console.error(error);
             return convertDatabaseErrorToStatusCode(error as DatabaseError)
         }
     }
@@ -101,6 +106,7 @@ export default class GoalAPI {
             const result = await this.parser.parseGoalVariable(goalId, variable);
             return result;
         } catch (error: unknown) {
+            console.error(error);
             return convertDatabaseErrorToStatusCode(error as DatabaseError)
         }
     }

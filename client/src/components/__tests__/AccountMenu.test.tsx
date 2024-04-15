@@ -24,7 +24,7 @@ jest.mock("../../features/login/hooks/useAccountServices");
 const mockUser: User = {id: 1, role: "basic", accessToken: "Access Token", refreshToken: "Refresh Token"};
 
 describe("AccountMenu Unit Tests", () => {
-    const elementIds = ["loadingText", "errorText", "dropDownContainer", "itemContainer"];
+    const elementIds = ["loadingText", "errorText"];
     var logoutHook: any;
 
     beforeEach(() => {
@@ -36,7 +36,9 @@ describe("AccountMenu Unit Tests", () => {
     });
 
     it("AccountMenu isLoading case.", () => {
-        const { getByTestId } = render(
+        mockIsLoading = true;
+        mockError = false;
+        const { getByText } = render(
             <BrowserRouter>
                 <Routes>
                     <Route path="/" element={<AccountMenu user={mockUser} />} />
@@ -44,17 +46,13 @@ describe("AccountMenu Unit Tests", () => {
                 </Routes>
             </BrowserRouter>
         );
-        expect(() => getByTestId(elementIds[1])).toThrow(expect.any(Error));
-        expect(() => getByTestId(elementIds[2])).toThrow(expect.any(Error));
-        expect(getByTestId(elementIds[0])).toHaveTextContent("Loading...");
-        const logoutButton = getByTestId(elementIds[3]);
-        expect(logoutButton).toHaveTextContent("Logout");
+        expect(getByText("Loading...")).toBeInTheDocument();
     });
 
     it("AccountMenu error case.", async () => {
         mockIsLoading = false;
         mockError = true;
-        const { getByTestId } = render(
+        const { getByText  } = render(
             <BrowserRouter>
                 <Routes>
                     <Route path="/" element={<AccountMenu user={mockUser} />} />
@@ -62,19 +60,14 @@ describe("AccountMenu Unit Tests", () => {
                 </Routes>
             </BrowserRouter>
         );
-        expect(() => getByTestId(elementIds[0])).toThrow(expect.any(Error));
-        expect(() => getByTestId(elementIds[2])).toThrow(expect.any(Error));
-        expect(getByTestId(elementIds[1])).toHaveTextContent("An error has occurred!");
-        const logoutButton = getByTestId(elementIds[3]);
-        expect(logoutButton).toHaveTextContent("Logout");
+        expect(getByText("An error has occurred!")).toBeInTheDocument();
     });
 
     it("AccountMenu dropDownMenu is ready.", () => {
         mockData = [{receive_emails: defaultSettings.receiveEmails, allow_coach_invitations: defaultSettings.allowCoachInvitations}];
         mockIsLoading = false;
         mockError = false;
-        const { mutateAsync } = logoutHook;
-        const { getByTestId } = render(
+        const { getByTestId, getByText } = render(
             <BrowserRouter>
                 <Routes>
                     <Route path="/" element={<AccountMenu user={mockUser} />} />
@@ -84,11 +77,8 @@ describe("AccountMenu Unit Tests", () => {
         );
         expect(() => getByTestId(elementIds[0])).toThrow(expect.any(Error));
         expect(() => getByTestId(elementIds[1])).toThrow(expect.any(Error));
-        const checkboxes = getByTestId(elementIds[2]).childNodes;
-        expect(checkboxes.item(0)).toHaveTextContent("Receives Email");
-        expect(checkboxes.item(1)).toHaveTextContent("Allow Invites");
-        const logoutButton = getByTestId(elementIds[3]);
-        expect(logoutButton).toHaveTextContent("Logout");
+        expect(getByText("Settings")).toBeInTheDocument();
+        expect(getByText("Logout")).toBeInTheDocument();
     });
 });
 

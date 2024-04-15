@@ -6,12 +6,12 @@ export const GOAL_TYPE = {
   WEEKLY: "weekly",
   MONTHLY: "monthly"
 } as const;
-export type GoalType = ObjectValues<typeof GOAL_TYPE>; 
+export type GoalType = ObjectValues<typeof GOAL_TYPE>;
 
 export const ROLES = {
   ADMIN: "admin",
   COACH: "coach",
-  BASIC: "basic", 
+  BASIC: "basic",
 } as const;
 export type Role = ObjectValues<typeof ROLES>;
 
@@ -82,24 +82,8 @@ export type CreatedMessage = {
 export type Message = CreatedMessage & {
   id: number,
   username: string,
-  date: string,
-  last_edited?: string,
+  date: string
 };
-
-export type Chat = {
-  sentMessages: Message[],
-  recipientMessages: Message[],
-}
-
-export interface GoalStepperProps {
-  moduleID: number;
-  steps: Goal[];
-  addGoal: (goal: Goal) => void;
-  editGoal: (goal: Goal) => void;
-  deleteGoal: (id: number) => void;
-  restGoalProgress: () => void;
-  addGoalProgress: () => void;
-}
 
 export interface GoalHeaderProps {
   moduleID: string;

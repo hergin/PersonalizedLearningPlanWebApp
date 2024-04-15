@@ -1,7 +1,7 @@
 import { useApiConnection } from "../../../hooks/useApiConnection";
 import { throwServerError } from "../../../utils/errorHandlers";
 import { Goal, CreateGoalProps, CreateSubGoalProps } from "../../../types";
-import { isCreatedSubGoal } from "../../../utils/typePredicates";
+import { isCreatedSubGoal } from "../../../utils/typeGuards";
 
 export const GoalApi = () => {
   const { get, post, put, del } = useApiConnection();

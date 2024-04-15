@@ -9,7 +9,7 @@ import { CreateGoalProps, CreateSubGoalProps, GOAL_TYPE, Tag } from "../../../ty
 import { useTags } from "../../tags/hooks/useTags";
 import { useUser } from "../../login/hooks/useUser";
 import { useGoalCreator } from "../hooks/useGoals";
-import { isGoalType, isCreatedSubGoal } from "../../../utils/typePredicates";
+import { isGoalType, isCreatedSubGoal } from "../../../utils/typeGuards";
 
 interface GoalCreatorProps {
   moduleId: number,
@@ -49,7 +49,7 @@ function GoalCreator({ moduleId, parentGoalId }: GoalCreatorProps) {
       text: isSubGoal ? "text-lg" : "text-4xl",
       borderColor: isSubGoal ? "border-[#F4F4F4]" : "border-black"
     }
-    
+
     return (
       <button
         className={`flex flex-row transition-transform rounded w-full ${style.height} border-2 border-solid ${style.borderColor} justify-center items-center hover:scale-105`}
@@ -59,7 +59,7 @@ function GoalCreator({ moduleId, parentGoalId }: GoalCreatorProps) {
       </button>
     );
   }, [goal]);
-  
+
   async function handleCreation() {
     await createGoal(goal);
     setOpen(false);
@@ -111,7 +111,7 @@ function GoalCreator({ moduleId, parentGoalId }: GoalCreatorProps) {
               <div className="w-full flex flex-row justify-between items-center px-20 gap-6">
                 <div className="flex flex-col items-center w-4/12">
                   <InputLabel id="simple-select-label">Goal Frequency</InputLabel>
-                  <Select 
+                  <Select
                     value={goal.goalType}
                     onChange={(event) => {
                       const selectedType = event.target.value;
@@ -131,7 +131,7 @@ function GoalCreator({ moduleId, parentGoalId }: GoalCreatorProps) {
                     onChange={(event) => {setGoal({...goal, tagId: Number(event.target.value)})}}
                     fullWidth
                   >
-                    <MenuItem value="">
+                    <MenuItem value={undefined}>
                       <em>None</em>
                     </MenuItem>
                     {tags?.map((tag: Tag) => (

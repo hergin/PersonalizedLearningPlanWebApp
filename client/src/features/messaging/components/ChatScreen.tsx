@@ -3,23 +3,17 @@ import MessageInput from "./MessageInput";
 import MessageDisplay from "./MessageDisplay";
 import { useAuth } from "../../../context/AuthContext";
 import { useMessages } from "../hooks/useMessages";
-import { Message } from "../../../types";
+import { isMessageArray } from "../../../utils/typeGuards";
 import { useParams } from "react-router-dom";
 
 export default function ChatScreen() {
     const { user } = useAuth();
     const { id: recipientId } = useParams();
-    const { data, isLoading, error } = useMessages(user.id, Number(recipientId));
+    const { data: messages, isLoading, error } = useMessages(user.id, Number(recipientId));
 
     const messageElements = useMemo<ReactElement[]>(() => {
         const elements: ReactElement[] = [];
-        if(!isLoading && !error) {
-            let messages: Message[] = [];
-            messages = messages.concat(data.sentMessages);
-            messages = messages.concat(data.receivedMessages);
-            messages.sort((msg1, msg2) => {
-                return Date.parse(msg1.date) - Date.parse(msg2.date);
-            });
+        if(!isLoading && !error && isMessageArray(messages)) {
             messages.forEach(message => {
                 elements.push(
                     <MessageDisplay
@@ -33,8 +27,8 @@ export default function ChatScreen() {
             });
         }
         return elements;
-    }, [data, user.id, isLoading, error]  );
-    
+    }, [messages, user.id, isLoading, error]);
+
     if(isLoading) {
         return (<div>Loading, please wait...</div>);
     }

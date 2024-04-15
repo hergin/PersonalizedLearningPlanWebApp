@@ -25,7 +25,7 @@ jest.mock("react-router-dom", () => ({
 const mockUser = {id: 0};
 jest.mock("../../../../context/AuthContext", () => ({
     useAuth: () => ({
-        user: mockUser,  
+        user: mockUser,
     }),
 }));
 
@@ -38,7 +38,8 @@ const mockDates = [
     "2024-04-05 15:51:28.357242-04",
     "2024-04-05 15:51:28.357242-04"
 ];
-const mockSentMessages: Message[] = [
+
+const mockMessages = [
     {
         id: 0,
         content: "Hi, how are you?",
@@ -47,9 +48,6 @@ const mockSentMessages: Message[] = [
         username: mockUsernames[0],
         date: mockDates[0],
     },
-];
-
-const mockReceivedMessages: Message[] = [
     {
         id: 1,
         content: "I'm doing pretty well, how about you?",
@@ -60,21 +58,16 @@ const mockReceivedMessages: Message[] = [
     }
 ];
 
-const mockChat = {
-    receivedMessages: mockReceivedMessages,
-    sentMessages: mockSentMessages
-};
-
 describe("Chat Unit Tests", () => {
     var mockUseParams: jest.Mock<any, any, any>;
     var mockUseMessages: jest.Mock<any, any, any>;
-    
+
     beforeEach(() => {
         mockUseParams = useParams as jest.Mock;
         mockUseParams.mockReturnValue({id: mockRecipientId});
         mockUseMessages = useMessages as jest.Mock;
     });
-    
+
     afterEach(() => {
         cleanup();
         jest.clearAllMocks();
@@ -82,7 +75,7 @@ describe("Chat Unit Tests", () => {
 
     it("Renders normally.", () => {
         mockUseMessages.mockReturnValue({
-            data: mockChat,
+            data: mockMessages,
             isLoading: false,
             error: false
         });

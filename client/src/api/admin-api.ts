@@ -21,9 +21,9 @@ const AdminApi = () => {
   }
 
   async function setAccountAsRole(id: number, role: Role) {
-    // if(user.role !== "admin") {
-    //     return;
-    // }
+    if(user.role !== "admin") {
+      return;
+    }
 
     try {
       await put(`/admin/account/${id}/role`, { newRole: role });

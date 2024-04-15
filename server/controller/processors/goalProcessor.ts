@@ -21,18 +21,20 @@ async function getModuleGoals(req: Request, res: Response) {
 }
 
 async function postGoal(req: Request, res: Response) {
+    if(req.params.id) console.log(`Parent goal id: ${req.params.id}`);
+    console.log(`Received Goal: ${JSON.stringify(req.body)}`);
     const status = await goalAPI.createGoal({
         name: req.body.name,
         description: req.body.description,
         goal_type: req.body.goalType,
         is_complete: req.body.isComplete,
         module_id: req.body.moduleId,
-        tag_id: req.body.tagId,
-        due_date: req.body.dueDate,
+        tag_id: req.body.tagId ?? undefined,
+        due_date: req.body.dueDate ?? undefined,
         parent_goal: req.params.id ? Number(req.params.id) : undefined
     });
     if (status !== STATUS_CODE.OK) {
-        console.log("Something went wrong while creating module.");
+        console.log("Something went wrong while creating goal.");
         res.status(status).send(getLoginError(status));
         return;
     }

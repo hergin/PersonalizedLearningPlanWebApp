@@ -17,6 +17,7 @@ export function generateInsertQuery<T extends object>(object: T, table: Table): 
     beginningText = beginningText.slice(0, beginningText.length - 2).concat(") ");
     endingText = endingText.slice(0, endingText.length - 2).concat(")");
     const finalText = beginningText.concat(endingText);
+    console.log(`Generated query: ${finalText}`);
     return {text: finalText, values: values};
 }
 
@@ -36,5 +37,6 @@ export function generateUpdateQuery<T extends object>(object: T, table: Table, k
     });
     values.push(keyValue);
     const finalText = text.slice(0, text.length - 2).concat(` WHERE ${key} = $${values.length}`);
+    console.log(`Generated query: ${finalText}`);
     return {text: finalText, values: values};
 }
