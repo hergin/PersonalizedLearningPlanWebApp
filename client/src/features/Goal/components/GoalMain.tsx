@@ -7,6 +7,8 @@ import { Goal } from "../../../types";
 import { GoalListHeader } from "./GoalListHeader";
 import TagCreator from "../../tags/components/TagCreator";
 import { useUser } from "../../login/hooks/useUser";
+import Load from "../../../components/LoadScreen";
+import Error from "../../../components/ErrorScreen";
 
 const GoalParentContainer = () => {
   const { user } = useUser();
@@ -14,11 +16,11 @@ const GoalParentContainer = () => {
   const { data: goals, isLoading, error } = useGoals(Number(moduleId));
   
   if (isLoading) {
-    return <p className="text-black">Loading...</p>;
+    return <Load/>;
   }
 
   if (error) {
-    return <p className="text-black">Error</p>;
+    return <Error error={error}/>;
   }
 
   return (

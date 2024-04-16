@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useProfile } from "../hooks/useProfile";
 import { useAuth } from "../../../context/AuthContext";
-import { Fab, Tooltip } from "@mui/material";
+import { Fab, Tooltip, CircularProgress } from "@mui/material";
 import { HiOutlinePencil, HiTrash } from "react-icons/hi";
 import ProfileEditor from "./ProfileEditor";
 import AccountDeletionWarning from "./AccountDeletionWarning";
 import ProfileDisplay from "./ProfileDisplay";
+import useDocumentTitle from "../../../hooks/useTitle"
+import Load from "../../../components/LoadScreen";
+import Error from "../../../components/ErrorScreen";
 
 export default function ProfileScreen() {
   const [isWarningOpen, setIsWarningOpen] = useState<boolean>(false);
@@ -13,16 +16,14 @@ export default function ProfileScreen() {
   const { user } = useAuth();
   const { data: profileData, isLoading, error } = useProfile(user.id);
 
-  useEffect(() => {
-    document.title = 'Personalized Learning Plan | Profile';
-  }, []);
+  useDocumentTitle("Personalized Learning Plan | Profile");
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <Load/>;
   }
 
   if (error) {
-    return <div>An error has occurred!</div>;
+    return <Error error={error}/>;
   }
 
   console.log(JSON.stringify(profileData));
