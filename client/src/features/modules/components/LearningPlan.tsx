@@ -6,6 +6,9 @@ import { useUnderstudies } from "../../login/hooks/useUnderstudies";
 import { useAuth } from "../../../context/AuthContext";
 import { emptyUser, Understudy } from "../../../types";
 import ProfilePicture from "../../../components/ProfilePicture";
+import useDocumentTitle from "../../../hooks/useTitle";
+import Load from "../../../components/LoadScreen";
+import Error from "../../../components/ErrorScreen";
 
 const TABPANEL_STYLE = "p-[2%] h-[590px]";
 
@@ -13,6 +16,8 @@ export default function LearningPlan() {
   const { user, setUser } = useAuth();
   const { data: understudyData, isLoading, error } = useUnderstudies(user.id);
   const [currentTabIndex, setCurrentTabIndex] = useState(user.id);
+
+  useDocumentTitle("Personalized Learning Plan | Goal Sets")
 
   useEffect(() => {
     const currentUser: string | null = sessionStorage.getItem("user");
@@ -22,11 +27,11 @@ export default function LearningPlan() {
   }, []);
 
   if (isLoading) {
-    <p>Loading, please wait...</p>;
+    return <Load/>;
   }
 
   if (error) {
-    <p>An error has occurred. Please try again.</p>;
+    return <Error error={error}/>;
   }
 
   return (
