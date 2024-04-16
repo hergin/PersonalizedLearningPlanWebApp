@@ -50,7 +50,7 @@ describe("Type Guard Unit Tests", () => {
             sender_id: mockSenderId,
             recipient_id: mockRecipientId,
         }
-    ]
+    ];
 
     const mockMessages: Message[] = [
         {
