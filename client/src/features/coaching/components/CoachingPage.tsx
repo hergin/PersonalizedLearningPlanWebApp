@@ -11,28 +11,32 @@ import { useUser } from "../../login/hooks/useUser";
 import { PublicUsers } from "../types";
 import { useUnderstudies } from "../../login/hooks/useUnderstudies";
 import { Understudy } from "../../../types";
+import useDocumentTitle from "../../../hooks/useTitle";
+import Load from "../../../components/LoadScreen";
+import Error from "../../../components/ErrorScreen";
+
 
 const CoachingPage = () => {
   const { user } = useUser();
   const {
     data: users,
     isLoading: profileLoading,
-    isError: profileError,
+    error: profileError,
   } = useCoachProfiles();
   const {
     data: invites,
     isLoading: inviteLoading,
-    isError: inviteError,
+    error: inviteError,
   } = useFetchInvites(user.id);
   const {
     data: pendingInvites,
     isLoading: pendingInviteLoading,
-    isError: pendingInviteError,
+    error: pendingInviteError,
   } = useFetchPendingInvitations(user.id);
   const {
     data: understudies,
     isLoading: understudiesIsLoading,
-    isError: understudiesError
+    error: understudiesError
   } = useUnderstudies(user.id);
 
   const [searchQuery, setSearchQuery] = useState("");
@@ -43,9 +47,14 @@ const CoachingPage = () => {
       publicUser.account_id !== user.id
   );
 
-  if (profileLoading || inviteLoading || pendingInviteLoading || understudiesIsLoading) return <div>Loading...</div>;
+  useDocumentTitle("Personalized Learning Plan | Coach")
 
-  if (profileError || inviteError || pendingInviteError || understudiesError) return <div>Error...</div>;
+  if (profileLoading || inviteLoading || pendingInviteLoading || understudiesIsLoading) return <Load/>;
+
+  if (profileError) return <Error error={profileError}/>;
+  if (inviteError) return <Error error={inviteError}/>;
+  if (pendingInviteError) return <Error error={pendingInviteError}/>;
+  if (understudiesError) return <Error error={understudiesError}/>;
 
   return (
     <div className="min-h-screen bg-[#F1F1F1]">
