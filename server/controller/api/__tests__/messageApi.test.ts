@@ -22,8 +22,8 @@ const TEST_MESSAGE: CreatedMessage[] = [
 ];
 
 describe("Message Api Unit Tests", () => {
-    var api = new MessageApi();
-    var parser: any;
+    const api = new MessageApi();
+    let parser: any;
 
     beforeEach(() => {
         parser = new MessageParser();
@@ -50,11 +50,11 @@ describe("Message Api Unit Tests", () => {
     });
 
     it("Get Chat Messages (normal case)", async () => {
-        parser.parseChat.mockResolvedValueOnce({sentMessages: [TEST_MESSAGE[0]], receivedMessages: [TEST_MESSAGE[1]]});
+        parser.parseChat.mockResolvedValueOnce(TEST_MESSAGE);
         const result = await api.getChatMessages(mockSenderId, mockRecipientId);
         expect(parser.parseChat).toHaveBeenCalledTimes(1);
         expect(parser.parseChat).toHaveBeenCalledWith(mockSenderId, mockRecipientId);
-        expect(result).toEqual({sentMessages: [TEST_MESSAGE[0]], receivedMessages: [TEST_MESSAGE[1]]});
+        expect(result).toEqual(TEST_MESSAGE);
     });
 
     it("Get Chat Messages (error case)", async () => {

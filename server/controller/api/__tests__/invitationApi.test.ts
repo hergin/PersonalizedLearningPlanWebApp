@@ -16,7 +16,7 @@ const TEST_DATA = {
 
 describe("Invitation Api Unit Tests", () => {
     const invitationApi = new InvitationApi();
-    var parser: any;
+    let parser: any;
     
     beforeEach(() => {
         parser = new InvitationParser();

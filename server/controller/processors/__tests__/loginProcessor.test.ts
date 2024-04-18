@@ -12,7 +12,7 @@ jest.mock("../../../middleware/tokenHandler", () => ({
 }));
 
 describe("Login Processor unit tests", () => {
-    var loginApi: any;
+    let loginApi: any;
 
     beforeEach(() => {
         loginApi = new LoginAPI();

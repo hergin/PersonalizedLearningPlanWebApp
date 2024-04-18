@@ -13,12 +13,12 @@ jest.mock("bcryptjs", () => ({
 }));
 
 describe('Login Api Unit Tests', () => {
-    var loginAPI : LoginAPI;
-    var mockParseDatabase: jest.Mock;
-    var mockUpdateDatabase: jest.Mock;
-    var mockCompare: jest.Mock;
-    var mockGenSalt: jest.Mock;
-    var mockHash: jest.Mock;
+    let loginAPI : LoginAPI;
+    let mockParseDatabase: jest.Mock;
+    let mockUpdateDatabase: jest.Mock;
+    let mockCompare: jest.Mock;
+    let mockGenSalt: jest.Mock;
+    let mockHash: jest.Mock;
 
     beforeEach(() => {
         const parser = new DatabaseParser();

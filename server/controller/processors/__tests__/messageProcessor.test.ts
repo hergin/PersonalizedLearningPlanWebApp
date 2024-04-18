@@ -23,18 +23,17 @@ const TEST_MESSAGE: CreatedMessage[] = [
 ];
 
 describe("Message Processor Unit Tests", () => {
-    var api: any = new MessageApi();
-
     afterEach(() => {
         jest.clearAllMocks();
     });
 
     it("Get All Sent Messages (normal case)", async () => {
-        api.getAllSentMessages.mockResolvedValueOnce([TEST_MESSAGE[0]]);
+        const mockGetAllSentMessages = new MessageApi().getAllSentMessages as jest.Mock;
+        mockGetAllSentMessages.mockResolvedValueOnce([TEST_MESSAGE[0]]);
         const mRequest = createMockRequest({}, {id: mockSenderId});
         await MessageProcessor.getAllSentMessages(mRequest, MOCK_RESPONSE);
-        expect(api.getAllSentMessages).toHaveBeenCalledTimes(1);
-        expect(api.getAllSentMessages).toHaveBeenCalledWith(mockSenderId);
+        expect(mockGetAllSentMessages).toHaveBeenCalledTimes(1);
+        expect(mockGetAllSentMessages).toHaveBeenCalledWith(mockSenderId);
         expect(MOCK_RESPONSE.send).toHaveBeenCalledTimes(0);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledTimes(1);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledWith(STATUS_CODE.OK);
@@ -43,11 +42,12 @@ describe("Message Processor Unit Tests", () => {
     });
 
     it("Get All Sent Messages (error case)", async () => {
-        api.getAllSentMessages.mockResolvedValueOnce(STATUS_CODE.BAD_REQUEST);
+        const mockGetAllSentMessages = new MessageApi().getAllSentMessages as jest.Mock;
+        mockGetAllSentMessages.mockResolvedValueOnce(STATUS_CODE.BAD_REQUEST);
         const mRequest = createMockRequest({}, {id: mockSenderId});
         await MessageProcessor.getAllSentMessages(mRequest, MOCK_RESPONSE);
-        expect(api.getAllSentMessages).toHaveBeenCalledTimes(1);
-        expect(api.getAllSentMessages).toHaveBeenCalledWith(mockSenderId);
+        expect(mockGetAllSentMessages).toHaveBeenCalledTimes(1);
+        expect(mockGetAllSentMessages).toHaveBeenCalledWith(mockSenderId);
         expect(MOCK_RESPONSE.json).toHaveBeenCalledTimes(0);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledTimes(1);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledWith(STATUS_CODE.BAD_REQUEST);
@@ -56,11 +56,12 @@ describe("Message Processor Unit Tests", () => {
     });
 
     it("Get Chat Messages (normal case)", async () => {
-        api.getChatMessages.mockResolvedValueOnce(TEST_MESSAGE);
+        const mockGetChatMessages = new MessageApi().getChatMessages as jest.Mock;
+        mockGetChatMessages.mockResolvedValueOnce(TEST_MESSAGE);
         const mRequest = createMockRequest({}, {id: mockSenderId, receivedId: mockRecipientId});
         await MessageProcessor.getMessagesBetween(mRequest, MOCK_RESPONSE);
-        expect(api.getChatMessages).toHaveBeenCalledTimes(1);
-        expect(api.getChatMessages).toHaveBeenCalledWith(mockSenderId, mockRecipientId);
+        expect(mockGetChatMessages).toHaveBeenCalledTimes(1);
+        expect(mockGetChatMessages).toHaveBeenCalledWith(mockSenderId, mockRecipientId);
         expect(MOCK_RESPONSE.send).toHaveBeenCalledTimes(0);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledTimes(1);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledWith(STATUS_CODE.OK);
@@ -69,11 +70,12 @@ describe("Message Processor Unit Tests", () => {
     });
 
     it("Get Chat Messages (error case)", async () => {
-        api.getChatMessages.mockResolvedValueOnce(STATUS_CODE.CONFLICT);
+        const mockGetChatMessages = new MessageApi().getChatMessages as jest.Mock;
+        mockGetChatMessages.mockResolvedValueOnce(STATUS_CODE.CONFLICT);
         const mRequest = createMockRequest({}, {id: mockSenderId, receivedId: mockRecipientId});
         await MessageProcessor.getMessagesBetween(mRequest, MOCK_RESPONSE);
-        expect(api.getChatMessages).toHaveBeenCalledTimes(1);
-        expect(api.getChatMessages).toHaveBeenCalledWith(mockSenderId, mockRecipientId);
+        expect(mockGetChatMessages).toHaveBeenCalledTimes(1);
+        expect(mockGetChatMessages).toHaveBeenCalledWith(mockSenderId, mockRecipientId);
         expect(MOCK_RESPONSE.json).toHaveBeenCalledTimes(0);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledTimes(1);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledWith(STATUS_CODE.CONFLICT);
@@ -82,15 +84,16 @@ describe("Message Processor Unit Tests", () => {
     });
 
     it("Post Message (normal case)", async () => {
-        api.sendMessage.mockResolvedValueOnce(STATUS_CODE.OK);
+        const mockSendMessage = new MessageApi().sendMessage as jest.Mock;
+        mockSendMessage.mockResolvedValueOnce(STATUS_CODE.OK);
         const mRequest = createMockRequest({
             ...TEST_MESSAGE[0],
             recipient_id: mockRecipientId,
             sender_id: mockSenderId
         });
         await MessageProcessor.postMessage(mRequest, MOCK_RESPONSE);
-        expect(api.sendMessage).toHaveBeenCalledTimes(1);
-        expect(api.sendMessage).toHaveBeenCalledWith(TEST_MESSAGE[0]);
+        expect(mockSendMessage).toHaveBeenCalledTimes(1);
+        expect(mockSendMessage).toHaveBeenCalledWith(TEST_MESSAGE[0]);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledTimes(0);
         expect(MOCK_RESPONSE.send).toHaveBeenCalledTimes(0);
         expect(MOCK_RESPONSE.sendStatus).toHaveBeenCalledTimes(1);
@@ -98,15 +101,16 @@ describe("Message Processor Unit Tests", () => {
     });
 
     it("Post Message (error case)", async () => {
-        api.sendMessage.mockResolvedValueOnce(STATUS_CODE.FORBIDDEN);
+        const mockSendMessage = new MessageApi().sendMessage as jest.Mock;
+        mockSendMessage.mockResolvedValueOnce(STATUS_CODE.FORBIDDEN);
         const mRequest = createMockRequest({
             ...TEST_MESSAGE[0],
             recipient_id: mockRecipientId,
             sender_id: mockSenderId
         });
         await MessageProcessor.postMessage(mRequest, MOCK_RESPONSE);
-        expect(api.sendMessage).toHaveBeenCalledTimes(1);
-        expect(api.sendMessage).toHaveBeenCalledWith(TEST_MESSAGE[0]);
+        expect(mockSendMessage).toHaveBeenCalledTimes(1);
+        expect(mockSendMessage).toHaveBeenCalledWith(TEST_MESSAGE[0]);
         expect(MOCK_RESPONSE.sendStatus).toHaveBeenCalledTimes(0);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledTimes(1);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledWith(STATUS_CODE.FORBIDDEN);
@@ -115,11 +119,12 @@ describe("Message Processor Unit Tests", () => {
     });
 
     it("Put Message (normal case)", async () => {
-        api.editMessage.mockResolvedValueOnce(STATUS_CODE.OK);
+        const mockEditMessage = new MessageApi().editMessage as jest.Mock;
+        mockEditMessage.mockResolvedValueOnce(STATUS_CODE.OK);
         const mRequest = createMockRequest({content: TEST_MESSAGE[0].content}, {id: mockMessageId});
         await MessageProcessor.putMessage(mRequest, MOCK_RESPONSE);
-        expect(api.editMessage).toHaveBeenCalledTimes(1);
-        expect(api.editMessage).toHaveBeenCalledWith(mockMessageId, TEST_MESSAGE[0].content);
+        expect(mockEditMessage).toHaveBeenCalledTimes(1);
+        expect(mockEditMessage).toHaveBeenCalledWith(mockMessageId, TEST_MESSAGE[0].content);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledTimes(0);
         expect(MOCK_RESPONSE.send).toHaveBeenCalledTimes(0);
         expect(MOCK_RESPONSE.sendStatus).toHaveBeenCalledTimes(1);
@@ -127,11 +132,12 @@ describe("Message Processor Unit Tests", () => {
     });
 
     it("Put Message (error case)", async () => {
-        api.editMessage.mockResolvedValueOnce(STATUS_CODE.GONE);
+        const mockEditMessage = new MessageApi().editMessage as jest.Mock;
+        mockEditMessage.mockResolvedValueOnce(STATUS_CODE.GONE);
         const mRequest = createMockRequest({content: TEST_MESSAGE[0].content}, {id: mockMessageId});
         await MessageProcessor.putMessage(mRequest, MOCK_RESPONSE);
-        expect(api.editMessage).toHaveBeenCalledTimes(1);
-        expect(api.editMessage).toHaveBeenCalledWith(mockMessageId, TEST_MESSAGE[0].content);
+        expect(mockEditMessage).toHaveBeenCalledTimes(1);
+        expect(mockEditMessage).toHaveBeenCalledWith(mockMessageId, TEST_MESSAGE[0].content);
         expect(MOCK_RESPONSE.sendStatus).toHaveBeenCalledTimes(0);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledTimes(1);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledWith(STATUS_CODE.GONE);
@@ -140,11 +146,12 @@ describe("Message Processor Unit Tests", () => {
     });
 
     it("Delete Message (normal case)", async () => {
-        api.deleteMessage.mockResolvedValueOnce(STATUS_CODE.OK);
+        const mockDeleteMessage = new MessageApi().deleteMessage as jest.Mock;
+        mockDeleteMessage.mockResolvedValueOnce(STATUS_CODE.OK);
         const mRequest = createMockRequest({}, {id: mockMessageId});
         await MessageProcessor.deleteMessage(mRequest, MOCK_RESPONSE);
-        expect(api.deleteMessage).toHaveBeenCalledTimes(1);
-        expect(api.deleteMessage).toHaveBeenCalledWith(mockMessageId);
+        expect(mockDeleteMessage).toHaveBeenCalledTimes(1);
+        expect(mockDeleteMessage).toHaveBeenCalledWith(mockMessageId);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledTimes(0);
         expect(MOCK_RESPONSE.send).toHaveBeenCalledTimes(0);
         expect(MOCK_RESPONSE.sendStatus).toHaveBeenCalledTimes(1);
@@ -152,11 +159,12 @@ describe("Message Processor Unit Tests", () => {
     });
 
     it("Delete Message (error case)", async () => {
-        api.deleteMessage.mockResolvedValueOnce(STATUS_CODE.GONE);
+        const mockDeleteMessage = new MessageApi().deleteMessage as jest.Mock;
+        mockDeleteMessage.mockResolvedValueOnce(STATUS_CODE.GONE);
         const mRequest = createMockRequest({}, {id: mockMessageId});
         await MessageProcessor.deleteMessage(mRequest, MOCK_RESPONSE);
-        expect(api.deleteMessage).toHaveBeenCalledTimes(1);
-        expect(api.deleteMessage).toHaveBeenCalledWith(mockMessageId);
+        expect(mockDeleteMessage).toHaveBeenCalledTimes(1);
+        expect(mockDeleteMessage).toHaveBeenCalledWith(mockMessageId);
         expect(MOCK_RESPONSE.sendStatus).toHaveBeenCalledTimes(0);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledTimes(1);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledWith(STATUS_CODE.GONE);

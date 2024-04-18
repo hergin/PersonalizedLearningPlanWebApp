@@ -43,7 +43,7 @@ describe('Module Api Unit Tests', () => {
 
     it('create module (server error case)', async () => {
         parser.updateDatabase.mockRejectedValue(FAKE_ERRORS.fatalServerError);
-        var actual = await moduleAPI.createModule(TEST_CREATED_MODULE);
+        const actual = await moduleAPI.createModule(TEST_CREATED_MODULE);
         expect(actual).toEqual(STATUS_CODE.INTERNAL_SERVER_ERROR);
     });
 

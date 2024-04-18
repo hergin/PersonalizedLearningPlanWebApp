@@ -20,8 +20,8 @@ const TEST_ERROR = {message: "I don't feel like querying right now. :("};
 
 describe("Profile Api Unit Tests", () => {
     const { FetchProfile, fetchCoaches, CreateProfile, UpdateProfile } = renderHook(ProfileApi).result.current;
-    var mockApi: any;
-    var mockServerThrower: jest.Mock<any, any, any>;
+    let mockApi: any;
+    let mockServerThrower: jest.Mock;
 
     beforeEach(() => {
         mockApi = useApiConnection();
@@ -113,14 +113,7 @@ describe("Profile Api Unit Tests", () => {
         mockApi.put.mockResolvedValueOnce({});
         await UpdateProfile({...TEST_PROFILE, bio: updatedBio});
         expect(mockApi.put).toHaveBeenCalledTimes(1);
-        expect(mockApi.put).toHaveBeenCalledWith(`profile/edit/${TEST_PROFILE.id}`, {
-            firstName: TEST_PROFILE.firstName,
-            lastName: TEST_PROFILE.lastName,
-            username: TEST_PROFILE.username,
-            profilePicture: TEST_PROFILE.profilePicture,
-            jobTitle: TEST_PROFILE.jobTitle, 
-            bio: updatedBio
-        });
+        expect(mockApi.put).toHaveBeenCalledWith(`profile/edit/${TEST_PROFILE.id}`, {...TEST_PROFILE, bio: updatedBio});
         expect(mockServerThrower).toHaveBeenCalledTimes(0);
     });
 
@@ -129,14 +122,7 @@ describe("Profile Api Unit Tests", () => {
         mockApi.put.mockRejectedValue(TEST_ERROR);
         await UpdateProfile({...TEST_PROFILE, bio: updatedBio});
         expect(mockApi.put).toHaveBeenCalledTimes(1);
-        expect(mockApi.put).toHaveBeenCalledWith(`profile/edit/${TEST_PROFILE.id}`, {
-            firstName: TEST_PROFILE.firstName,
-            lastName: TEST_PROFILE.lastName,
-            username: TEST_PROFILE.username,
-            profilePicture: TEST_PROFILE.profilePicture,
-            jobTitle: TEST_PROFILE.jobTitle, 
-            bio: updatedBio
-        });
+        expect(mockApi.put).toHaveBeenCalledWith(`profile/edit/${TEST_PROFILE.id}`, {...TEST_PROFILE, bio: updatedBio});
         expect(mockServerThrower).toHaveBeenCalledTimes(1);
         expect(mockServerThrower).toHaveBeenCalledWith(TEST_ERROR);
     });

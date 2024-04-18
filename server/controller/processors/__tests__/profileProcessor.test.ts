@@ -7,24 +7,19 @@ import { getLoginError } from "../../../utils/errorHandlers";
 jest.mock("../../../controller/api/profileApi");
 
 describe("Profile Processor unit tests", () => {
-    var profileApi : any;
-
-    beforeEach(() => {
-        profileApi = new ProfileAPI();
-    });
-
     afterEach(() => {
         jest.clearAllMocks();
     });
 
     it("get all profiles (normal case)", async () => {
-        profileApi.getAllCoachProfiles.mockResolvedValueOnce([
+        const mockGetAllCoachProfiles = new ProfileAPI().getAllCoachProfiles as jest.Mock;
+        mockGetAllCoachProfiles.mockResolvedValueOnce([
             {account_id: TEST_ACCOUNT.id, profile_id: TEST_PROFILE.profileId, username: TEST_PROFILE.username}
         ]);
         const mRequest = createMockRequest({}, {});
         await ProfileProcessor.getAllCoachProfiles(mRequest, MOCK_RESPONSE);
-        expect(profileApi.getAllCoachProfiles).toHaveBeenCalledTimes(1);
-        expect(profileApi.getAllCoachProfiles).toHaveBeenCalledWith();
+        expect(mockGetAllCoachProfiles).toHaveBeenCalledTimes(1);
+        expect(mockGetAllCoachProfiles).toHaveBeenCalledWith();
         expect(MOCK_RESPONSE.send).toHaveBeenCalledTimes(0);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledTimes(1);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledWith(STATUS_CODE.OK);
@@ -35,11 +30,12 @@ describe("Profile Processor unit tests", () => {
     });
 
     it("get all profiles (error case)", async () => {
-        profileApi.getAllCoachProfiles.mockResolvedValueOnce(STATUS_CODE.FORBIDDEN);
+        const mockGetAllCoachProfiles = new ProfileAPI().getAllCoachProfiles as jest.Mock;
+        mockGetAllCoachProfiles.mockResolvedValueOnce(STATUS_CODE.FORBIDDEN);
         const mRequest = createMockRequest({}, {});
         await ProfileProcessor.getAllCoachProfiles(mRequest, MOCK_RESPONSE);
-        expect(profileApi.getAllCoachProfiles).toHaveBeenCalledTimes(1);
-        expect(profileApi.getAllCoachProfiles).toHaveBeenCalledWith();
+        expect(mockGetAllCoachProfiles).toHaveBeenCalledTimes(1);
+        expect(mockGetAllCoachProfiles).toHaveBeenCalledWith();
         expect(MOCK_RESPONSE.json).toHaveBeenCalledTimes(0);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledTimes(1);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledWith(STATUS_CODE.FORBIDDEN);
@@ -48,11 +44,12 @@ describe("Profile Processor unit tests", () => {
     });
 
     it("get profile (normal case)", async () => {
-        profileApi.getProfile.mockResolvedValueOnce(TEST_PROFILE);
+        const mockGetProfile = new ProfileAPI().getProfile as jest.Mock;
+        mockGetProfile.mockResolvedValueOnce(TEST_PROFILE);
         const mRequest = createMockRequest({}, {id: TEST_ACCOUNT.id});
         await ProfileProcessor.sendProfile(mRequest, MOCK_RESPONSE);
-        expect(profileApi.getProfile).toHaveBeenCalledTimes(1);
-        expect(profileApi.getProfile).toHaveBeenCalledWith(TEST_ACCOUNT.id);
+        expect(mockGetProfile).toHaveBeenCalledTimes(1);
+        expect(mockGetProfile).toHaveBeenCalledWith(TEST_ACCOUNT.id);
         expect(MOCK_RESPONSE.send).toHaveBeenCalledTimes(0);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledTimes(1);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledWith(STATUS_CODE.OK);
@@ -61,11 +58,12 @@ describe("Profile Processor unit tests", () => {
     });
 
     it("get profile (error case)", async () => {
-        profileApi.getProfile.mockResolvedValueOnce(STATUS_CODE.UNAUTHORIZED);
+        const mockGetProfile = new ProfileAPI().getProfile as jest.Mock;
+        mockGetProfile.mockResolvedValueOnce(STATUS_CODE.UNAUTHORIZED);
         const mRequest = createMockRequest({}, {id: TEST_ACCOUNT.id});
         await ProfileProcessor.sendProfile(mRequest, MOCK_RESPONSE);
-        expect(profileApi.getProfile).toHaveBeenCalledTimes(1);
-        expect(profileApi.getProfile).toHaveBeenCalledWith(TEST_ACCOUNT.id);
+        expect(mockGetProfile).toHaveBeenCalledTimes(1);
+        expect(mockGetProfile).toHaveBeenCalledWith(TEST_ACCOUNT.id);
         expect(MOCK_RESPONSE.json).toHaveBeenCalledTimes(0);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledTimes(1);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledWith(STATUS_CODE.UNAUTHORIZED);
@@ -74,22 +72,24 @@ describe("Profile Processor unit tests", () => {
     });
 
     it("post profile (normal case)", async () => {
-        profileApi.createProfile.mockResolvedValueOnce(STATUS_CODE.OK);
+        const mockCreateProfile = new ProfileAPI().createProfile as jest.Mock;
+        mockCreateProfile.mockResolvedValueOnce(STATUS_CODE.OK);
         const mRequest = createMockRequest({...TEST_CREATED_PROFILE, account_id: TEST_CREATED_PROFILE.accountId});
         await ProfileProcessor.postProfile(mRequest, MOCK_RESPONSE);
-        expect(profileApi.createProfile).toHaveBeenCalledTimes(1);
-        expect(profileApi.createProfile).toHaveBeenCalledWith(TEST_CREATED_PROFILE);
+        expect(mockCreateProfile).toHaveBeenCalledTimes(1);
+        expect(mockCreateProfile).toHaveBeenCalledWith(TEST_CREATED_PROFILE);
         expect(MOCK_RESPONSE.send).toHaveBeenCalledTimes(0);
         expect(MOCK_RESPONSE.sendStatus).toHaveBeenCalledTimes(1);
         expect(MOCK_RESPONSE.sendStatus).toHaveBeenCalledWith(STATUS_CODE.OK);
     });
 
     it("post profile (error case)", async () => {
-        profileApi.createProfile.mockResolvedValueOnce(STATUS_CODE.CONFLICT);
+        const mockCreateProfile = new ProfileAPI().createProfile as jest.Mock;
+        mockCreateProfile.mockResolvedValueOnce(STATUS_CODE.CONFLICT);
         const mRequest = createMockRequest({...TEST_CREATED_PROFILE, account_id: TEST_CREATED_PROFILE.accountId});
         await ProfileProcessor.postProfile(mRequest, MOCK_RESPONSE);
-        expect(profileApi.createProfile).toHaveBeenCalledTimes(1);
-        expect(profileApi.createProfile).toHaveBeenCalledWith(TEST_CREATED_PROFILE);
+        expect(mockCreateProfile).toHaveBeenCalledTimes(1);
+        expect(mockCreateProfile).toHaveBeenCalledWith(TEST_CREATED_PROFILE);
         expect(MOCK_RESPONSE.sendStatus).toHaveBeenCalledTimes(0);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledTimes(1);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledWith(STATUS_CODE.CONFLICT);
@@ -98,22 +98,24 @@ describe("Profile Processor unit tests", () => {
     });
 
     it("put profile (correct case)", async () => {
-        profileApi.updateProfile.mockResolvedValueOnce(STATUS_CODE.OK);
+        const mockUpdateProfile = new ProfileAPI().updateProfile as jest.Mock;
+        mockUpdateProfile.mockResolvedValueOnce(STATUS_CODE.OK);
         const mRequest = createMockRequest(TEST_PROFILE, {id: TEST_PROFILE.profileId});
         await ProfileProcessor.putProfile(mRequest, MOCK_RESPONSE);
-        expect(profileApi.updateProfile).toHaveBeenCalledTimes(1);
-        expect(profileApi.updateProfile).toHaveBeenCalledWith(TEST_PROFILE);
+        expect(mockUpdateProfile).toHaveBeenCalledTimes(1);
+        expect(mockUpdateProfile).toHaveBeenCalledWith(TEST_PROFILE);
         expect(MOCK_RESPONSE.send).toHaveBeenCalledTimes(0);
         expect(MOCK_RESPONSE.sendStatus).toHaveBeenCalledTimes(1);
         expect(MOCK_RESPONSE.sendStatus).toHaveBeenCalledWith(STATUS_CODE.OK);
     });
 
     it("put profile (error case)", async () => {
-        profileApi.updateProfile.mockResolvedValueOnce(STATUS_CODE.CONNECTION_ERROR);
+        const mockUpdateProfile = new ProfileAPI().updateProfile as jest.Mock;
+        mockUpdateProfile.mockResolvedValueOnce(STATUS_CODE.CONNECTION_ERROR);
         const mRequest = createMockRequest(TEST_PROFILE, {id: TEST_PROFILE.profileId});
         await ProfileProcessor.putProfile(mRequest, MOCK_RESPONSE);
-        expect(profileApi.updateProfile).toHaveBeenCalledTimes(1);
-        expect(profileApi.updateProfile).toHaveBeenCalledWith(TEST_PROFILE);
+        expect(mockUpdateProfile).toHaveBeenCalledTimes(1);
+        expect(mockUpdateProfile).toHaveBeenCalledWith(TEST_PROFILE);
         expect(MOCK_RESPONSE.sendStatus).toHaveBeenCalledTimes(0);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledTimes(1);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledWith(STATUS_CODE.CONNECTION_ERROR);
@@ -122,22 +124,24 @@ describe("Profile Processor unit tests", () => {
     });
 
     it("delete profile (normal case)", async () => {
-        profileApi.deleteProfile.mockResolvedValueOnce(STATUS_CODE.OK);
+        const mockDeleteProfile = new ProfileAPI().deleteProfile as jest.Mock;
+        mockDeleteProfile.mockResolvedValueOnce(STATUS_CODE.OK);
         const mRequest = createMockRequest({}, {id: TEST_PROFILE.profileId});
         await ProfileProcessor.deleteProfile(mRequest, MOCK_RESPONSE);
-        expect(profileApi.deleteProfile).toHaveBeenCalledTimes(1);
-        expect(profileApi.deleteProfile).toHaveBeenCalledWith(TEST_PROFILE.profileId);
+        expect(mockDeleteProfile).toHaveBeenCalledTimes(1);
+        expect(mockDeleteProfile).toHaveBeenCalledWith(TEST_PROFILE.profileId);
         expect(MOCK_RESPONSE.send).toHaveBeenCalledTimes(0);
         expect(MOCK_RESPONSE.sendStatus).toHaveBeenCalledTimes(1);
         expect(MOCK_RESPONSE.sendStatus).toHaveBeenCalledWith(STATUS_CODE.OK);
     });
 
     it("delete profile (error case)", async () => {
-        profileApi.deleteProfile.mockResolvedValueOnce(STATUS_CODE.FORBIDDEN);
+        const mockDeleteProfile = new ProfileAPI().deleteProfile as jest.Mock;
+        mockDeleteProfile.mockResolvedValueOnce(STATUS_CODE.FORBIDDEN);
         const mRequest = createMockRequest({}, {id: TEST_PROFILE.profileId});
         await ProfileProcessor.deleteProfile(mRequest, MOCK_RESPONSE);
-        expect(profileApi.deleteProfile).toHaveBeenCalledTimes(1);
-        expect(profileApi.deleteProfile).toHaveBeenCalledWith(TEST_PROFILE.profileId);
+        expect(mockDeleteProfile).toHaveBeenCalledTimes(1);
+        expect(mockDeleteProfile).toHaveBeenCalledWith(TEST_PROFILE.profileId);
         expect(MOCK_RESPONSE.sendStatus).toHaveBeenCalledTimes(0);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledTimes(1);
         expect(MOCK_RESPONSE.status).toHaveBeenCalledWith(STATUS_CODE.FORBIDDEN);

@@ -50,6 +50,7 @@ export const InvitationApi = () => {
       );
     }
   }
+  
   async function DeclineInvitation(id: number) {
     try {
       await post(`/invite/reject/${id}`, {});

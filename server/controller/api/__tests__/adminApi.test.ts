@@ -16,7 +16,7 @@ const mockUserData = {
 
 describe("Admin Api", () => {
     const adminApi = new AdminApi();
-    var parser: any;
+    let parser: any;
 
     beforeEach(() => {
         parser = new DatabaseParser();

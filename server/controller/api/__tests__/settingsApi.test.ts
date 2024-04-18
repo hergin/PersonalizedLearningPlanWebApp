@@ -6,8 +6,8 @@ import { FAKE_ERRORS, TEST_SETTINGS } from "../../global/mockValues";
 jest.mock("../../../parser/databaseParser");
 
 describe('Settings Api Unit Tests', () => {
-    var api: SettingsApi;
-    var parser: any = new DatabaseParser();
+    const parser: any = new DatabaseParser();
+    let api: SettingsApi;
 
     beforeEach(() => {
         api = new SettingsApi();
