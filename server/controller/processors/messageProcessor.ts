@@ -2,7 +2,6 @@ import MessageApi from "../api/messageApi";
 import { getLoginError } from "../../utils/errorHandlers";
 import { Request, Response } from "express";
 import { STATUS_CODE } from "../../types";
-import { Server } from "socket.io";
 import { isStatusCode } from "../../utils/typeGuards";
 
 const messageApi = new MessageApi();

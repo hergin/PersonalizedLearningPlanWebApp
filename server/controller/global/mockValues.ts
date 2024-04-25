@@ -29,14 +29,9 @@ export const MOCK_RESPONSE : any = {
 export function createMockRequest(body: any, params?: any): any {
     return {
         body: body,
-        params: params ?? {id: undefined},
-        app: {
-            get: jest.fn().mockImplementation(() => ({
-                emit: jest.fn(),
-            })),
-        }
+        params: params ?? {id: undefined}
     };
-};
+}
 
 export const TEST_ACCOUNT = {
     id: 601,

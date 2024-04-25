@@ -9,8 +9,8 @@ jest.mock("../../../controller/api/invitationApi");
 jest.mock("../../../service/emailService");
 
 describe("Invitation Processor Unit Tests", () => {
-    var invitationApi: any;
-    var emailService: any;
+    let invitationApi: any;
+    let emailService: any;
 
     beforeEach(() => {
         invitationApi = new InvitationApi();

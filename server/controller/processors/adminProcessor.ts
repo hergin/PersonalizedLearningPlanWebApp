@@ -15,7 +15,7 @@ export async function getAllAccounts(req: Request, res: Response) {
         return;
     }
     res.status(STATUS_CODE.OK).json(result);
-};
+}
 
 export async function getAccount(req: Request, res: Response) {
     console.log(`Getting account with id ${req.params.id}`);

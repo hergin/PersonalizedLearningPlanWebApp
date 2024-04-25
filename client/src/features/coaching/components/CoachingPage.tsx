@@ -3,9 +3,6 @@ import SearchBar from "./SearchBar";
 import UserItem from "./UserItem";
 import { useCoachProfiles } from "../../profile/hooks/useProfile";
 import InvitationItem from "./InviteItem";
-import { useCollapse } from "react-collapsed";
-import ExpandLessIcon from "@mui/icons-material/ExpandLess";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import {
   useFetchInvites,
   useFetchPendingInvitations,
@@ -43,7 +40,6 @@ const CoachingPage = () => {
   } = useUnderstudies(user.id);
 
   const [searchQuery, setSearchQuery] = useState("");
-  const { getCollapseProps, getToggleProps, isExpanded } = useCollapse();
 
   const filteredUsers = users?.filter(
     (publicUser: PublicUsers) =>

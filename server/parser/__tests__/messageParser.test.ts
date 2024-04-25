@@ -24,10 +24,10 @@ const TEST_MESSAGE = {
 
 describe("Message Parser Unit Tests", () => {
     const parser = new MessageParser();
-    var mockQuery: jest.Mock<any, any, any>;
+    let mockQuery: jest.Mock;
 
     beforeEach(() => {
-        mockQuery = new Pool().query as jest.Mock<any, any, any>;
+        mockQuery = new Pool().query as jest.Mock;
     });
 
     afterEach(() => {
@@ -68,10 +68,7 @@ describe("Message Parser Unit Tests", () => {
             text: "SELECT * FROM MESSAGE_DATA WHERE sender_id = $1 AND recipient_id = $2",
             values: [TEST_RECIPIENT.id, TEST_SENDER.id]
         });
-        expect(result).toEqual({
-            sentMessages: mockResultOne.rows,
-            receivedMessages: mockResultTwo.rows,
-        });
+        expect(result).toEqual([mockResultOne.rows[0], mockResultTwo.rows[0]]);
     });
 
     it("Store Message", async () => {
